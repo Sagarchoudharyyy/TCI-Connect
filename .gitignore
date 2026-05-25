@@ -3,6 +3,16 @@ venv/
 backend/venv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Python cache folders
+backend/app/__pycache__/
+backend/app/api/__pycache__/
+backend/app/core/__pycache__/
+backend/app/database/__pycache__/
+backend/app/models/__pycache__/
+backend/app/schemas/__pycache__/
 
 # React
 node_modules/
