@@ -10,9 +10,16 @@ function App() {
         <Route path="/" element={<Register />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
-    </BrowserRouter>
+    </BrowserRouter >
   );
 }
 

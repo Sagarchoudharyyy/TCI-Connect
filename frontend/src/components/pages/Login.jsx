@@ -16,7 +16,6 @@ function Login() {
 
         setError("");
 
-        // Validation
         if (!username || !password) {
             setError("All fields are required");
             return;
