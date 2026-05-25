@@ -9,6 +9,7 @@ function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -28,35 +29,54 @@ function Login() {
             return;
         }
 
+        setLoading(true);
+
         try {
             const response = await axios.post(
                 "http://127.0.0.1:8000/login",
                 {
                     username,
-                    password
+                    password,
                 }
             );
-            console.log(response.data)
+
+            console.log(response.data);
+
+            // Backend invalid login message
             if (
                 response.data.message ===
-                "Invalid username and password"
+                "Invalid email/mobile or password"
             ) {
                 setError(
-                    "Invalid username or password"
+                    "Invalid email/mobile number or password"
                 );
                 return;
             }
 
-
-            navigate("/dashboard")
-                ;
-        }
-        catch (error) {
-            setError(
-                " something went wrong"
+            // Save token
+            localStorage.setItem(
+                "token",
+                response.data.access_token
             );
-            console.log(error)
 
+            // Save user info
+            localStorage.setItem(
+                "user",
+                JSON.stringify(response.data.user)
+            );
+
+            // Redirect to dashboard
+            navigate("/dashboard");
+
+        } catch (error) {
+            console.log(error);
+
+            setError(
+                error.response?.data?.message ||
+                "Something went wrong"
+            );
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -66,14 +86,14 @@ function Login() {
 
                 <div className="col-md-5">
 
-                    <div className="card shadow p-4 mt-5">
+                    <div className="card shadow p-4 mt-5 border-0 rounded-4">
 
                         <div className="text-center mb-4">
                             <h2>Login</h2>
 
                             <p>
-                                Welcome back to
-                                {" "}TCI Connect
+                                Welcome back to{" "}
+                                <strong>TCI Connect</strong>
                             </p>
                         </div>
 
@@ -86,21 +106,19 @@ function Login() {
 
                         <form onSubmit={handleSubmit}>
 
-                            {/* Username */}
+                            {/* Email / Mobile */}
                             <div className="mb-3 text-start">
                                 <label className="form-label">
-                                    Username
+                                    Email or Mobile Number
                                 </label>
 
                                 <input
                                     className="form-control"
                                     type="text"
-                                    placeholder="Enter username"
+                                    placeholder="Enter email or mobile number"
                                     value={username}
                                     onChange={(e) =>
-                                        setUsername(
-                                            e.target.value
-                                        )
+                                        setUsername(e.target.value)
                                     }
                                 />
                             </div>
@@ -117,27 +135,31 @@ function Login() {
                                     placeholder="Enter password"
                                     value={password}
                                     onChange={(e) =>
-                                        setPassword(
-                                            e.target.value
-                                        )
+                                        setPassword(e.target.value)
                                     }
                                 />
                             </div>
 
                             {/* Login Button */}
                             <button
-                                className="btn btn-primary w-100 mt-3"
+                                className="btn btn-primary w-100 mt-3 rounded-pill"
                                 type="submit"
+                                disabled={loading}
                             >
-                                Login
+                                {loading
+                                    ? "Logging in..."
+                                    : "Login"}
                             </button>
 
-                            {/* Signup Link */}
+                            {/* Register Link */}
                             <p className="text-center mt-3">
                                 Don't have an account?{" "}
 
-                                <Link to="/signup">
-                                    Signup
+                                <Link
+                                    to="/register"
+                                    className="text-decoration-none fw-bold"
+                                >
+                                    Register
                                 </Link>
                             </p>
 

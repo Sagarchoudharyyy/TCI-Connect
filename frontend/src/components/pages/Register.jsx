@@ -1,6 +1,14 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+
 
 function Register() {
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
     full_name: "",
@@ -10,213 +18,243 @@ function Register() {
     license_number: "",
     vat_id: "",
     country: "",
-    password: ""
+    password: "",
   });
-
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(formData);
+    setLoading(true);
+    setError("");
+    setMessage("");
 
-    alert("Form Submitted");
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/register",
+        formData
+      );
+
+      setMessage(response.data.message);
+
+      // Reset form
+      setFormData({
+        full_name: "",
+        email: "",
+        phone: "",
+        business_name: "",
+        license_number: "",
+        vat_id: "",
+        country: "",
+        password: "",
+      });
+
+      // Redirect to login page
+      navigate("/login");
+
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+        "Registration failed"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-
     <div className="container mt-5">
-
       <div className="row justify-content-center">
-
         <div className="col-md-8">
 
-          <div className="card shadow p-4">
-
+          <div
+            className="card shadow border-0 p-4 rounded-4"
+          >
             <h2 className="text-center mb-4">
-              Register Page
+              Register
             </h2>
+
+            {/* Success Message */}
+            {message && (
+              <div className="alert alert-success">
+                {message}
+              </div>
+            )}
+
+            {/* Error Message */}
+            {error && (
+              <div className="alert alert-danger">
+                {error}
+              </div>
+            )}
 
             <form onSubmit={handleSubmit}>
 
-              <div className="row mb-3 align-items-center">
-
-                <label className="col-sm-4 col-form-label">
+              {/* Full Name */}
+              <div className="mb-3">
+                <label className="form-label">
                   Full Name
                 </label>
 
-                <div className="col-sm-8">
-
-                  <input
-                    type="text"
-                    name="full_name"
-                    className="form-control"
-                    value={formData.full_name}
-                    onChange={handleChange}
-                  />
-
-                </div>
-
+                <input
+                  type="text"
+                  name="full_name"
+                  className="form-control"
+                  placeholder="Enter full name"
+                  value={formData.full_name}
+                  onChange={handleChange}
+                  required
+                />
               </div>
 
-              <div className="row mb-3 align-items-center">
-
-                <label className="col-sm-4 col-form-label">
+              {/* Email */}
+              <div className="mb-3">
+                <label className="form-label">
                   Email
                 </label>
 
-                <div className="col-sm-8">
-
-                  <input
-                    type="text"
-                    name="full_name"
-                    className="form-control"
-                    value={formData.full_name}
-                    onChange={handleChange}
-                  />
-
-                </div>
-
+                <input
+                  type="email"
+                  name="email"
+                  className="form-control"
+                  placeholder="Enter email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
               </div>
-              <div className="row mb-3 align-items-center">
 
-                <label className="col-sm-4 col-form-label">
-                  Phone
+              {/* Phone */}
+              <div className="mb-3">
+                <label className="form-label">
+                  Phone Number
                 </label>
 
-                <div className="col-sm-8">
-
-                  <input
-                    type="text"
-                    name="full_name"
-                    className="form-control"
-                    value={formData.full_name}
-                    onChange={handleChange}
-                  />
-
-                </div>
-
+                <input
+                  type="text"
+                  name="phone"
+                  className="form-control"
+                  placeholder="Enter phone number"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                />
               </div>
-              <div className="row mb-3 align-items-center">
 
-                <label className="col-sm-4 col-form-label">
+              {/* Business Name */}
+              <div className="mb-3">
+                <label className="form-label">
                   Business Name
                 </label>
 
-                <div className="col-sm-8">
-
-                  <input
-                    type="text"
-                    name="full_name"
-                    className="form-control"
-                    value={formData.full_name}
-                    onChange={handleChange}
-                  />
-
-                </div>
-
+                <input
+                  type="text"
+                  name="business_name"
+                  className="form-control"
+                  placeholder="Enter business name"
+                  value={formData.business_name}
+                  onChange={handleChange}
+                  required
+                />
               </div>
 
-              <div className="row mb-3 align-items-center">
+              {/* License Number */}
+              <div className="mb-3">
+                <label className="form-label">
+                  License Number
+                </label>
 
-                <label className="col-sm-4 col-form-label">
-                  License Number  </label>
-
-                <div className="col-sm-8">
-
-                  <input
-                    type="text"
-                    name="full_name"
-                    className="form-control"
-                    value={formData.full_name}
-                    onChange={handleChange}
-                  />
-
-                </div>
-
+                <input
+                  type="text"
+                  name="license_number"
+                  className="form-control"
+                  placeholder="Enter license number"
+                  value={formData.license_number}
+                  onChange={handleChange}
+                  required
+                />
               </div>
 
-              <div className="row mb-3 align-items-center">
+              {/* VAT ID */}
+              <div className="mb-3">
+                <label className="form-label">
+                  VAT ID
+                </label>
 
-                <label className="col-sm-4 col-form-label">
-                  VAT ID  </label>
-
-                <div className="col-sm-8">
-
-                  <input
-                    type="text"
-                    name="full_name"
-                    className="form-control"
-                    value={formData.full_name}
-                    onChange={handleChange}
-                  />
-
-                </div>
-
+                <input
+                  type="text"
+                  name="vat_id"
+                  className="form-control"
+                  placeholder="Enter VAT ID"
+                  value={formData.vat_id}
+                  onChange={handleChange}
+                  required
+                />
               </div>
-              <div className="row mb-3 align-items-center">
 
-                <label className="col-sm-4 col-form-label">
-                  Country </label>
+              {/* Country */}
+              <div className="mb-3">
+                <label className="form-label">
+                  Country
+                </label>
 
-                <div className="col-sm-8">
-
-                  <input
-                    type="text"
-                    name="full_name"
-                    className="form-control"
-                    value={formData.full_name}
-                    onChange={handleChange}
-                  />
-
-                </div>
-
+                <input
+                  type="text"
+                  name="country"
+                  className="form-control"
+                  placeholder="Enter country"
+                  value={formData.country}
+                  onChange={handleChange}
+                  required
+                />
               </div>
-              <div className="row mb-3 align-items-center">
 
-                <label className="col-sm-4 col-form-label">
-                  Password </label>
+              {/* Password */}
+              <div className="mb-4">
+                <label className="form-label">
+                  Password
+                </label>
 
-                <div className="col-sm-8">
-
-                  <input
-                    type="password"
-                    name="full_name"
-                    className="form-control"
-                    value={formData.full_name}
-                    onChange={handleChange}
-                  />
-
-                </div>
-
+                <input
+                  type="password"
+                  name="password"
+                  className="form-control"
+                  placeholder="Enter password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
               </div>
+              <div className="text-center mt-3">
+                <span>Already have an account? </span>
+
+                <Link
+                  to="/login"
+                  className="text-decoration-none fw-bold"
+                >
+                  Login
+                </Link>
+              </div>
+
               <button
                 type="submit"
-                className="btn btn-primary"
-                style={{
-                  width: "200px",
-                  borderRadius: "30px",
-                  padding: "10px",
-                  display: "block",
-                  margin: "30px auto 0"
-                }}
+                className="btn btn-primary w-100 rounded-pill"
+                disabled={loading}
               >
-                Register
+                {loading
+                  ? "Registering..."
+                  : "Register"}
               </button>
 
             </form>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
   );
 }
