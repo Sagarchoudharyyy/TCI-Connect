@@ -1,10 +1,12 @@
 import { useState } from "react";
+import axios from "axios";
 
 function Register() {
 
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
+    username: "",
     phone: "",
     business_name: "",
     license_number: "",
@@ -20,12 +22,29 @@ function Register() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+
     e.preventDefault();
 
-    console.log(formData);
+    try {
 
-    alert("Form Submitted");
+      const response = await axios.post(
+        "http://127.0.0.1:8000/register",
+        formData
+      );
+
+      console.log(response.data);
+
+      alert("Registration Successful");
+
+    } catch (error) {
+
+      console.log(error.response?.data);
+
+      alert("Registration Failed");
+
+    }
+
   };
 
   return (
@@ -43,6 +62,8 @@ function Register() {
             </h2>
 
             <form onSubmit={handleSubmit}>
+
+              {/* Full Name */}
 
               <div className="row mb-3 align-items-center">
 
@@ -64,6 +85,8 @@ function Register() {
 
               </div>
 
+              {/* Email */}
+
               <div className="row mb-3 align-items-center">
 
                 <label className="col-sm-4 col-form-label">
@@ -73,16 +96,41 @@ function Register() {
                 <div className="col-sm-8">
 
                   <input
-                    type="text"
-                    name="full_name"
+                    type="email"
+                    name="email"
                     className="form-control"
-                    value={formData.full_name}
+                    value={formData.email}
                     onChange={handleChange}
                   />
 
                 </div>
 
               </div>
+
+              {/* Username */}
+
+              <div className="row mb-3 align-items-center">
+
+                <label className="col-sm-4 col-form-label">
+                  Username
+                </label>
+
+                <div className="col-sm-8">
+
+                  <input
+                    type="text"
+                    name="username"
+                    className="form-control"
+                    value={formData.username}
+                    onChange={handleChange}
+                  />
+
+                </div>
+
+              </div>
+
+              {/* Phone */}
+
               <div className="row mb-3 align-items-center">
 
                 <label className="col-sm-4 col-form-label">
@@ -93,15 +141,18 @@ function Register() {
 
                   <input
                     type="text"
-                    name="full_name"
+                    name="phone"
                     className="form-control"
-                    value={formData.full_name}
+                    value={formData.phone}
                     onChange={handleChange}
                   />
 
                 </div>
 
               </div>
+
+              {/* Business Name */}
+
               <div className="row mb-3 align-items-center">
 
                 <label className="col-sm-4 col-form-label">
@@ -112,9 +163,9 @@ function Register() {
 
                   <input
                     type="text"
-                    name="full_name"
+                    name="business_name"
                     className="form-control"
-                    value={formData.full_name}
+                    value={formData.business_name}
                     onChange={handleChange}
                   />
 
@@ -122,18 +173,21 @@ function Register() {
 
               </div>
 
+              {/* License Number */}
+
               <div className="row mb-3 align-items-center">
 
                 <label className="col-sm-4 col-form-label">
-                  License Number  </label>
+                  License Number
+                </label>
 
                 <div className="col-sm-8">
 
                   <input
                     type="text"
-                    name="full_name"
+                    name="license_number"
                     className="form-control"
-                    value={formData.full_name}
+                    value={formData.license_number}
                     onChange={handleChange}
                   />
 
@@ -141,60 +195,74 @@ function Register() {
 
               </div>
 
+              {/* VAT ID */}
+
               <div className="row mb-3 align-items-center">
 
                 <label className="col-sm-4 col-form-label">
-                  VAT ID  </label>
+                  VAT ID
+                </label>
 
                 <div className="col-sm-8">
 
                   <input
                     type="text"
-                    name="full_name"
+                    name="vat_id"
                     className="form-control"
-                    value={formData.full_name}
+                    value={formData.vat_id}
                     onChange={handleChange}
                   />
 
                 </div>
 
               </div>
+
+              {/* Country */}
+
               <div className="row mb-3 align-items-center">
 
                 <label className="col-sm-4 col-form-label">
-                  Country </label>
+                  Country
+                </label>
 
                 <div className="col-sm-8">
 
                   <input
                     type="text"
-                    name="full_name"
+                    name="country"
                     className="form-control"
-                    value={formData.full_name}
+                    value={formData.country}
                     onChange={handleChange}
                   />
 
                 </div>
 
               </div>
+
+              {/* Password */}
+
               <div className="row mb-3 align-items-center">
 
                 <label className="col-sm-4 col-form-label">
-                  Password </label>
+                  Password
+                </label>
 
                 <div className="col-sm-8">
 
                   <input
                     type="password"
-                    name="full_name"
+                    name="password"
                     className="form-control"
-                    value={formData.full_name}
+                    value={formData.password}
                     onChange={handleChange}
                   />
 
                 </div>
 
               </div>
+
+              {/* Button */}
+
               <button
                 type="submit"
                 className="btn btn-primary"

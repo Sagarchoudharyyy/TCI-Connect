@@ -1,10 +1,13 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-
 from app.database.database import get_db
 from app.models.user_model import User
 from app.schemas.user_schema import UserRegister
-from app.core.security import hash_password
+from app.core.security import (
+    hash_password,
+    verify_password,
+    create_access_token
+)
 
 router = APIRouter()
 
@@ -74,7 +77,7 @@ def login(
     if not db_user:
         return {
             "message":
-            "Invalid username"
+            "Invalid username and password"
         }
 
     if not verify_password(
@@ -83,7 +86,7 @@ def login(
     ):
         return {
             "message":
-            "Invalid password"
+            "Invalid username and password"
         }
 
     access_token = create_access_token(
