@@ -31,6 +31,7 @@ def register(
     new_user = User(
         full_name=user.full_name,
         email=user.email,
+        username=user.username,
         phone=user.phone,
         business_name=user.business_name,
         license_number=user.license_number,
@@ -67,13 +68,13 @@ def login(
 ):
 
     db_user = db.query(User).filter(
-        User.email == user.email
+        User.username == user.username
     ).first()
 
     if not db_user:
         return {
             "message":
-            "Invalid email"
+            "Invalid username"
         }
 
     if not verify_password(
