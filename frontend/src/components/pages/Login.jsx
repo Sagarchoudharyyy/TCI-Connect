@@ -41,7 +41,6 @@ function Login() {
 
             console.log(response.data);
 
-            // Backend invalid login message
             if (
                 response.data.message ===
                 "Invalid email/mobile or password"
@@ -52,19 +51,16 @@ function Login() {
                 return;
             }
 
-            // Save token
             localStorage.setItem(
                 "token",
                 response.data.access_token
             );
 
-            // Save user info
             localStorage.setItem(
                 "user",
                 JSON.stringify(response.data.user)
             );
 
-            // Redirect to dashboard
             navigate("/dashboard");
 
         } catch (error) {
@@ -96,7 +92,6 @@ function Login() {
                             </p>
                         </div>
 
-                        {/* Error Message */}
                         {error && (
                             <div className="alert alert-danger">
                                 {error}
@@ -104,8 +99,6 @@ function Login() {
                         )}
 
                         <form onSubmit={handleSubmit}>
-
-                            {/* Email / Mobile */}
                             <div className="mb-3 text-start">
                                 <label className="form-label">
                                     Email or Mobile Number
@@ -122,7 +115,7 @@ function Login() {
                                 />
                             </div>
 
-                            {/* Password */}
+
                             <div className="mb-3 text-start">
                                 <label className="form-label">
                                     Password
@@ -138,8 +131,6 @@ function Login() {
                                     }
                                 />
                             </div>
-
-                            {/* Login Button */}
                             <button
                                 className="btn btn-primary w-100 mt-3 rounded-pill"
                                 type="submit"
@@ -150,7 +141,6 @@ function Login() {
                                     : "Login"}
                             </button>
 
-                            {/* Register Link */}
                             <p className="text-center mt-3">
                                 Don't have an account?{" "}
 
