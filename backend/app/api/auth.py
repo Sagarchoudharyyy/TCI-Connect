@@ -1,10 +1,15 @@
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-
 from app.database.database import get_db
 from app.models.user_model import User
 from app.schemas.user_schema import UserRegister
-from app.core.security import hash_password
+from app.core.security import (
+    hash_password,
+    verify_password,
+    create_access_token
+)
+from sqlalchemy import or_
 
 router = APIRouter()
 
@@ -31,6 +36,7 @@ def register(
     new_user = User(
         full_name=user.full_name,
         email=user.email,
+        username=user.email,
         phone=user.phone,
         business_name=user.business_name,
         license_number=user.license_number,
@@ -67,13 +73,16 @@ def login(
 ):
 
     db_user = db.query(User).filter(
-        User.email == user.email
+        or_(
+        User.email == user.username,
+        User.phone==user.username
+        )
     ).first()
 
     if not db_user:
         return {
             "message":
-            "Invalid email"
+            "Invalid username and password"
         }
 
     if not verify_password(
@@ -82,7 +91,7 @@ def login(
     ):
         return {
             "message":
-            "Invalid password"
+            "Invalid username and password"
         }
 
     access_token = create_access_token(
@@ -109,6 +118,9 @@ def login(
 
             "email":
             db_user.email,
+
+            "phone":
+            db_user.phone,
 
             "role":
             db_user.role

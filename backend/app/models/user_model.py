@@ -8,6 +8,8 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
 
     full_name = Column(String, nullable=False)
+    
+    username = Column(String, unique=True, nullable=False)
 
     email = Column(String, unique=True, nullable=False)
 
