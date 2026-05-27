@@ -3,10 +3,15 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "../../styles/dashboard.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 function Dashboard() {
     const [cases, setCases] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [statusFilter, setStatusFilter] = useState("");
+    const [deadlineFilter, setDeadlineFilter] = useState("");
     const [doctorCount, setDoctorCount] = useState(0);
+    const [entriesPerPage, setEntriesPerPage] = useState(10);
     useEffect(() => {
         fetchDashboardData();
     }, []);
@@ -19,7 +24,7 @@ function Dashboard() {
 
             setCases(response.data);
             const totalDoctors = new Set(
-                response.data.map((item) => item.doctor_id)
+                response.data.map((item) => item.doctor_name)
             ).size;
             setDoctorCount(totalDoctors);
 
@@ -27,8 +32,60 @@ function Dashboard() {
             console.log("Error fetching dashboard data", error);
         }
     };
+    const filteredCases =
+        cases.filter((item) => {
+
+            const matchesSearch =
+                item.case_id
+                    ?.toLowerCase()
+                    .includes(
+                        searchTerm.toLowerCase()
+                    ) ||
+
+                item.doctor_name
+                    ?.toLowerCase()
+                    .includes(
+                        searchTerm.toLowerCase()
+                    ) ||
+
+                item.patient_name
+                    ?.toLowerCase()
+                    .includes(
+                        searchTerm.toLowerCase()
+                    ) ||
+
+                item.status
+                    ?.toLowerCase()
+                    .includes(
+                        searchTerm.toLowerCase()
+                    );
+
+            const matchesStatus =
+                statusFilter === "" ||
+                item.status ===
+                statusFilter;
+
+            const matchesDeadline =
+                deadlineFilter === "" ||
+                item.delivery_deadline ===
+                deadlineFilter;
+
+            return (
+                matchesSearch &&
+                matchesStatus &&
+                matchesDeadline
+            );
+        });
+
+    const visibleCases =
+        filteredCases.slice(
+            0,
+            entriesPerPage
+        );
+
 
     return (
+
         <div className="container-fluid">
             <div className="dashboard-main">
                 <div className="row g-0">
@@ -225,7 +282,7 @@ function Dashboard() {
                                         <div className="stats-content">
                                             <h6>Total Doctor</h6>
                                             <div className="stats-inner">
-                                                <h3>{cases.doctorCount}</h3>
+                                                <h3>{doctorCount}</h3>
                                             </div>
                                         </div>
                                     </div>
@@ -263,8 +320,11 @@ function Dashboard() {
                                     <label>Status</label>
 
                                     <select
-                                        name="status"
-                                        className="form-control"
+                                        value={statusFilter}
+                                        onChange={(e) =>
+                                            setStatusFilter(e.target.value)
+                                        }
+                                        className="form-select"
                                     >
                                         <option value="">All</option>
                                         <option value="Submited">
@@ -287,12 +347,15 @@ function Dashboard() {
 
                                 <div className="col-md-3">
                                     <label>Delivery Deadline</label>
-
                                     <input
                                         type="date"
-                                        name="deadline"
+                                        value={deadlineFilter}
+                                        onChange={(e) =>
+                                            setDeadlineFilter(
+                                                e.target.value
+                                            )
+                                        }
                                         className="form-control"
-                                        defaultValue=""
                                     />
                                 </div>
 
@@ -344,11 +407,14 @@ function Dashboard() {
                                                 </label>
 
                                                 <input
-                                                    type="search"
-                                                    className="form-control form-control-sm"
-                                                    id="dt-search-0"
-                                                    placeholder=""
-                                                    aria-controls="data-table"
+                                                    type="text"
+                                                    placeholder="Search..."
+                                                    value={searchTerm}
+                                                    onChange={(e) =>
+                                                        setSearchTerm(
+                                                            e.target.value
+                                                        )
+                                                    }
                                                 />
                                             </div>
                                         </div>
@@ -519,22 +585,22 @@ function Dashboard() {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {cases.map((item) => (
+                                                    {visibleCases.map((item) => (
                                                         <tr key={item.id}>
                                                             <td>
                                                                 <img
-                                                                    src="/profile.png"
+                                                                    src="src\assets\hero.png"
                                                                     alt="profile"
                                                                     width="40"
                                                                 />
                                                             </td>
                                                             <td>{item.case_id}</td>
 
-                                                            <td>{item.doctor_id}</td>
+                                                            <td>{item.doctor_name}</td>
 
-                                                            <td>Phone</td>
+                                                            <td>{item.phone}</td>
 
-                                                            <td>{item.patient_id}</td>
+                                                            <td>{item.patient_name}</td>
 
                                                             <td>Document</td>
 
@@ -550,7 +616,10 @@ function Dashboard() {
 
                                                             <td>{item.status}</td>
 
-                                                            <td>Action</td>
+                                                            <td className="action-icons">
+                                                                <FaEdit className="edit-icon me-3" />
+                                                                <FaTrash className="delete-icon" />
+                                                            </td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
