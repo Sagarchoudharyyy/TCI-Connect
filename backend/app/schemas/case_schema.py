@@ -18,9 +18,15 @@ class CaseResponse(BaseModel):
     case_id: str
     patient_id: int
     doctor_id: int
+
+    doctor_name: str | None = None
+    patient_name: str | None = None
+    phone: str | None = None
+
     appointment_date: Optional[datetime]
     age: Optional[int]
     delivery_deadline: Optional[date]
+
     preview_status: str
     status: str
     created_at: datetime

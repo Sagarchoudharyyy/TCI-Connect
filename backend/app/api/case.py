@@ -41,7 +41,26 @@ def get_cases(
 ):
     cases = db.query(Case).all()
 
-    return cases
+    result=[]
+    for case in cases:
+         result.append({
+        "id": case.id,
+        "case_id": case.case_id,
+        "patient_id": case.patient_id,
+        "doctor_id": case.doctor_id,
+
+        "doctor_name": case.doctor.full_name,
+        "patient_name": case.patient.full_name,
+        "phone": case.doctor.phone,
+
+        "appointment_date": case.appointment_date,
+        "age": case.age,
+        "delivery_deadline": case.delivery_deadline,
+        "preview_status": case.preview_status,
+        "status": case.status,
+        "created_at": case.created_at
+    })
+    return result
 
 
 @router.get(
