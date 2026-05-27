@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.database.database import engine,Base
 from app.models.user_model import User
+from app.api.doctor import router as doctor_router
 from app.api.auth import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -21,6 +22,7 @@ app.add_middleware(
 
 Base.metadata.create_all(bind=engine)
 app.include_router(auth_router)
+app.include_router(doctor_router)
 
 @app.get("/")
 def home():
