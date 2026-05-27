@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from app.database.database import engine,Base
 from app.models.user_model import User
+from app.models.case_model import Case
 from app.api.auth import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
+from app.api.case import router as case_router
 
 app = FastAPI(
     title="TCI Connect API",
@@ -22,6 +24,9 @@ app.add_middleware(
 Base.metadata.create_all(bind=engine)
 app.include_router(auth_router)
 
+
+
 @app.get("/")
 def home():
     return {"message": "TCI Backend Running"}
+
