@@ -60,6 +60,7 @@ function Login() {
                 "user",
                 JSON.stringify(response.data.user)
             );
+            console.log("navigating");
 
             navigate("/dashboard");
 
