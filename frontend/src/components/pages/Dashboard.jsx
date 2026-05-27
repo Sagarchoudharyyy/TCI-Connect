@@ -14,11 +14,14 @@ function Dashboard() {
     const fetchDashboardData = async () => {
         try {
             const response = await axios.get(
-                "http://127.0.0.1:8000/case",
+                "http://127.0.0.1:8000/api/cases",
             );
 
-            setCases(response.data.cases);
-            setDoctorCount(response.data.totalDoctors);
+            setCases(response.data);
+            const totalDoctors = new Set(
+                response.data.map((item) => item.doctor_id)
+            ).size;
+            setDoctorCount(totalDoctors);
 
         } catch (error) {
             console.log("Error fetching dashboard data", error);
@@ -222,7 +225,7 @@ function Dashboard() {
                                         <div className="stats-content">
                                             <h6>Total Doctor</h6>
                                             <div className="stats-inner">
-                                                <h3>{doctorCount}</h3>
+                                                <h3>{cases.doctorCount}</h3>
                                             </div>
                                         </div>
                                     </div>
@@ -237,7 +240,7 @@ function Dashboard() {
                                         <div className="stats-content">
                                             <h6>Recent cases</h6>
                                             <div className="stats-inner">
-                                                <h3>{cases}</h3>
+                                                <h3>{cases.length}</h3>
                                             </div>
                                         </div>
                                     </div>
@@ -516,8 +519,40 @@ function Dashboard() {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    {cases.map((item) => (
+                                                        <tr key={item.id}>
+                                                            <td>
+                                                                <img
+                                                                    src="/profile.png"
+                                                                    alt="profile"
+                                                                    width="40"
+                                                                />
+                                                            </td>
+                                                            <td>{item.case_id}</td>
 
+                                                            <td>{item.doctor_id}</td>
 
+                                                            <td>Phone</td>
+
+                                                            <td>{item.patient_id}</td>
+
+                                                            <td>Document</td>
+
+                                                            <td>Digital File</td>
+
+                                                            <td>
+                                                                {item.delivery_deadline}
+                                                            </td>
+
+                                                            <td>
+                                                                {item.preview_status}
+                                                            </td>
+
+                                                            <td>{item.status}</td>
+
+                                                            <td>Action</td>
+                                                        </tr>
+                                                    ))}
                                                 </tbody>
                                             </table>
                                         </div>
