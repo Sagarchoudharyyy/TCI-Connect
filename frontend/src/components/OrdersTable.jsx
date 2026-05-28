@@ -1,0 +1,526 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import {
+    FaEye,
+    FaUpload,
+    FaDownload,
+    FaTrash,
+    FaEdit
+} from "react-icons/fa";
+
+function OrdersTable() {
+
+    // States
+    const [statusFilter, setStatusFilter] = useState("");
+    const [deadlineFilter, setDeadlineFilter] = useState("");
+    const [entriesPerPage, setEntriesPerPage] = useState(10);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [cases, setCases] = useState([]);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchCases();
+    }, []);
+
+    const fetchCases = async () => {
+        try {
+            const response = await axios.get(
+                "http://127.0.0.1:8000/api/cases"
+            );
+
+            setCases(response.data);
+        } catch (error) {
+            console.log(
+                "Error fetching cases:",
+                error
+            );
+        }
+    };
+
+    const filteredCases = cases.filter((item) => {
+
+        const statusMatch =
+            !statusFilter ||
+            item.status === statusFilter;
+
+        const deadlineMatch =
+            !deadlineFilter ||
+            item.delivery_deadline === deadlineFilter;
+
+        return (
+            statusMatch &&
+            deadlineMatch
+        );
+    });
+
+    const visibleCases =
+        filteredCases.slice(
+            0,
+            entriesPerPage
+        );
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        console.log({
+            statusFilter,
+            deadlineFilter
+        });
+    };
+    const handleReset = () => {
+        setStatusFilter("");
+        setDeadlineFilter("");
+    };
+
+
+    const uploadFile = (id, file) => {
+        console.log("Uploading file for case:", id, file);
+    };
+
+
+    const formatDate = (date) => {
+        if (!date) return "N/A";
+        return new Date(date).toLocaleDateString();
+    };
+
+    const isDeadlinePassed = (date) => {
+        return new Date(date) < new Date();
+    };
+
+    const fetchDashboardData = () => {
+        console.log("Fetching dashboard data...");
+    };
+
+
+    const handleDelete = async (id) => {
+
+        const confirmDelete = window.confirm(
+            "Are you sure you want to delete this case?"
+        );
+
+        if (!confirmDelete) return;
+
+        try {
+
+            await axios.delete(
+                `http://127.0.0.1:8000/api/cases/${id}`
+            );
+
+            alert("Case deleted successfully");
+
+            fetchCases();
+
+        } catch (error) {
+
+            console.log(error);
+
+            alert("Delete failed");
+        }
+    };
+
+    return (
+        <div className="main-c-inner">
+            <div className="table-section">
+                <div className="table-header d-flex justify-content-between align-items-center mb-3">
+                    <h5>Latest Orders</h5>
+                    <svg width="20" height="6" viewBox="0 0 20 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17 0.25C18.52 0.25 19.75 1.48 19.75 3C19.75 4.52 18.52 5.75 17 5.75C15.48 5.75 14.25 4.52 14.25 3C14.25 1.48 15.48 0.25 17 0.25ZM17 4.25C17.69 4.25 18.25 3.69 18.25 3C18.25 2.31 17.69 1.75 17 1.75C16.31 1.75 15.75 2.31 15.75 3C15.75 3.69 16.31 4.25 17 4.25Z" fill="#666666"></path>
+                        <path d="M3 0.25C4.52 0.25 5.75 1.48 5.75 3C5.75 4.52 4.52 5.75 3 5.75C1.48 5.75 0.25 4.52 0.25 3C0.25 1.48 1.48 0.25 3 0.25ZM3 4.25C3.69 4.25 4.25 3.69 4.25 3C4.25 2.31 3.69 1.75 3 1.75C2.31 1.75 1.75 2.31 1.75 3C1.75 3.69 2.31 4.25 3 4.25Z" fill="#666666"></path>
+                        <path d="M10 0.25C11.52 0.25 12.75 1.48 12.75 3C12.75 4.52 11.52 5.75 10 5.75C8.48 5.75 7.25 4.52 7.25 3C7.25 1.48 8.48 0.25 10 0.25ZM10 4.25C10.69 4.25 11.25 3.69 11.25 3C11.25 2.31 10.69 1.75 10 1.75C9.31 1.75 8.75 2.31 8.75 3C8.75 3.69 9.31 4.25 10 4.25Z" fill="#666666"></path>
+                    </svg>
+                </div>
+                {/* Filters */}
+                <form
+                    onSubmit={handleSubmit}
+                    className="row g-3 mb-3">
+                    {/* Status */}
+                    <div className="col-md-3">
+                        <label className="form-label">
+                            Status
+                        </label>
+
+                        <select
+                            value={statusFilter}
+                            onChange={(e) =>
+                                setStatusFilter(e.target.value)
+                            }
+                            className="form-control"
+                        >
+                            <option value="">
+                                All
+                            </option>
+
+                            <option value="Submited">
+                                Submited
+                            </option>
+
+                            <option value="InProduction">
+                                InProduction
+                            </option>
+
+                            <option value="QualityCheck">
+                                QualityCheck
+                            </option>
+
+                            <option value="Shipped">
+                                Shipped
+                            </option>
+
+                            <option value="Delivered">
+                                Delivered
+                            </option>
+                        </select>
+                    </div>
+
+                    {/* Deadline */}
+                    <div className="col-md-3">
+                        <label className="form-label">
+                            Delivery Deadline
+                        </label>
+
+                        <input
+                            type="date"
+                            value={deadlineFilter}
+                            onChange={(e) =>
+                                setDeadlineFilter(e.target.value)
+                            }
+                            className="form-control"
+                        />
+                    </div>
+
+                    {/* Buttons */}
+                    <div className="col-md-3 mt-3">
+                        <button
+                            type="submit"
+                            className="btn btn-primary fltr-btn me-2 mt-3"
+                            style={{
+                                textDecoration: "none",
+                                backgroundColor: "#0152a8",
+                                border: "none"
+                            }}
+                        >
+                            Apply
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={handleReset}
+                            className="btn btn-secondary fltr-btn mt-3"
+                            style={{
+                                textDecoration: "none",
+                                backgroundColor: "#0152a8",
+                                border: "none"
+                            }}
+                        >
+                            Reset
+                        </button>
+                    </div>
+                </form>
+                {/* Table */}
+                {/* Search */}
+                <div className="table-responsive">
+                    <div id="data-table_wrapper" className="dt-container dt-bootstrap5 dt-empty-footer">
+                        <div className=" row mt-2 justify-content-between">
+                            <div className="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">
+                                <div className="dt-length">
+                                    <select
+                                        value={entriesPerPage}
+                                        onChange={(e) =>
+                                            setEntriesPerPage(Number(e.target.value))
+                                        }
+                                        className="form-select"
+                                    >
+                                        <option value="5">5</option>
+                                        <option value="10">10</option>
+                                        <option value="20">20</option>
+                                    </select>
+                                    <label htmlFor="dt-length-0"> entries per page</label>
+                                </div>
+                            </div>
+                            <div className="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto">
+                                <div className="dt-search">
+                                    <label htmlFor="dt-search-0">Search:</label>
+                                    <input
+                                        type="search"
+                                        className="form-control form-control-sm"
+                                        id="dt-search-0"
+                                        placeholder=""
+                                        value={searchTerm}
+                                        onChange={(e) =>
+                                            setSearchTerm(
+                                                e.target.value
+                                            )
+                                        }
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row mt-2 justify-content-between dt-layout-table">
+                            <div className="d-md-flex justify-content-between align-items-center col-12 dt-layout-full col-md " style={{ width: "100%" }}>
+                                <table id="data-table" className="table table-striped custom-table dataTable">
+                                    <colgroup>
+                                        <col data-dt-column="0" style={{ width: "94px" }} />
+                                        <col data-dt-column="1" style={{ width: "73.0972px" }} />
+                                        <col data-dt-column="2" style={{ width: "100.944px" }} />
+                                        <col data-dt-column="3" style={{ width: "110.694px" }} />
+                                        <col data-dt-column="4" style={{ width: "102.306px" }} />
+                                        <col data-dt-column="5" style={{ width: "118.389px" }} />
+                                        <col data-dt-column="6" style={{ width: "150.847px" }} />
+                                        <col data-dt-column="7" style={{ width: "125.639px" }} />
+                                        <col data-dt-column="8" style={{ width: "189.347px" }} />
+                                        <col data-dt-column="9" style={{ width: "136px" }} />
+                                        <col data-dt-column="10" style={{ width: "93.3194px" }} />
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th data-dt-column="0" className="dt-orderable-none" rowSpan="1" colSpan="1">
+                                                <div className="dt-column-header">
+                                                    <span className="dt-column-title">
+                                                        Profile
+                                                    </span>
+                                                </div>
+                                            </th>
+
+                                            <th data-dt-column="1" className="dt-orderable-none dt-type-numeric" rowSpan="1" colSpan="1">
+                                                <div className="dt-column-header">
+                                                    <span className="dt-column-title">
+                                                        Case Id
+                                                    </span>
+                                                </div>
+                                            </th>
+
+                                            <th data-dt-column="2" className="dt-orderable-none" rowSpan="1" colSpan="1">
+                                                <div className="dt-column-header">
+                                                    <span className="dt-column-title">
+                                                        Doctor Name
+                                                    </span>
+                                                </div>
+                                            </th>
+
+                                            <th data-dt-column="3" className="dt-orderable-none dt-type-numeric" rowSpan="1" colSpan="1">
+                                                <div className="dt-column-header">
+                                                    <span className="dt-column-title">
+                                                        Phone
+                                                    </span>
+                                                </div>
+                                            </th>
+
+                                            <th data-dt-column="4" className="dt-orderable-none" rowSpan="1" colSpan="1">
+                                                <div className="dt-column-header">
+                                                    <span className="dt-column-title">
+                                                        Patient Name
+                                                    </span>
+                                                </div>
+                                            </th>
+
+                                            <th data-dt-column="5" className="dt-orderable-none" rowSpan="1" colSpan="1">
+                                                <div className="dt-column-header">
+                                                    <span className="dt-column-title">
+                                                        Case Document
+                                                    </span>
+                                                </div>
+                                            </th>
+
+                                            <th data-dt-column="6" className="dt-orderable-none" rowSpan="1" colSpan="1">
+                                                <div className="dt-column-header">
+                                                    <span className="dt-column-title">
+                                                        Digital Files
+                                                    </span>
+                                                </div>
+                                            </th>
+
+                                            <th data-dt-column="7" className="dt-orderable-none" rowSpan="1" colSpan="1">
+                                                <div className="dt-column-header">
+                                                    <span className="dt-column-title">
+                                                        Delivery Deadline
+                                                    </span>
+                                                </div>
+                                            </th>
+
+                                            <th data-dt-column="8" className="dt-orderable-none" rowSpan="1" colSpan="1">
+                                                <div className="dt-column-header">
+                                                    <span className="dt-column-title">
+                                                        Preview Status
+                                                    </span>
+                                                </div>
+                                            </th>
+
+                                            <th data-dt-column="9" className="dt-orderable-none" rowSpan="1" colSpan="1">
+                                                <div className="dt-column-header">
+                                                    <span className="dt-column-title">
+                                                        Status
+                                                    </span>
+                                                </div>
+                                            </th>
+
+                                            <th data-dt-column="10" className="dt-orderable-none" rowSpan="1" colSpan="1">
+                                                <div className="dt-column-header">
+                                                    <span className="dt-column-title">
+                                                        Action
+                                                    </span>
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {visibleCases.map((item) => (
+                                            <tr key={item.id}>
+                                                <td>
+                                                    <img
+                                                        src="src\assets\hero.png"
+                                                        alt="profile"
+                                                        width="40"
+                                                    />
+                                                </td>
+                                                <td>{item.case_id}</td>
+
+                                                <td>{item.doctor_name}</td>
+
+                                                <td>{item.phone}</td>
+
+                                                <td>{item.patient_name}</td>
+
+                                                <td>
+                                                    {item.files?.length > 0 ? (
+                                                        <>
+                                                            <a
+                                                                href={`http://127.0.0.1:8000/${item.files[0].file_path}`}
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                style={{
+                                                                    color: "#0152a8",
+                                                                    marginRight: "12px",
+                                                                    textDecoration: "none"
+                                                                }}
+                                                            >
+                                                                <FaEye />
+                                                            </a>
+
+                                                            <a
+                                                                href={`http://127.0.0.1:8000/${item.files[0].file_path}`}
+                                                                download
+                                                                style={{
+                                                                    color: "#0152a8",
+                                                                    textDecoration: "none"
+                                                                }}
+                                                            >
+                                                                <FaDownload />
+                                                            </a>
+                                                        </>
+                                                    ) : (
+                                                        <span>No File</span>
+                                                    )}
+                                                </td>
+
+                                                <td>
+                                                    {item.files?.length > 0 ? (
+                                                        item.files.map((file, index) => (
+                                                            <div key={index}>
+                                                                <a
+                                                                    href={`http://127.0.0.1:8000/${file.file_path}`}
+                                                                    target="_blank"
+                                                                    rel="noreferrer"
+                                                                    style={{
+                                                                        textDecoration: "none",
+                                                                        marginRight: "12px",
+                                                                        color: "#0152a8"
+                                                                    }}
+                                                                >
+                                                                    Preview File {index + 1}
+
+                                                                    {file.file_path?.endsWith(".png")
+                                                                        ? " (PNG)"
+                                                                        : file.file_path?.endsWith(".stl")
+                                                                            ? " (STL)"
+                                                                            : file.file_path?.endsWith(".jpg") ||
+                                                                                file.file_path?.endsWith(".jpeg")
+                                                                                ? " (JPG)"
+                                                                                : ""}
+                                                                </a>
+
+                                                                <a
+                                                                    href={`http://127.0.0.1:8000/${file.file_path}`}
+                                                                    download
+                                                                    style={{
+                                                                        color: "#0152a8"
+                                                                    }}
+                                                                >
+                                                                    <FaDownload />
+                                                                </a>
+                                                            </div>
+                                                        ))
+                                                    ) : (
+                                                        <span>No File</span>
+                                                    )}
+                                                </td>
+
+                                                <td>
+                                                    {item.delivery_deadline}
+                                                </td>
+
+                                                <td>
+                                                    {item.preview_status}
+                                                </td>
+
+                                                <td>{item.status}</td>
+
+                                                <td className="action-icons">
+
+                                                    {/* View Case Details */}
+                                                    <button
+                                                        className="btn btn-link p-0 me-3"
+                                                        onClick={() =>
+                                                            navigate(`/view-case/${item.id}`)
+                                                        }
+                                                    >
+                                                        <FaEye
+                                                            style={{
+                                                                color: "#0152a8",
+                                                                cursor: "pointer"
+                                                            }}
+                                                        />
+                                                    </button>
+
+                                                    {/* Upload Preview */}
+                                                    <button
+                                                        className="btn btn-link p-0 me-3"
+                                                        onClick={() =>
+                                                            navigate(`/upload-preview/${item.id}`)
+                                                        }
+                                                    >
+                                                        <FaUpload
+                                                            style={{
+                                                                color: "#0152a8",
+                                                                cursor: "pointer"
+                                                            }}
+                                                        />
+                                                    </button>
+
+                                                    {/* Delete */}
+                                                    <button
+                                                        className="btn btn-link p-0"
+                                                        onClick={() => handleDelete(item.id)}
+                                                    >
+                                                        <FaTrash
+                                                            style={{
+                                                                color: "red",
+                                                                cursor: "pointer"
+                                                            }}
+                                                        />
+                                                    </button>
+
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div >
+            </div >
+        </div >
+    );
+}
+
+export default OrdersTable;
