@@ -77,3 +77,9 @@ class Case(Base):
         foreign_keys=[doctor_id],
         back_populates="doctor_cases"
     )
+        
+    files = relationship(
+    "CaseFile",
+    back_populates="case",
+    cascade="all, delete-orphan"
+)

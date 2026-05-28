@@ -6,6 +6,8 @@ from app.models.case_model import Case
 from app.api.auth import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.case import router as case_router
+from app.models.case_file_model import CaseFile
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(
     title="TCI Connect API",
@@ -25,15 +27,19 @@ app.add_middleware(
 Base.metadata.create_all(bind=engine)
 app.include_router(auth_router)
 app.include_router(doctor_router)
-app.include_router(case_router)
 
 app.include_router(
     case_router,
     prefix="/api",
     tags=["Cases"]
 )
-
-
+app.mount(
+    "/uploads",
+    StaticFiles(
+        directory="uploads"
+    ),
+    name="uploads"
+)
 
 @app.get("/")
 def home():

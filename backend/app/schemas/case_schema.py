@@ -30,6 +30,7 @@ class CaseResponse(BaseModel):
     preview_status: str
     status: str
     created_at: datetime
+    files: list = []
 
     class Config:
         from_attributes = True
