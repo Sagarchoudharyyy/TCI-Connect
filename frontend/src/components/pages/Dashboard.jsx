@@ -82,18 +82,16 @@ function Dashboard() {
         <div className="container-fluid">
             <div className="dashboard-main">
                 <div className="row g-0">
-                    {/* Sidebar */}
+
                     <Sidebar />
-                    {/* Main content */}
-                    <div className="offset-2 col-12 col-md-9 col-lg-9 offset-lg-3 col-xl-9 col-xxl-10 offset-xl-3 offset-xxl-2 main-content">
 
-                        {/* Header */}
+                    <div className="offset-2 col-12 col-md-9 col-lg-9 
+                    offset-lg-3 col-xl-9 col-xxl-10 offset-xl-3 offset-xxl-2 
+                    main-content">
+
                         <Header title="Dashboard" />
-
-                        {/* Stats Cards */}
                         <DashboardCard />
 
-                        {/* Table Section */}
                         <OrdersTable />
                     </div>
                 </div>
