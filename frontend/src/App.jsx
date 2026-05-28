@@ -6,6 +6,7 @@ import Chat from "./components/pages/Chat";
 import ProtectedRoute from "./components/ProtectRoute";
 import Sidebar from "./components/Sidebar";
 import OrdersTable from "./components/OrdersTable";
+import AllDoctors from "./components/pages/AllDoctors";
 import RecentCases from "./components/pages/RecentCases";
 
 function App() {
@@ -17,6 +18,14 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="recent-case" element={<RecentCases />} />
+        <Route
+          path="/doctors"
+          element={
+            <ProtectedRoute>
+              <AllDoctors />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/dashboard"
           element={
