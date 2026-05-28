@@ -5,6 +5,8 @@ import Dashboard from "./components/pages/Dashboard";
 import Chat from "./components/pages/Chat";
 import ProtectedRoute from "./components/ProtectRoute";
 import Sidebar from "./components/Sidebar";
+import OrdersTable from "./components/OrdersTable";
+import RecentCases from "./components/pages/RecentCases";
 
 function App() {
   return (
@@ -14,6 +16,7 @@ function App() {
         <Route path="/Login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/chat" element={<Chat />} />
+        <Route path="recent-case" element={<RecentCases />} />
         <Route
           path="/dashboard"
           element={
