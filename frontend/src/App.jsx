@@ -7,6 +7,8 @@ import ProtectedRoute from "./components/ProtectRoute";
 import Sidebar from "./components/Sidebar";
 import OrdersTable from "./components/OrdersTable";
 import RecentCases from "./components/pages/RecentCases";
+import AllDoctor from "./components/pages/AllDoctors";
+import AllDoctors from "./components/pages/AllDoctors";
 
 function App() {
   return (
@@ -16,7 +18,10 @@ function App() {
         <Route path="/Login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/chat" element={<Chat />} />
-        <Route path="recent-case" element={<RecentCases />} />
+        <Route path="/recent-case" element={<RecentCases />} />
+        <Route path="/all-doctors" element={<ProtectedRoute>
+          <AllDoctors />
+        </ProtectedRoute>} />
         <Route
           path="/dashboard"
           element={
