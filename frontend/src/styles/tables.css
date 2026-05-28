@@ -1,0 +1,47 @@
+.table-section {
+    border: 1px solid #f0f0f0;
+    border-radius: 14px;
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 5px 11px 0 rgba(199, 199, 199, 0.1), 0 20px 20px 0 rgba(199, 199, 199, 0.09), 0 46px 27px 0 rgba(199, 199, 199, 0.05), 0 81px 32px 0 rgba(199, 199, 199, 0.01), 0 127px 36px 0 rgba(199, 199, 199, 0);
+    background: #fff;
+}
+
+
+.table-header h5 {
+    margin: 0;
+    font-family: 'Roboto';
+    font-weight: 500;
+    font-size: 18px;
+    color: #1c1c1c;
+}
+
+div.dt-container div.dt-length select {
+    width: auto;
+    display: inline-block;
+    margin-right: 0.5em;
+}
+
+div.dt-container div.dt-length label {
+    font-weight: normal;
+    text-align: left;
+    white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+    .d-md-flex {
+        display: flex !important;
+    }
+}
+
+div.dt-container div.dt-search label {
+    font-weight: normal;
+    white-space: nowrap;
+    text-align: left;
+}
+
+div.dt-container div.dt-search input {
+    margin-left: 0.5em;
+    display: inline-block;
+    width: auto;
+}
