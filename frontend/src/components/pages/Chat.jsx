@@ -51,10 +51,23 @@ const Chat = () => {
   // SEND MESSAGE
   const sendMessage = async () => {
 
-    if (!message) return;
+    if (!message.trim()) return;
+
+    // TEMP MESSAGE FOR UI
+    const tempMessage = {
+      id: Date.now(),
+      sender_id: sender_id,
+      receiver_id: selectedUser.id,
+      message: message,
+      timestamp: new Date().toLocaleTimeString(),
+    };
+
+    // SHOW MESSAGE IMMEDIATELY
+    setMessages((prev) => [...prev, tempMessage]);
 
     try {
 
+      // SAVE TO DATABASE
       await axios.post(
         "http://127.0.0.1:8000/send-message",
         {
@@ -64,13 +77,12 @@ const Chat = () => {
         }
       );
 
-      setMessage("");
-
-      getMessages(selectedUser.id);
-
     } catch (error) {
       console.log(error);
     }
+
+    // CLEAR INPUT
+    setMessage("");
   };
 
   return (
