@@ -11,7 +11,6 @@ import {
 
 function OrdersTable() {
 
-    // States
     const [statusFilter, setStatusFilter] = useState("");
     const [deadlineFilter, setDeadlineFilter] = useState("");
     const [entriesPerPage, setEntriesPerPage] = useState(10);
