@@ -5,7 +5,7 @@ import Dashboard from "./components/pages/Dashboard";
 import Chat from "./components/pages/Chat";
 import ProtectedRoute from "./components/ProtectRoute";
 import Sidebar from "./components/Sidebar";
-
+import AllDoctors from "./components/pages/AllDoctors";
 function App() {
   return (
     <BrowserRouter>
@@ -14,6 +14,7 @@ function App() {
         <Route path="/Login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/chat" element={<Chat />} />
+        <Route path="/all-doctors" element={<AllDoctors />} />
         <Route
           path="/dashboard"
           element={
