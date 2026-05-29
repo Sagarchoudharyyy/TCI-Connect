@@ -1,36 +1,26 @@
 import { useEffect, useState } from "react";
 
-function DashboardCard() {
-    const [doctorCount, setDoctorCount] = useState(0);
-    const [cases, setCases] = useState([]);
+function DashboardCard({ cases }) {
+
+    const [doctorCount, setDoctorCount] =
+        useState(0);
+
     useEffect(() => {
-        fetchDashboardData();
-    })
-    const fetchDashboardData = async () => {
-        try {
-            const response = await fetch(
-                "http://127.0.0.1:8000/api/cases"
-            );
-            const data = await response.json();
-            setCases(data);
-            const uniqueDoctors = [
-                ...new Set(
-                    data.map(
-                        (item) => item.doctor_name
-                    )
+
+        const uniqueDoctors = [
+            ...new Set(
+                cases.map(
+                    (item) =>
+                        item.doctor_name
                 )
-            ];
-            setDoctorCount(
-                uniqueDoctors.length
-            );
-        }
-        catch (error) {
-            console.log(
-                "Dashboard error:",
-                error
-            );
-        }
-    };
+            )
+        ];
+
+        setDoctorCount(
+            uniqueDoctors.length
+        );
+
+    }, [cases]);
 
     return (
         <div className="main-c-inner">
