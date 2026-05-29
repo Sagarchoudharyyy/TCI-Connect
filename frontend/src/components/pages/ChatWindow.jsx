@@ -1,39 +1,69 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Sidebar from "../Sidebar";
+import Header from "../Header";
+import { useParams } from "react-router-dom";
+import "../../styles/chatWindow.css";
 
-function ChatWindow({ selectedUser, goBack }) {
+function ChatWindow() {
+
+  const { id } = useParams();
 
   const [messages, setMessages] = useState([]);
-
   const [newMessage, setNewMessage] = useState("");
+  const [user, setUser] = useState(null);
+
+  const sender_id = 1;
+
+  useEffect(() => {
+    getMessages();
+    getUser();
+  }, [id]);
+
+  const getUser = async () => {
+    try {
+
+      const res = await axios.get(
+        `http://127.0.0.1:8000/user/${id}`
+      );
+
+      setUser(res.data);
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getMessages = async () => {
+    try {
+
+      const res = await axios.get(
+        `http://127.0.0.1:8000/messages/${sender_id}/${id}`
+      );
+
+      setMessages(res.data);
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleSend = async () => {
 
-    if (newMessage.trim() === "") return;
-
-    // CREATE NEW MESSAGE OBJECT
-    const newMsg = {
-      id: Date.now(),
-      text: newMessage,
-      time: new Date().toLocaleTimeString(),
-    };
+    if (!newMessage.trim()) return;
 
     try {
 
-      // SAVE TO DATABASE
       await axios.post(
         "http://127.0.0.1:8000/send-message",
         {
-          sender_id: 1,
-          receiver_id: selectedUser.id,
+          sender_id,
+          receiver_id: Number(id),
           message: newMessage,
         }
       );
 
-      // UPDATE SCREEN
-      setMessages((prev) => [...prev, newMsg]);
-
-      // CLEAR INPUT
+      getMessages();
       setNewMessage("");
 
     } catch (error) {
@@ -42,152 +72,122 @@ function ChatWindow({ selectedUser, goBack }) {
   };
 
   return (
+    <div className="container-fluid">
+      <div className="dashboard-main">
+        <div className="row g-0">
 
-    <div
-      style={{
-        padding: "30px",
-        background: "#f5f6fa",
-        minHeight: "100vh",
-      }}
-    >
+          <Sidebar />
 
-      {/* TOP BAR */}
+          <div
+            className="offset-2 col-12 col-md-9 col-lg-9
+            offset-lg-3 col-xl-9 col-xxl-10
+            offset-xl-3 offset-xxl-2 main-content"
+          >
 
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "15px",
-          marginBottom: "20px",
-        }}
-      >
+            <Header title="Chat" />
 
-        <button
-          onClick={goBack}
-          style={{
-            padding: "10px 15px",
-            border: "none",
-            borderRadius: "10px",
-            cursor: "pointer",
-          }}
-        >
-          Back
-        </button>
+            <div className="main-c-inner">
+              <div className="chat-wrapper">
 
-        <div
-          style={{
-            width: "55px",
-            height: "55px",
-            borderRadius: "50%",
-            background: "#e9eef5",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontWeight: "bold",
-            fontSize: "22px",
-          }}
-        >
-          {selectedUser.name.charAt(0)}
-        </div>
+                <div className="chat-title chat-header">
 
-        <h1>{selectedUser.name}</h1>
+                  <div className="chat-user">
 
-      </div>
+                    <div className="chat-avatar">
+                      <img
+                        src="/src/assets/react.svg"
+                        alt={user?.full_name || "User"}
+                      />
+                    </div>
 
-      {/* MESSAGE AREA */}
+                    <div className="chat-user-info">
+                      <div className="chat-name">
+                        {user?.full_name || "Loading..."}
+                      </div>
+                    </div>
 
-      <div
-        style={{
-          background: "#fff",
-          height: "500px",
-          borderRadius: "15px",
-          padding: "20px",
-          overflowY: "auto",
-          marginBottom: "20px",
-        }}
-      >
+                  </div>
 
-        {messages.length === 0 ? (
+                </div>
 
-          <p style={{ color: "#999" }}>
-            No messages yet
-          </p>
+                <div id="chat-box">
 
-        ) : (
+                  {messages.map((msg) => (
 
-          messages.map((msg) => (
+                    <div
+                      key={msg.id}
+                      className={
+                        msg.sender_id === sender_id
+                          ? "msg me"
+                          : "msg them"
+                      }
+                    >
 
-            <div
-              key={msg.id}
-              style={{
-                background: "#dcf8c6",
-                padding: "12px",
-                borderRadius: "10px",
-                marginBottom: "10px",
-                width: "fit-content",
-                maxWidth: "300px",
-              }}
-            >
+                      {msg.message}
 
-              <div>{msg.text}</div>
+                      <span className="meta">
 
-              <small
-                style={{
-                  fontSize: "11px",
-                  color: "#666",
-                }}
-              >
-                {msg.time}
-              </small>
+                        {new Date(
+                          msg.timestamp
+                        ).toLocaleString()}
 
+                        {msg.sender_id === sender_id && (
+                          <span className="status-tick">
+
+                            {msg.is_read
+                              ? " • Seen"
+                              : " • Sent"}
+
+                          </span>
+                        )}
+
+                      </span>
+
+                    </div>
+
+                  ))}
+
+                </div>
+
+                <div
+                  id="typing-indicator"
+                  aria-hidden="true"
+                  style={{ display: "none" }}
+                />
+
+                <div className="input-row">
+
+                  <input
+                    type="text"
+                    id="msg"
+                    placeholder="Type a message..."
+                    autoComplete="off"
+                    value={newMessage}
+                    onChange={(e) =>
+                      setNewMessage(e.target.value)
+                    }
+                    onKeyDown={(e) =>
+                      e.key === "Enter" &&
+                      handleSend()
+                    }
+                  />
+
+                  <button
+                    id="sendBtn"
+                    type="button"
+                    onClick={handleSend}
+                  >
+                    Send
+                  </button>
+
+                </div>
+
+              </div>
             </div>
 
-          ))
-
-        )}
-
+          </div>
+        </div>
       </div>
-
-      {/* INPUT AREA */}
-
-      <div
-        style={{
-          display: "flex",
-          gap: "10px",
-        }}
-      >
-
-        <input
-          type="text"
-          placeholder="Type message..."
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          style={{
-            flex: 1,
-            padding: "15px",
-            borderRadius: "30px",
-            border: "1px solid #ccc",
-            outline: "none",
-          }}
-        />
-
-        <button
-          onClick={handleSend}
-          style={{
-            background: "#28a745",
-            color: "#fff",
-            border: "none",
-            padding: "0 30px",
-            borderRadius: "30px",
-            cursor: "pointer",
-            fontSize: "16px",
-          }}
-        >
-          Send
-        </button>
-
-      </div>
-
     </div>
   );
 }
