@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-
 function DashboardCard() {
     const [doctorCount, setDoctorCount] = useState(0);
     const [cases, setCases] = useState([]);
