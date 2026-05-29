@@ -6,9 +6,7 @@ import Chat from "./components/pages/Chat";
 import ProtectedRoute from "./components/ProtectRoute";
 import Sidebar from "./components/Sidebar";
 import OrdersTable from "./components/OrdersTable";
-import AllDoctors from "./components/pages/AllDoctors";
 import RecentCases from "./components/pages/RecentCases";
-import AllDoctor from "./components/pages/AllDoctors";
 import AllDoctors from "./components/pages/AllDoctors";
 
 function App() {
@@ -23,14 +21,7 @@ function App() {
         <Route path="/all-doctors" element={<ProtectedRoute>
           <AllDoctors />
         </ProtectedRoute>} />
-        <Route
-          path="/doctors"
-          element={
-            <ProtectedRoute>
-              <AllDoctors />
-            </ProtectedRoute>
-          }
-        />
+
         <Route
           path="/dashboard"
           element={
@@ -43,5 +34,6 @@ function App() {
     </BrowserRouter >
   );
 }
+
 
 export default App;
