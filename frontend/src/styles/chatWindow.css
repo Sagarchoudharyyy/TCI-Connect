@@ -1,0 +1,133 @@
+.chat-wrapper {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 12px;
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.chat-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.chat-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #e9eef5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-weight: 600;
+    color: #555;
+    flex-shrink: 0;
+}
+
+.chat-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.chat-user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+#chat-box {
+    height: 420px;
+    overflow-y: auto;
+    border-radius: 10px;
+    background: var(--chat-bg);
+    border: 1px solid #e6e6e6;
+    padding: 16px;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+.msg.me {
+    background: var(--me-bg);
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+}
+
+.meta {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+}
+
+.status-tick {
+    display: inline-block;
+    margin-left: 6px;
+    vertical-align: middle;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+#typing-indicator {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 8px;
+    font-style: italic;
+    display: none;
+}
+
+.input-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    align-items: center;
+}
+
+#msg {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    outline: none;
+}
+
+#sendBtn {
+    background: green;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.msg {
+    display: block;
+    clear: both;
+    margin: 8px 0;
+    padding: 10px 14px;
+    border-radius: 14px;
+    max-width: max-content;
+    word-break: break-word;
+    font-size: 15px;
+    line-height: 1.4;
+    position: relative;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
+}
+
+.msg.me {
+    background: #dcf8c6;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+}
