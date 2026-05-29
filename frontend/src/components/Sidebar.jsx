@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
     LayoutDashboard,
     FilePlus2,
@@ -11,7 +11,13 @@ import {
 
 function Sidebar() {
     const location = useLocation();
+    const navigate = useNavigate();
 
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/login");
+    };
     return (
         <div className="col-3 col-lg-3 col-xl-3 col-xxl-2 sidebar">
             <div className="sidebar-header">
@@ -93,12 +99,22 @@ function Sidebar() {
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" to="https://mediumseagreen-herring-541085.hostingersite.com/logout">
+                        <button
+                            className="nav-link border-0 bg-transparent w-100 text-start"
+                            onClick={handleLogout}
+                        >
+                            <Link
+                                to="/recent-case"
+                                className={`nav-link ${location.pathname === "/recent-case"
+                                    ? "active"
+                                    : ""
+                                    }`}
+                            ></Link>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M15.24 22.27H15.11C10.67 22.27 8.53 20.52 8.16 16.6C8.12 16.19 8.42 15.82 8.84 15.78C9.25 15.74 9.62 16.05 9.66 16.46C9.95 19.6 11.43 20.77 15.12 20.77H15.25C19.32 20.77 20.76 19.33 20.76 15.26V8.74001C20.76 4.67001 19.32 3.23001 15.25 3.23001H15.12C11.41 3.23001 9.93 4.42001 9.66 7.62001C9.61 8.03001 9.27 8.34001 8.84 8.30001C8.42 8.27001 8.12 7.90001 8.15 7.49001C8.49 3.51001 10.64 1.73001 15.11 1.73001H15.24C20.15 1.73001 22.25 3.83001 22.25 8.74001V15.26C22.25 20.17 20.15 22.27 15.24 22.27Z" fill="#1D1D1D" />
                             </svg>
                             Logout
-                        </Link>
+                        </button>
                     </li>
                 </ul>
             </nav>
