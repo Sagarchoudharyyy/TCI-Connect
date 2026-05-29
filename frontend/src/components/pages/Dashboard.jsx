@@ -14,6 +14,7 @@ import "../../styles/dashboardcard.css";
 import { FaEdit, FaTrash, FaEye, FaDownload, FaUpload } from "react-icons/fa";
 
 function Dashboard() {
+    console.log("Dashboard Rendered");
     const [cases, setCases] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("");
@@ -27,14 +28,17 @@ function Dashboard() {
 
     const fetchDashboardData = async () => {
         try {
-            const response = await axios.get("http://127.0.0.1:8000/api/cases");
+
+            console.log("API Called");
+
+            const response = await axios.get(
+                "http://127.0.0.1:8000/api/cases"
+            );
+
             setCases(response.data);
-            const totalDoctors = new Set(
-                response.data.map((item) => item.doctor_name)
-            ).size;
-            setDoctorCount(totalDoctors);
+
         } catch (error) {
-            console.log("Error fetching dashboard data", error);
+            console.log(error);
         }
     };
 
@@ -65,13 +69,11 @@ function Dashboard() {
         }
     };
 
-    // Check if deadline has passed
     const isDeadlinePassed = (deadline) => {
         if (!deadline) return false;
         return new Date(deadline) < new Date();
     };
 
-    // Format date nicely: "19 May 2026"
     const formatDate = (dateStr) => {
         if (!dateStr) return "-";
         const d = new Date(dateStr);
@@ -90,7 +92,9 @@ function Dashboard() {
                     main-content">
 
                         <Header title="Dashboard" />
-                        <DashboardCard />
+                        <DashboardCard
+                            cases={cases}
+                        />
 
                         <OrdersTable />
                     </div>

@@ -29,7 +29,6 @@ function Login() {
         }
 
         setLoading(true);
-
         try {
             const response = await axios.post(
                 "http://127.0.0.1:8000/login",
@@ -41,16 +40,15 @@ function Login() {
 
             console.log(response.data);
 
-            if (
-                response.data.message ===
-                "Invalid email/mobile or password"
-            ) {
+            // Login failed
+            if (!response.data.access_token) {
                 setError(
-                    "Invalid email/mobile number or password"
+                    response.data.message
                 );
                 return;
             }
 
+            // Login success
             localStorage.setItem(
                 "token",
                 response.data.access_token
@@ -58,20 +56,23 @@ function Login() {
 
             localStorage.setItem(
                 "user",
-                JSON.stringify(response.data.user)
+                JSON.stringify(
+                    response.data.user
+                )
             );
-            console.log("navigating");
 
             navigate("/dashboard");
 
         } catch (error) {
+
             console.log(error);
 
             setError(
                 error.response?.data?.message ||
                 "Something went wrong"
             );
-        } finally {
+        }
+        finally {
             setLoading(false);
         }
     };

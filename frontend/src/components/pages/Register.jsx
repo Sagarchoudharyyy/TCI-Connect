@@ -19,6 +19,7 @@ function Register() {
     vat_id: "",
     country: "",
     password: "",
+    role: ""
   });
   const handleChange = (e) => {
     setFormData({
@@ -52,9 +53,9 @@ function Register() {
         vat_id: "",
         country: "",
         password: "",
+        role: ""
       });
 
-      // Redirect to login page
       navigate("/login");
 
     } catch (err) {
@@ -230,9 +231,22 @@ function Register() {
                   required
                 />
               </div>
+              <div className="mb-4">
+                <label className="form-label">
+                  Role
+                </label>
+                <input
+                  type="text"
+                  name="role"
+                  className="form-control"
+                  placeholder="Enter role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
               <div className="text-center mt-3">
                 <span>Already have an account? </span>
-
                 <Link
                   to="/login"
                   className="text-decoration-none fw-bold"

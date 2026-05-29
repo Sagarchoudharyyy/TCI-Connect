@@ -17,6 +17,7 @@ function Sidebar() {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         navigate("/login");
+        console.log("logout working");
     };
     return (
         <div className="col-3 col-lg-3 col-xl-3 col-xxl-2 sidebar">
@@ -149,7 +150,10 @@ function Sidebar() {
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" to="https://mediumseagreen-herring-541085.hostingersite.com/logout">
+                        <button
+                            className="nav-link"
+                            onClick={handleLogout}
+                        >
                             <svg
                                 width="24"
                                 height="24"
@@ -173,7 +177,7 @@ function Sidebar() {
                                 />
                             </svg>
                             Logout
-                        </Link>
+                        </button>
                     </li>
                 </ul>
             </nav>
