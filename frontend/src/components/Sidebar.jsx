@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
     LayoutDashboard,
     FilePlus2,
@@ -11,7 +11,13 @@ import {
 
 function Sidebar() {
     const location = useLocation();
+    const navigate = useNavigate();
 
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/login");
+    };
     return (
         <div className="col-3 col-lg-3 col-xl-3 col-xxl-2 sidebar">
             <div className="sidebar-header">
@@ -172,7 +178,6 @@ function Sidebar() {
                 </ul>
             </nav>
         </div>
-
     );
 }
 
