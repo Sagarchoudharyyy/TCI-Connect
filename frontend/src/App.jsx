@@ -7,8 +7,8 @@ import ProtectedRoute from "./components/ProtectRoute";
 import Sidebar from "./components/Sidebar";
 import OrdersTable from "./components/OrdersTable";
 import RecentCases from "./components/pages/RecentCases";
-import AllDoctor from "./components/pages/AllDoctors";
 import AllDoctors from "./components/pages/AllDoctors";
+import ChatWindow from "./components/pages/ChatWindow";
 
 function App() {
   return (
@@ -17,19 +17,11 @@ function App() {
         <Route path="/" element={<Register />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/chat" element={<Chat />} />
-        <Route path="/recent-case" element={<RecentCases />} />
-        <Route path="/all-doctors" element={<ProtectedRoute>
-          <AllDoctors />
-        </ProtectedRoute>} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/recent-case" element={<ProtectedRoute><RecentCases /></ProtectedRoute>} />
+        <Route path="/all-doctors" element={<ProtectedRoute><AllDoctors /></ProtectedRoute>} />
+        <Route path="/chats" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+        <Route path="/chat/:id" element={<ChatWindow />} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter >
   );
