@@ -12,6 +12,7 @@ import ChatWindow from "./components/pages/ChatWindow";
 import RecentCases from "./components/pages/RecentCases";
 import AllDoctors from "./components/pages/AllDoctors";
 import ProtectedRoute from "./components/ProtectRoute";
+import Pricing from "./components/pages/Pricing";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           path="/register"
           element={<Register />}
         />
+        <Route path="/pricing" element={<Pricing />} />
 
         {/* Protected Routes */}
         <Route
