@@ -105,7 +105,7 @@ function AllDoctors() {
 
                 <div className="card border-0 shadow-sm p-3">
 
-                  {/* Top Controls */}
+
 
                   <div className="d-flex justify-content-between align-items-center flex-wrap mb-3">
 
@@ -198,7 +198,7 @@ function AllDoctors() {
                                   cursor: "pointer",
                                 }}
                               >
-                                Unapprove it
+                                {doctor.is_active ? "Approved" : "Pending"}
                               </span>
 
                             </td>
