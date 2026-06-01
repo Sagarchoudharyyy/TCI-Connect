@@ -13,6 +13,7 @@ import RecentCases from "./components/pages/RecentCases";
 import AllDoctors from "./components/pages/AllDoctors";
 import ProtectedRoute from "./components/ProtectRoute";
 import Pricing from "./components/pages/Pricing";
+import UpdatePrice from "./components/pages/UpdatePrice";
 
 function App() {
   return (
@@ -92,6 +93,14 @@ function App() {
               ]}
             >
               <ChatWindow />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/update-price/:id"
+          element={
+            <ProtectedRoute>
+              <UpdatePrice />
             </ProtectedRoute>
           }
         />
