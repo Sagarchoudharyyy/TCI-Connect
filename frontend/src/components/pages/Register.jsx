@@ -19,7 +19,6 @@ function Register() {
     vat_id: "",
     country: "",
     password: "",
-    role: ""
   });
   const handleChange = (e) => {
     setFormData({
@@ -37,13 +36,12 @@ function Register() {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/register",
+        "http://127.0.0.1:8000/admin-register",
         formData
       );
 
       setMessage(response.data.message);
 
-      // Reset form
       setFormData({
         full_name: "",
         email: "",
@@ -53,7 +51,6 @@ function Register() {
         vat_id: "",
         country: "",
         password: "",
-        role: ""
       });
 
       navigate("/login");
@@ -80,14 +77,14 @@ function Register() {
               Register
             </h2>
 
-            {/* Success Message */}
+
             {message && (
               <div className="alert alert-success">
                 {message}
               </div>
             )}
 
-            {/* Error Message */}
+
             {error && (
               <div className="alert alert-danger">
                 {error}
@@ -96,7 +93,6 @@ function Register() {
 
             <form onSubmit={handleSubmit}>
 
-              {/* Full Name */}
               <div className="mb-3">
                 <label className="form-label">
                   Full Name
@@ -113,7 +109,6 @@ function Register() {
                 />
               </div>
 
-              {/* Email */}
               <div className="mb-3">
                 <label className="form-label">
                   Email
@@ -130,7 +125,7 @@ function Register() {
                 />
               </div>
 
-              {/* Phone */}
+
               <div className="mb-3">
                 <label className="form-label">
                   Phone Number
@@ -146,8 +141,6 @@ function Register() {
                   required
                 />
               </div>
-
-              {/* Business Name */}
               <div className="mb-3">
                 <label className="form-label">
                   Business Name
@@ -164,7 +157,7 @@ function Register() {
                 />
               </div>
 
-              {/* License Number */}
+
               <div className="mb-3">
                 <label className="form-label">
                   License Number
@@ -181,7 +174,7 @@ function Register() {
                 />
               </div>
 
-              {/* VAT ID */}
+
               <div className="mb-3">
                 <label className="form-label">
                   VAT ID
@@ -198,7 +191,7 @@ function Register() {
                 />
               </div>
 
-              {/* Country */}
+
               <div className="mb-3">
                 <label className="form-label">
                   Country
@@ -215,7 +208,7 @@ function Register() {
                 />
               </div>
 
-              {/* Password */}
+
               <div className="mb-4">
                 <label className="form-label">
                   Password
@@ -227,20 +220,6 @@ function Register() {
                   className="form-control"
                   placeholder="Enter password"
                   value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="form-label">
-                  Role
-                </label>
-                <input
-                  type="text"
-                  name="role"
-                  className="form-control"
-                  placeholder="Enter role"
-                  value={formData.role}
                   onChange={handleChange}
                   required
                 />
