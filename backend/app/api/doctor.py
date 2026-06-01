@@ -29,7 +29,7 @@ def create_doctor(user: UserRegister, db: Session = Depends(get_db)):
 
     new_doctor = User(
         full_name=user.full_name,
-        username=user.username,
+        username=user.email,
         email=user.email,
         phone=user.phone,
         business_name=user.business_name,
@@ -65,7 +65,7 @@ def update_doctor(
   
    
   doctor.full_name = user.full_name
-  doctor.username = user.username
+  doctor.username = user.email
   doctor.email = user.email
   doctor.phone = user.phone
   doctor.business_name = user.business_name
