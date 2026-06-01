@@ -23,8 +23,6 @@ from app.schemas.case_schema import (
 
 router = APIRouter()
 
-
-# CREATE CASE
 @router.post(
     "/cases",
     response_model=CaseResponse
@@ -52,7 +50,6 @@ def create_case(
     return new_case
 
 
-# GET ALL CASES
 @router.get(
     "/cases",
     response_model=list[CaseResponse]
@@ -71,7 +68,6 @@ def get_cases(
             "case_id": case.case_id,
             "patient_id": case.patient_id,
             "doctor_id": case.doctor_id,
-
             "doctor_name":
                 case.doctor.full_name,
 
@@ -115,8 +111,6 @@ def get_cases(
 
     return result
 
-
-# GET CASE BY ID
 @router.get(
     "/cases/{case_id}",
     response_model=CaseResponse
@@ -141,7 +135,6 @@ def get_case(
     return case
 
 
-# UPDATE CASE
 @router.put(
     "/cases/{case_id}",
     response_model=CaseResponse
@@ -183,7 +176,6 @@ def update_case(
     return case
 
 
-# DELETE CASE
 @router.delete(
     "/cases/{case_id}"
 )
@@ -213,7 +205,6 @@ def delete_case(
     }
 
 
-# UPLOAD FILE
 @router.post(
     "/cases/{case_id}/upload"
 )
@@ -283,7 +274,7 @@ async def upload_case_file(
     }
 
 
-# GET CASE FILES
+
 @router.get("/case_files")
 def get_case_files(
     db: Session = Depends(get_db)
