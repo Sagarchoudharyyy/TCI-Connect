@@ -20,14 +20,6 @@ function Login() {
             setError("All fields are required");
             return;
         }
-
-        if (password.length < 8) {
-            setError(
-                "Password should be at least 8 characters"
-            );
-            return;
-        }
-
         setLoading(true);
         try {
             const response = await axios.post(
@@ -39,8 +31,6 @@ function Login() {
             );
 
             console.log(response.data);
-
-            // Login failed
             if (!response.data.access_token) {
                 setError(
                     response.data.message
@@ -48,7 +38,6 @@ function Login() {
                 return;
             }
 
-            // Login success
             localStorage.setItem(
                 "token",
                 response.data.access_token
@@ -60,9 +49,16 @@ function Login() {
                     response.data.user
                 )
             );
+            const userRole = response.data.user?.role;
+            if (userRole === "admin") {
+                navigate("/dashboard");
+            } else if (userRole === "doctor") {
+                navigate("/dashboard");
+            }
+            else {
+                navigate("/login");
 
-            navigate("/dashboard");
-
+            }
         } catch (error) {
 
             console.log(error);
