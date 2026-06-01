@@ -6,6 +6,7 @@ import "../../styles/sidebar.css";
 import "../../styles/header.css";
 import "../../styles/tables.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useNavigate } from "react-router-dom";
 import {
   FaEye,
   FaEdit,
@@ -16,8 +17,10 @@ import {
 
 import Sidebar from "../Sidebar";
 import Header from "../Header";
+import "../../styles/pricing.css";
 
 function Pricing() {
+  const navigate = useNavigate();
   const [prices, setPrices] = useState([]);
 
   useEffect(() => {
@@ -28,6 +31,14 @@ function Pricing() {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this price?")) {
       return;
+    }
+    try {
+      await axios.delete(`http://127.0.0.1:8000/pricing/${id}`);
+      alert("Price deleted successfully");
+      fetchPrices();
+    } catch (error) {
+      console.error("Error deleting price:", error);
+      alert("Failed to delete price");
     }
   }
 
@@ -45,181 +56,155 @@ function Pricing() {
   };
 
   return (
-    <div className="dashboard-main">
-      <Sidebar />
+    <div className="container-fluid">
+      <div className="dashboard-main">
+        <div className="row g-0">
 
-      <div className="main-content">
-        <Header />
+          <Sidebar />
 
-        <div className="container-fluid">
-          <div className="main-inner-">
+          <div className="offset-2 col-12 col-md-9 col-lg-9 
+                    offset-lg-3 col-xl-9 col-xxl-10 offset-xl-3 offset-xxl-2 
+                    main-content">
 
-
-            <a
-              href="#"
-              className="btn btn-primary ms-3 mt-4 mb-3"
-            >
-              Add Price
-            </a>
-
-            <div className="table-responsive ms-3">
-              <table className="table table-bordered table-striped align-middle">
-                <thead className="table-light">
-                  <tr>
-                    <th>Product</th>
-                    <th>Category</th>
-                    <th>Material</th>
-                    <th>Belgium Dentist (€)</th>
-                    <th>Belgium Lab (€)</th>
-                    <th>Lebanon Dentist ($)</th>
-                    <th>Lebanon Lab ($)</th>
-                    <th width="120">Action</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {prices.length > 0 ? (
-                    prices.map((price) => (
+            <Header title="Dashboard" />
+            <div className="main-c-inner">
+              <a className="btn btn-primary mb-3">
+                Add Price
+              </a>
+              <div className="table-responsive">
+                <table className="table table-bordered table-striped align-middle">
+                  <thead className="table-light">
+                    <tr>
+                      <th>Product</th>
+                      <th>Category</th>
+                      <th>Material</th>
+                      <th>Belgium Dentist (€)</th>
+                      <th>Belgium Lab (€)</th>
+                      <th>Lebanon Dentist ($)</th>
+                      <th>Lebanon Lab ($)</th>
+                      <th width="120">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {prices.map((price) => (
                       <tr key={price.id}>
                         <td>{price.product}</td>
                         <td>{price.category}</td>
                         <td>{price.material}</td>
-                        <td>
-                          {price.belgium_dentist_price
-                            ? `€ ${price.belgium_dentist_price}`
-                            : "-"
-                          }
-                        </td>
-                        <td>{price.belgium_lab_price
-                          ? `€ ${price.belgium_lab_price}`
-                          : "-"}</td>
-                        <td>{price.lebanon_dentist_price
-                          ? `$ ${price.lebanon_dentist_price}`
-                          : "-"}</td>
-                        <td>{price.lebanon_lab_price
-                          ? `$ ${price.lebanon_lab_price}`
-                          : "-"}</td>
+                        <td>{price.belgium_dentist_price}</td>
+                        <td>{price.belgium_lab_price}</td>
+                        <td>{price.lebanon_dentist_price}</td>
+                        <td>{price.lebanon_lab_price}</td>
                         <td>
                           <button
-                            className="btn btn-link p-0"
+                            className="btn btn-md me-1"
                             onClick={() =>
-                              handleEdit(item.id)
+                              navigate(
+                                `/update-price/${price.id}`
+                              )
                             }
                           >
-                            <FaEdit color="black" />
+                            <FaEdit />
                           </button>
-                          <button
-                            className="btn btn-link p-0"
-                            onClick={() =>
-                              handleDelete(item.id)
-                            }
-                          >
-                            <FaTrash color="red" />
+                          <button className="btn btn-md " onClick={() => handleDelete(price.id)}>
+                            <FaTrash />
                           </button>
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan="8"
-                        className="text-center"
-                      >
-                        No pricing data found
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                    ))}
+                  </tbody>
 
-            <div className="card mt-4 mx-5">
-              <div className="card-body small">
+                </table>
 
-                <p className="mb-2 fw-semibold">
-                  Prices & Order Information
-                </p>
+              </div>
+              <div className="card mt-4 mx-5">
+                <div className="card-body small">
 
-                <ul className="mb-3">
-                  <li>
-                    Prices are exclusive of VAT.
-                  </li>
+                  <p className="mb-2 fw-semibold">
+                    Prices & Order Information
+                  </p>
 
-                  <li>
-                    Shipping is free for orders of{" "}
-                    <strong>€150 or more</strong>.
-                  </li>
+                  <ul className="mb-3">
+                    <li>
+                      Prices are exclusive of VAT.
+                    </li>
 
-                  <li>
-                    Orders below €150 are subject to a fixed shipping fee of{" "}
-                    <strong>€9</strong>.
-                  </li>
+                    <li>
+                      Shipping is free for orders of{" "}
+                      <strong>€150 or more</strong>.
+                    </li>
 
-                  <li>
-                    Prices are for reference only.
-                    Orders must be submitted via the{" "}
-                    <strong>RX form</strong>.
-                  </li>
-                </ul>
+                    <li>
+                      Orders below €150 are subject to a fixed shipping fee of{" "}
+                      <strong>€9</strong>.
+                    </li>
 
-                <hr />
+                    <li>
+                      Prices are for reference only.
+                      Orders must be submitted via the{" "}
+                      <strong>RX form</strong>.
+                    </li>
+                  </ul>
 
-                <ul className="list-unstyled mb-3">
-                  <li>
+                  <hr />
+
+                  <ul className="list-unstyled mb-3">
+                    <li>
+                      <strong>
+                        Temporaries (PMMA)
+                      </strong>
+                    </li>
+
+                    <li>
+                      <strong>
+                        3D Printing & Models
+                      </strong>
+                    </li>
+
+                    <li>
+                      <strong>
+                        Mill Only
+                      </strong>{" "}
+                      (No CAD design included)
+                    </li>
+
+                    <li>
+                      <strong>
+                        CAD Services
+                      </strong>
+                    </li>
+
+                    <li>
+                      <strong>
+                        Abutments & Attachments
+                      </strong>
+                    </li>
+
+                    <li>
+                      <strong>
+                        Implant Restorations
+                      </strong>
+                    </li>
+                  </ul>
+
+                  <hr />
+
+                  <p className="mb-0">
                     <strong>
-                      Temporaries (PMMA)
+                      Fixed Prosthetics – Crowns /
+                      Veneers / Inlay-Onlay
                     </strong>
-                  </li>
+                  </p>
 
-                  <li>
-                    <strong>
-                      3D Printing & Models
-                    </strong>
-                  </li>
-
-                  <li>
-                    <strong>
-                      Mill Only
-                    </strong>{" "}
-                    (No CAD design included)
-                  </li>
-
-                  <li>
-                    <strong>
-                      CAD Services
-                    </strong>
-                  </li>
-
-                  <li>
-                    <strong>
-                      Abutments & Attachments
-                    </strong>
-                  </li>
-
-                  <li>
-                    <strong>
-                      Implant Restorations
-                    </strong>
-                  </li>
-                </ul>
-
-                <hr />
-
-                <p className="mb-0">
-                  <strong>
-                    Fixed Prosthetics – Crowns /
-                    Veneers / Inlay-Onlay
-                  </strong>
-                </p>
-
+                </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
   );
+
 }
 
 export default Pricing;
