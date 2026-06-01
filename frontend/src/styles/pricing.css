@@ -1,3 +1,28 @@
+.main-c-inner {
+  padding: 30px 20px 30px 30px;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.align-middle {
+  vertical-align: middle !important;
+}
+
 .table>thead {
   vertical-align: bottom;
+}
+
+.table-bordered>:not(caption)>*>* {
+  border-width: 0 var(--bs-border-width);
+}
+
+.table>tbody {
+  vertical-align: inherit;
+}
+
+.table-bordered>:not(caption)>* {
+  border-width: var(--bs-border-width) 0;
 }
