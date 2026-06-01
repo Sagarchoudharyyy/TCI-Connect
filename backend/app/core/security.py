@@ -5,9 +5,15 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    "my_super_secret_key_123"
+)
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM")
+ALGORITHM = os.getenv(
+    "ALGORITHM",
+    "HS256"
+)
 
 pwd_context = CryptContext(
     schemes=["bcrypt"],

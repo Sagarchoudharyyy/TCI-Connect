@@ -18,7 +18,6 @@ class CaseResponse(BaseModel):
     case_id: str
     patient_id: int
     doctor_id: int
-
     doctor_name: str | None = None
     patient_name: str | None = None
     phone: str | None = None
@@ -29,7 +28,7 @@ class CaseResponse(BaseModel):
 
     preview_status: str
     status: str
-    created_at: datetime
+    created_at: Optional[datetime] = None
     files: list = []
 
     class Config:
