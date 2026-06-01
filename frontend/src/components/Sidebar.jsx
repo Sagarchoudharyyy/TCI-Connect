@@ -106,8 +106,8 @@ function Sidebar() {
                     </li>
                     <li className="nav-item">
                         <Link
-                            to="/price"
-                            className={`nav-link ${location.pathname === "/price"
+                            to="/pricing"
+                            className={`nav-link ${location.pathname === "/pricing "
                                 ? "active"
                                 : ""
                                 }`}
