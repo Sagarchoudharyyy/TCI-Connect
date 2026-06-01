@@ -26,7 +26,7 @@ class User(Base):
 
     password = Column(String, nullable=False)
 
-    role = Column(String, default="client")
+    role = Column(String,nullable=False)
 
     patient_cases = relationship(
         "Case",
@@ -34,7 +34,6 @@ class User(Base):
         back_populates="patient"
     )
 
-    # Relationship for doctor cases
     doctor_cases = relationship(
         "Case",
         foreign_keys="Case.doctor_id",

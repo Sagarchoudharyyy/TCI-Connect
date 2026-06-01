@@ -42,12 +42,12 @@ function Pricing() {
 
           <a
             href="#"
-            className="btn btn-primary btn-lg mb-3 ms-5 mt-5 px-5 py-3 fs-4"
+            className="btn btn-primary ms-3 mt-4 mb-3"
           >
             Add Price
           </a>
 
-          <div className="table-responsive">
+          <div className="table-responsive ms-3">
             <table className="table table-bordered table-striped align-middle">
               <thead className="table-light">
                 <tr>

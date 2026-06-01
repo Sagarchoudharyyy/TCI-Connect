@@ -1,4 +1,6 @@
 
+from fastapi import Header
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.database.database import get_db
@@ -10,8 +12,28 @@ from app.core.security import (
     create_access_token
 )
 from sqlalchemy import or_
+from fastapi.security import OAuth2PasswordBearer
+from app.models.blacklist_model import Blacklist
+
 
 router = APIRouter()
+
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="login"
+)
+
+
+from app.core.security import (
+    hash_password,
+    verify_password,
+    create_access_token
+)
+
+from app.schemas.user_schema import (
+    UserRegister,
+    UserLogin
+)
+
 
 
 @router.post("/register")
@@ -42,7 +64,9 @@ def register(
         license_number=user.license_number,
         vat_id=user.vat_id,
         country=user.country,
-        password=hashed_password
+        password=hashed_password,
+        role="patient"
+
     )
 
     db.add(new_user)
@@ -51,20 +75,49 @@ def register(
 
     return {
         "message":
-        "User registered successfully"
+        "Patient registered successfully"
     }
 
-from app.core.security import (
-    hash_password,
-    verify_password,
-    create_access_token
-)
+@router.post("/admin-register")
+def admin_register(
+    user:UserRegister,
+    db:Session=Depends(get_db)
+):
+    existing_user = db.query(User).filter(
+        User.email == user.email
+    ).first()
 
-from app.schemas.user_schema import (
-    UserRegister,
-    UserLogin
-)
+    if existing_user:
+        return {
+            "message": "Email already exists"
+        }
 
+    hashed_password = hash_password(
+        user.password
+    )
+
+    new_user = User(
+        full_name=user.full_name,
+        email=user.email,
+        username=user.email,
+        phone=user.phone,
+        business_name=user.business_name,
+        license_number=user.license_number,
+        vat_id=user.vat_id,
+        country=user.country,
+        password=hashed_password,
+        role="admin"
+
+    )
+
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return {
+        "message":
+        "Admin registered successfully"
+    }
 
 @router.post("/login")
 def login(
@@ -72,12 +125,15 @@ def login(
     db: Session = Depends(get_db)
 ):
 
+    print("Login attempt for:", user.username)
     db_user = db.query(User).filter(
         or_(
         User.email == user.username,
         User.phone==user.username
         )
     ).first()
+
+    print("User found in database:", db_user)
 
     if not db_user:
         return {
@@ -125,4 +181,18 @@ def login(
             "role":
             db_user.role
         }
+    }
+
+@router.post("/logout")
+def logout(
+    authorization: str = Header(None),
+    db:Session=Depends(get_db)
+):
+    
+    token = authorization.replace("Bearer ", "")
+    blacklist_token = Blacklist(token=token)   
+    db.add(blacklist_token)
+    db.commit() 
+    return {
+        "message":"Logged out successfully"
     }
