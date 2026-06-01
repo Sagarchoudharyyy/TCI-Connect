@@ -19,7 +19,6 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* Public Routes */}
         <Route
           path="/"
           element={<Register />}
@@ -36,11 +35,12 @@ function App() {
         />
         <Route path="/pricing" element={<Pricing />} />
 
-        {/* Protected Routes */}
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute
+              allowedRoles={["admin", "doctor"]}
+            >
               <Dashboard />
             </ProtectedRoute>
           }
@@ -49,7 +49,9 @@ function App() {
         <Route
           path="/recent-case"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute
+              allowedRoles={["admin", "doctor"]}
+            >
               <RecentCases />
             </ProtectedRoute>
           }
@@ -58,7 +60,9 @@ function App() {
         <Route
           path="/all-doctors"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute
+              allowedRoles={["admin", "doctor"]}
+            >
               <AllDoctors />
             </ProtectedRoute>
           }
@@ -67,7 +71,12 @@ function App() {
         <Route
           path="/chats"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute
+              allowedRoles={[
+                "admin",
+                "doctor"
+              ]}
+            >
               <Chat />
             </ProtectedRoute>
           }
@@ -76,7 +85,12 @@ function App() {
         <Route
           path="/chat/:id"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute
+              allowedRoles={[
+                "admin",
+                "doctor"
+              ]}
+            >
               <ChatWindow />
             </ProtectedRoute>
           }
