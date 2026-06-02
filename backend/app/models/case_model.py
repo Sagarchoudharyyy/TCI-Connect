@@ -15,7 +15,11 @@ from app.database.database import Base
 class Case(Base):
     __tablename__ = "cases"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
+    )
 
     case_id = Column(
         String(50),
@@ -23,25 +27,41 @@ class Case(Base):
         nullable=False
     )
 
-    patient_id = Column(
-        Integer,
-        ForeignKey("users.id", ondelete="CASCADE"),
-        nullable=False
-    )
-
+    # Doctor who submitted the case
     doctor_id = Column(
         Integer,
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False
     )
 
-    appointment_date = Column(
-        DateTime,
+    # Patient Information
+    patient_name = Column(
+        String(255),
+        nullable=False
+    )
+
+    patient_phone = Column(
+        String(20),
+        nullable=True
+    )
+
+    gender = Column(
+        String(20),
         nullable=True
     )
 
     age = Column(
         Integer,
+        nullable=True
+    )
+
+    case_type = Column(
+        String(100),
+        nullable=True
+    )
+
+    appointment_date = Column(
+        DateTime,
         nullable=True
     )
 
@@ -65,21 +85,16 @@ class Case(Base):
         server_default=func.now()
     )
 
-    # Relationships
-    patient = relationship(
-        "User",
-        foreign_keys=[patient_id],
-        back_populates="patient_cases"
-    )
-
+    # Doctor Relationship
     doctor = relationship(
         "User",
         foreign_keys=[doctor_id],
         back_populates="doctor_cases"
     )
-        
+
+    # Case Files Relationship
     files = relationship(
-    "CaseFile",
-    back_populates="case",
-    cascade="all, delete-orphan"
-)
+        "CaseFile",
+        back_populates="case",
+        cascade="all, delete-orphan"
+    )

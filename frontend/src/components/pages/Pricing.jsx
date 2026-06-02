@@ -46,7 +46,6 @@ function Pricing() {
         setMessage("");
       }, 3000);
 
-      // clear state after showing message
       window.history.replaceState(
         {},
         document.title
@@ -61,6 +60,9 @@ function Pricing() {
     try {
       await axios.delete(`http://127.0.0.1:8000/pricing/${id}`);
       setMessage("Price deleted successfully");
+      setTimeout(() => {
+        setMessage("")
+      }, 3000);
       fetchPrices();
     } catch (error) {
       console.error("Error deleting price:", error);
