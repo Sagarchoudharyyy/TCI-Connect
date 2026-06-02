@@ -62,6 +62,9 @@ function Pricing() {
       await axios.delete(`http://127.0.0.1:8000/pricing/${id}`);
       setMessage("Price deleted successfully");
       fetchPrices();
+      setTimeout(() => {
+        setMessage("");
+      }, 3000);
     } catch (error) {
       console.error("Error deleting price:", error);
       setMessage("Failed to delete price");
