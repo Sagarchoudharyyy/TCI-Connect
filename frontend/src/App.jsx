@@ -14,6 +14,7 @@ import AllDoctors from "./components/pages/AllDoctors";
 import ProtectedRoute from "./components/ProtectRoute";
 import Pricing from "./components/pages/Pricing";
 import UpdatePrice from "./components/pages/UpdatePrice";
+import Category from "./components/pages/Category";
 
 function App() {
   return (
@@ -97,10 +98,26 @@ function App() {
           }
         />
         <Route
+          path="/add-price"
+          element={
+            <ProtectedRoute>
+              <UpdatePrice />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/update-price/:id"
           element={
             <ProtectedRoute>
               <UpdatePrice />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/category"
+          element={
+            <ProtectedRoute>
+              <Category />
             </ProtectedRoute>
           }
         />
