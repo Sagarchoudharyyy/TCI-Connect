@@ -11,6 +11,12 @@ from app.models.case_file_model import CaseFile
 from fastapi.staticfiles import StaticFiles
 from app.models.pricing_model import Pricing
 from app.api.pricing import router as pricing_router
+from app.models.blacklist_model import Blacklist
+from app.models.category_model import Category
+from app.api.category_route import router as category_router
+from app.models.material_model import Material
+from app.api.material_route import router as material_router
+
 
 app = FastAPI(
     title="TCI Connect API",
@@ -34,6 +40,9 @@ app.include_router(doctor_router)
 app.include_router(case_router)
 app.include_router(chat.router)
 app.include_router(pricing_router)
+app.include_router(category_router)
+app.include_router(material_router)
+
 
 app.include_router(
     case_router,

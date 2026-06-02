@@ -52,7 +52,7 @@ def get_price(
    ).first()
 
 @router.put("/pricing/{price_id}")
-def upadte_price(
+def update_price(
   price_id:int,
   price:PricingCreate,
   db: Session=Depends(get_db)
@@ -77,6 +77,8 @@ def upadte_price(
         "message": "Price updated successfully",
         "data": db_price
   }
+
+
 @router.delete("/pricing/{price_id}")
 def delete_price(
   price_id:int,
