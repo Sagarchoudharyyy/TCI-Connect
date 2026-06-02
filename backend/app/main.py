@@ -3,6 +3,7 @@ from app.database.database import engine,Base
 from app.models.user_model import User
 from app.api.doctor import router as doctor_router
 from app.models.case_model import Case
+from app.models.notification_model import Notification
 from app.api import chat
 from app.api.auth import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,6 +18,7 @@ from app.api.category_route import router as category_router
 from app.models.material_model import Material
 from app.api.material_route import router as material_router
 
+from app.api.notification import router as notification_router
 
 app = FastAPI(
     title="TCI Connect API",
@@ -43,6 +45,7 @@ app.include_router(pricing_router)
 app.include_router(category_router)
 app.include_router(material_router)
 
+app.include_router(notification_router)
 
 app.include_router(
     case_router,
