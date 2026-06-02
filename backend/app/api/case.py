@@ -5,7 +5,7 @@ from fastapi import (
     UploadFile,
     File
 )
-
+from app.models.notification_model import Notification
 from sqlalchemy.orm import Session
 from uuid import uuid4
 
@@ -15,6 +15,8 @@ import shutil
 from app.database.database import get_db
 from app.models.case_model import Case
 from app.models.case_file_model import CaseFile
+from app.models.user_model import User
+from app.models.notification_model import Notification
 
 from app.schemas.case_schema import (
     CaseCreate,
@@ -45,7 +47,16 @@ def create_case(
 
     db.add(new_case)
     db.commit()
-    db.refresh(new_case)
+    patient = db.query(User).filter(
+        User.id == new_case.patient_id
+    ).first()
+
+    notification = Notification(
+      message=f"New case submitted by {patient.full_name} for (Case ID: {new_case.case_id})"
+       )
+
+    db.add(notification)
+    db.commit()
 
     return new_case
 

@@ -13,6 +13,7 @@ import RecentCases from "./components/pages/RecentCases";
 import AllDoctors from "./components/pages/AllDoctors";
 import ProtectedRoute from "./components/ProtectRoute";
 import Pricing from "./components/pages/Pricing";
+import AllNotifications from "./components/pages/AllNotifications";
 import UpdatePrice from "./components/pages/UpdatePrice";
 
 function App() {
@@ -35,7 +36,8 @@ function App() {
           element={<Register />}
         />
         <Route path="/pricing" element={<Pricing />} />
-
+        <Route path="/notifications/all"
+          element={<AllNotifications />} />
         <Route
           path="/dashboard"
           element={
