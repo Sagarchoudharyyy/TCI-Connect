@@ -49,7 +49,9 @@ function Login() {
                     response.data.user
                 )
             );
+
             const userRole = response.data.user?.role;
+
             if (userRole === "admin") {
                 navigate("/dashboard");
             } else if (userRole === "doctor") {

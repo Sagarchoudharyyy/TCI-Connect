@@ -247,7 +247,7 @@ function RecentCases() {
 
                                                 <td>{item.case_id}</td>
                                                 <td>{item.doctor_name}</td>
-                                                <td>{item.phone}</td>
+                                                <td>{item.patient_phone}</td>
                                                 <td>{item.patient_name}</td>
 
                                                 <td>

@@ -24,7 +24,7 @@ function App() {
 
         <Route
           path="/"
-          element={<Register />}
+          element={<Login />}
         />
 
         <Route
@@ -36,9 +36,26 @@ function App() {
           path="/register"
           element={<Register />}
         />
-        <Route path="/pricing" element={<Pricing />} />
-        <Route path="/notifications/all"
-          element={<AllNotifications />} />
+
+        <Route
+          path="/pricing"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <Pricing />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/notifications/all"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AllNotifications />
+            </ProtectedRoute>
+          }
+        />
+
+
         <Route
           path="/dashboard"
           element={
@@ -65,7 +82,7 @@ function App() {
           path="/all-doctors"
           element={
             <ProtectedRoute
-              allowedRoles={["admin", "doctor"]}
+              allowedRoles={["admin"]}
             >
               <AllDoctors />
             </ProtectedRoute>
@@ -102,15 +119,16 @@ function App() {
         <Route
           path="/add-price"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["admin"]}>
               <UpdatePrice />
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/update-price/:id"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["admin"]}>
               <UpdatePrice />
             </ProtectedRoute>
           }
@@ -118,7 +136,7 @@ function App() {
         <Route
           path="/category"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["admin"]}>
               <Category />
             </ProtectedRoute>
           }
