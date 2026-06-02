@@ -5,7 +5,6 @@ from fastapi import (
     UploadFile,
     File
 )
-from app.models.notification_model import Notification
 from sqlalchemy.orm import Session
 from uuid import uuid4
 
@@ -25,6 +24,7 @@ from app.schemas.case_schema import (
 
 router = APIRouter()
 
+
 @router.post(
     "/cases",
     response_model=CaseResponse
@@ -36,10 +36,13 @@ def create_case(
 
     new_case = Case(
         case_id=case.case_id,
-        patient_id=case.patient_id,
         doctor_id=case.doctor_id,
-        appointment_date=case.appointment_date,
+        patient_name=case.patient_name,
+        patient_phone=case.patient_phone,
+        gender=case.gender,
         age=case.age,
+        case_type=case.case_type,
+        appointment_date=case.appointment_date,
         delivery_deadline=case.delivery_deadline,
         preview_status=case.preview_status,
         status=case.status
@@ -47,18 +50,36 @@ def create_case(
 
     db.add(new_case)
     db.commit()
-    patient = db.query(User).filter(
-        User.id == new_case.patient_id
+    db.refresh(new_case)
+
+    doctor = db.query(User).filter(
+        User.id == new_case.doctor_id
     ).first()
 
     notification = Notification(
-      message=f"New case submitted by {patient.full_name} for (Case ID: {new_case.case_id})"
-       )
+        message=f"New case submitted by Dr. {doctor.full_name} (Case ID: {new_case.case_id})"
+    )
 
     db.add(notification)
     db.commit()
 
-    return new_case
+    return {
+        "id": new_case.id,
+        "case_id": new_case.case_id,
+        "doctor_id": new_case.doctor_id,
+        "doctor_name": doctor.full_name,
+        "patient_name": new_case.patient_name,
+        "patient_phone": new_case.patient_phone,
+        "gender": new_case.gender,
+        "age": new_case.age,
+        "case_type": new_case.case_type,
+        "appointment_date": new_case.appointment_date,
+        "delivery_deadline": new_case.delivery_deadline,
+        "preview_status": new_case.preview_status,
+        "status": new_case.status,
+        "created_at": new_case.created_at,
+        "files": []
+    }
 
 
 @router.get(
@@ -74,53 +95,34 @@ def get_cases(
     result = []
 
     for case in cases:
+
         result.append({
             "id": case.id,
             "case_id": case.case_id,
-            "patient_id": case.patient_id,
             "doctor_id": case.doctor_id,
-            "doctor_name":
-                case.doctor.full_name,
-
-            "patient_name":
-                case.patient.full_name,
-
-            "phone":
-                case.doctor.phone,
-
-            "appointment_date":
-                case.appointment_date,
-
-            "age":
-                case.age,
-
-            "delivery_deadline":
-                case.delivery_deadline,
-
-            "preview_status":
-                case.preview_status,
-
-            "status":
-                case.status,
-
-            "created_at":
-                case.created_at,
-
-            # FILES
+            "doctor_name": case.doctor.full_name,
+            "patient_name": case.patient_name,
+            "patient_phone": case.patient_phone,
+            "gender": case.gender,
+            "age": case.age,
+            "case_type": case.case_type,
+            "appointment_date": case.appointment_date,
+            "delivery_deadline": case.delivery_deadline,
+            "preview_status": case.preview_status,
+            "status": case.status,
+            "created_at": case.created_at,
             "files": [
                 {
                     "id": file.id,
-                    "file_name":
-                        file.file_name,
-
-                    "file_path":
-                        file.file_path
+                    "file_name": file.file_name,
+                    "file_path": file.file_path
                 }
                 for file in case.files
             ]
         })
 
     return result
+
 
 @router.get(
     "/cases/{case_id}",
@@ -143,7 +145,30 @@ def get_case(
             detail="Case not found"
         )
 
-    return case
+    return {
+        "id": case.id,
+        "case_id": case.case_id,
+        "doctor_id": case.doctor_id,
+        "doctor_name": case.doctor.full_name,
+        "patient_name": case.patient_name,
+        "patient_phone": case.patient_phone,
+        "gender": case.gender,
+        "age": case.age,
+        "case_type": case.case_type,
+        "appointment_date": case.appointment_date,
+        "delivery_deadline": case.delivery_deadline,
+        "preview_status": case.preview_status,
+        "status": case.status,
+        "created_at": case.created_at,
+        "files": [
+            {
+                "id": file.id,
+                "file_name": file.file_name,
+                "file_path": file.file_path
+            }
+            for file in case.files
+        ]
+    }
 
 
 @router.put(
@@ -169,16 +194,15 @@ def update_case(
         )
 
     case.case_id = updated_case.case_id
-    case.patient_id = updated_case.patient_id
     case.doctor_id = updated_case.doctor_id
-    case.appointment_date = updated_case.appointment_date
+    case.patient_name = updated_case.patient_name
+    case.patient_phone = updated_case.patient_phone
+    case.gender = updated_case.gender
     case.age = updated_case.age
-    case.delivery_deadline = (
-        updated_case.delivery_deadline
-    )
-    case.preview_status = (
-        updated_case.preview_status
-    )
+    case.case_type = updated_case.case_type
+    case.appointment_date = updated_case.appointment_date
+    case.delivery_deadline = updated_case.delivery_deadline
+    case.preview_status = updated_case.preview_status
     case.status = updated_case.status
 
     db.commit()
@@ -187,9 +211,7 @@ def update_case(
     return case
 
 
-@router.delete(
-    "/cases/{case_id}"
-)
+@router.delete("/cases/{case_id}")
 def delete_case(
     case_id: int,
     db: Session = Depends(get_db)
@@ -211,14 +233,11 @@ def delete_case(
     db.commit()
 
     return {
-        "message":
-        "Case deleted successfully"
+        "message": "Case deleted successfully"
     }
 
 
-@router.post(
-    "/cases/{case_id}/upload"
-)
+@router.post("/cases/{case_id}/upload")
 async def upload_case_file(
     case_id: int,
     file: UploadFile = File(...),
@@ -245,8 +264,7 @@ async def upload_case_file(
     )
 
     unique_filename = (
-        f"{uuid4()}_"
-        f"{file.filename}"
+        f"{uuid4()}_{file.filename}"
     )
 
     file_path = os.path.join(
@@ -254,15 +272,10 @@ async def upload_case_file(
         unique_filename
     )
 
-    with open(
-        file_path,
-        "wb"
-    ) as buffer:
-
+    with open(file_path, "wb") as buffer:
         shutil.copyfileobj(
             file.file,
-            buffer,
-            length=1024 * 1024
+            buffer
         )
 
     new_file = CaseFile(
@@ -277,22 +290,13 @@ async def upload_case_file(
     db.refresh(new_file)
 
     return {
-        "message":
-            "File uploaded successfully",
-
-        "file_name":
-            file.filename
+        "message": "File uploaded successfully",
+        "file_name": file.filename
     }
-
 
 
 @router.get("/case_files")
 def get_case_files(
     db: Session = Depends(get_db)
 ):
-
-    files = db.query(
-        CaseFile
-    ).all()
-
-    return files
+    return db.query(CaseFile).all()

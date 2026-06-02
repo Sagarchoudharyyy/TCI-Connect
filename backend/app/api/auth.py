@@ -1,27 +1,11 @@
-
-from fastapi import Header
-
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Header
 from sqlalchemy.orm import Session
-from app.database.database import get_db
-from app.models.user_model import User
-from app.schemas.user_schema import UserRegister
-from app.core.security import (
-    hash_password,
-    verify_password,
-    create_access_token
-)
 from sqlalchemy import or_
 from fastapi.security import OAuth2PasswordBearer
+
+from app.database.database import get_db
+from app.models.user_model import User
 from app.models.blacklist_model import Blacklist
-
-
-router = APIRouter()
-
-oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="login"
-)
-
 
 from app.core.security import (
     hash_password,
@@ -34,6 +18,11 @@ from app.schemas.user_schema import (
     UserLogin
 )
 
+router = APIRouter()
+
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="login"
+)
 
 
 @router.post("/register")
@@ -65,8 +54,7 @@ def register(
         vat_id=user.vat_id,
         country=user.country,
         password=hashed_password,
-        role="patient"
-
+        role="doctor"
     )
 
     db.add(new_user)
@@ -74,18 +62,20 @@ def register(
     db.refresh(new_user)
 
     return {
-        "message":
-        "Patient registered successfully"
+        "message": "Doctor registered successfully"
     }
+
 
 @router.post("/admin-register")
 def admin_register(
-    user:UserRegister,
-    db:Session=Depends(get_db)
+    user: UserRegister,
+    db: Session = Depends(get_db)
 ):
+
     existing_user = db.query(User).filter(
         User.email == user.email
     ).first()
+    print("Admin register called")
 
     if existing_user:
         return {
@@ -107,7 +97,6 @@ def admin_register(
         country=user.country,
         password=hashed_password,
         role="admin"
-
     )
 
     db.add(new_user)
@@ -115,40 +104,42 @@ def admin_register(
     db.refresh(new_user)
 
     return {
-        "message":
-        "Admin registered successfully"
+        "message": "Admin registered successfully"
     }
+
 
 @router.post("/login")
 def login(
     user: UserLogin,
     db: Session = Depends(get_db)
 ):
+    print("Login started")
 
-    print("Login attempt for:", user.username)
     db_user = db.query(User).filter(
         or_(
-        User.email == user.username,
-        User.phone==user.username
+            User.email == user.username,
+            User.phone == user.username
         )
     ).first()
 
-    print("User found in database:", db_user)
+    print("User found:", db_user)
 
     if not db_user:
         return {
-            "message":
-            "Invalid username and password"
+            "message": "Invalid username or password"
         }
+
+    print("Checking password")
 
     if not verify_password(
         user.password,
         db_user.password
     ):
         return {
-            "message":
-            "Invalid username and password"
+            "message": "Invalid username or password"
         }
+
+    print("Password verified")
 
     access_token = create_access_token(
         data={
@@ -158,41 +149,37 @@ def login(
         }
     )
 
+    print("Token generated")
+
     return {
-        "access_token":
-        access_token,
-
-        "token_type":
-        "bearer",
-
+        "access_token": access_token,
+        "token_type": "bearer",
         "user": {
-            "id":
-            db_user.id,
-
-            "full_name":
-            db_user.full_name,
-
-            "email":
-            db_user.email,
-
-            "phone":
-            db_user.phone,
-
-            "role":
-            db_user.role
+            "id": db_user.id,
+            "full_name": db_user.full_name,
+            "email": db_user.email,
+            "phone": db_user.phone,
+            "role": db_user.role
         }
     }
-
 @router.post("/logout")
 def logout(
     authorization: str = Header(None),
-    db:Session=Depends(get_db)
+    db: Session = Depends(get_db)
 ):
-    
-    token = authorization.replace("Bearer ", "")
-    blacklist_token = Blacklist(token=token)   
+
+    token = authorization.replace(
+        "Bearer ",
+        ""
+    )
+
+    blacklist_token = Blacklist(
+        token=token
+    )
+
     db.add(blacklist_token)
-    db.commit() 
+    db.commit()
+
     return {
-        "message":"Logged out successfully"
+        "message": "Logged out successfully"
     }
