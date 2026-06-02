@@ -6,7 +6,7 @@ import "../../styles/sidebar.css";
 import "../../styles/header.css";
 import "../../styles/tables.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   FaEye,
   FaEdit,
@@ -22,23 +22,49 @@ import "../../styles/pricing.css";
 function Pricing() {
   const navigate = useNavigate();
   const [prices, setPrices] = useState([]);
+  const [pricingData, setPricingData] = useState([]);
+  const [message, setMessage] = useState("");
+  const location = useLocation();
 
   useEffect(() => {
     console.log("Pricing page loaded");
     fetchPrices();
   }, []);
 
+  useEffect(() => {
+
+    if (
+      location.state &&
+      location.state.message
+    ) {
+
+      setMessage(
+        location.state.message
+      );
+
+      setTimeout(() => {
+        setMessage("");
+      }, 3000);
+
+      // clear state after showing message
+      window.history.replaceState(
+        {},
+        document.title
+      );
+    }
+
+  }, [location]);
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this price?")) {
       return;
     }
     try {
       await axios.delete(`http://127.0.0.1:8000/pricing/${id}`);
-      alert("Price deleted successfully");
+      setMessage("Price deleted successfully");
       fetchPrices();
     } catch (error) {
       console.error("Error deleting price:", error);
-      alert("Failed to delete price");
+      setMessage("Failed to delete price");
     }
   }
 
@@ -54,6 +80,17 @@ function Pricing() {
       console.error("Error fetching prices:", error);
     }
   };
+  const getPricingData = async () => {
+    try {
+      axios.get("http://127.0.0.1:8000/pricing").then((response) => {
+        setPricingData(response.data);
+      });
+    }
+    catch (error) {
+      console.error("Error fetching pricing data:", error);
+    }
+  };
+
 
   return (
     <div className="container-fluid">
@@ -68,9 +105,18 @@ function Pricing() {
 
             <Header title="Dashboard" />
             <div className="main-c-inner">
-              <a className="btn btn-primary mb-3">
+              {message && (
+                <div className="alert alert-success">
+                  {message}
+                </div>
+              )}
+              <button
+                className="btn btn-primary mb-3"
+                onClick={() => navigate("/add-price")}
+              >
                 Add Price
-              </a>
+              </button>
+
               <div className="table-responsive">
                 <table className="table table-bordered table-striped align-middle">
                   <thead className="table-light">
@@ -97,7 +143,7 @@ function Pricing() {
                         <td>{price.lebanon_lab_price}</td>
                         <td>
                           <button
-                            className="btn btn-md me-1"
+                            className="btn btn-md"
                             onClick={() =>
                               navigate(
                                 `/update-price/${price.id}`
@@ -107,7 +153,7 @@ function Pricing() {
                             <FaEdit />
                           </button>
                           <button className="btn btn-md " onClick={() => handleDelete(price.id)}>
-                            <FaTrash />
+                            <FaTrash className="text-danger" />
                           </button>
                         </td>
                       </tr>
