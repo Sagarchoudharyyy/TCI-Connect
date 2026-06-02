@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -9,33 +9,14 @@ import {
     FaEdit
 } from "react-icons/fa";
 
-function OrdersTable() {
+import heroImage from "../assets/hero.png";
+function OrdersTable({ cases }) {
 
     const [statusFilter, setStatusFilter] = useState("");
     const [deadlineFilter, setDeadlineFilter] = useState("");
     const [entriesPerPage, setEntriesPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState("");
-    const [cases, setCases] = useState([]);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        fetchCases();
-    }, []);
-
-    const fetchCases = async () => {
-        try {
-            const response = await axios.get(
-                "http://127.0.0.1:8000/api/cases"
-            );
-
-            setCases(response.data);
-        } catch (error) {
-            console.log(
-                "Error fetching cases:",
-                error
-            );
-        }
-    };
 
     const filteredCases = cases.filter((item) => {
 
@@ -47,9 +28,16 @@ function OrdersTable() {
             !deadlineFilter ||
             item.delivery_deadline === deadlineFilter;
 
+        const searchMatch =
+            !searchTerm ||
+            item.case_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.patient_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.doctor_name?.toLowerCase().includes(searchTerm.toLowerCase());
+
         return (
             statusMatch &&
-            deadlineMatch
+            deadlineMatch &&
+            searchMatch
         );
     });
 
@@ -72,11 +60,6 @@ function OrdersTable() {
     };
 
 
-    const uploadFile = (id, file) => {
-        console.log("Uploading file for case:", id, file);
-    };
-
-
     const formatDate = (date) => {
         if (!date) return "N/A";
         return new Date(date).toLocaleDateString();
@@ -84,10 +67,6 @@ function OrdersTable() {
 
     const isDeadlinePassed = (date) => {
         return new Date(date) < new Date();
-    };
-
-    const fetchDashboardData = () => {
-        console.log("Fetching dashboard data...");
     };
 
 
@@ -106,8 +85,7 @@ function OrdersTable() {
             );
 
             alert("Case deleted successfully");
-
-            fetchCases();
+            window.location.reload();
 
         } catch (error) {
 
@@ -149,8 +127,8 @@ function OrdersTable() {
                                 All
                             </option>
 
-                            <option value="Submited">
-                                Submited
+                            <option value="Submitted">
+                                Submitted
                             </option>
 
                             <option value="InProduction">
@@ -366,7 +344,7 @@ function OrdersTable() {
                                             <tr key={item.id}>
                                                 <td>
                                                     <img
-                                                        src="src\assets\hero.png"
+                                                        src={heroImage}
                                                         alt="profile"
                                                         width="40"
                                                     />
@@ -375,7 +353,7 @@ function OrdersTable() {
 
                                                 <td>{item.doctor_name}</td>
 
-                                                <td>{item.phone}</td>
+                                                <td>{item.patient_phone}</td>
 
                                                 <td>{item.patient_name}</td>
 
@@ -480,7 +458,7 @@ function OrdersTable() {
                                                         />
                                                     </button>
 
-                                                    {/* Upload Preview */}
+
                                                     <button
                                                         className="btn btn-link p-0 me-3"
                                                         onClick={() =>
