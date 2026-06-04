@@ -17,6 +17,7 @@ import AllNotifications from "./components/pages/AllNotifications";
 import UpdatePrice from "./components/pages/UpdatePrice";
 import Category from "./components/pages/Category";
 import DoctorDashboard from "./Doctor/Dashboard";
+import DoctorCases from "./Doctor/Cases";
 
 
 function App() {
@@ -146,7 +147,17 @@ function App() {
         <Route
           path="doctor-dashboard"
           element={
-            <DoctorDashboard />
+            <ProtectedRoute allowedRoles={["admin", "doctor"]}>
+              <DoctorDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="doctor-cases"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "doctor"]}>
+              <DoctorCases />
+            </ProtectedRoute>
           }
         />
 

@@ -1,35 +1,25 @@
-.main-content {
-    padding: 0;
-}
 
-@media (min-width: 768px) {
-    .col-md-9 {
-        flex: 0 0 auto;
-        width: 75%;
-    }
-}
 
-.mani-content-inner {
+.doctor-mani-content-inner {
     height: 100%;
 }
 
-@media (min-width: 992px) {
-    .col-lg-12 {
-        flex: 0 0 auto;
-        width: 100%;
-    }
-}
-
-.header {
+.doctor-header {
     border-bottom: 1px solid #e8e8e8;
     width: 100%;
     height: 90px;
     background: #fff;
     padding: 0 30px;
+
 }
 
-.header h2 {
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 5px;
+.flex-dd {
+    flex: auto;
+    padding-right: 20px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }

@@ -491,6 +491,101 @@ function OrdersTable({ cases }) {
                                         ))}
                                     </tbody>
                                 </table>
+
+                            </div>
+                            <div className="row mt-2 justify-content-between">
+                                <div className="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">
+                                    <div
+                                        className="dt-info"
+                                        aria-live="polite"
+                                        id="data-table_info"
+                                        role="status"
+                                    >
+                                        Showing 1 to 4 of 4 entries
+                                    </div>
+                                </div>
+
+                                <div className="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto">
+                                    <div className="dt-paging">
+                                        <nav aria-label="pagination">
+                                            <ul className="pagination">
+
+                                                <li className="dt-paging-button page-item disabled">
+                                                    <button
+                                                        className="page-link first"
+                                                        role="link"
+                                                        type="button"
+                                                        aria-controls="data-table"
+                                                        aria-disabled="true"
+                                                        aria-label="First"
+                                                        data-dt-idx="first"
+                                                        tabIndex={-1}
+                                                    >
+                                                        «
+                                                    </button>
+                                                </li>
+
+                                                <li className="dt-paging-button page-item disabled">
+                                                    <button
+                                                        className="page-link previous"
+                                                        role="link"
+                                                        type="button"
+                                                        aria-controls="data-table"
+                                                        aria-disabled="true"
+                                                        aria-label="Previous"
+                                                        data-dt-idx="previous"
+                                                        tabIndex={-1}
+                                                    >
+                                                        ‹
+                                                    </button>
+                                                </li>
+
+                                                <li className="dt-paging-button page-item active">
+                                                    <button
+                                                        className="page-link"
+                                                        role="link"
+                                                        type="button"
+                                                        aria-controls="data-table"
+                                                        aria-current="page"
+                                                        data-dt-idx="0"
+                                                    >
+                                                        1
+                                                    </button>
+                                                </li>
+
+                                                <li className="dt-paging-button page-item disabled">
+                                                    <button
+                                                        className="page-link next"
+                                                        role="link"
+                                                        type="button"
+                                                        aria-controls="data-table"
+                                                        aria-disabled="true"
+                                                        aria-label="Next"
+                                                        data-dt-idx="next"
+                                                        tabIndex={-1}
+                                                    >
+                                                        ›
+                                                    </button>
+                                                </li>
+
+                                                <li className="dt-paging-button page-item disabled">
+                                                    <button
+                                                        className="page-link last"
+                                                        role="link"
+                                                        type="button"
+                                                        aria-controls="data-table"
+                                                        aria-disabled="true"
+                                                        aria-label="Last"
+                                                        data-dt-idx="last"
+                                                        tabIndex={-1}
+                                                    >
+                                                        »
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

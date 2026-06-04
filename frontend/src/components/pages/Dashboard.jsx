@@ -66,9 +66,7 @@ function Dashboard() {
                         <OrdersTable
                             cases={cases}
                         />
-
                     </div>
-
                 </div>
             </div>
         </div>
