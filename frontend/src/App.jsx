@@ -17,8 +17,8 @@ import AllNotifications from "./components/pages/AllNotifications";
 import UpdatePrice from "./components/pages/UpdatePrice";
 import Category from "./components/pages/Category";
 import DoctorDashboard from "./Doctor/Dashboard";
-
-
+import Cases from "./Doctor/Cases";
+import UpdateCase from "./Doctor/UpdateCase";
 function App() {
   return (
     <BrowserRouter>
@@ -149,9 +149,13 @@ function App() {
             <DoctorDashboard />
           }
         />
-
+        <Route path="/doctor/cases" element={<Cases />} />
+        <Route
+          path="/doctor/update"
+          element={<UpdateCase />}
+        />
       </Routes>
-    </BrowserRouter>
+    </BrowserRouter >
   );
 }
 
