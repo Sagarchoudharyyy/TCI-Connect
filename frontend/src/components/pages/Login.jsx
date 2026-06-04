@@ -16,24 +16,68 @@ function Login() {
 
         setError("");
 
-        if (!username || !password) {
+        const trimmedUsername = username.trim();
+        const trimmedPassword = password.trim();
+
+
+        if (!trimmedUsername || !trimmedPassword) {
             setError("All fields are required");
             return;
         }
+
+        const emailRegex =
+            /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        const mobileRegex =
+            /^[6-9]\d{9}$/;
+
+        const isEmail =
+            emailRegex.test(trimmedUsername);
+
+        const isMobile =
+            mobileRegex.test(trimmedUsername);
+
+        if (!isEmail && !isMobile) {
+            setError(
+                "Enter a valid email or 10-digit mobile number"
+            );
+            return;
+        }
+
+
+        if (trimmedPassword.length < 8) {
+            setError(
+                "Password must be at least 8 characters"
+            );
+            return;
+        }
+
+        if (
+            trimmedPassword.includes(" ")
+        ) {
+            setError(
+                "Password cannot contain spaces"
+            );
+            return;
+        }
+
         setLoading(true);
+
         try {
             const response = await axios.post(
                 "http://127.0.0.1:8000/login",
                 {
-                    username,
-                    password,
+                    username: trimmedUsername,
+                    password: trimmedPassword,
                 }
             );
 
             console.log(response.data);
+
             if (!response.data.access_token) {
                 setError(
-                    response.data.message
+                    response.data.message ||
+                    "Login failed"
                 );
                 return;
             }
@@ -50,27 +94,26 @@ function Login() {
                 )
             );
 
-            const userRole = response.data.user?.role;
+            const userRole =
+                response.data.user?.role;
 
-            if (userRole === "admin") {
+            if (
+                userRole === "admin" ||
+                userRole === "doctor"
+            ) {
                 navigate("/dashboard");
-            } else if (userRole === "doctor") {
-                navigate("/dashboard");
-            }
-            else {
+            } else {
                 navigate("/login");
-
             }
-        } catch (error) {
 
+        } catch (error) {
             console.log(error);
 
             setError(
                 error.response?.data?.message ||
-                "Something went wrong"
+                "Invalid username or password"
             );
-        }
-        finally {
+        } finally {
             setLoading(false);
         }
     };

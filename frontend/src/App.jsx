@@ -16,6 +16,8 @@ import Pricing from "./components/pages/Pricing";
 import AllNotifications from "./components/pages/AllNotifications";
 import UpdatePrice from "./components/pages/UpdatePrice";
 import Category from "./components/pages/Category";
+import DoctorDashboard from "./Doctor/Dashboard";
+
 
 function App() {
   return (
@@ -139,6 +141,12 @@ function App() {
             <ProtectedRoute allowedRoles={["admin"]}>
               <Category />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="doctor-dashboard"
+          element={
+            <DoctorDashboard />
           }
         />
 
