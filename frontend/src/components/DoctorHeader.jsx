@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
-import "../DoctorStyle/DoctorHeader.css"
+import "../DoctorStyle/DoctorHeader.css";
+
 
 function DoctorHeader({ title = "Dashboard" }) {
+
     return (
 
         <div className="doctor-main-content-inner">
@@ -59,12 +61,13 @@ function DoctorHeader({ title = "Dashboard" }) {
                                 </div>
                                 <div className="dropdown">
 
-                                    <button
-
-                                        className="btn d-flex align-items-center text-decoration-none dropdown-toggle"
+                                    <a
+                                        href="#"
+                                        className=" d-flex align-items-center text-decoration-none dropdown-toggle"
                                         id="profileDropdown"
                                         data-bs-toggle="dropdown"
                                         aria-expanded="false"
+                                        onClick={(e) => e.preventDefault()}
 
                                     >
                                         <img
@@ -78,7 +81,7 @@ function DoctorHeader({ title = "Dashboard" }) {
                                         <span className="fw-bold text-primary">
                                             Nikhil Patidar
                                         </span>
-                                    </button>
+                                    </a>
 
                                     <ul
                                         className="dropdown-menu dropdown-menu-end shadow"

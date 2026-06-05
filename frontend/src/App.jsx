@@ -18,8 +18,10 @@ import UpdatePrice from "./components/pages/UpdatePrice";
 import Category from "./components/pages/Category";
 import DoctorDashboard from "./Doctor/Dashboard";
 import DoctorCases from "./Doctor/Cases";
-
-
+import Cases from "./Doctor/Cases";
+import UpdateCase from "./Doctor/UpdateCase";
+import NewCases from "./Doctor/CaseDetails";
+import Profile from "./Doctor/Setting";
 function App() {
   return (
     <BrowserRouter>
@@ -145,7 +147,7 @@ function App() {
           }
         />
         <Route
-          path="doctor-dashboard"
+          path="/doctor/dashboard"
           element={
             <ProtectedRoute allowedRoles={["admin", "doctor"]}>
               <DoctorDashboard />
@@ -153,16 +155,23 @@ function App() {
           }
         />
         <Route
-          path="doctor-cases"
+          path="doctor/cases"
           element={
             <ProtectedRoute allowedRoles={["admin", "doctor"]}>
               <DoctorCases />
             </ProtectedRoute>
           }
         />
+        <Route path="/doctor/cases" element={<Cases />} />
+        <Route path="/doctor/new-cases" element={<NewCases />} />
+        <Route path="/client/setting" element={<Profile />} />
 
+        <Route
+          path="/doctor/update"
+          element={<UpdateCase />}
+        />
       </Routes>
-    </BrowserRouter>
+    </BrowserRouter >
   );
 }
 

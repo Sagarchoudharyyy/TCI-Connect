@@ -165,11 +165,10 @@ function OrdersTable({ cases }) {
                         />
                     </div>
 
-                    {/* Buttons */}
                     <div className="col-md-3 mt-3">
                         <button
                             type="submit"
-                            className="btn btn-primary fltr-btn me-2 mt-3"
+                            className="btn btn-primary fltr-btn me-2 mt-3 ms-4"
                             style={{
                                 textDecoration: "none",
                                 backgroundColor: "#0152a8",
@@ -473,7 +472,6 @@ function OrdersTable({ cases }) {
                                                         />
                                                     </button>
 
-                                                    {/* Delete */}
                                                     <button
                                                         className="btn btn-link p-0"
                                                         onClick={() => handleDelete(item.id)}
