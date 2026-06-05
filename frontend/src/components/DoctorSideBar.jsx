@@ -21,8 +21,8 @@ function DoctorSideBar() {
                 <ul className="nav flex-column">
                     <li className="nav-item">
                         <Link
-                            to="/dashboard"
-                            className={`nav-link ${location.pathname === "/doctor-dashboard" ? "active" : ""
+                            to="/doctor/dashboard"
+                            className={`nav-link ${location.pathname === "/doctor/dashboard" ? "active" : ""
                                 }`}
                         >
                             <svg
@@ -81,8 +81,8 @@ function DoctorSideBar() {
                     </li>
                     <li className="nav-item">
                         <Link
-                            to="/doctor/new-case"
-                            className={`nav-link ${location.pathname === "/doctor/new-case"
+                            to="/doctor/new-cases"
+                            className={`nav-link ${location.pathname === "/doctor/new-cases"
                                 ? "active"
                                 : ""
                                 }`}

@@ -1,6 +1,6 @@
 import DoctorSideBar from "../components/DoctorSideBar";
 import DoctorHeader from "../components/DoctorHeader";
-function UploadFile() {
+function Profile() {
     return (
         <div className="container-fluid p-0">
             <div className="row g-0 doctor-dashboard-main">
@@ -13,4 +13,4 @@ function UploadFile() {
         </div>
     )
 }
-export default UploadFile;
+export default Profile;

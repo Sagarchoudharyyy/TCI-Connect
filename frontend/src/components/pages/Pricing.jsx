@@ -64,6 +64,9 @@ function Pricing() {
         setMessage("")
       }, 3000);
       fetchPrices();
+      setTimeout(() => {
+        setMessage("");
+      }, 3000);
     } catch (error) {
       console.error("Error deleting price:", error);
       setMessage("Failed to delete price");
