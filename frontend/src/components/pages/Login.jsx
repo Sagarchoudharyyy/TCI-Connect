@@ -210,13 +210,21 @@ function Login() {
                                                 Login
                                             </button>
                                         </form>
-                                        <p className="form-para">New to TCI Dental Lab? <a href="https://mediumseagreen-herring-541085.hostingersite.com/sign-up"> Create your account here.</a></p>
+                                        <p className="form-para">New to TCI Dental Lab?  <Link to="/register">
+                                            Create your account here.
+                                        </Link></p>
+                                        <p class="form-para">New to TCI Dental Lab?
+                                            <Link to="/register">
+                                                Create your account here.
+                                            </Link>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </section>
             <footer className="form-footer">
                 <div className="container">
