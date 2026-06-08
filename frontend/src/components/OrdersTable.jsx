@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import {
     FaEye,
@@ -56,6 +56,7 @@ function OrdersTable({ cases }) {
     };
     const handleReset = () => {
         setStatusFilter("");
+        console.log("reset clicked");
         setDeadlineFilter("");
     };
 
@@ -111,7 +112,7 @@ function OrdersTable({ cases }) {
                     onSubmit={handleSubmit}
                     className="row g-3 mb-3">
                     {/* Status */}
-                    <div className="col-md-3">
+                    <div className="col-md-3 ">
                         <label className="form-label">
                             Status
                         </label>
@@ -359,8 +360,8 @@ function OrdersTable({ cases }) {
                                                 <td>
                                                     {item.files?.length > 0 ? (
                                                         <>
-                                                            <a
-                                                                href={`http://127.0.0.1:8000/${item.files[0].file_path}`}
+                                                            <Link
+                                                                to={`http://127.0.0.1:8000/${item.files[0].file_path}`}
                                                                 target="_blank"
                                                                 rel="noreferrer"
                                                                 style={{
@@ -370,10 +371,10 @@ function OrdersTable({ cases }) {
                                                                 }}
                                                             >
                                                                 <FaEye />
-                                                            </a>
+                                                            </Link>
 
-                                                            <a
-                                                                href={`http://127.0.0.1:8000/${item.files[0].file_path}`}
+                                                            <Link
+                                                                to={`http://127.0.0.1:8000/${item.files[0].file_path}`}
                                                                 download
                                                                 style={{
                                                                     color: "#0152a8",
@@ -381,7 +382,7 @@ function OrdersTable({ cases }) {
                                                                 }}
                                                             >
                                                                 <FaDownload />
-                                                            </a>
+                                                            </Link>
                                                         </>
                                                     ) : (
                                                         <span>No File</span>
@@ -392,8 +393,8 @@ function OrdersTable({ cases }) {
                                                     {item.files?.length > 0 ? (
                                                         item.files.map((file, index) => (
                                                             <div key={index}>
-                                                                <a
-                                                                    href={`http://127.0.0.1:8000/${file.file_path}`}
+                                                                <Link
+                                                                    to={`http://127.0.0.1:8000/${file.file_path}`}
                                                                     target="_blank"
                                                                     rel="noreferrer"
                                                                     style={{
@@ -412,17 +413,17 @@ function OrdersTable({ cases }) {
                                                                                 file.file_path?.endsWith(".jpeg")
                                                                                 ? " (JPG)"
                                                                                 : ""}
-                                                                </a>
+                                                                </Link>
 
-                                                                <a
-                                                                    href={`http://127.0.0.1:8000/${file.file_path}`}
+                                                                <Link
+                                                                    to={`http://127.0.0.1:8000/${file.file_path}`}
                                                                     download
                                                                     style={{
                                                                         color: "#0152a8"
                                                                     }}
                                                                 >
                                                                     <FaDownload />
-                                                                </a>
+                                                                </Link>
                                                             </div>
                                                         ))
                                                     ) : (

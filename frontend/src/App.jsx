@@ -22,6 +22,7 @@ import Cases from "./Doctor/Cases";
 import UpdateCase from "./Doctor/UpdateCase";
 import NewCases from "./Doctor/CaseDetails";
 import Profile from "./Doctor/Setting";
+import DoctorPricing from "./Doctor/DoctorPricing";
 function App() {
   return (
     <BrowserRouter>
@@ -43,7 +44,7 @@ function App() {
         />
 
         <Route
-          path="/pricing"
+          path="/admin/pricing"
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <Pricing />
@@ -62,7 +63,7 @@ function App() {
 
 
         <Route
-          path="/dashboard"
+          path="/admin/dashboard"
           element={
             <ProtectedRoute
               allowedRoles={["admin", "doctor"]}
@@ -73,7 +74,7 @@ function App() {
         />
 
         <Route
-          path="/recent-case"
+          path="/admin/recent-case"
           element={
             <ProtectedRoute
               allowedRoles={["admin", "doctor"]}
@@ -84,7 +85,7 @@ function App() {
         />
 
         <Route
-          path="/all-doctors"
+          path="/admin/all-doctors"
           element={
             <ProtectedRoute
               allowedRoles={["admin"]}
@@ -95,7 +96,7 @@ function App() {
         />
 
         <Route
-          path="/chats"
+          path="/admin/chats"
           element={
             <ProtectedRoute
               allowedRoles={[
@@ -107,6 +108,19 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/client/chats"
+          element={
+            <ProtectedRoute
+              allowedRoles={[
+                "doctor", "admin"
+              ]}
+            >
+              <ChatWindow />
+            </ProtectedRoute>
+          }
+        />
+
 
         <Route
           path="/chat/:id"
@@ -118,6 +132,15 @@ function App() {
               ]}
             >
               <ChatWindow />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/client/pricing"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <DoctorPricing />
             </ProtectedRoute>
           }
         />
@@ -147,7 +170,7 @@ function App() {
           }
         />
         <Route
-          path="/doctor/dashboard"
+          path="/client/dashboard"
           element={
             <ProtectedRoute allowedRoles={["admin", "doctor"]}>
               <DoctorDashboard />
@@ -155,19 +178,18 @@ function App() {
           }
         />
         <Route
-          path="doctor/cases"
+          path="client/cases"
           element={
             <ProtectedRoute allowedRoles={["admin", "doctor"]}>
               <DoctorCases />
             </ProtectedRoute>
           }
         />
-        <Route path="/doctor/cases" element={<Cases />} />
-        <Route path="/doctor/new-cases" element={<NewCases />} />
+        <Route path="/client/new-cases" element={<NewCases />} />
         <Route path="/client/setting" element={<Profile />} />
 
         <Route
-          path="/doctor/update"
+          path="/client/update"
           element={<UpdateCase />}
         />
       </Routes>

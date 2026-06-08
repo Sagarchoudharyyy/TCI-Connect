@@ -26,9 +26,12 @@ const ProtectedRoute = ({
         allowedRoles &&
         !allowedRoles.includes(user.role)
     ) {
+        console.log("USER:", user);
+        console.log("ROLE:", user?.role);
+        console.log("ALLOWED:", allowedRoles);
         return (
             <Navigate
-                to="/dashboard"
+                to="/client/dashboard"
                 replace
             />
         );

@@ -104,7 +104,7 @@ function Login() {
                 userRole === "admin" ||
                 userRole === "doctor"
             ) {
-                navigate("/dashboard");
+                navigate("/admin/dashboard");
             } else {
                 navigate("/login");
             }
@@ -210,14 +210,13 @@ function Login() {
                                                 Login
                                             </button>
                                         </form>
-                                        <p class="form-para">New to TCI Dental Lab? <a href="https://mediumseagreen-herring-541085.hostingersite.com/sign-up"> Create your account here.</a></p>
+                                        <p className="form-para">New to TCI Dental Lab? <a href="https://mediumseagreen-herring-541085.hostingersite.com/sign-up"> Create your account here.</a></p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                ::after
             </section>
             <footer className="form-footer">
                 <div className="container">
