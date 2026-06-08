@@ -1,0 +1,288 @@
+.form-header {
+  background: linear-gradient(90.32deg, #0152A8 20.79%, #00254C 73.28%);
+}
+
+@media (min-width: 1400px) {
+
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl,
+  .container-xxl {
+    max-width: 1360px;
+  }
+}
+
+body {
+  overflow-x: hidden;
+  font-family: "Roboto", sans-serif;
+}
+
+@media (min-width: 1400px) {
+
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl,
+  .container-xxl {
+    max-width: 1360px;
+  }
+}
+
+.form-section {
+  min-height: 110vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 100px 0;
+}
+
+:root {
+  --color-black: #000000;
+  --color-white: #ffffff;
+}
+
+.form-section:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #011225 -0.64%, rgb(0 37 76 / 72%) 51.74%, rgb(0 37 76 / 55%) 100%);
+}
+
+.form-section .formsec-main {
+  position: relative;
+  z-index: 9;
+}
+
+.form-section .formbxx-warrper {
+  width: 100%;
+  max-width: 11 00px;
+}
+
+.formsec-bxx .row {
+  --bs-gutter-x: 30px;
+}
+
+.form-section .formsec-main .main-heading {
+  margin-bottom: 10px;
+}
+
+.main-heading {
+  font-family: 'Roboto';
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 130%;
+  color: #fff;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+.section-heading {
+  position: relative;
+  z-index: 1;
+}
+
+.form-section .formsec-bxx .form-para {
+  font-family: 'Roboto';
+  font-weight: 500;
+  font-size: 15px;
+  line-height: normal;
+  letter-spacing: 0.01em;
+  text-align: center;
+  color: #fff;
+
+  margin-top: 20px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+.form-section .form-group {
+  margin-bottom: 15px;
+}
+
+.form-section .form-group input,
+.form-section .form-group select {
+  font-family: 'Roboto';
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 125%;
+  color: #fff;
+  border: 1px solid #fff;
+  border-radius: 100px;
+  width: 100%;
+  height: 56px;
+  background: transparent;
+  padding: 0 20px;
+  box-shadow: none;
+}
+
+.form-section .form-check-label.form-checkbxx {
+  color: #fff;
+  margin-left: 5px;
+}
+
+.form-footer {
+  background: linear-gradient(90.79deg, #0152A8 28.04%, #00254C 82.9%);
+  padding: 75px 0 0;
+}
+
+@media (min-width: 1400px) {
+
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl,
+  .container-xxl {
+    max-width: 1360px;
+  }
+}
+
+@media (min-width: 992px) {
+  .col-lg-4 {
+    flex: 0 0 auto;
+    width: 33.33333333%;
+  }
+}
+
+a {
+  text-decoration: none;
+  display: inline-block;
+}
+
+
+
+
+
+.form-footer-logo a h1 {
+  font-family: 'Roboto';
+  font-weight: 700;
+  font-size: 38px;
+  line-height: normal;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.form-content p {
+  font-family: 'Roboto';
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 175%;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+.form-sicons ul li a {
+  border-radius: 100%;
+  border: 0.94px solid #fff;
+  height: 44px;
+  width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-sicons ul {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.form-sicons ul li {
+  text-align: center;
+}
+
+.formf-last {
+  margin-top: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 25px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.formf-last p {
+  font-family: 'Roboto';
+  font-weight: 400;
+  font-size: 15px;
+  line-height: normal;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.formf-last p a {
+  font-weight: 500;
+  font-size: 16px;
+  color: inherit;
+}
+
+.btn-all {
+  width: 100%;
+  height: 56px;
+  border-radius: 100px;
+}
+
+
+.form-section select option {
+  color: #000 !important;
+  background-color: #fff !important;
+}
+
+.password-field {
+  position: relative;
+}
+
+.password-field .form-control {
+  padding-right: 50px;
+}
+
+.toggle-btn {
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0;
+  z-index: 10;
+}
+
+.toggle-btn:focus {
+  outline: none;
+  box-shadow: none;
+}
