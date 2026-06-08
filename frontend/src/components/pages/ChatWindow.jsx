@@ -6,25 +6,35 @@ import { useParams } from "react-router-dom";
 import "../../styles/chatWindow.css";
 
 function ChatWindow() {
-
   const { id } = useParams();
 
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [user, setUser] = useState(null);
 
-  const sender_id = 1;
+  // Logged in user id
+  const loggedUser =
+    JSON.parse(localStorage.getItem("user"));
+
+  const sender_id = loggedUser?.id;
+
+  // If no id in URL → open admin chat
+  const receiver_id = id || 1;
 
   useEffect(() => {
-    getMessages();
-    getUser();
-  }, [id]);
+
+    if (sender_id && receiver_id) {
+      getMessages();
+      getUser();
+    }
+
+  }, [id, sender_id]);
 
   const getUser = async () => {
     try {
 
       const res = await axios.get(
-        `http://127.0.0.1:8000/user/${id}`
+        `http://127.0.0.1:8000/user/${receiver_id}`
       );
 
       setUser(res.data);
@@ -38,7 +48,7 @@ function ChatWindow() {
     try {
 
       const res = await axios.get(
-        `http://127.0.0.1:8000/messages/${sender_id}/${id}`
+        `http://127.0.0.1:8000/messages/${sender_id}/${receiver_id}`
       );
 
       setMessages(res.data);
@@ -58,7 +68,7 @@ function ChatWindow() {
         "http://127.0.0.1:8000/send-message",
         {
           sender_id,
-          receiver_id: Number(id),
+          receiver_id: Number(receiver_id),
           message: newMessage,
         }
       );

@@ -1,7 +1,6 @@
-import DoctorSideBar from "../components/DoctorSideBar";
-import DoctorHeader from "../components/DoctorHeader";
-import "../DoctorStyle/doctor-dashboard.css";
+
 import "../DoctorStyle/Cases.css";
+import "../DoctorStyle/DoctorOrderTable.css";
 import {
     FaEye,
     FaUpload,
@@ -13,14 +12,21 @@ import { useEffect, useState } from "react";
 import { getCases, deleteCase } from "../services/caseService";
 import { Link } from "react-router-dom";
 
-function DoctorCases() {
 
-    const [cases, setCases] = useState([]);
+function DoctorOrderTable({
+
+    title = "All Cases",
+    showSubmitButton = true,
+
+}) {
+
     const [statusFilter, setStatusFilter] = useState("");
     const [deadlineFilter, setDeadlineFilter] = useState("");
     const [entriesPerPage, setEntriesPerPage] = useState(5);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
+    const [cases, setCases] = useState([]);
+
 
     const fetchCases = async () => {
         try {
@@ -33,28 +39,30 @@ function DoctorCases() {
     };
 
 
-    const filteredCases = cases.filter((item) => {
+    const filteredCases = Array.isArray(cases)
+        ? cases.filter((item) => {
 
-        const statusMatch =
-            !statusFilter ||
-            item.status === statusFilter;
+            const statusMatch =
+                !statusFilter ||
+                item.status === statusFilter;
 
-        const deadlineMatch =
-            !deadlineFilter ||
-            item.delivery_deadline === deadlineFilter;
+            const deadlineMatch =
+                !deadlineFilter ||
+                item.delivery_deadline === deadlineFilter;
 
-        const searchMatch =
-            !searchTerm ||
-            item.case_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.patient_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.doctor_name?.toLowerCase().includes(searchTerm.toLowerCase());
+            const searchMatch =
+                !searchTerm ||
+                item.case_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.patient_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                item.doctor_name?.toLowerCase().includes(searchTerm.toLowerCase());
 
-        return (
-            statusMatch &&
-            deadlineMatch &&
-            searchMatch
-        );
-    });
+            return (
+                statusMatch &&
+                deadlineMatch &&
+                searchMatch
+            );
+        })
+        : [];
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -105,27 +113,27 @@ function DoctorCases() {
         fetchCases();
     }, []);
     return (
-        <div className="container-fluid p-0">
-            <div className="row g-0 doctor-dashboard-main">
-                <DoctorSideBar />
-                <div className="col-md-9 doctor-main-content">
-                    <DoctorHeader title="Dashboard" />
+        <div className="row">
+            <div className="col-12">
+                <div className="table-card mt-3">
                     <div className="mc-btm-bxx">
                         <div className="case-heading">
                             <div className="section-heading">
                                 <h4 className="sub-heading">
-                                    All Cases
+                                    {title}
                                 </h4>
                             </div>
-
-                            <div className="case-btn">
-                                <Link to="/client/new-cases" className="submit-link">
-                                    <button className="submit-btn text-white">
-                                        Submit a Case
-                                    </button>
-                                </Link>
-                            </div>
+                            {showSubmitButton && (
+                                <div className="case-btn">
+                                    <Link to="/client/new-cases" className="submit-link">
+                                        <button className="submit-btn text-white">
+                                            Submit a Case
+                                        </button>
+                                    </Link>
+                                </div>
+                            )}
                         </div>
+
                         <form
                             onSubmit={handleSubmit}
                             className="row g-3 mb-3">
@@ -219,10 +227,8 @@ function DoctorCases() {
                                             <select
                                                 value={entriesPerPage}
                                                 onChange={(e) => {
-                                                    setEntriesPerPage(
-                                                        Number(e.target.value)
-                                                    );
-                                                    setCurrentPage(1);
+                                                    setEntriesPerPage(Number(e.target.value));
+                                                    setCurrentPage(1)
                                                 }}
                                                 className="form-select"
                                             >
@@ -516,7 +522,8 @@ function DoctorCases() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
+
 }
-export default DoctorCases;
+export default DoctorOrderTable;

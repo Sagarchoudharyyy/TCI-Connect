@@ -5,7 +5,7 @@ import "../../styles/dashboard.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../styles/sidebar.css";
 import "../../styles/header.css";
-import "../../styles/tables.css";
+
 import "../../styles/dashboardcard.css";
 
 import Sidebar from "../Sidebar";

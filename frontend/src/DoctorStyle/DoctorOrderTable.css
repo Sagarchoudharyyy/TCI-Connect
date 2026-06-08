@@ -1,0 +1,17 @@
+.table-card {
+    box-shadow: 0 5px 11px 0 rgba(199, 199, 199, 0.1), 0 20px 20px 0 rgba(199, 199, 199, 0.09), 0 46px 27px 0 rgba(199, 199, 199, 0.05), 0 81px 32px 0 rgba(199, 199, 199, 0.01), 0 127px 36px 0 rgba(199, 199, 199, 0);
+    background: #fff;
+}
+
+.chart-card:hover,
+.table-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.chart-card,
+.table-card {
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 14px;
+}

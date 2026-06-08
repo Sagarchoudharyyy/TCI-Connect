@@ -34,8 +34,8 @@ function Sidebar() {
                 <ul className="nav flex-column">
                     <li className="nav-item">
                         <Link
-                            to="/dashboard"
-                            className={`nav-link ${location.pathname === "/dashboard"
+                            to="/admin/dasboard"
+                            className={`nav-link ${location.pathname === "/admin/dasboard"
                                 ? "active"
                                 : ""
                                 }`}
@@ -51,8 +51,8 @@ function Sidebar() {
                     </li>
                     <li className="nav-item">
                         <Link
-                            to="/recent-case"
-                            className={`nav-link ${location.pathname === "/recent-case"
+                            to="/admin/recent-case"
+                            className={`nav-link ${location.pathname === "/admin/recent-case"
                                 ? "active"
                                 : ""
                                 }`}
@@ -68,8 +68,8 @@ function Sidebar() {
                     {role === "admin" && (
                         <li className="nav-item">
                             <Link
-                                to="/all-doctors"
-                                className={`nav-link ${location.pathname === "/all-doctors"
+                                to="/admin/all-doctors"
+                                className={`nav-link ${location.pathname === "/admin/all-doctors"
                                     ? "active"
                                     : ""
                                     }`}
@@ -91,8 +91,8 @@ function Sidebar() {
                     )}
                     <li className="nav-item">
                         <Link
-                            to="/chats"
-                            className={`nav-link ${location.pathname === "/chats"
+                            to="/admin/chats"
+                            className={`nav-link ${location.pathname === "/admin/chats"
                                 ? "active"
                                 : ""
                                 }`}
@@ -120,10 +120,10 @@ function Sidebar() {
                     </li>
                     <li className="nav-item">
                         <Link
-                            to="/pricing"
-                            className={`nav-link ${location.pathname === "/pricing"
-                                    ? "active"
-                                    : ""
+                            to="/admin/pricing"
+                            className={`nav-link ${location.pathname === "/admin/pricing"
+                                ? "active"
+                                : ""
                                 }`}
                         >
                             <svg
@@ -142,7 +142,7 @@ function Sidebar() {
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" to="#setting">
+                        <Link className="nav-link" to="/admin/setting">
                             <svg
                                 width="24"
                                 height="24"

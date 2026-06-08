@@ -1,0 +1,20 @@
+.table>thead {
+    vertical-align: bottom;
+}
+
+@media (min-width: 1200px) {
+
+    .h2,
+    h2 {
+        font-size: 2rem;
+    }
+}
+
+.mc-btm-bxx {
+    height: 800px;
+    overflow-y: auto;
+}
+
+.mc-btm-bxx {
+    padding: 30px;
+}
