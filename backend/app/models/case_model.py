@@ -72,7 +72,7 @@ class Case(Base):
 
     preview_status = Column(
         String(30),
-        default="Pending"
+        default="-"
     )
 
     status = Column(
