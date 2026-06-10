@@ -131,3 +131,8 @@
     margin-left: auto;
     border-bottom-right-radius: 4px;
 }
+
+.chat-wrapper {
+    max-width: 900px;
+    margin: 30px auto;
+}
