@@ -36,6 +36,30 @@ function AllDoctors() {
       console.log("Error fetching doctors", error);
     }
   };
+  const toggleDoctorStatus =
+    async (doctorId) => {
+
+      try {
+
+        const response =
+          await axios.put(
+            `http://127.0.0.1:8000/toggle-doctor-status/${doctorId}`
+          );
+
+        console.log(
+          response.data
+        );
+
+        fetchDoctors();
+
+      } catch (error) {
+
+        console.log(
+          "Status Update Error",
+          error
+        );
+      }
+    };
   const deleteDoctor = async (doctorId) => {
 
     const confirmDelete = window.confirm(
@@ -192,13 +216,25 @@ function AllDoctors() {
                             <td>
 
                               <span
+                                onClick={() =>
+                                  toggleDoctorStatus(
+                                    doctor.id
+                                  )
+                                }
                                 style={{
-                                  color: "green",
+                                  color:
+                                    doctor.status ===
+                                      "approved"
+                                      ? "green"
+                                      : "orange",
                                   fontWeight: "bold",
                                   cursor: "pointer",
                                 }}
                               >
-                                {doctor.is_active ? "Approved" : "Pending"}
+                                {doctor.status ===
+                                  "approved"
+                                  ? "Approved"
+                                  : "Pending"}
                               </span>
 
                             </td>

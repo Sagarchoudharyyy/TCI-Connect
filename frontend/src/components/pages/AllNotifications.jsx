@@ -7,7 +7,17 @@ function AllNotifications() {
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
+
     fetchNotifications();
+
+    const interval =
+      setInterval(() => {
+        fetchNotifications();
+      }, 5000);
+
+    return () =>
+      clearInterval(interval);
+
   }, []);
 
   const fetchNotifications = async () => {
@@ -46,11 +56,15 @@ function AllNotifications() {
                   <div
                     key={item.id}
                     className="border-bottom p-3"
+
                     style={{
+                      backgroundColor:
+                        item.is_read
+                          ? "#fff"
+                          : "#e8f4ff",
                       maxWidth: "1020px",
                       cursor: "pointer",
                       transition: "0.2s"
-
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.backgroundColor =

@@ -29,6 +29,8 @@ class User(Base):
 
     role = Column(String, nullable=False)
 
+    status = Column(String, default="pending")
+
     # Cases submitted by doctor
     doctor_cases = relationship(
         "Case",
