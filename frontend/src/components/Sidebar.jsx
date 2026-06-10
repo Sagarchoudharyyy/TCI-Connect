@@ -18,11 +18,22 @@ function Sidebar() {
         );
 
     const role = user?.role;
+    console.log(
+        "User:",
+        user
+    );
+    console.log(
+        "Role:",
+        role
+    );
 
     const handleLogout = () => {
         localStorage.removeItem("token");
+
         localStorage.removeItem("user");
+
         navigate("/login");
+        
         console.log("logout working");
     };
     return (
@@ -34,8 +45,8 @@ function Sidebar() {
                 <ul className="nav flex-column">
                     <li className="nav-item">
                         <Link
-                            to="/admin/dasboard"
-                            className={`nav-link ${location.pathname === "/admin/dasboard"
+                            to="/admin/dashboard"
+                            className={`nav-link ${location.pathname === "/admin/dashboard"
                                 ? "active"
                                 : ""
                                 }`}

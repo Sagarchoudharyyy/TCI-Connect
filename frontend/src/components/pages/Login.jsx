@@ -100,11 +100,11 @@ function Login() {
             const userRole =
                 response.data.user?.role;
 
-            if (
-                userRole === "admin" ||
-                userRole === "doctor"
-            ) {
+            if (userRole === "admin") {
                 navigate("/admin/dashboard");
+            }
+            else if (userRole === "doctor") {
+                navigate("/client/dashboard");
             } else {
                 navigate("/login");
             }
@@ -213,11 +213,11 @@ function Login() {
                                         <p className="form-para">New to TCI Dental Lab?  <Link to="/register">
                                             Create your account here.
                                         </Link></p>
-                                        <p class="form-para">New to TCI Dental Lab?
+                                        {/* <p className="form-para">New to TCI Dental Lab?
                                             <Link to="/register">
                                                 Create your account here.
                                             </Link>
-                                        </p>
+                                        </p> */}
                                     </div>
                                 </div>
                             </div>

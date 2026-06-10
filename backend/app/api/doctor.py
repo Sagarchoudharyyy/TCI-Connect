@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.database.database import SessionLocal
 from app.models.user_model import User
 from app.schemas.user_schema import UserRegister
+from app.core.security import hash_password
 
 router = APIRouter(tags=["Doctors"])
 
@@ -36,8 +37,9 @@ def create_doctor(user: UserRegister, db: Session = Depends(get_db)):
         license_number=user.license_number,
         vat_id=user.vat_id,
         country=user.country,
-        password=user.password,
-        role="doctor"
+        password=hash_password(user.password),
+        role="doctor",
+        status="pending"
     )
 
     db.add(new_doctor)
@@ -80,7 +82,36 @@ def update_doctor(
         "message": "Doctor updated successfully",
         "doctor": doctor
     }
-  
+
+@router.put("/toggle-doctor-status/{doctor_id}")
+def toggle_doctor_status(
+    doctor_id: int,
+    db: Session = Depends(get_db)
+):
+
+    doctor = db.query(User).filter(
+        User.id == doctor_id,
+        User.role == "doctor"
+    ).first()
+
+    if not doctor:
+        return {
+            "message": "Doctor not found"
+        }
+
+    if doctor.status == "approved":
+        doctor.status = "pending"
+    else:
+        doctor.status = "approved"
+
+    db.commit()
+    db.refresh(doctor)
+
+    return {
+        "message": "Doctor status updated",
+        "doctor": doctor
+    }
+
 @router.delete("/doctors/{doctor_id}")
 def delete_doctor(
     doctor_id: int,
