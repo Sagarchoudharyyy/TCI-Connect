@@ -1060,8 +1060,8 @@ function NewCases() {
                                                 id="successPdfUpload"
                                             ></span>
                                         </div>
-                                        <div class="text-end">
-                                            <button class="btn btn-primary" onclick="nextStep()">Next</button>
+                                        <div className="text-end">
+                                            <button className="btn btn-primary" onClick={handleNext}>Next</button>
                                         </div>
 
                                     </div>

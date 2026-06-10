@@ -100,17 +100,10 @@ function Login() {
             const userRole =
                 response.data.user?.role;
 
-<<<<<<< HEAD
             if (userRole === "admin") {
                 navigate("/admin/dashboard");
             }
             else if (userRole === "doctor") {
-=======
-            if (
-                userRole === "admin" ||
-                userRole === "doctor"
-            ) {
->>>>>>> client-chat-window
                 navigate("/client/dashboard");
             } else {
                 navigate("/login");
@@ -220,14 +213,11 @@ function Login() {
                                         <p className="form-para">New to TCI Dental Lab?  <Link to="/register">
                                             Create your account here.
                                         </Link></p>
-<<<<<<< HEAD
                                         {/* <p className="form-para">New to TCI Dental Lab?
                                             <Link to="/register">
                                                 Create your account here.
                                             </Link>
                                         </p> */}
-=======
->>>>>>> client-chat-window
                                     </div>
                                 </div>
                             </div>
