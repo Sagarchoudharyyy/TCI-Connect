@@ -20,7 +20,7 @@ import DoctorDashboard from "./Doctor/Dashboard";
 import DoctorCases from "./Doctor/Cases";
 import Cases from "./Doctor/Cases";
 import UpdateCase from "./Doctor/UpdateCase";
-import NewCases from "./Doctor/CaseDetails";
+import NewCases from "./Doctor/NewCases";
 import Profile from "./Doctor/Setting";
 import DoctorPricing from "./Doctor/DoctorPricing";
 function App() {
@@ -178,18 +178,25 @@ function App() {
           }
         />
         <Route
-          path="client/cases"
+          path="/client/cases"
           element={
             <ProtectedRoute allowedRoles={["admin", "doctor"]}>
               <DoctorCases />
             </ProtectedRoute>
           }
         />
-        <Route path="/client/new-cases" element={<NewCases />} />
-        <Route path="/client/setting" element={<Profile />} />
+        <Route
+          path="/client/new-cases"
+          element={<NewCases />}
+        />
 
         <Route
-          path="/client/update"
+          path="/client/setting"
+          element={<Profile />}
+        />
+
+        <Route
+          path="/client/update-case/:caseId"
           element={<UpdateCase />}
         />
       </Routes>

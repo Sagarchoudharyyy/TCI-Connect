@@ -1,0 +1,295 @@
+import "../DoctorStyle/ReviewConfirm.css";
+import { useState } from "react";
+
+function ReviewConfirm({
+    formData,
+    setFormData,
+    handlePrevious,
+    handleSubmit,
+    checkboxErrors
+}) {
+    return (
+        <div className="step-content">
+
+            <h2
+                className="text-xl fw-semibold mb-4"
+                style={{ color: "#0152a8" }}
+            >
+                3. Review & Confirm
+            </h2>
+
+            <div className="review-card p-3 bg-light rounded mb-3">
+
+                <h3 className="fw-semibold mb-2">
+                    Case Details
+                </h3>
+
+                <p>
+                    <strong>
+                        Patient Id:
+                    </strong>{" "}
+                    {formData.patientId ||
+                        "Not provided"}
+                </p>
+
+                <p>
+                    <strong>
+                        Patient Name:
+                    </strong>{" "}
+                    {formData.patientName ||
+                        "Not provided"}
+                </p>
+
+                <p>
+                    <strong>
+                        Gender:
+                    </strong>{" "}
+                    {formData.gender ||
+                        "Not selected"}
+                </p>
+
+                <p>
+                    <strong>
+                        Next Appointment Date:
+                    </strong>{" "}
+                    {formData
+                        .nextAppointmentDate ||
+                        "Not provided"}
+                </p>
+
+                <p>
+                    <strong>
+                        Time:
+                    </strong>{" "}
+                    {formData.time ||
+                        "Not provided"}
+                </p>
+
+                <p>
+                    <strong>
+                        Delivery Deadline:
+                    </strong>{" "}
+                    {formData
+                        .deliveryDeadline ||
+                        "Not provided"}
+                </p>
+
+                <p>
+                    <strong>
+                        Age:
+                    </strong>{" "}
+                    {formData.age ||
+                        "Not provided"}
+                </p>
+
+                <p>
+                    <strong>
+                        Case Stage:
+                    </strong>{" "}
+                    {formData.caseStage ||
+                        "None"}
+                </p>
+                <h3 className="font-semibold mb-2 mt-3">Shade Instructions</h3>
+                <p><strong>Surface Texture:</strong> None</p>
+                <p><strong>Glazed Polish:</strong> None</p>
+                <p><strong>Glazed Polish:</strong> None</p>
+                <p><strong>Glazed Polish:</strong> None</p>
+                <p><strong>Glazed Polish:</strong> None</p>
+                <p><strong>Material Type:</strong> None</p>
+                <p><strong>Material Type:</strong> None</p>
+                <p><strong>Material Type:</strong> None</p>
+                <p>No data provided</p>
+                <p><strong>Additional Restorations:</strong> None</p>
+                <p><strong>Additional Instructions:</strong> None</p>
+                <p><strong>Case PDF:</strong> No file uploaded</p>
+                <p><strong>Digital Files:</strong></p>
+
+                {formData.files?.length >
+                    0 ? (
+                    <ul>
+
+                        {formData.files.map(
+                            (
+                                file,
+                                index
+                            ) => (
+                                <li
+                                    key={index}
+                                >
+                                    {
+                                        file.name
+                                    }
+                                </li>
+                            )
+                        )}
+
+                    </ul>
+                ) : (
+                    <p>
+                        No files
+                        uploaded
+                    </p>
+                )}
+
+            </div>
+
+            {/* GDPR */}
+
+            <div className="mb-3">
+
+                <input
+                    type="checkbox"
+                    id="gdprConfirm"
+                    checked={formData.gdprConfirm}
+                    onChange={(e) =>
+                        setFormData(prev => ({
+                            ...prev,
+                            gdprConfirm:
+                                e.target.checked
+                        }))
+                    }
+                />
+
+
+                <label
+                    htmlFor="gdprConfirm"
+                    className="ms-2"
+                >
+                    I confirm that all
+                    uploaded files
+                    comply with GDPR
+                    regulations
+                    <span className="required-star">
+                        *
+                    </span>
+                </label>
+
+                {!formData.gdprConfirm && (
+                    <p className="text-danger mt-1">
+                        You must confirm GDPR
+                        compliance.
+                    </p>
+                )}
+
+            </div>
+
+            {/* DPCA */}
+
+            <div className="mb-3">
+
+                <input
+                    type="checkbox"
+                    id="dpcaConfirm"
+                    checked={formData.dpcaConfirm}
+                    onChange={(e) =>
+                        setFormData(prev => ({
+                            ...prev,
+                            dpcaConfirm:
+                                e.target.checked
+                        }))
+                    }
+                />
+
+                <label
+                    htmlFor="dpcaConfirm"
+                    className="ms-2"
+                >
+                    I accept the{" "}
+
+                    <a
+                        href="https://tcidentallab.com/client/dpca-confirmation"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        Data Processing &
+                        Confidentiality
+                        Agreement
+                    </a>
+
+                    <span className="required-star">
+                        *
+                    </span>
+                </label>
+
+                {!formData.dpcaConfirm && (
+                    <p className="text-danger mt-1">
+                        You must confirm Data
+                        Processing &
+                        Confidentiality
+                        Agreement.
+                    </p>
+                )}
+
+            </div>
+
+            {/* Patient Consent */}
+
+            <div className="mb-3">
+
+
+                <input
+                    type="checkbox"
+                    id="patientConsent"
+                    checked={
+                        formData.patientConsent
+                    }
+                    onChange={(e) =>
+                        setFormData(prev => ({
+                            ...prev,
+                            patientConsent:
+                                e.target.checked
+                        }))
+                    }
+                />
+
+                <label
+                    htmlFor="patientConsent"
+                    className="ms-2"
+                >
+                    I confirm that the
+                    patient has
+                    consented to
+                    sending these
+                    medical files
+                    <span className="required-star">
+                        *
+                    </span>
+                </label>
+
+                {!formData.patientConsent && (
+                    <p className="text-danger mt-1">
+                        You must confirm that the
+                        patient has provided
+                        consent for transmitting
+                        these medical files
+                        (including scans and
+                        photos) to the laboratory.
+                    </p>
+                )}
+
+            </div>
+
+            <div className="d-flex justify-content-between">
+
+                <button
+                    className="btn btn-outline-primary"
+                    onClick={
+                        handlePrevious
+                    }
+                >
+                    Previous
+                </button>
+                <button
+                    className="btn btn-success"
+                    onClick={handleSubmit}
+                >
+                    Submit Case
+                </button>
+
+            </div>
+
+        </div>
+    );
+}
+
+export default ReviewConfirm;

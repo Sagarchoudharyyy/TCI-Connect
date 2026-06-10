@@ -10,8 +10,9 @@ import {
     FaEdit
 } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { getCases, deleteCase } from "../services/caseService";
+import { getCases } from "../services/caseService";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function DoctorCases() {
 
@@ -69,24 +70,35 @@ function DoctorCases() {
         setDeadlineFilter("");
     };
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (
+        caseId
+    ) => {
 
-        const confirmDelete = window.confirm(
-            "Are you sure you want to delete this case?"
-        );
+        const confirmDelete =
+            window.confirm(
+                "Are you sure you want to delete?"
+            );
 
-        if (!confirmDelete) return;
+        if (!confirmDelete)
+            return;
 
         try {
 
-            await deleteCase(id);
+            await axios.delete(
+                `http://localhost:8000/api/cases/${caseId}`
+            );
 
+            // Refresh table instantly
             fetchCases();
 
         } catch (error) {
-            console.log(error);
-        }
 
+            console.log(error);
+
+            alert(
+                "Failed to delete case"
+            );
+        }
     };
     const totalPages = Math.ceil(
         filteredCases.length / entriesPerPage
@@ -253,18 +265,18 @@ function DoctorCases() {
                                 </div>
                                 <div className="row mt-2 justify-content-between dt-layout-table">
                                     <div className="d-md-flex justify-content-between align-items-center col-12 dt-layout-full col-md">
-                                        <table id="data-table" className="table table-striped custom-table dataTable">
+                                        <table id="data-table" className="table table-striped custom-table dataTable p-2">
                                             <colgroup>
-                                                <col data-dt-column="0" style={{ width: "66.9625px" }} />
-                                                <col data-dt-column="1" style={{ width: "105.625px" }} />
-                                                <col data-dt-column="2" style={{ width: "162.5px" }} />
+                                                <col data-dt-column="0" style={{ width: "64.2625px" }} />
+                                                <col data-dt-column="1" style={{ width: "142.625px" }} />
+                                                <col data-dt-column="2" style={{ width: "155.5px" }} />
                                                 <col data-dt-column="3" style={{ width: "51.65px" }} />
-                                                <col data-dt-column="4" style={{ width: "76.825px" }} />
-                                                <col data-dt-column="5" style={{ width: "165.2px" }} />
-                                                <col data-dt-column="6" style={{ width: "133.812px" }} />
-                                                <col data-dt-column="7" style={{ width: "113.8px" }} />
+                                                <col data-dt-column="4" style={{ width: "73.825px" }} />
+                                                <col data-dt-column="5" style={{ width: "153.2px" }} />
+                                                <col data-dt-column="6" style={{ width: "124.812px" }} />
+                                                <col data-dt-column="7" style={{ width: "106.8px" }} />
                                                 <col data-dt-column="8" style={{ width: "79.7625px" }} />
-                                                <col data-dt-column="9" style={{ width: "78.0625px" }} />
+                                                <col data-dt-column="9" style={{ width: "75.0625px" }} />
                                             </colgroup>
                                             <thead>
                                                 <tr>
@@ -288,7 +300,11 @@ function DoctorCases() {
                                                         </td>
                                                         <td>{item.patient_name}</td>
                                                         <td>
-                                                            {item.appointment_date}
+                                                            {item.appointment_date
+                                                                ? new Date(
+                                                                    item.appointment_date
+                                                                ).toLocaleDateString("en-GB")
+                                                                : "N/A"}
                                                         </td>
                                                         <td>{item.age}</td>
                                                         <td>
@@ -364,21 +380,30 @@ function DoctorCases() {
                                                             )}
                                                         </td>
                                                         <td>
-                                                            {item.delivery_deadline}
+                                                            {item.delivery_deadline
+                                                                ? new Date(
+                                                                    item.delivery_deadline
+                                                                ).toLocaleDateString("en-GB")
+                                                                : "N/A"}
                                                         </td>
                                                         <td>{item.preview_status}</td>
                                                         <td>{item.status}</td>
                                                         <td>
-                                                            <Link to={`/client/update-case/${item.case_id}`}>
+                                                            <Link
+                                                                to={`/client/update-case/${item.case_id}`}
+                                                            >
                                                                 <FaEdit className="me-2" />
                                                             </Link>
 
-                                                            <Link
-                                                                to={`/client/delete-case/${item.case_id}`}
-                                                                onClick={() => window.confirm("Are you sure you want to delete?")}
-                                                            >
-                                                                <FaTrash className="text-danger" />
-                                                            </Link>
+                                                            <FaTrash
+                                                                className="text-danger"
+                                                                style={{ cursor: "pointer" }}
+                                                                onClick={() =>
+                                                                    handleDelete(
+                                                                        item.case_id
+                                                                    )
+                                                                }
+                                                            />
                                                         </td>
                                                     </tr>
                                                 )
