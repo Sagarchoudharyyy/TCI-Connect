@@ -104,7 +104,7 @@ function Login() {
                 userRole === "admin" ||
                 userRole === "doctor"
             ) {
-                navigate("/admin/dashboard");
+                navigate("/client/dashboard");
             } else {
                 navigate("/login");
             }
@@ -213,11 +213,6 @@ function Login() {
                                         <p className="form-para">New to TCI Dental Lab?  <Link to="/register">
                                             Create your account here.
                                         </Link></p>
-                                        <p class="form-para">New to TCI Dental Lab?
-                                            <Link to="/register">
-                                                Create your account here.
-                                            </Link>
-                                        </p>
                                     </div>
                                 </div>
                             </div>
