@@ -91,6 +91,7 @@ function Register() {
         navigate("/login");
       }, 2500);
 
+      navigate("/login");
     } catch (error) {
       console.log(error);
 

@@ -23,6 +23,7 @@ import UpdateCase from "./Doctor/UpdateCase";
 import NewCases from "./Doctor/CaseDetails";
 import Profile from "./Doctor/Setting";
 import DoctorPricing from "./Doctor/DoctorPricing";
+import ClientChat from "./Doctor/ClientChat";
 function App() {
   return (
     <BrowserRouter>
@@ -108,15 +109,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+        {/* <Route path="/client/chat" element={<ClientChat />}></Route> */}
         <Route
-          path="/client/chats"
+          path="/client/chatclient"
           element={
             <ProtectedRoute
               allowedRoles={[
                 "doctor", "admin"
               ]}
             >
-              <ChatWindow />
+              <ClientChat />
             </ProtectedRoute>
           }
         />
@@ -192,6 +194,8 @@ function App() {
           path="/client/update"
           element={<UpdateCase />}
         />
+
+
       </Routes>
     </BrowserRouter >
   );
