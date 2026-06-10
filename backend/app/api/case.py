@@ -19,7 +19,8 @@ from app.models.notification_model import Notification
 
 from app.schemas.case_schema import (
     CaseCreate,
-    CaseResponse
+    CaseResponse,
+    CaseUpdate
 )
 
 router = APIRouter()
@@ -129,13 +130,13 @@ def get_cases(
     response_model=CaseResponse
 )
 def get_case(
-    case_id: int,
+    case_id: str,
     db: Session = Depends(get_db)
 ):
 
     case = (
         db.query(Case)
-        .filter(Case.id == case_id)
+        .filter(Case.case_id == case_id)
         .first()
     )
 
@@ -176,14 +177,14 @@ def get_case(
     response_model=CaseResponse
 )
 def update_case(
-    case_id: int,
-    updated_case: CaseCreate,
+    case_id: str,
+    updated_case: CaseUpdate,
     db: Session = Depends(get_db)
 ):
 
     case = (
         db.query(Case)
-        .filter(Case.id == case_id)
+        .filter(Case.case_id == case_id)
         .first()
     )
 
@@ -193,8 +194,6 @@ def update_case(
             detail="Case not found"
         )
 
-    case.case_id = updated_case.case_id
-    case.doctor_id = updated_case.doctor_id
     case.patient_name = updated_case.patient_name
     case.patient_phone = updated_case.patient_phone
     case.gender = updated_case.gender
@@ -208,18 +207,41 @@ def update_case(
     db.commit()
     db.refresh(case)
 
-    return case
+    return {
+    "id": case.id,
+    "case_id": case.case_id,
+    "doctor_id": case.doctor_id,
+    "doctor_name": case.doctor.full_name,
+    "patient_name": case.patient_name,
+    "patient_phone": case.patient_phone,
+    "gender": case.gender,
+    "age": case.age,
+    "case_type": case.case_type,
+    "appointment_date": case.appointment_date,
+    "delivery_deadline": case.delivery_deadline,
+    "preview_status": case.preview_status,
+    "status": case.status,
+    "created_at": case.created_at,
+    "files": [
+        {
+            "id": file.id,
+            "file_name": file.file_name,
+            "file_path": file.file_path
+        }
+        for file in case.files
+        ]
+    }
 
-
+   
 @router.delete("/cases/{case_id}")
 def delete_case(
-    case_id: int,
+    case_id: str,
     db: Session = Depends(get_db)
 ):
 
     case = (
         db.query(Case)
-        .filter(Case.id == case_id)
+        .filter(Case.case_id == case_id)
         .first()
     )
 
@@ -236,17 +258,16 @@ def delete_case(
         "message": "Case deleted successfully"
     }
 
-
 @router.post("/cases/{case_id}/upload")
 async def upload_case_file(
-    case_id: int,
+    case_id: str,
     file: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
 
     case = (
         db.query(Case)
-        .filter(Case.id == case_id)
+        .filter(Case.case_id == case_id)
         .first()
     )
 
@@ -279,7 +300,7 @@ async def upload_case_file(
         )
 
     new_file = CaseFile(
-        case_id=case_id,
+        case_id=case.id,   # foreign key uses DB id
         file_type=file.content_type,
         file_name=file.filename,
         file_path=file_path
@@ -288,15 +309,57 @@ async def upload_case_file(
     db.add(new_file)
     db.commit()
     db.refresh(new_file)
+    print("CASE FOUND:", case.id)
+    print("FILE:", file.filename)
+    print("SAVED CASE ID:", new_file.case_id)
 
     return {
         "message": "File uploaded successfully",
         "file_name": file.filename
     }
 
-
 @router.get("/case_files")
 def get_case_files(
     db: Session = Depends(get_db)
 ):
     return db.query(CaseFile).all()
+
+
+@router.delete(
+    "/case-files/{file_id}"
+)
+def delete_case_file(
+    file_id: int,
+    db: Session = Depends(get_db)
+):
+
+    file = (
+        db.query(CaseFile)
+        .filter(
+            CaseFile.id == file_id
+        )
+        .first()
+    )
+
+    if not file:
+        raise HTTPException(
+            status_code=404,
+            detail="File not found"
+        )
+
+    # delete physical file
+    if os.path.exists(
+        file.file_path
+    ):
+        os.remove(
+            file.file_path
+        )
+
+    # delete DB record
+    db.delete(file)
+    db.commit()
+
+    return {
+        "message":
+        "File deleted successfully"
+    }

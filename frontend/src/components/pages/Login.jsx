@@ -100,11 +100,11 @@ function Login() {
             const userRole =
                 response.data.user?.role;
 
-            if (
-                userRole === "admin" ||
-                userRole === "doctor"
-            ) {
+            if (userRole === "admin") {
                 navigate("/admin/dashboard");
+            }
+            else if (userRole === "doctor") {
+                navigate("/client/dashboard");
             } else {
                 navigate("/login");
             }
@@ -210,13 +210,21 @@ function Login() {
                                                 Login
                                             </button>
                                         </form>
-                                        <p className="form-para">New to TCI Dental Lab? <a href="https://mediumseagreen-herring-541085.hostingersite.com/sign-up"> Create your account here.</a></p>
+                                        <p className="form-para">New to TCI Dental Lab?  <Link to="/register">
+                                            Create your account here.
+                                        </Link></p>
+                                        {/* <p className="form-para">New to TCI Dental Lab?
+                                            <Link to="/register">
+                                                Create your account here.
+                                            </Link>
+                                        </p> */}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </section>
             <footer className="form-footer">
                 <div className="container">

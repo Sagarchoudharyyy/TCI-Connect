@@ -116,7 +116,7 @@ function DoctorSideBar() {
                     </li>
                     <li className="nav-item">
                         <Link
-                            to="/client/chats"
+                            to="/client/chatclient"
                             className={`nav-link ${location.pathname === "/client/chats"
                                 ? "active"
                                 : ""
@@ -262,8 +262,9 @@ function DoctorSideBar() {
                     <li className="nav-item">
                         <button
                             onClick={handleLogout}
-                            className="nav-link border-0 bg-transparent w-100 text-start"
+                            className="nav-link logout-btn border-0 w-100 text-start"
                         >
+                            
                             Logout
                         </button>
                     </li>

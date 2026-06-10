@@ -17,6 +17,26 @@ class CaseCreate(BaseModel):
     status: Optional[str] = "Submitted"
 
 
+class CaseUpdate(BaseModel):
+
+    patient_name: Optional[str] = None
+
+    patient_phone: Optional[str] = None
+
+    gender: Optional[str] = None
+
+    age: Optional[int] = None
+
+    case_type: Optional[str] = None
+
+    appointment_date: Optional[datetime] = None
+
+    delivery_deadline: Optional[date] = None
+
+    preview_status: Optional[str] = None
+
+    status: Optional[str] = None
+
 class CaseResponse(BaseModel):
     id: int
     case_id: str
