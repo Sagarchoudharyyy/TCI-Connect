@@ -87,7 +87,7 @@ function Register() {
         JSON.stringify(response.data.user)
       );
 
-      navigate("/dashboard");
+      navigate("/login");
     } catch (error) {
       console.log(error);
 
