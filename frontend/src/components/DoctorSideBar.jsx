@@ -116,7 +116,7 @@ function DoctorSideBar() {
                     </li>
                     <li className="nav-item">
                         <Link
-                            to="/client/chats"
+                            to="/client/chatclient"
                             className={`nav-link ${location.pathname === "/client/chats"
                                 ? "active"
                                 : ""
