@@ -6,6 +6,7 @@ from fastapi.security import OAuth2PasswordBearer
 from app.database.database import get_db
 from app.models.user_model import User
 from app.models.blacklist_model import Blacklist
+from app.models.notification_model import Notification
 
 from app.core.security import (
     hash_password,
@@ -54,17 +55,25 @@ def register(
         vat_id=user.vat_id,
         country=user.country,
         password=hashed_password,
-        role="doctor"
+        role="doctor",
+        status="pending"
     )
 
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
 
-    return {
-        "message": "Doctor registered successfully"
-    }
+    notification = Notification(
+    message=f"New doctor registration request from {new_user.full_name}"
+    )
 
+
+    db.add(notification)
+    db.commit()
+
+    return {
+    "message": "Registration successful. Waiting for admin approval"
+}
 
 @router.post("/admin-register")
 def admin_register(
@@ -96,7 +105,8 @@ def admin_register(
         vat_id=user.vat_id,
         country=user.country,
         password=hashed_password,
-        role="admin"
+        role="admin",
+        status="approved"
     )
 
     db.add(new_user)
@@ -140,6 +150,15 @@ def login(
         }
 
     print("Password verified")
+    
+    if (
+    db_user.role == "doctor"
+    and db_user.status != "approved"
+    ):
+     return {
+        "message":
+        "Your account is under admin review. Please wait for approval."
+    }
 
     access_token = create_access_token(
         data={

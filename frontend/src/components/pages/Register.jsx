@@ -25,6 +25,7 @@ function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [captchaValue, setCaptchaValue] = useState(null);
+  const [success, setSuccess] = useState("");
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -76,18 +77,20 @@ function Register() {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/admin-register",
+        "http://127.0.0.1:8000/register",
         formData
       );
 
       console.log(response.data);
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify(response.data.user)
+      setSuccess(
+        "Registration successful! Your account is under admin review. You can login after approval."
       );
 
-      navigate("/dashboard");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2500);
+
     } catch (error) {
       console.log(error);
 
@@ -146,6 +149,11 @@ function Register() {
                     <br />
                   </div>
                   <div className="formsec-bxx">
+                    {success && (
+                      <div className="alert alert-success mt-3">
+                        {success}
+                      </div>
+                    )}
                     {error && (
                       <div className="alert alert-danger mb-3">
                         {error}
@@ -154,9 +162,6 @@ function Register() {
                     <form onSubmit={handleSubmit} className="password-form" autoComplete="off">
 
                       <div className="row">
-
-
-
                         <div className="col-6">
                           <div className="form-group">
                             <input
