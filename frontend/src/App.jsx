@@ -24,6 +24,7 @@ import NewCases from "./Doctor/CaseDetails";
 import Profile from "./Doctor/Setting";
 import DoctorPricing from "./Doctor/DoctorPricing";
 import ClientChat from "./Doctor/ClientChat";
+import QuestionAnswer from "./Doctor/QuestionAnswer";
 function App() {
   return (
     <BrowserRouter>
@@ -109,7 +110,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-        {/* <Route path="/client/chat" element={<ClientChat />}></Route> */}
         <Route
           path="/client/chatclient"
           element={
@@ -194,7 +194,10 @@ function App() {
           path="/client/update"
           element={<UpdateCase />}
         />
-
+        <Route
+          path="/client/questions-answers"
+          element={<QuestionAnswer />}
+        />
 
       </Routes>
     </BrowserRouter >
