@@ -27,6 +27,9 @@ function UploadDigitalFiles({
                 ...selectedFiles
             ]
         }));
+        if (errors.files) {
+            errors.files = "";
+        }
     };
 
     const removeFile = async (
@@ -37,16 +40,12 @@ function UploadDigitalFiles({
             formData.files[index];
 
         try {
-
-            // If file already exists in DB
             if (file.id) {
 
                 await axios.delete(
                     `http://localhost:8000/api/case-files/${file.id}`
                 );
             }
-
-            // Remove from UI
             const updatedFiles =
                 formData.files.filter(
                     (_, i) =>
@@ -104,14 +103,12 @@ function UploadDigitalFiles({
                 onChange={handleFileChange}
             />
             {
-                errors.files && (
-                    <span className="text-danger">
+                errors?.files && (
+                    <p className="text-danger mb-2">
                         {errors.files}
-                    </span>
+                    </p>
                 )
             }
-
-            {/* Uploaded Files List */}
 
             <div>
 

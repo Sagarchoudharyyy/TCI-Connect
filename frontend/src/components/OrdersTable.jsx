@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import {
@@ -10,13 +10,47 @@ import {
 } from "react-icons/fa";
 
 import heroImage from "../assets/hero.png";
-function OrdersTable({ cases }) {
+function OrdersTable() {
 
     const [statusFilter, setStatusFilter] = useState("");
     const [deadlineFilter, setDeadlineFilter] = useState("");
     const [entriesPerPage, setEntriesPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState("");
+    const [cases, setCases] = useState([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+
+        fetchCases();
+
+    }, []);
+
+    const fetchCases = async () => {
+
+        try {
+
+            const response =
+                await axios.get(
+                    "http://127.0.0.1:8000/api/cases"
+                );
+
+            console.log(
+                "Cases API:",
+                response.data
+            );
+
+            setCases(
+                response.data
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Failed to fetch cases:",
+                error
+            );
+        }
+    };
 
     const filteredCases = cases.filter((item) => {
 
@@ -30,7 +64,7 @@ function OrdersTable({ cases }) {
 
         const searchMatch =
             !searchTerm ||
-            item.case_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             item.patient_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             item.doctor_name?.toLowerCase().includes(searchTerm.toLowerCase());
 
@@ -95,6 +129,60 @@ function OrdersTable({ cases }) {
             alert("Delete failed");
         }
     };
+    const handleStatusChange =
+        async (caseId, newStatus) => {
+
+            try {
+
+                await axios.put(
+                    `http://127.0.0.1:8000/api/cases/${caseId}/status`,
+                    {
+                        status: newStatus
+                    }
+                );
+
+                setCases(prev =>
+                    prev.map(item =>
+                        item.id === caseId
+                            ? {
+                                ...item,
+                                status: newStatus
+                            }
+                            : item
+                    )
+                );
+
+            } catch (error) {
+                console.error(
+                    "Status update failed",
+                    error
+                );
+                console.log(
+                    error.response?.data
+                )
+            }
+        };
+
+    const handleViewHistory =
+        async (caseId) => {
+
+            try {
+
+                const response =
+                    await axios.get(
+                        `http://127.0.0.1:8000/api/cases/${caseId}/history`
+                    );
+
+                console.log(
+                    "History:",
+                    response.data
+                );
+
+            } catch (error) {
+
+                console.error(error);
+            }
+        };
 
     return (
         <div className="main-c-inner">
@@ -150,7 +238,6 @@ function OrdersTable({ cases }) {
                         </select>
                     </div>
 
-                    {/* Deadline */}
                     <div className="col-md-3">
                         <label className="form-label">
                             Delivery Deadline
@@ -340,157 +427,302 @@ function OrdersTable({ cases }) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {visibleCases.map((item) => (
-                                            <tr key={item.id}>
-                                                <td>
-                                                    <img
-                                                        src={heroImage}
-                                                        alt="profile"
-                                                        width="40"
-                                                    />
-                                                </td>
-                                                <td>{item.case_id}</td>
+                                        {visibleCases.map((item) => {
+                                            console.log(item);
+                                            return (
+                                                < tr key={item.id} >
+                                                    <td>
+                                                        <img
+                                                            src={heroImage}
+                                                            alt="profile"
+                                                            width="40"
+                                                        />
+                                                    </td>
+                                                    <td>{item.id}</td>
 
-                                                <td>{item.doctor_name}</td>
+                                                    <td>{item.doctor_name}</td>
 
-                                                <td>{item.patient_phone}</td>
+                                                    <td>{item.doctor_phone}</td>
 
-                                                <td>{item.patient_name}</td>
+                                                    <td>{item.patient_name}</td>
 
-                                                <td>
-                                                    {item.files?.length > 0 ? (
-                                                        <>
-                                                            <Link
-                                                                to={`http://127.0.0.1:8000/${item.files[0].file_path}`}
-                                                                target="_blank"
-                                                                rel="noreferrer"
-                                                                style={{
-                                                                    color: "#0152a8",
-                                                                    marginRight: "12px",
-                                                                    textDecoration: "none"
-                                                                }}
-                                                            >
-                                                                <FaEye />
-                                                            </Link>
-
-                                                            <Link
-                                                                to={`http://127.0.0.1:8000/${item.files[0].file_path}`}
-                                                                download
-                                                                style={{
-                                                                    color: "#0152a8",
-                                                                    textDecoration: "none"
-                                                                }}
-                                                            >
-                                                                <FaDownload />
-                                                            </Link>
-                                                        </>
-                                                    ) : (
-                                                        <span>No File</span>
-                                                    )}
-                                                </td>
-
-                                                <td>
-                                                    {item.files?.length > 0 ? (
-                                                        item.files.map((file, index) => (
-                                                            <div key={index}>
+                                                    <td>
+                                                        {item.files?.length > 0 ? (
+                                                            <>
                                                                 <Link
-                                                                    to={`http://127.0.0.1:8000/${file.file_path}`}
+                                                                    to={`http://127.0.0.1:8000/${item.files[0].file_path}`}
                                                                     target="_blank"
                                                                     rel="noreferrer"
                                                                     style={{
-                                                                        textDecoration: "none",
+                                                                        color: "#0152a8",
                                                                         marginRight: "12px",
-                                                                        color: "#0152a8"
+                                                                        textDecoration: "none"
                                                                     }}
                                                                 >
-                                                                    Preview File {index + 1}
-
-                                                                    {file.file_path?.endsWith(".png")
-                                                                        ? " (PNG)"
-                                                                        : file.file_path?.endsWith(".stl")
-                                                                            ? " (STL)"
-                                                                            : file.file_path?.endsWith(".jpg") ||
-                                                                                file.file_path?.endsWith(".jpeg")
-                                                                                ? " (JPG)"
-                                                                                : ""}
+                                                                    <FaEye />
                                                                 </Link>
 
                                                                 <Link
-                                                                    to={`http://127.0.0.1:8000/${file.file_path}`}
+                                                                    to={`http://127.0.0.1:8000/${item.files[0].file_path}`}
                                                                     download
                                                                     style={{
-                                                                        color: "#0152a8"
+                                                                        color: "#0152a8",
+                                                                        textDecoration: "none"
                                                                     }}
                                                                 >
                                                                     <FaDownload />
                                                                 </Link>
-                                                            </div>
-                                                        ))
-                                                    ) : (
-                                                        <span>No File</span>
-                                                    )}
-                                                </td>
+                                                            </>
+                                                        ) : (
+                                                            <span>No File</span>
+                                                        )}
+                                                    </td>
 
-                                                <td>
-                                                    {item.delivery_deadline}
-                                                </td>
+                                                    <td>
+                                                        {item.files?.length > 0 ? (
+                                                            item.files.map((file, index) => (
+                                                                <div key={index}>
+                                                                    <Link
+                                                                        to={`http://127.0.0.1:8000/${file.file_path}`}
+                                                                        target="_blank"
+                                                                        rel="noreferrer"
+                                                                        style={{
+                                                                            textDecoration: "none",
+                                                                            marginRight: "12px",
+                                                                            color: "#0152a8"
+                                                                        }}
+                                                                    >
+                                                                        Preview File {index + 1}
 
-                                                <td>
-                                                    {item.preview_status}
-                                                </td>
+                                                                        {file.file_path?.endsWith(".png")
+                                                                            ? " (PNG)"
+                                                                            : file.file_path?.endsWith(".stl")
+                                                                                ? " (STL)"
+                                                                                : file.file_path?.endsWith(".jpg") ||
+                                                                                    file.file_path?.endsWith(".jpeg")
+                                                                                    ? " (JPG)"
+                                                                                    : ""}
+                                                                    </Link>
 
-                                                <td>{item.status}</td>
+                                                                    <Link
+                                                                        to={`http://127.0.0.1:8000/${file.file_path}`}
+                                                                        download
+                                                                        style={{
+                                                                            color: "#0152a8"
+                                                                        }}
+                                                                    >
+                                                                        <FaDownload />
+                                                                    </Link>
+                                                                </div>
+                                                            ))
+                                                        ) : (
+                                                            <span>No file available</span>
+                                                        )}
+                                                    </td>
+                                                    <td>
+                                                        {item.delivery_deadline ? (() => {
 
-                                                <td className="action-icons">
+                                                            const today = new Date();
+                                                            const deadline =
+                                                                new Date(item.delivery_deadline);
 
-                                                    {/* View Case Details */}
-                                                    <button
-                                                        className="btn btn-link p-0 me-3"
-                                                        onClick={() =>
-                                                            navigate(`/view-case/${item.id}`)
-                                                        }
-                                                    >
-                                                        <FaEye
+
+                                                            today.setHours(0, 0, 0, 0);
+                                                            deadline.setHours(0, 0, 0, 0);
+
+                                                            const diffTime =
+                                                                deadline - today;
+
+                                                            const daysLeft =
+                                                                Math.ceil(
+                                                                    diffTime /
+                                                                    (1000 * 60 * 60 * 24)
+                                                                );
+
+                                                            const isPassed =
+                                                                deadline < today;
+
+                                                            return (
+                                                                <>
+                                                                    <div>
+                                                                        {deadline.toLocaleDateString(
+                                                                            "en-GB",
+                                                                            {
+                                                                                day: "2-digit",
+                                                                                month: "short",
+                                                                                year: "numeric"
+                                                                            }
+                                                                        )}
+                                                                    </div>
+
+                                                                    <div
+                                                                        style={{
+                                                                            color: isPassed
+                                                                                ? "red"
+                                                                                : "#0152a8",
+                                                                            fontWeight: "600"
+                                                                        }}
+                                                                    >
+                                                                        {isPassed
+                                                                            ? "(Deadline passed)"
+                                                                            : `(${daysLeft} day${daysLeft > 1
+                                                                                ? "s"
+                                                                                : ""
+                                                                            } left)`
+                                                                        }
+                                                                    </div>
+                                                                </>
+                                                            );
+                                                        })() : (
+                                                            <span>No deadline</span>
+                                                        )}
+                                                    </td>
+
+
+                                                    <td>
+                                                        <div
                                                             style={{
+                                                                fontWeight: "600",
+                                                                color: "#0152a8"
+                                                            }}
+                                                        >
+                                                            {item.preview_status ===
+                                                                "Preview Requested"
+                                                                ? "Preview Requested"
+                                                                : "No Preview Requested"}
+                                                        </div>
+
+                                                        {item.preview_status ===
+                                                            "Preview Requested" && (
+                                                                <div
+                                                                    style={{
+                                                                        color: "#0152a8",
+                                                                        fontWeight: "600",
+                                                                        cursor: "pointer"
+                                                                    }}
+                                                                    onClick={() =>
+                                                                        navigate(
+                                                                            `/admin/upload-preview/${item.id}`
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    (Upload Now)
+                                                                </div>
+                                                            )}
+
+                                                        <small
+                                                            style={{
+                                                                color: "#6c757d"
+                                                            }}
+                                                        >
+                                                            No preview files uploaded.
+                                                        </small>
+                                                    </td>
+                                                    <td>
+                                                        <select
+                                                            value={item.status}
+                                                            onChange={(e) =>
+                                                                handleStatusChange(
+                                                                    item.id,
+                                                                    e.target.value
+                                                                )
+                                                            }
+                                                            style={{
+                                                                border: "none",
+                                                                background: "transparent",
                                                                 color: "#0152a8",
-                                                                cursor: "pointer"
+                                                                fontWeight: "600",
+                                                                cursor: "pointer",
+                                                                outline: "none",
+                                                                appearance: "none",
+                                                                WebkitAppearance: "none",
+                                                                MozAppearance: "none",
+                                                                paddingRight: "20px"
                                                             }}
-                                                        />
-                                                    </button>
+                                                        >
+                                                            <option value="Submitted">
+                                                                Submitted
+                                                            </option>
 
+                                                            <option value="InProduction">
+                                                                InProduction
+                                                            </option>
 
-                                                    <button
-                                                        className="btn btn-link p-0 me-3"
-                                                        onClick={() =>
-                                                            navigate(`/upload-preview/${item.id}`)
-                                                        }
-                                                    >
-                                                        <FaUpload
+                                                            <option value="QualityCheck">
+                                                                QualityCheck
+                                                            </option>
+
+                                                            <option value="Shipped">
+                                                                Shipped
+                                                            </option>
+
+                                                            <option value="Delivered">
+                                                                Delivered
+                                                            </option>
+                                                        </select>
+
+                                                        <span
                                                             style={{
+                                                                marginLeft: "-15px",
                                                                 color: "#0152a8",
-                                                                cursor: "pointer"
+                                                                pointerEvents: "none",
+                                                                fontSize: "12px"
                                                             }}
-                                                        />
-                                                    </button>
+                                                        >
+                                                            ▼
+                                                        </span>
+                                                    </td>
 
-                                                    <button
-                                                        className="btn btn-link p-0"
-                                                        onClick={() => handleDelete(item.id)}
-                                                    >
-                                                        <FaTrash
-                                                            style={{
-                                                                color: "red",
-                                                                cursor: "pointer"
-                                                            }}
-                                                        />
-                                                    </button>
+                                                    <td className="action-icons">
 
-                                                </td>
-                                            </tr>
-                                        ))}
+                                                        {/* View Case Details */}
+                                                        <button
+                                                            className="btn btn-link p-0 me-3"
+                                                            onClick={() =>
+                                                                navigate(`/view-case/${item.id}`)
+                                                            }
+                                                        >
+                                                            <FaEye
+                                                                style={{
+                                                                    color: "#0152a8",
+                                                                    cursor: "pointer"
+                                                                }}
+                                                            />
+                                                        </button>
+
+
+                                                        <button
+                                                            className="btn btn-link p-0 me-3"
+                                                            onClick={() =>
+                                                                navigate(`/upload-preview/${item.id}`)
+                                                            }
+                                                        >
+                                                            <FaUpload
+                                                                style={{
+                                                                    color: "#0152a8",
+                                                                    cursor: "pointer"
+                                                                }}
+                                                            />
+                                                        </button>
+
+                                                        <button
+                                                            className="btn btn-link p-0"
+                                                            onClick={() => handleDelete(item.id)}
+                                                        >
+                                                            <FaTrash
+                                                                style={{
+                                                                    color: "red",
+                                                                    cursor: "pointer"
+                                                                }}
+                                                            />
+                                                        </button>
+
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
                                     </tbody>
                                 </table>
-
                             </div>
                             <div className="row mt-2 justify-content-between">
                                 <div className="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">

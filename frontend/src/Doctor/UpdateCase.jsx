@@ -46,12 +46,11 @@ function UpdateCase() {
     });
   console.log(formData);
 
-  // Fetch existing case data
   useEffect(() => {
 
     fetchCase();
 
-  }, []);
+  }, [caseId]);
 
   const fetchCase = async () => {
 
@@ -79,7 +78,7 @@ function UpdateCase() {
           data.patient_phone || "",
 
         patientId:
-          data.case_id || "",
+          data.id || "",
 
         nextAppointmentDate:
           data.appointment_date
@@ -99,7 +98,6 @@ function UpdateCase() {
             ? data.case_type.split(", ")
             : [],
 
-        // keep uploaded files
         files:
           Array.isArray(data.files) &&
             data.files.length > 0
@@ -130,14 +128,14 @@ function UpdateCase() {
         "Patient Name is required";
     }
 
-    if (
-      step === 2 &&
-      !Array.isArray(
-        formData.files
-      )
-    ) {
-      newErrors.files =
-        "Invalid file state";
+    if (step === 2) {
+      if (
+        !formData.files ||
+        formData.files.length === 0
+      ) {
+        newErrors.files =
+          "Upload at least 1 digital file.";
+      }
     }
 
     setErrors(newErrors);
@@ -165,6 +163,8 @@ function UpdateCase() {
     ) {
       newErrors.gdprConfirm =
         "You must confirm GDPR compliance.";
+      setCheckboxErrors(newErrors);
+      return;
     }
 
     if (
@@ -172,6 +172,8 @@ function UpdateCase() {
     ) {
       newErrors.dpcaConfirm =
         "You must confirm Data Processing & Confidentiality Agreement.";
+      setCheckboxErrors(newErrors);
+      return;
     }
 
     if (
@@ -179,11 +181,11 @@ function UpdateCase() {
     ) {
       newErrors.patientConsent =
         "You must confirm that the patient has provided consent for transmitting these medical files (including scans and photos) to the laboratory.";
+      setCheckboxErrors(newErrors);
+      return;
     }
 
-    setCheckboxErrors(
-      newErrors
-    );
+    setCheckboxErrors({});
 
     if (
       Object.keys(
@@ -196,10 +198,7 @@ function UpdateCase() {
 
       const payload = {
 
-        case_id: caseId,
-
         doctor_id: 4,
-
 
         patient_name:
           formData.patientName,
@@ -231,7 +230,6 @@ function UpdateCase() {
           "Submitted"
       };
 
-      // UPDATE CASE
       const updateResponse =
         await axios.put(
           `http://localhost:8000/api/cases/${caseId}`,
@@ -248,14 +246,12 @@ function UpdateCase() {
         formData.files
       );
 
-      // UPLOAD FILES
       if (
         formData.files &&
         formData.files.length > 0
       ) {
         for (const file of formData.files) {
 
-          // Skip already uploaded files
           if (!(file instanceof File)) {
             continue;
           }
@@ -291,10 +287,6 @@ function UpdateCase() {
           );
         }
       }
-
-      alert(
-        "Case updated successfully"
-      );
 
       setStep(4);
 
@@ -334,7 +326,6 @@ function UpdateCase() {
                   Update Case
                 </h1>
 
-                {/* Progress Bar */}
                 <div className="progress-bar-container">
 
                   <div
@@ -372,7 +363,7 @@ function UpdateCase() {
 
                 </div>
 
-                {/* Step 1 */}
+
                 {step === 1 && (
                   <PurchaseOrder
                     formData={formData}
@@ -386,7 +377,6 @@ function UpdateCase() {
                   />
                 )}
 
-                {/* Step 2 */}
                 {step === 2 && (
                   <UploadDigitalFiles
                     formData={formData}
@@ -403,7 +393,6 @@ function UpdateCase() {
                   />
                 )}
 
-                {/* Step 3 */}
                 {step === 3 && (
                   <ReviewConfirm
                     formData={formData}
@@ -419,12 +408,16 @@ function UpdateCase() {
                     checkboxErrors={
                       checkboxErrors
                     }
+                    buttonText="Update Case"
                   />
                 )}
 
-                {/* Success */}
                 {step === 4 && (
-                  <SuccessScreen />
+                  <SuccessScreen
+                    title="Case Updated Successfully!"
+                    buttonText="View Cases"
+                    redirectPath="/client/cases"
+                  />
                 )}
 
               </div>

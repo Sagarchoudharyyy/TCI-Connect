@@ -26,6 +26,9 @@ function DoctorOrderTable({
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [cases, setCases] = useState([]);
+    const [successMessage,
+        setSuccessMessage
+    ] = useState("");
 
 
     const fetchCases = async () => {
@@ -91,10 +94,29 @@ function DoctorOrderTable({
 
             fetchCases();
 
-        } catch (error) {
-            console.log(error);
-        }
+            setSuccessMessage(
+                "Case deleted successfully!"
+            );
+            setTimeout(() => {
+                setSuccessMessage(
+                    ""
+                );
+            }, 3000);
 
+        } catch (error) {
+
+            console.log(error);
+
+            setSuccessMessage(
+                "Failed to delete case"
+            );
+
+            setTimeout(() => {
+                setSuccessMessage(
+                    ""
+                );
+            }, 3000);
+        }
     };
     const totalPages = Math.ceil(
         filteredCases.length / entriesPerPage
@@ -176,7 +198,6 @@ function DoctorOrderTable({
                                 </select>
                             </div>
 
-                            {/* Deadline */}
                             <div className="col-md-3">
                                 <label className="form-label">
                                     Delivery Deadline
@@ -224,6 +245,19 @@ function DoctorOrderTable({
                                 <div className=" row mt-2 justify-content-between">
                                     <div className="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">
                                         <div className="dt-length">
+                                            {
+                                                successMessage && (
+                                                    <div
+                                                        className="alert alert-success"
+                                                        style={{
+                                                            marginBottom:
+                                                                "15px"
+                                                        }}
+                                                    >
+                                                        {successMessage}
+                                                    </div>
+                                                )
+                                            }
                                             <select
                                                 value={entriesPerPage}
                                                 onChange={(e) => {
@@ -290,11 +324,22 @@ function DoctorOrderTable({
                                                 {visibleCases.map((item) => (
                                                     <tr key={item.id}>
                                                         <td>
-                                                            {item.case_id}
+                                                            {item.id}
                                                         </td>
                                                         <td>{item.patient_name}</td>
                                                         <td>
-                                                            {item.appointment_date}
+                                                            {item.appointment_date
+                                                                ? new Date(item.appointment_date)
+                                                                    .toLocaleString("en-GB", {
+                                                                        day: "2-digit",
+                                                                        month: "short",
+                                                                        year: "numeric",
+                                                                        hour: "2-digit",
+                                                                        minute: "2-digit",
+                                                                        hour12: true
+                                                                    })
+                                                                    .replace(",", "")
+                                                                : "-"}
                                                         </td>
                                                         <td>{item.age}</td>
                                                         <td>
@@ -306,26 +351,15 @@ function DoctorOrderTable({
                                                                         rel="noreferrer"
                                                                         style={{
                                                                             color: "#0152a8",
-                                                                            marginRight: "12px",
+                                                                            marginLeft: "8px",
                                                                             textDecoration: "none"
                                                                         }}
                                                                     >
                                                                         <FaEye />
                                                                     </Link>
-
-                                                                    <Link
-                                                                        to={`http://127.0.0.1:8000/${item.files[0].file_path}`}
-                                                                        download
-                                                                        style={{
-                                                                            color: "#0152a8",
-                                                                            textDecoration: "none"
-                                                                        }}
-                                                                    >
-                                                                        <FaDownload />
-                                                                    </Link>
                                                                 </>
                                                             ) : (
-                                                                <span>No File</span>
+                                                                <span>-</span>
                                                             )}
                                                         </td>
                                                         <td>
@@ -370,21 +404,101 @@ function DoctorOrderTable({
                                                             )}
                                                         </td>
                                                         <td>
-                                                            {item.delivery_deadline}
+                                                            {item.delivery_deadline ? (() => {
+
+                                                                const today = new Date();
+                                                                const deadline =
+                                                                    new Date(item.delivery_deadline);
+
+                                                                // remove time for proper comparison
+                                                                today.setHours(0, 0, 0, 0);
+                                                                deadline.setHours(0, 0, 0, 0);
+
+                                                                const diffTime =
+                                                                    deadline - today;
+
+                                                                const daysLeft =
+                                                                    Math.ceil(
+                                                                        diffTime /
+                                                                        (1000 * 60 * 60 * 24)
+                                                                    );
+
+                                                                const isPassed =
+                                                                    deadline < today;
+
+                                                                return (
+                                                                    <>
+                                                                        <div>
+                                                                            {deadline.toLocaleDateString(
+                                                                                "en-GB",
+                                                                                {
+                                                                                    day: "2-digit",
+                                                                                    month: "short",
+                                                                                    year: "numeric"
+                                                                                }
+                                                                            )}
+                                                                        </div>
+
+                                                                        <div
+                                                                            style={{
+                                                                                color: isPassed
+                                                                                    ? "red"
+                                                                                    : "#0152a8",
+                                                                                fontWeight: "600"
+                                                                            }}
+                                                                        >
+                                                                            {isPassed
+                                                                                ? "(Deadline passed)"
+                                                                                : `(${daysLeft} day${daysLeft > 1
+                                                                                    ? "s"
+                                                                                    : ""
+                                                                                } left)`
+                                                                            }
+                                                                        </div>
+                                                                    </>
+                                                                );
+                                                            })() : (
+                                                                "-"
+                                                            )}
                                                         </td>
                                                         <td>{item.preview_status}</td>
-                                                        <td>{item.status}</td>
                                                         <td>
-                                                            <Link to={`/client/update-case/${item.case_id}`}>
+                                                            <span
+                                                                style={{
+                                                                    fontWeight: "600",
+                                                                    color:
+                                                                        item.status === "Submitted"
+                                                                            ? "#6c757d"
+                                                                            : item.status === "InProduction"
+                                                                                ? "#0d6efd"
+                                                                                : item.status === "QualityCheck"
+                                                                                    ? "#fd7e14"
+                                                                                    : item.status === "Shipped"
+                                                                                        ? "#198754"
+                                                                                        : item.status === "Delivered"
+                                                                                            ? "#0dcaf0"
+                                                                                            : "black"
+                                                                }}
+                                                            >
+                                                                {item.status}
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <Link
+                                                                to={`/client/update-case/${item.id}`}
+                                                            >
                                                                 <FaEdit className="me-2" />
                                                             </Link>
 
-                                                            <Link
-                                                                to={`/client/delete-case/${item.case_id}`}
-                                                                onClick={() => window.confirm("Are you sure you want to delete?")}
-                                                            >
-                                                                <FaTrash className="text-danger" />
-                                                            </Link>
+                                                            <FaTrash
+                                                                className="text-danger"
+                                                                style={{ cursor: "pointer" }}
+                                                                onClick={() =>
+                                                                    handleDelete(
+                                                                        item.id
+                                                                    )
+                                                                }
+                                                            />
                                                         </td>
                                                     </tr>
                                                 )

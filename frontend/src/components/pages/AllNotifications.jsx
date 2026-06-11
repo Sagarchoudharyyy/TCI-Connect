@@ -45,7 +45,7 @@ function AllNotifications() {
               className="container"
               style={{
                 marginTop: "60px",
-                marginLeft: "250px"
+                marginLeft: "70px"
 
               }}
             >
@@ -99,7 +99,6 @@ function AllNotifications() {
                 ))}
               </div>
             </div>
-
           </div>
         </div>
       </div>

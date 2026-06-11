@@ -1,16 +1,48 @@
 import DoctorSideBar from "../components/DoctorSideBar";
 import DoctorHeader from "../components/DoctorHeader";
 import "../DoctorStyle/doctor-dashboard.css";
-import { useState } from "react";
+
 import { FaFileAlt } from "react-icons/fa";
 import "../styles/tables.css";
 import OrdersTable from "../components/OrdersTable";
 import DoctorOrderTable from "../components/DoctorOrderTable";
 import "../DoctorStyle/DoctorHeader.css";
+import axios from "axios";
+import { useState, useEffect } from "react";
 
 function DoctorDashboard() {
     const [cases, setCases] = useState([]);
+    const [totalPatients,
+        setTotalPatients
+    ] = useState(0);
 
+    const fetchCases =
+        async () => {
+
+            try {
+
+                const response =
+                    await axios.get("http://localhost:8000/api/cases");
+
+                const cases =
+                    response.data;
+
+                setCases(cases);
+                setTotalPatients(
+                    cases.length
+                );
+
+            } catch (error) {
+
+                console.log(error);
+            }
+        };
+
+    useEffect(() => {
+
+        fetchCases();
+
+    }, []);
     return (
         <div className="container-fluid p-0">
             <div className="row g-0 doctor-dashboard-main">
@@ -35,7 +67,7 @@ function DoctorDashboard() {
                                                     <div className="text-start ms-2">
                                                         <small className="text-muted">Total Patient</small>
                                                         <div className="statcard-btm">
-                                                            <h3 className="mb-0">4</h3>
+                                                            <h3 className="mb-0">{totalPatients}</h3>
                                                         </div>
                                                     </div>
                                                 </div>

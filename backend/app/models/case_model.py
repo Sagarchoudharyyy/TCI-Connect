@@ -20,14 +20,6 @@ class Case(Base):
             primary_key=True,
             index=True
         )
-
-        case_id = Column(
-            String(50),
-            unique=True,
-            nullable=False
-        )
-
-        # Doctor who submitted the case
         doctor_id = Column(
             Integer,
             ForeignKey("users.id", ondelete="CASCADE"),
@@ -72,27 +64,23 @@ class Case(Base):
 
         preview_status = Column(
             String(30),
-            default="Pending"
+            default="-"
         )
 
         status = Column(
             String(30),
-            default="Submitted"
+            default="Not Submitted"
         )
 
         created_at = Column(
             DateTime,
             server_default=func.now()
         )
-
-        # Doctor Relationship
         doctor = relationship(
             "User",
             foreign_keys=[doctor_id],
             back_populates="doctor_cases"
         )
-
-        # Case Files Relationship
         files = relationship(
             "CaseFile",
             back_populates="case",
