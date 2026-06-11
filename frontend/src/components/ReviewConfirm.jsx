@@ -6,7 +6,8 @@ function ReviewConfirm({
     setFormData,
     handlePrevious,
     handleSubmit,
-    checkboxErrors
+    checkboxErrors,
+    buttonText
 }) {
     return (
         <div className="step-content">
@@ -164,12 +165,15 @@ function ReviewConfirm({
                     </span>
                 </label>
 
-                {!formData.gdprConfirm && (
-                    <p className="text-danger mt-1">
-                        You must confirm GDPR
-                        compliance.
-                    </p>
-                )}
+                {
+                    checkboxErrors?.gdprConfirm && (
+                        <p className="text-danger mt-1">
+                            {
+                                checkboxErrors.gdprConfirm
+                            }
+                        </p>
+                    )
+                }
 
             </div>
 
@@ -211,18 +215,17 @@ function ReviewConfirm({
                     </span>
                 </label>
 
-                {!formData.dpcaConfirm && (
-                    <p className="text-danger mt-1">
-                        You must confirm Data
-                        Processing &
-                        Confidentiality
-                        Agreement.
-                    </p>
-                )}
+                {
+                    checkboxErrors?.dpcaConfirm && (
+                        <p className="text-danger mt-1">
+                            {
+                                checkboxErrors.dpcaConfirm
+                            }
+                        </p>
+                    )
+                }
 
             </div>
-
-            {/* Patient Consent */}
 
             <div className="mb-3">
 
@@ -256,16 +259,15 @@ function ReviewConfirm({
                     </span>
                 </label>
 
-                {!formData.patientConsent && (
-                    <p className="text-danger mt-1">
-                        You must confirm that the
-                        patient has provided
-                        consent for transmitting
-                        these medical files
-                        (including scans and
-                        photos) to the laboratory.
-                    </p>
-                )}
+                {
+                    checkboxErrors?.patientConsent && (
+                        <p className="text-danger mt-1">
+                            {
+                                checkboxErrors.patientConsent
+                            }
+                        </p>
+                    )
+                }
 
             </div>
 
@@ -283,7 +285,7 @@ function ReviewConfirm({
                     className="btn btn-success"
                     onClick={handleSubmit}
                 >
-                    Submit Case
+                    {buttonText}
                 </button>
 
             </div>

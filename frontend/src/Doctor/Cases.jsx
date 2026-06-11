@@ -46,7 +46,7 @@ function DoctorCases() {
 
         const searchMatch =
             !searchTerm ||
-            item.case_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             item.patient_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             item.doctor_name?.toLowerCase().includes(searchTerm.toLowerCase());
 
@@ -296,46 +296,94 @@ function DoctorCases() {
                                                 {visibleCases.map((item) => (
                                                     <tr key={item.id}>
                                                         <td>
-                                                            {item.case_id}
+                                                            {item.id}
                                                         </td>
                                                         <td>{item.patient_name}</td>
                                                         <td>
                                                             {item.appointment_date
                                                                 ? new Date(
                                                                     item.appointment_date
-                                                                ).toLocaleDateString("en-GB")
+                                                                )
+                                                                    .toLocaleString("en-GB", {
+                                                                        day: "2-digit",
+                                                                        month: "2-digit",
+                                                                        year: "numeric",
+                                                                        hour: "2-digit",
+                                                                        minute: "2-digit",
+                                                                        hour12: true
+                                                                    })
+                                                                    .replace(",", "")
                                                                 : "N/A"}
                                                         </td>
                                                         <td>{item.age}</td>
                                                         <td>
-                                                            {item.files?.length > 0 ? (
-                                                                <>
-                                                                    <Link
-                                                                        to={`http://127.0.0.1:8000/${item.files[0].file_path}`}
+                                                            {item.files?.length > 0 ? (() => {
+
+                                                                const casePdfFile =
+                                                                    item.files.find(file =>
+                                                                        file.file_path
+                                                                            ?.endsWith(".pdf") ||
+                                                                        file.file_path
+                                                                            ?.endsWith(".jpg") ||
+                                                                        file.file_path
+                                                                            ?.endsWith(".jpeg") ||
+                                                                        file.file_path
+                                                                            ?.endsWith(".png")
+                                                                    );
+
+                                                                if (!casePdfFile)
+                                                                    return <span>-</span>;
+
+                                                                const fileUrl =
+                                                                    `http://127.0.0.1:8000/${casePdfFile.file_path}`;
+
+                                                                const extension =
+                                                                    casePdfFile.file_path
+                                                                        .split(".")
+                                                                        .pop()
+                                                                        .toLowerCase();
+
+                                                                return (
+                                                                    <a
+                                                                        href={fileUrl}
                                                                         target="_blank"
                                                                         rel="noreferrer"
-                                                                        style={{
-                                                                            color: "#0152a8",
-                                                                            marginRight: "12px",
-                                                                            textDecoration: "none"
-                                                                        }}
                                                                     >
-                                                                        <FaEye />
-                                                                    </Link>
+                                                                        {["jpg", "jpeg", "png"]
+                                                                            .includes(extension) ? (
 
-                                                                    <Link
-                                                                        to={`http://127.0.0.1:8000/${item.files[0].file_path}`}
-                                                                        download
-                                                                        style={{
-                                                                            color: "#0152a8",
-                                                                            textDecoration: "none"
-                                                                        }}
-                                                                    >
-                                                                        <FaDownload />
-                                                                    </Link>
-                                                                </>
-                                                            ) : (
-                                                                <span>No File</span>
+                                                                            <img
+                                                                                src={fileUrl}
+                                                                                alt="preview"
+                                                                                width="50"
+                                                                                height="50"
+                                                                                style={{
+                                                                                    objectFit:
+                                                                                        "cover",
+                                                                                    borderRadius:
+                                                                                        "8px"
+                                                                                }}
+                                                                            />
+
+                                                                        ) : extension ===
+                                                                            "pdf" ? (
+
+                                                                            <span
+                                                                                style={{
+                                                                                    fontSize:
+                                                                                        "25px"
+                                                                                }}
+                                                                            >
+                                                                                📄
+                                                                            </span>
+
+                                                                        ) : (
+                                                                            "-"
+                                                                        )}
+                                                                    </a>
+                                                                );
+                                                            })() : (
+                                                                <span>-</span>
                                                             )}
                                                         </td>
                                                         <td>
@@ -364,15 +412,15 @@ function DoctorCases() {
                                                                                         : ""}
                                                                         </Link>
 
-                                                                        <Link
-                                                                            to={`http://127.0.0.1:8000/${file.file_path}`}
-                                                                            download
+                                                                        <a
+                                                                            href={`http://127.0.0.1:8000/api/download-file?file_path=${file.file_path}`}
                                                                             style={{
                                                                                 color: "#0152a8"
                                                                             }}
                                                                         >
                                                                             <FaDownload />
-                                                                        </Link>
+                                                                        </a>
+
                                                                     </div>
                                                                 ))
                                                             ) : (
@@ -390,7 +438,7 @@ function DoctorCases() {
                                                         <td>{item.status}</td>
                                                         <td>
                                                             <Link
-                                                                to={`/client/update-case/${item.case_id}`}
+                                                                to={`/client/update-case/${item.id}`}
                                                             >
                                                                 <FaEdit className="me-2" />
                                                             </Link>
@@ -400,7 +448,7 @@ function DoctorCases() {
                                                                 style={{ cursor: "pointer" }}
                                                                 onClick={() =>
                                                                     handleDelete(
-                                                                        item.case_id
+                                                                        item.id
                                                                     )
                                                                 }
                                                             />

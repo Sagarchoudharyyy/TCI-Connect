@@ -8,8 +8,7 @@ import PurchaseOrder from "../components/PurchaseOrder";
 import UploadDigitalFiles from "../components/UploadDigitalFile";
 import ReviewConfirm from "../components/ReviewConfirm";
 import SuccessScreen from "../components/SuccessScreen";
-
-import "../DoctorStyle/CasesDetail.css";
+import "../DoctorStyle/NewCases.css";
 
 function NewCases() {
 
@@ -24,7 +23,11 @@ function NewCases() {
         age: "",
         gender: "",
         caseStage: [],
-        files: []
+        files: [],
+
+        gdprConfirm: false,
+        dpcaConfirm: false,
+        patientConsent: false
     };
 
     const [formData, setFormData] =
@@ -32,13 +35,16 @@ function NewCases() {
 
     const [errors, setErrors] =
         useState({});
+    const [
+        checkboxErrors,
+        setCheckboxErrors
+    ] = useState({});
 
-    // NEXT BUTTON
+
     const handleNext = () => {
 
         let newErrors = {};
 
-        // Step 1 validation
         if (step === 1) {
 
             if (
@@ -51,8 +57,6 @@ function NewCases() {
                     "Patient name is required";
             }
         }
-
-        // Step 2 validation
         if (step === 2) {
 
             if (
@@ -77,14 +81,67 @@ function NewCases() {
         setStep(prev => prev + 1);
     };
 
-    // PREVIOUS BUTTON
     const handlePrevious = () => {
 
         setStep(prev => prev - 1);
     };
 
-
     const handleSubmit = async () => {
+        let newErrors =
+            {};
+
+        if (
+            !formData
+                .gdprConfirm
+        ) {
+
+            newErrors
+                .gdprConfirm =
+                "You must confirm GDPR compliance.";
+
+            setCheckboxErrors(
+                newErrors
+            );
+
+            return;
+        }
+
+        if (
+            !formData
+                .dpcaConfirm
+        ) {
+
+            newErrors
+                .dpcaConfirm =
+                "You must confirm Data Processing & Confidentiality Agreement.";
+
+            setCheckboxErrors(
+                newErrors
+            );
+
+            return;
+        }
+
+        if (
+            !formData
+                .patientConsent
+        ) {
+
+            newErrors
+                .patientConsent =
+                "Patient consent is required.";
+
+            setCheckboxErrors(
+                newErrors
+            );
+
+            return;
+        }
+
+        setCheckboxErrors(
+            {}
+        );
+
 
         try {
 
@@ -96,9 +153,6 @@ function NewCases() {
                 );
 
             const payload = {
-
-
-                case_id: `CASE-${Date.now()}`,
 
                 doctor_id:
                     user?.id || 1,
@@ -144,8 +198,6 @@ function NewCases() {
                     "Submitted"
             };
 
-            console.log(payload);
-
             const response =
                 await axios.post(
                     "http://localhost:8000/api/cases",
@@ -153,10 +205,37 @@ function NewCases() {
                 );
 
             console.log(
+                "CASE CREATED:",
                 response.data
             );
 
-            // Success page
+            if (
+                formData.files &&
+                formData.files.length > 0
+            ) {
+
+                for (const file of formData.files) {
+
+                    const fileData =
+                        new FormData();
+
+                    fileData.append(
+                        "file",
+                        file
+                    );
+
+                    await axios.post(
+                        `http://localhost:8000/api/cases/${response.data.id}/upload`,
+                        fileData,
+                        {
+                            headers: {
+                                "Content-Type":
+                                    "multipart/form-data"
+                            }
+                        }
+                    );
+                }
+            }
             setStep(4);
 
         } catch (error) {
@@ -171,7 +250,6 @@ function NewCases() {
         }
     };
 
-    // RESET FORM
     const handleReset = () => {
 
         setFormData(
@@ -232,21 +310,21 @@ function NewCases() {
                                         ></div>
 
                                         <div
-                                            className={`step - indicator ${step >= 1
+                                            className={`step-indicator ${step >= 1
                                                 ? "active"
                                                 : ""
                                                 } `}
                                         ></div>
 
                                         <div
-                                            className={`step - indicator ${step >= 2
+                                            className={`step-indicator ${step >= 2
                                                 ? "active"
                                                 : ""
                                                 } `}
                                         ></div>
 
                                         <div
-                                            className={`step - indicator ${step >= 3
+                                            className={`step-indicator ${step >= 3
                                                 ? "active"
                                                 : ""
                                                 } `}
@@ -297,13 +375,11 @@ function NewCases() {
                                         />
                                     )}
 
-                                    {/* STEP 3 */}
-
                                     {step === 3 && (
-
                                         <ReviewConfirm
-                                            formData={
-                                                formData
+                                            formData={formData}
+                                            setFormData={
+                                                setFormData
                                             }
                                             handlePrevious={
                                                 handlePrevious
@@ -311,14 +387,20 @@ function NewCases() {
                                             handleSubmit={
                                                 handleSubmit
                                             }
+                                            checkboxErrors={
+                                                checkboxErrors
+                                            }
+                                            buttonText="Submit Case"
                                         />
                                     )}
 
-                                    {/* STEP 4 */}
 
                                     {step === 4 && (
 
                                         <SuccessScreen
+                                            title="Case Submitted Successfully!"
+                                            subtitle="Thank you. We'll review and contact you soon."
+                                            buttonText="Submit Another Case"
                                             handleReset={
                                                 handleReset
                                             }

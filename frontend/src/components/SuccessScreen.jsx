@@ -1,6 +1,29 @@
+import { useNavigate } from "react-router-dom";
+
 function SuccessScreen({
+    title,
+    subtitle,
+    buttonText,
+    redirectPath,
     handleReset
 }) {
+
+    const navigate =
+        useNavigate();
+
+    const handleButtonClick =
+        () => {
+
+            if (handleReset) {
+                handleReset();
+            }
+
+            if (redirectPath) {
+                navigate(
+                    redirectPath
+                );
+            }
+        };
 
     return (
         <div
@@ -17,20 +40,28 @@ function SuccessScreen({
                     fontWeight: "bold"
                 }}
             >
-                Case Submitted Successfully!
+                {title}
             </h1>
 
-            <p className="mt-3">
-                Thank you. We’ll
-                review and contact
-                you soon.
-            </p>
+            {subtitle && (
+                <p
+                    className="mt-3"
+                    style={{
+                        color: "#555",
+                        fontSize: "18px"
+                    }}
+                >
+                    {subtitle}
+                </p>
+            )}
 
             <button
                 className="btn btn-primary mt-4 px-5 py-2"
-                onClick={handleReset}
+                onClick={
+                    handleButtonClick
+                }
             >
-                Submit Another Case
+                {buttonText}
             </button>
 
         </div>

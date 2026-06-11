@@ -15,3 +15,62 @@
     border: 1px solid #e8e8e8;
     border-radius: 14px;
 }
+
+table.dataTable thead th,
+table.dataTable thead td,
+table.dataTable tfoot th,
+table.dataTable tfoot td {
+    text-align: left;
+    vertical-align: var(--dt-header-vertical-align);
+}
+
+.table thead th {
+    border: none;
+    padding: 15px 10px;
+    font-family: 'Roboto';
+    font-weight: 550;
+    font-size: 14px;
+    color: #1c1c1c !important;
+}
+
+.table tbody td {
+    border: none;
+    padding: 15px 10px;
+    vertical-align: middle;
+    font-family: 'Roboto';
+    font-weight: 400;
+    font-size: 14px;
+    color: #666;
+}
+
+/* Table body alternate row colors */
+.table tbody tr:nth-child(odd) td {
+    background-color: #f2f2f2 !important;
+}
+
+.table tbody tr:nth-child(even) td {
+    background-color: #ffffff !important;
+}
+
+/* Remove border */
+.table tbody tr {
+    border: none !important;
+}
+
+/* Table body cell spacing */
+.table tbody td {
+    padding: 18px 12px !important;
+    vertical-align: middle !important;
+    border: none !important;
+    color: #666 !important;
+    font-size: 14px;
+}
+
+/* Header */
+.table thead th {
+    background: #fff !important;
+    border: none !important;
+    padding: 16px 12px !important;
+    font-weight: 600;
+    color: #1c1c1c !important;
+}

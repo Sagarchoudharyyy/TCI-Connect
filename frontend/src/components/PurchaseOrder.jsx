@@ -62,10 +62,16 @@ function PurchaseOrder({
                     </label>
 
                     <input
-                        type="date"
+                        type="datetime-local"
                         className="form-control"
                         id="nextAppointmentDate"
-                        value={formData.nextAppointmentDate}
+                        value={
+                            formData.nextAppointmentDate
+                                ? formData.nextAppointmentDate.includes("T")
+                                    ? formData.nextAppointmentDate.slice(0, 16)
+                                    : `${formData.nextAppointmentDate}T00:00`
+                                : ""
+                        }
                         onChange={(e) =>
                             setFormData({
                                 ...formData,
@@ -74,7 +80,6 @@ function PurchaseOrder({
                             })
                         }
                     />
-
                     <span
                         className="validation-msg"
                         id="errorNextAppointmentDate"

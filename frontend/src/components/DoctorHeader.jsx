@@ -3,6 +3,9 @@ import "../DoctorStyle/DoctorHeader.css";
 
 
 function DoctorHeader({ title = "Dashboard" }) {
+    const user = JSON.parse(
+        localStorage.getItem("user")
+    );
 
     return (
         <div className="mc-ibxx">
@@ -75,7 +78,7 @@ function DoctorHeader({ title = "Dashboard" }) {
                             />
 
                             <span className="fw-bold text-primary">
-                                Nikhil Patidar
+                                {user?.full_name}
                             </span>
                         </a>
 
@@ -86,7 +89,7 @@ function DoctorHeader({ title = "Dashboard" }) {
                             <li>
                                 <Link
                                     className="dropdown-item"
-                                    to="/doctor/setting"
+                                    to="/client/setting"
                                 >
                                     <i className="bi bi-person-circle me-2"></i>
                                     Profile / Account Settings
@@ -96,7 +99,7 @@ function DoctorHeader({ title = "Dashboard" }) {
                             <li>
                                 <Link
                                     className="dropdown-item"
-                                    to="/doctor/change-password"
+                                    to="/client/change-password"
                                 >
                                     <i className="bi bi-lock-fill me-2"></i>
                                     Change Password
@@ -106,7 +109,7 @@ function DoctorHeader({ title = "Dashboard" }) {
                             <li>
                                 <Link
                                     className="dropdown-item"
-                                    to="/doctor/help-faq"
+                                    to="/client/help-faq"
                                 >
                                     <i className="bi bi-question-circle-fill me-2"></i>
                                     Help / FAQ
