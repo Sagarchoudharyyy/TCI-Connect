@@ -25,6 +25,7 @@ import Profile from "./Doctor/Setting";
 import DoctorPricing from "./Doctor/DoctorPricing";
 import ClientChat from "./Doctor/ClientChat";
 import QuestionAnswer from "./Doctor/QuestionAnswer";
+import HelpandFAQ from "./Doctor/Help&FAQ";
 function App() {
   return (
     <BrowserRouter>
@@ -205,8 +206,10 @@ function App() {
           path="/client/questions-answers"
           element={<QuestionAnswer />}
         />
-
+        <Route path="/client/help-faq"
+          element={<HelpandFAQ />} />
       </Routes>
+
     </BrowserRouter >
   );
 }

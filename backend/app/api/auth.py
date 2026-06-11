@@ -169,18 +169,22 @@ def login(
     )
 
     print("Token generated")
-
     return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "user": {
-            "id": db_user.id,
-            "full_name": db_user.full_name,
-            "email": db_user.email,
-            "phone": db_user.phone,
-            "role": db_user.role
-        }
+    "access_token": access_token,
+    "token_type": "bearer",
+    "user": {
+        "id": db_user.id,
+        "full_name": db_user.full_name,
+        "email": db_user.email,
+        "phone": db_user.phone,
+        "business_name": db_user.business_name,
+        "license_number": db_user.license_number,
+        "vat_id": db_user.vat_id,
+        "country": db_user.country,
+        "role": db_user.role
     }
+}
+   
 @router.post("/logout")
 def logout(
     authorization: str = Header(None),
