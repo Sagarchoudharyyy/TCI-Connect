@@ -46,11 +46,12 @@ function UpdateCase() {
     });
   console.log(formData);
 
+  // Fetch existing case data
   useEffect(() => {
 
     fetchCase();
 
-  }, [caseId]);
+  }, []);
 
   const fetchCase = async () => {
 
@@ -78,7 +79,7 @@ function UpdateCase() {
           data.patient_phone || "",
 
         patientId:
-          data.id || "",
+          data.case_id || "",
 
         nextAppointmentDate:
           data.appointment_date
@@ -98,6 +99,7 @@ function UpdateCase() {
             ? data.case_type.split(", ")
             : [],
 
+        // keep uploaded files
         files:
           Array.isArray(data.files) &&
             data.files.length > 0
@@ -326,6 +328,7 @@ function UpdateCase() {
                   Update Case
                 </h1>
 
+                {/* Progress Bar */}
                 <div className="progress-bar-container">
 
                   <div
@@ -362,7 +365,6 @@ function UpdateCase() {
                   ></div>
 
                 </div>
-
 
                 {step === 1 && (
                   <PurchaseOrder

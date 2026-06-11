@@ -1,7 +1,6 @@
 import DoctorSideBar from "../components/DoctorSideBar";
 import DoctorHeader from "../components/DoctorHeader";
 import "../DoctorStyle/doctor-dashboard.css";
-
 import { FaFileAlt } from "react-icons/fa";
 import "../styles/tables.css";
 import OrdersTable from "../components/OrdersTable";

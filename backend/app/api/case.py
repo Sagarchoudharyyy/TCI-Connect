@@ -384,6 +384,71 @@ async def upload_case_file(
             "file_name": file.filename
         }
 
+@router.post("/cases/{case_id}/upload")
+async def upload_case_file(
+    case_id: str,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+
+    case = (
+        db.query(Case)
+        .filter(Case.case_id == case_id)
+        .first()
+    )
+
+    if not case:
+        raise HTTPException(
+            status_code=404,
+            detail="Case not found"
+        )
+
+    upload_folder = "uploads"
+
+    os.makedirs(
+        upload_folder,
+        exist_ok=True
+    )
+
+    unique_filename = (
+        f"{uuid4()}_{file.filename}"
+    )
+
+    file_path = os.path.join(
+        upload_folder,
+        unique_filename
+    )
+
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(
+            file.file,
+            buffer
+        )
+
+    new_file = CaseFile(
+        case_id=case.id,   # foreign key uses DB id
+        file_type=file.content_type,
+        file_name=file.filename,
+        file_path=file_path
+    )
+
+    db.add(new_file)
+    db.commit()
+    db.refresh(new_file)
+    print("CASE FOUND:", case.id)
+    print("FILE:", file.filename)
+    print("SAVED CASE ID:", new_file.case_id)
+
+    return {
+        "message": "File uploaded successfully",
+        "file_name": file.filename
+    }
+
+@router.get("/case_files")
+def get_case_files(
+    db: Session = Depends(get_db)
+):
+    return db.query(CaseFile).all()
 
 @router.get(
         "/download-file")
