@@ -16,6 +16,7 @@ function OrdersTable() {
     const [deadlineFilter, setDeadlineFilter] = useState("");
     const [entriesPerPage, setEntriesPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState("");
+    const [cases, setCases] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
