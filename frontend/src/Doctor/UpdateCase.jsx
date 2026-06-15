@@ -38,6 +38,32 @@ function UpdateCase() {
       age: "",
       gender: "",
       caseStage: [],
+
+      caseStage: "",
+
+      surfaceTexture: "",
+      glazedPolish: "",
+      incisalTranslucency: "",
+      preparedToothShade: "",
+      shadeGuideColor: "",
+
+      materialType: [],
+      crownBridge: [],
+
+      implantType: "",
+      platformDiameter: "",
+
+      screwRetained: false,
+      screwRetainedHybrid: false,
+      cementRetainedTiAbutment: false,
+      zrAbutment: false,
+
+      implantBarType: "",
+      attachmentType: "",
+
+      additionalRestorations: [],
+      additionalInstructions: "",
+      designPreview: "",
       files: [],
 
       gdprConfirm: false,
@@ -46,7 +72,6 @@ function UpdateCase() {
     });
   console.log(formData);
 
-  // Fetch existing case data
   useEffect(() => {
 
     fetchCase();
@@ -79,14 +104,18 @@ function UpdateCase() {
           data.patient_phone || "",
 
         patientId:
-          data.case_id || "",
+          data.id || "",
 
         nextAppointmentDate:
           data.appointment_date
             ?.split("T")[0] || "",
 
+        appointmentTime:
+          data.appointment_time || "",
+
         deliveryDeadline:
-          data.delivery_deadline || "",
+          data.delivery_deadline
+            ?.split("T")[0] || "",
 
         age:
           data.age || "",
@@ -95,11 +124,54 @@ function UpdateCase() {
           data.gender || "",
 
         caseStage:
-          data.case_type
-            ? data.case_type.split(", ")
+          data.details?.case_stage || "",
+
+        surfaceTexture:
+          data.details?.surface_texture || "",
+
+        glazedPolish:
+          data.details?.glazed_polish || "",
+
+        incisalTranslucency:
+          data.details
+            ?.incisal_translucency || "",
+
+        preparedToothShade:
+          data.details
+            ?.prepared_tooth_shade || "",
+
+        shadeGuideColor:
+          data.details
+            ?.shade_guide_color || "",
+
+        materialType:
+          typeof data.details
+            ?.material_type === "string"
+            ? data.details
+              .material_type
+              .split(",")
             : [],
 
-        // keep uploaded files
+        crownBridge:
+          typeof data.details
+            ?.crown_bridge === "string"
+            ? data.details
+              .crown_bridge
+              .split(",")
+            : [],
+
+        additionalRestorations:
+          typeof data.details
+            ?.additional_restorations === "string"
+            ? data.details
+              .additional_restorations
+              .split(",")
+            : [],
+
+        additionalInstructions:
+          data.details
+            ?.additional_instructions || "",
+
         files:
           Array.isArray(data.files) &&
             data.files.length > 0
@@ -108,8 +180,10 @@ function UpdateCase() {
               name: file.file_name,
               path: file.file_path
             }))
-            : prev.files
+            : []
       }));
+
+
     } catch (error) {
 
       console.log(error);
@@ -215,9 +289,8 @@ function UpdateCase() {
           formData.age
             ? Number(formData.age)
             : null,
-
         case_type:
-          formData.caseStage?.join(", ") || "",
+          formData.caseStage || "",
 
         appointment_date:
           formData.nextAppointmentDate || null,
@@ -229,7 +302,66 @@ function UpdateCase() {
           "Pending",
 
         status:
-          "Submitted"
+          "Submitted",
+
+        details: {
+          case_stage:
+            formData.caseStage || "",
+
+          surface_texture:
+            formData.surfaceTexture || "",
+
+          glazed_polish:
+            formData.glazedPolish || "",
+
+          incisal_translucency:
+            formData.incisalTranslucency || "",
+
+          prepared_tooth_shade:
+            formData.preparedToothShade || "",
+
+          shade_guide_color:
+            formData.shadeGuideColor || "",
+
+          material_type:
+            formData.materialType || [],
+
+          crown_bridge:
+            formData.crownBridge || [],
+
+          implant_type:
+            formData.implantType || "",
+
+          platform_diameter:
+            formData.platformDiameter || "",
+
+          screw_retained:
+            formData.screwRetained || false,
+
+          screw_retained_hybrid:
+            formData.screwRetainedHybrid || false,
+
+          cement_retained_ti_abutment:
+            formData.cementRetainedTiAbutment || false,
+
+          zr_abutment:
+            formData.zrAbutment || false,
+
+          implant_bar_type:
+            formData.implantBarType || "",
+
+          attachment_type:
+            formData.attachmentType || "",
+
+          additional_restorations:
+            formData.additionalRestorations || [],
+
+          design_preview:
+            formData.designPreview || "",
+
+          additional_instructions:
+            formData.additionalInstructions || ""
+        }
       };
 
       const updateResponse =
@@ -312,126 +444,125 @@ function UpdateCase() {
         <div className="col-md-9 doctor-main-content">
 
           <DoctorHeader title="Dashboard" />
+          <div className="mc-btm-bxx-cs">
 
-          <section className="step-form-section">
+            <section className="step-form-section">
 
-            <div className="form-container">
+              <div className="form-container">
 
-              <div id="formContentContainer">
+                <div id="formContentContainer">
 
-                <h1
-                  className="text-center mb-4"
-                  style={{
-                    color: "#0152a8"
-                  }}
-                >
-                  Update Case
-                </h1>
-
-                {/* Progress Bar */}
-                <div className="progress-bar-container">
-
-                  <div
-                    className="progress-bar-fill"
+                  <h1
+                    className="text-center mb-4"
                     style={{
-                      width:
-                        step === 1
-                          ? "0%"
-                          : step === 2
-                            ? "50%"
-                            : "100%"
+                      color: "#0152a8"
                     }}
-                  ></div>
+                  >
+                    Update Case
+                  </h1>
+                  <div className="progress-bar-container">
 
-                  <div
-                    className={`step-indicator ${step >= 1
-                      ? "active"
-                      : ""
-                      }`}
-                  ></div>
+                    <div
+                      className="progress-bar-fill"
+                      style={{
+                        width:
+                          step === 1
+                            ? "0%"
+                            : step === 2
+                              ? "50%"
+                              : "100%"
+                      }}
+                    ></div>
 
-                  <div
-                    className={`step-indicator ${step >= 2
-                      ? "active"
-                      : ""
-                      }`}
-                  ></div>
+                    <div
+                      className={`step-indicator ${step >= 1
+                        ? "active"
+                        : ""
+                        }`}
+                    ></div>
 
-                  <div
-                    className={`step-indicator ${step >= 3
-                      ? "active"
-                      : ""
-                      }`}
-                  ></div>
+                    <div
+                      className={`step-indicator ${step >= 2
+                        ? "active"
+                        : ""
+                        }`}
+                    ></div>
+
+                    <div
+                      className={`step-indicator ${step >= 3
+                        ? "active"
+                        : ""
+                        }`}
+                    ></div>
+
+                  </div>
+
+                  {step === 1 && (
+                    <PurchaseOrder
+                      formData={formData}
+                      setFormData={
+                        setFormData
+                      }
+                      handleNext={
+                        handleNext
+                      }
+                      errors={errors}
+                    />
+                  )}
+
+                  {step === 2 && (
+                    <UploadDigitalFiles
+                      formData={formData}
+                      setFormData={
+                        setFormData
+                      }
+                      handleNext={
+                        handleNext
+                      }
+                      handlePrevious={
+                        handlePrevious
+                      }
+                      errors={errors}
+                    />
+                  )}
+
+                  {step === 3 && (
+                    <ReviewConfirm
+                      formData={formData}
+                      setFormData={
+                        setFormData
+                      }
+                      handlePrevious={
+                        handlePrevious
+                      }
+                      handleSubmit={
+                        handleSubmit
+                      }
+                      checkboxErrors={
+                        checkboxErrors
+                      }
+                      buttonText="Update Case"
+                    />
+                  )}
+
+                  {step === 4 && (
+                    <SuccessScreen
+                      title="Case Updated Successfully!"
+                      buttonText="View Cases"
+                      redirectPath="/client/cases"
+                    />
+                  )}
 
                 </div>
 
-                {step === 1 && (
-                  <PurchaseOrder
-                    formData={formData}
-                    setFormData={
-                      setFormData
-                    }
-                    handleNext={
-                      handleNext
-                    }
-                    errors={errors}
-                  />
-                )}
-
-                {step === 2 && (
-                  <UploadDigitalFiles
-                    formData={formData}
-                    setFormData={
-                      setFormData
-                    }
-                    handleNext={
-                      handleNext
-                    }
-                    handlePrevious={
-                      handlePrevious
-                    }
-                    errors={errors}
-                  />
-                )}
-
-                {step === 3 && (
-                  <ReviewConfirm
-                    formData={formData}
-                    setFormData={
-                      setFormData
-                    }
-                    handlePrevious={
-                      handlePrevious
-                    }
-                    handleSubmit={
-                      handleSubmit
-                    }
-                    checkboxErrors={
-                      checkboxErrors
-                    }
-                    buttonText="Update Case"
-                  />
-                )}
-
-                {step === 4 && (
-                  <SuccessScreen
-                    title="Case Updated Successfully!"
-                    buttonText="View Cases"
-                    redirectPath="/client/cases"
-                  />
-                )}
-
               </div>
 
-            </div>
+            </section>
 
-          </section>
+          </div>
 
         </div>
-
       </div>
-
     </div>
   );
 }

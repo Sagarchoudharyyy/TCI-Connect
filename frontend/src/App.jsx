@@ -26,6 +26,7 @@ import DoctorPricing from "./Doctor/DoctorPricing";
 import ClientChat from "./Doctor/ClientChat";
 import QuestionAnswer from "./Doctor/QuestionAnswer";
 import HelpandFAQ from "./Doctor/Help&FAQ";
+import ViewCaseDetail from "./components/pages/ViewCaseDetail";
 function App() {
   return (
     <BrowserRouter>
@@ -64,12 +65,20 @@ function App() {
           }
         />
 
+        <Route
+          path="/admin/view-case/:id"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <ViewCaseDetail />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/admin/dashboard"
           element={
             <ProtectedRoute
-              allowedRoles={["admin", "doctor"]}
+              allowedRoles={["admin"]}
             >
               <Dashboard />
             </ProtectedRoute>
@@ -80,7 +89,7 @@ function App() {
           path="/admin/recent-case"
           element={
             <ProtectedRoute
-              allowedRoles={["admin", "doctor"]}
+              allowedRoles={["admin"]}
             >
               <RecentCases />
             </ProtectedRoute>

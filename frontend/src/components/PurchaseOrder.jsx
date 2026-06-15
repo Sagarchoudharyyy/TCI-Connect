@@ -4,6 +4,24 @@ function PurchaseOrder({
     handleNext,
     errors
 }) {
+
+    const handleChange = (e) => {
+        const { id, value } = e.target;
+
+        setFormData({
+            ...formData,
+            [id]: value
+        });
+    };
+
+    const handleCheckboxChange = (e) => {
+        const { id, checked } = e.target;
+
+        setFormData({
+            ...formData,
+            [id]: checked
+        });
+    };
     return (
         <div className="step-content active" style={{ display: "block" }}>
             <h2 className="text-xl font-semibold mb-4" style={{ color: "#0152a8" }}>1. Purchase Order</h2>
@@ -48,6 +66,15 @@ function PurchaseOrder({
                         type="text"
                         className="form-control"
                         id="patientId"
+                        value={formData.patientId || ""}
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                patientId:
+                                    e.target.value
+                            })
+                        }
+                        readOnly
                     />
 
                     <span
@@ -94,20 +121,28 @@ function PurchaseOrder({
                         type="time"
                         className="form-control"
                         id="time"
+                        value={
+                            formData.appointmentTime ||""
+                        }
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                appointmentTime:
+                                    e.target.value
+                            })
+                        }
                     />
                 </div>
                 <div className="col-md-6">
                     <label className="form-label">
                         Delivery Deadline
-
-                        {/* <span className="required-star">*</span> */}
                     </label>
 
                     <input
                         type="date"
                         className="form-control"
                         id="deliveryDeadline"
-                        value={formData.deliveryDeadline}
+                        value={formData.deliveryDeadline ||""}
                         onChange={(e) =>
                             setFormData({
                                 ...formData,
@@ -124,8 +159,6 @@ function PurchaseOrder({
                 <div className="col-md-6">
                     <label className="form-label">
                         Age
-
-                        {/* <span className="required-star">*</span> */}
                     </label>
 
                     <input
@@ -149,8 +182,6 @@ function PurchaseOrder({
                 <div className="col-md-6 my-3">
                     <label className="form-label d-block">
                         Gender
-
-                        {/* <span className="required-star">*</span> */}
                     </label>
 
                     <div className="form-check form-check-inline">
@@ -162,12 +193,7 @@ function PurchaseOrder({
                             checked={
                                 formData.gender === "Male"
                             }
-                            onChange={(e) =>
-                                setFormData({
-                                    ...formData,
-                                    gender:
-                                        e.target.value
-                                })
+                            onChange={handleCheckboxChange
                             }
                         />
 
@@ -188,12 +214,7 @@ function PurchaseOrder({
                             checked={
                                 formData.gender === "Female"
                             }
-                            onChange={(e) =>
-                                setFormData({
-                                    ...formData,
-                                    gender:
-                                        e.target.value
-                                })
+                            onChange={handleCheckboxChange
                             }
                         />
 
@@ -213,15 +234,20 @@ function PurchaseOrder({
                 <div className="col-md-6 my-3">
                     <label className="form-label d-block">
                         Case Stage
-
-                        {/* <span className="required-star">*</span> */}
                     </label>
 
                     <div className="form-check form-check-inline">
                         <input
                             className="form-check-input"
-                            type="checkbox"
+                            type="radio"
+                            name="caseStage"
                             id="tryInFramework"
+                            value="Try-In Framework"
+                            checked={
+                                formData.caseStage ===
+                                "Try-In Framework"
+                            }
+                            onChange={handleCheckboxChange}
                         />
 
                         <label
@@ -235,8 +261,16 @@ function PurchaseOrder({
                     <div className="form-check form-check-inline">
                         <input
                             className="form-check-input"
-                            type="checkbox"
+                            type="radio"
+                            name="caseStage"
                             id="tryInCeramics"
+                            value="Try-In Ceramics"
+                            checked={
+                                formData.caseStage ===
+                                "Try-In Ceramics"
+                            }
+                            onChange={handleCheckboxChange
+                            }
                         />
 
                         <label
@@ -252,6 +286,9 @@ function PurchaseOrder({
                             className="form-check-input"
                             type="checkbox"
                             id="finish"
+                            checked={formData.finish || false}
+                            onChange={handleCheckboxChange
+                            }
                         />
 
                         <label
@@ -281,6 +318,9 @@ function PurchaseOrder({
                             className="form-check-input"
                             type="checkbox"
                             id="smooth"
+                            checked={formData.smooth || false}
+                            onChange={handleCheckboxChange
+                            }
                         />
 
                         <label
@@ -290,12 +330,14 @@ function PurchaseOrder({
                             Smooth
                         </label>
                     </div>
-
                     <div className="form-check form-check-inline">
                         <input
                             className="form-check-input"
                             type="checkbox"
                             id="moderate"
+                            checked={formData.moderate || false}
+                            onChange={handleCheckboxChange
+                            }
                         />
 
                         <label
@@ -311,6 +353,9 @@ function PurchaseOrder({
                             className="form-check-input"
                             type="checkbox"
                             id="heavy"
+                            checked={formData.heavy || false}
+                            onChange={handleCheckboxChange
+                            }
                         />
 
                         <label
@@ -332,6 +377,9 @@ function PurchaseOrder({
                             className="form-check-input"
                             type="checkbox"
                             id="high"
+                            checked={formData.high || false}
+                            onChange={handleCheckboxChange
+                            }
                         />
 
                         <label
@@ -347,6 +395,9 @@ function PurchaseOrder({
                             className="form-check-input"
                             type="checkbox"
                             id="moderatePolish"
+                            checked={formData.moderatePolish || false}
+                            onChange={handleCheckboxChange
+                            }
                         />
 
                         <label
@@ -362,6 +413,9 @@ function PurchaseOrder({
                             className="form-check-input"
                             type="checkbox"
                             id="light"
+                            checked={formData.light || false}
+                            onChange={handleCheckboxChange
+                            }
                         />
 
                         <label
@@ -386,6 +440,9 @@ function PurchaseOrder({
                             className="form-check-input"
                             type="checkbox"
                             id="translucencyNone"
+                            checked={formData.translucencyNone || false}
+                            onChange={handleCheckboxChange
+                            }
                         />
 
                         <label
@@ -401,6 +458,9 @@ function PurchaseOrder({
                             className="form-check-input"
                             type="checkbox"
                             id="translucency0_5mm"
+                            checked={formData.translucency0_5mm || false}
+                            onChange={handleCheckboxChange
+                            }
                         />
 
                         <label
@@ -416,6 +476,9 @@ function PurchaseOrder({
                             className="form-check-input"
                             type="checkbox"
                             id="translucency1mm"
+                            checked={formData.translucency1mm || false}
+                            onChange={handleCheckboxChange
+                            }
                         />
 
                         <label
@@ -431,6 +494,9 @@ function PurchaseOrder({
                             className="form-check-input"
                             type="checkbox"
                             id="translucencyMax1_5mm"
+                            checked={formData.translucencyMax1_5mm || false}
+                            onChange={handleCheckboxChange
+                            }
                         />
 
                         <label
@@ -452,6 +518,9 @@ function PurchaseOrder({
                             className="form-check-input"
                             type="checkbox"
                             id="greyDiscolored"
+                            checked={formData.greyDiscolored || false}
+                            onChange={handleCheckboxChange
+                            }
                         />
 
                         <label
@@ -467,6 +536,9 @@ function PurchaseOrder({
                             className="form-check-input"
                             type="checkbox"
                             id="natural"
+                            checked={formData.natural || false}
+                            onChange={handleCheckboxChange
+                            }
                         />
 
                         <label
@@ -481,7 +553,6 @@ function PurchaseOrder({
                 <div className="col-md-12 my-3">
                     <label className="form-label">
                         Shade Guide Color
-
                         {/* <span className="required-star">*</span> */}
                     </label>
 
@@ -489,6 +560,13 @@ function PurchaseOrder({
                         type="text"
                         className="form-control"
                         id="shadeGuideColor"
+                        value={formData.shadeGuideColor || ""}
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                shadeGuideColor: e.target.value
+                            })
+                        }
                     />
 
                     <span
@@ -496,7 +574,6 @@ function PurchaseOrder({
                         id="errorShadeGuideColor"
                     ></span>
                 </div>
-
             </div>
             <div className="mb-4">
                 <label className="form-label d-block">
@@ -514,6 +591,9 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="titan"
+                                checked={formData.titan || false}
+                                onChange={handleCheckboxChange
+                                }
                             />
 
                             <label
@@ -529,6 +609,9 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="zirconia"
+                                checked={formData.zirconia || false}
+                                onChange={handleCheckboxChange
+                                }
                             />
 
                             <label
@@ -544,6 +627,9 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="multilayerZirconiaKatana"
+                                checked={formData.multilayerZirconiaKatana || false}
+                                onChange={handleCheckboxChange
+                                }
                             />
 
                             <label
@@ -563,6 +649,9 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="nickelChrome"
+                                checked={formData.nickelChrome || false}
+                                onChange={handleCheckboxChange
+                                }
                             />
 
                             <label
@@ -578,6 +667,9 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="pmma"
+                                checked={formData.pmma || false}
+                                onChange={handleCheckboxChange
+                                }
                             />
 
                             <label
@@ -593,6 +685,9 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="chromeCobaltKeraCadCam"
+                                checked={formData.chromeCobaltKeraCadCam || false}
+                                onChange={handleCheckboxChange
+                                }
                             />
 
                             <label
@@ -628,6 +723,9 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="crown"
+                                checked={formData.crown || false}
+                                onChange={handleCheckboxChange
+                                }
                             />
 
                             <label
@@ -643,6 +741,9 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="bridge"
+                                checked={formData.bridge || false}
+                                onChange={handleCheckboxChange
+                                }
                             />
 
                             <label
@@ -658,6 +759,9 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="fullContourCrown"
+                                checked={formData.fullContourCrown || false}
+                                onChange={handleCheckboxChange
+                                }
                             />
 
                             <label
@@ -677,6 +781,9 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="inlayOnlay"
+                                checked={formData.inlayOnlay || false}
+                                onChange={handleCheckboxChange
+                                }
                             />
 
                             <label
@@ -692,6 +799,9 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="postCore"
+                                checked={formData.postCore || false}
+                                onChange={handleCheckboxChange
+                                }
                             />
 
                             <label
@@ -707,6 +817,9 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="veneer"
+                                checked={formData.veneer || false}
+                                onChange={handleCheckboxChange
+                                }
                             />
 
                             <label
@@ -763,6 +876,8 @@ function PurchaseOrder({
                                     type="text"
                                     className="form-control"
                                     id="implantType1"
+                                    value={formData.implantType1 || ""}
+                                    onChange={handleChange}
                                 />
                             </td>
 
@@ -771,6 +886,8 @@ function PurchaseOrder({
                                     type="text"
                                     className="form-control"
                                     id="platformDiameter1"
+                                    value={formData.platformDiameter1 || ""}
+                                    onChange={handleChange}
                                 />
                             </td>
 
@@ -779,6 +896,8 @@ function PurchaseOrder({
                                     type="text"
                                     className="form-control"
                                     id="screwRetained1"
+                                    value={formData.screwRetained1 || ""}
+                                    onChange={handleChange}
                                 />
                             </td>
 
@@ -787,6 +906,8 @@ function PurchaseOrder({
                                     type="text"
                                     className="form-control"
                                     id="screwRetainedHybrid1"
+                                    value={formData.screwRetainedHybrid1 || ""}
+                                    onChange={handleChange}
                                 />
                             </td>
 
@@ -795,6 +916,8 @@ function PurchaseOrder({
                                     type="text"
                                     className="form-control"
                                     id="cementRetainedTiAbutment1"
+                                    value={formData.cementRetainedTiAbutment1 || ""}
+                                    onChange={handleChange}
                                 />
                             </td>
 
@@ -803,6 +926,8 @@ function PurchaseOrder({
                                     type="text"
                                     className="form-control"
                                     id="zrAbutment1"
+                                    value={formData.zrAbutment1 || ""}
+                                    onChange={handleChange}
                                 />
                             </td>
 
@@ -811,6 +936,8 @@ function PurchaseOrder({
                                     type="text"
                                     className="form-control"
                                     id="implantBarType1"
+                                    value={formData.implantBarType1 || ""}
+                                    onChange={handleChange}
                                 />
                             </td>
 
@@ -819,138 +946,8 @@ function PurchaseOrder({
                                     type="text"
                                     className="form-control"
                                     id="attachmentType1"
-                                />
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="implantType2"
-                                />
-                            </td>
-
-                            <td>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="platformDiameter2"
-                                />
-                            </td>
-
-                            <td>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="screwRetained2"
-                                />
-                            </td>
-
-                            <td>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="screwRetainedHybrid2"
-                                />
-                            </td>
-
-                            <td>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="cementRetainedTiAbutment2"
-                                />
-                            </td>
-
-                            <td>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="zrAbutment2"
-                                />
-                            </td>
-
-                            <td>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="implantBarType2"
-                                />
-                            </td>
-
-                            <td>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="attachmentType2"
-                                />
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="implantType3"
-                                />
-                            </td>
-
-                            <td>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="platformDiameter3"
-                                />
-                            </td>
-
-                            <td>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="screwRetained3"
-                                />
-                            </td>
-
-                            <td>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="screwRetainedHybrid3"
-                                />
-                            </td>
-
-                            <td>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="cementRetainedTiAbutment3"
-                                />
-                            </td>
-
-                            <td>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="zrAbutment3"
-                                />
-                            </td>
-
-                            <td>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="implantBarType3"
-                                />
-                            </td>
-
-                            <td>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="attachmentType3"
+                                    value={formData.attachmentType1 || ""}
+                                    onChange={handleChange}
                                 />
                             </td>
                         </tr>
@@ -977,6 +974,9 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="bleachingTray"
+                                checked={formData.bleachingTray || false}
+                                onChange={handleCheckboxChange
+                                }
                             />
 
                             <label
@@ -992,6 +992,9 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="pei"
+                                checked={formData.pei || false}
+                                onChange={handleCheckboxChange
+                                }
                             />
 
                             <label
@@ -1011,6 +1014,9 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="transparentNightGuard"
+                                checked={formData.transparentNightGuard || false}
+                                onChange={handleCheckboxChange
+                                }
                             />
 
                             <label
@@ -1026,6 +1032,9 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="fullArchPrintedMasterModel"
+                                checked={formData.fullArchPrintedMasterModel || false}
+                                onChange={handleCheckboxChange
+                                }
                             />
 
                             <label
@@ -1044,7 +1053,6 @@ function PurchaseOrder({
                 <label className="form-label">
                     Design Preview
                 </label>
-
                 <div className="form-check">
                     <input
                         className="form-check-input"
@@ -1052,6 +1060,9 @@ function PurchaseOrder({
                         id="designPreview"
                         name="design_preview_request"
                         value="1"
+                        checked={formData.designPreview || false}
+                        onChange={handleCheckboxChange
+                        }
                     />
 
                     <label
@@ -1071,6 +1082,13 @@ function PurchaseOrder({
                     className="form-control"
                     rows="3"
                     id="additionalInstructions"
+                    value={formData.additionalInstructions || ""}
+                    onChange={(e) =>
+                        setFormData({
+                            ...formData,
+                            additionalInstructions: e.target.value
+                        })
+                    }
                 ></textarea>
             </div>
             <div className="mb-3">
@@ -1082,6 +1100,12 @@ function PurchaseOrder({
                     type="file"
                     className="form-control"
                     id="pdfUpload"
+                    onChange={(e) =>
+                        setFormData({
+                            ...formData,
+                            pdfUpload: e.target.files[0]
+                        })
+                    }
                 />
 
                 <div

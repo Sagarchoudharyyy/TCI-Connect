@@ -25,6 +25,25 @@ def get_all_doctors(db: Session = Depends(get_db)):
     return doctors
 
 
+@router.get("/doctors/{doctor_id}")
+def get_doctor_by_id(
+    doctor_id: int,
+    db: Session = Depends(get_db)
+):
+
+    doctor = db.query(User).filter(
+        User.id == doctor_id,
+        User.role == "doctor"
+    ).first()
+
+    if not doctor:
+        return {
+            "message": "Doctor not found"
+        }
+
+    return doctor
+
+
 @router.post("/doctors")
 def create_doctor(user: UserRegister, db: Session = Depends(get_db)):
 
