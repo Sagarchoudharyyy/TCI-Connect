@@ -25,8 +25,6 @@ function DashboardCard({ cases }) {
     return (
         <div className="main-c-inner">
             <div className="row">
-
-                {/* Total Doctor Card */}
                 <div className="col-md-12 col-lg-6">
                     <div className="stats-card total-doctor">
                         <div className="stats-icon">

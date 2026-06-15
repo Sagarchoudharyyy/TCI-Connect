@@ -26,6 +26,38 @@ function Pricing() {
   const [message, setMessage] = useState("");
   const location = useLocation();
 
+  const categoryMap = {
+    3: "Crown",
+    4: "Venner",
+    7: "Inlay/Onlay",
+    8: "Implant Crown",
+    9: "Implant",
+    10: "ALL on 4/6",
+    11: "Hybrid Bridge",
+    12: "Abutment",
+    13: "Pressed",
+    14: "Print",
+    15: "MILL ONLY",
+    16: "Design",
+    17: "Attachment"
+  };
+
+  const materialMap = {
+    3: "Zirconia",
+    5: "Metal",
+    6: "Titane",
+    7: "E-max",
+    8: "silicone",
+    9: "wax",
+    10: "ceramic",
+    11: "Titanium",
+    12: "PMMA",
+    13: "Various",
+    14: "Resin",
+    15: "STL",
+    16: "Metal / Zirconia / Ceramic"
+  };
+
   useEffect(() => {
     console.log("Pricing page loaded");
     fetchPrices();
@@ -95,8 +127,6 @@ function Pricing() {
       console.error("Error fetching pricing data:", error);
     }
   };
-
-
   return (
     <div className="container-fluid">
       <div className="dashboard-main">
@@ -140,12 +170,16 @@ function Pricing() {
                     {prices.map((price) => (
                       <tr key={price.id}>
                         <td>{price.product}</td>
-                        <td>{price.category}</td>
-                        <td>{price.material}</td>
-                        <td>{price.belgium_dentist_price}</td>
-                        <td>{price.belgium_lab_price}</td>
-                        <td>{price.lebanon_dentist_price}</td>
-                        <td>{price.lebanon_lab_price}</td>
+                        <td>
+                          {categoryMap[price.category] || price.category}
+                        </td>
+                        <td>
+                          {materialMap[price.material] || price.material}
+                        </td>
+                        <td>€ {price.belgium_dentist_price}</td>
+                        <td>€ {price.belgium_lab_price}</td>
+                        <td>$ {price.lebanon_dentist_price}</td>
+                        <td>$ {price.lebanon_lab_price}</td>
                         <td>
                           <button
                             className="btn btn-md"
@@ -168,7 +202,7 @@ function Pricing() {
                 </table>
 
               </div>
-              <div className="card mt-4 mx-5">
+              <div className="card mt-4 ">
                 <div className="card-body small">
 
                   <p className="mb-2 fw-semibold">
