@@ -1,4 +1,3 @@
-
 .doctor-header {
     border-bottom: 1px solid #e8e8e8;
     width: 100%;
@@ -30,16 +29,24 @@
 
 .header-right {
     display: flex;
-    align-items: end;
+    align-items: center;
     gap: 20px;
+}
+
+.notification-wrapper {
+    display: flex;
+    align-items: center;
 }
 
 .notification-icon {
     background-color: white;
     border: 1px solid #e9ecef;
     border-radius: 8px;
-    padding: 7px;
+    padding: 10px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .lab-badge {

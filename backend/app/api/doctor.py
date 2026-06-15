@@ -6,6 +6,8 @@ from app.models.user_model import User
 from app.schemas.user_schema import UserRegister
 from app.core.security import hash_password
 
+from app.models.notification_model import Notification
+
 router = APIRouter(tags=["Doctors"])
 
 
@@ -64,6 +66,17 @@ def create_doctor(user: UserRegister, db: Session = Depends(get_db)):
     db.add(new_doctor)
     db.commit()
     db.refresh(new_doctor)
+
+    notification = Notification(
+        message=f"New doctor registered: {new_doctor.full_name}",
+        is_read=False
+    )
+
+    db.add(notification)
+    db.commit()
+    db.refresh(notification)
+    print("Notification saved:", notification.id)
+    print("Message:", notification.message)
 
     return {
         "message": "Doctor created successfully",

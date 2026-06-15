@@ -18,8 +18,11 @@ def get_notifications(
 ).order_by(
     Notification.created_at.desc()
 ).all()
+    print("Fetch Notification: ",notifications)
 
     return notifications
+
+
 @router.put("/notifications/read-all")
 def mark_all_read(
     db:Session=Depends(get_db)
