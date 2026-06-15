@@ -7,12 +7,20 @@ from app.database.database import get_db
 from app.models.user_model import User
 from app.models.blacklist_model import Blacklist
 from app.models.notification_model import Notification
+from app.schemas.user_schema import (
+    UserRegister,
+    UserLogin,
+    UserProfileUpdate
+)
 
 from app.core.security import (
     hash_password,
     verify_password,
-    create_access_token
+    create_access_token,
+    decode_access_token
 )
+
+
 
 from app.schemas.user_schema import (
     UserRegister,
@@ -205,4 +213,56 @@ def logout(
 
     return {
         "message": "Logged out successfully"
+    }
+@router.put("/profile")
+def update_proflie(
+    profile:UserProfileUpdate,
+    authorization:str=Header(None),
+    db: Session=Depends(get_db)
+):
+    if not authorization:
+        return {"message": "Token missing"}
+
+    token = authorization.replace(
+        "Bearer ",
+        ""
+    )
+    payload = decode_access_token(token)
+    
+
+    if not payload:
+        return {"message": "Invalid token"}
+    
+    user_id = payload.get("user_id")
+
+    db_user = db.query(User).filter(
+        User.id == user_id
+    ).first()
+    if not db_user:
+        return {"message": "User not found"}
+
+    db_user.full_name = profile.full_name
+    db_user.phone = profile.phone
+    db_user.business_name = profile.business_name
+    db_user.license_number = profile.license_number
+    db_user.vat_id = profile.vat_id
+    db_user.country = profile.country
+    db_user.address = profile.address
+
+    db.commit()
+    db.refresh(db_user)
+    
+    return {
+        "message": "Profile updated successfully",
+        "user": {
+            "id": db_user.id,
+            "full_name": db_user.full_name,
+            "email": db_user.email,
+            "phone": db_user.phone,
+            "business_name": db_user.business_name,
+            "license_number": db_user.license_number,
+            "vat_id": db_user.vat_id,
+            "country": db_user.country,
+            "address": db_user.address
+        }
     }
