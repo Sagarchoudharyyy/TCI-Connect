@@ -6,6 +6,7 @@ import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "../DoctorStyle/Setting.css"
 import { FaEdit } from "react-icons/fa";
+import axios from "axios";
 function Profile() {
 
 
@@ -103,7 +104,47 @@ function Profile() {
             }
         }
 
-        alert("Validation Passed");
+        const token = localStorage.getItem("token");
+
+        const profileData = {
+            full_name: fullName,
+            phone: phone,
+            business_name: businessName,
+            license_number: licenseNumber,
+            vat_id: vatId,
+            country: country,
+            address: address
+        };
+
+        axios.put(
+            "http://127.0.0.1:8000/profile",
+            profileData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        )
+            .then((response) => {
+
+                alert(response.data.message);
+
+                localStorage.setItem(
+                    "user",
+                    JSON.stringify(response.data.user)
+                );
+
+            })
+            .catch((error) => {
+
+                console.log(error);
+
+                alert(
+                    error.response?.data?.message ||
+                    "Profile update failed"
+                );
+
+            });
     };
     return (
         <div className="container-fluid p-0">

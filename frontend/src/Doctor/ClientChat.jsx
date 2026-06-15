@@ -83,19 +83,7 @@ function ClientChat() {
   };
 
   return (
-    // <div className="container-fluid">
-    //   <div className="dashboard-main">
-    //     <div className="row g-0">
 
-    //       <DoctorSideBar />
-
-    //       <div
-    //         className="offset-2 col-12 col-md-9 col-lg-9
-    //         offset-lg-3 col-xl-9 col-xxl-10
-    //         offset-xl-3 offset-xxl-2 main-content"
-    //       >
-
-    //         <DoctorHeader title="Chat" />
     <div className="container-fluid p-0">
       <div className="row g-0 doctor-dashboard-main">
         <DoctorSideBar />

@@ -264,7 +264,7 @@ function DoctorSideBar() {
                             onClick={handleLogout}
                             className="nav-link logout-btn border-0 w-100 text-start"
                         >
-                            
+
                             Logout
                         </button>
                     </li>
