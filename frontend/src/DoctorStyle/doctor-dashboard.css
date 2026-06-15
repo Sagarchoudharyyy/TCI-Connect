@@ -20,15 +20,6 @@ body {
     }
 }
 
-.mc-btm-bxx {
-    height: 800px;
-    overflow-y: auto;
-}
-
-.mc-btm-bxx {
-    padding: 30px;
-}
-
 .stats_Cards .col-md-6:first-child .stat-card {
     background: #e3f2ef;
 }

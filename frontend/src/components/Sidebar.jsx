@@ -33,13 +33,16 @@ function Sidebar() {
         localStorage.removeItem("user");
 
         navigate("/login");
-        
+
         console.log("logout working");
     };
     return (
-        <div className="col-3 col-lg-3 col-xl-3 col-xxl-2 sidebar">
+        <div className="col-md-3 sidebar">
             <div className="sidebar-header">
                 <h4 className="text-primary">TCI Online</h4>
+                <div className="dashboard-new-side-bar d-block d-md-none">
+                    <i className="bi bi-filter-left"></i>
+                </div>
             </div>
             <nav>
                 <ul className="nav flex-column">
