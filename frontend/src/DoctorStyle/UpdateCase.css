@@ -1,0 +1,165 @@
+.mc-btm-bxx-cs {
+    height: 800px;
+    overflow-y: auto;
+}
+
+.mc-btm-bxx-cs {
+    padding: 30px;
+}
+
+.step-form-section .form-container {
+    background: #fff;
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, .1);
+}
+
+.step-form-section .progress-bar-container {
+    height: 8px;
+    background: #eee;
+    border-radius: 4px;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.step-form-section .progress-bar-fill {
+    height: 100%;
+    background: #0152a8;
+    border-radius: 4px;
+    transition: width .5s ease;
+}
+
+.step-form-section .step-indicator {
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    background: #0152a8;
+    border-radius: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px solid #fff;
+}
+
+.step-form-section .step-indicator.active {
+    background: #0152a8;
+    transform: translate(-50%, -50%) scale(1.2);
+}
+
+.step-form-section .step-indicator:first-child {
+    left: 0;
+}
+
+.step-form-section .step-indicator:nth-child(2) {
+    left: 50%;
+}
+
+.step-form-section .step-indicator:last-child {
+    left: 100%;
+}
+
+.step-form-section .step-content {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity .5s, transform .5s;
+}
+
+.step-form-section .step-content.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.step-form-section .btn-custom-next,
+.step-form-section .btn-custom-prev,
+.step-form-section .btn-custom-submit {
+    padding: .75rem 2rem;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: .3s;
+    cursor: pointer;
+}
+
+.step-form-section .btn-custom-next,
+.step-form-section .btn-custom-submit {
+    background: #0152a8;
+    color: #fff;
+    border: none;
+}
+
+.step-form-section .btn-custom-prev {
+    background: transparent;
+    color: #0152a8;
+    border: 1px solid #0152a8;
+}
+
+.step-form-section .hidden {
+    display: none !important;
+}
+
+.step-form-section .upload-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f9fafb;
+    padding: .5rem 1rem;
+    border-radius: 8px;
+    margin-bottom: .5rem;
+}
+
+.step-form-section .upload-item button {
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: .8rem;
+    cursor: pointer;
+}
+
+.step-form-section .progress {
+    width: 100%;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.step-form-section .progress-bar {
+    height: 100%;
+    background: #0152a8;
+    width: 0%;
+}
+
+.step-form-section .required-star {
+    color: red;
+    margin-left: 2px;
+}
+
+.step-form-section .validation-msg {
+    color: red;
+    font-size: .85rem;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.step-form-section .loader {
+    border: 2px solid #fff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    animation: spin .8s linear infinite;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

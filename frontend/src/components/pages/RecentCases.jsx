@@ -575,7 +575,7 @@ function RecentCases() {
                                                         <button
                                                             className="btn btn-link p-0 me-3"
                                                             onClick={() =>
-                                                                navigate(`/view-case/${item.id}`)
+                                                                navigate(`/admin/view-case/${item.id}`)
                                                             }
                                                         >
                                                             <FaEye

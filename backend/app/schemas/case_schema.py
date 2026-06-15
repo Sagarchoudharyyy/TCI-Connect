@@ -1,6 +1,9 @@
 from pydantic import BaseModel
 from datetime import datetime, date
 from typing import Optional
+from app.schemas.case_detail_schema import (
+    CaseDetailCreate
+)
 
 
 class CaseCreate(BaseModel):
@@ -18,11 +21,15 @@ class CaseCreate(BaseModel):
 
     appointment_date: Optional[datetime] = None
 
+    appointment_time: Optional[str] = None
+
     delivery_deadline: Optional[date] = None
 
     preview_status: Optional[str] = "-"
 
     status: Optional[str] = "Not Submitted"
+    
+    details: CaseDetailCreate
 
 
 class CaseUpdate(BaseModel):
@@ -39,11 +46,15 @@ class CaseUpdate(BaseModel):
 
     appointment_date: Optional[datetime] = None
 
+    appointment_time: Optional[str] = None
+
     delivery_deadline: Optional[date] = None
 
     preview_status: Optional[str] = "-"
 
     status: Optional[str] = "Not Submitted"
+    
+    details: Optional[CaseDetailCreate] = None
 
 class CaseResponse(BaseModel):
     id: int
@@ -65,6 +76,8 @@ class CaseResponse(BaseModel):
     case_type: Optional[str] = None
 
     appointment_date: Optional[datetime] = None
+
+    appointment_time: Optional[str] = None
 
     delivery_deadline: Optional[date] = None
 

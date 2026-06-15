@@ -57,6 +57,13 @@ class Case(Base):
             nullable=True
         )
 
+
+        appointment_time = Column(
+            String(20),
+            nullable=True
+        )
+
+
         delivery_deadline = Column(
             Date,
             nullable=True
@@ -84,5 +91,11 @@ class Case(Base):
         files = relationship(
             "CaseFile",
             back_populates="case",
+            cascade="all, delete-orphan"
+        )
+        details = relationship(
+            "CaseDetail",
+            back_populates="case",
+            uselist=False,
             cascade="all, delete-orphan"
         )
