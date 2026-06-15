@@ -61,7 +61,7 @@ function UpdatePrice() {
 
             }
 
-            navigate("/pricing", {
+            navigate("/admin/pricing", {
                 state: {
                     message: id
                         ? "Price updated successfully"

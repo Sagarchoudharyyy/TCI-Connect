@@ -1,31 +1,65 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import "../../styles/header.css";
 
 function Notification() {
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const notificationRef =
+    useRef(null);
 
   useEffect(() => {
     fetchNotifications();
   }, []);
 
-  const fetchNotifications = async () => {
-    try {
-      const response = await axios.get(
-        "http://127.0.0.1:8000/notifications"
-      );
+  useEffect(() => {
+    const handleClickOutside =
+      (event) => {
+        if (
+          notificationRef.current &&
+          !notificationRef.current.contains(
+            event.target
+          )
+        ) {
+          setShowDropdown(false);
+        }
+      };
 
-      console.log(
-        "Notifications API Response:",
-        response.data
-      );
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
 
-      setNotifications(response.data);
-    } catch (error) {
-      console.log("Notification Error:", error);
-    }
-  };
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  }, []);
+
+  const fetchNotifications =
+    async () => {
+      try {
+        const response =
+          await axios.get(
+            "http://127.0.0.1:8000/notifications"
+          );
+
+        console.log(
+          "Notifications API Response:",
+          response.data
+        );
+
+        setNotifications(response.data);
+      } catch (error) {
+        console.log(
+          "Notification Error:",
+          error
+        );
+      }
+    };
 
   const markAllRead = async () => {
     try {
@@ -33,30 +67,38 @@ function Notification() {
         "http://127.0.0.1:8000/notifications/read-all"
       );
 
-      fetchNotifications();
+      setNotifications([]);
+
+      setShowDropdown(false);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const unreadCount = notifications.filter(
-    (item) => !item.is_read
-  ).length;
+  const unreadCount =
+    notifications.filter(
+      (item) => !item.is_read
+    ).length;
+  const handleBellClick = async () => {
+    console.log("Bell clicked");
 
+    await fetchNotifications();
+
+    setShowDropdown((prev) => !prev);
+  };
   return (
     <div
-      className="notification-wrapper position-relative"
-      style={{ display: "inline-block" }}
+      ref={notificationRef}
+      className="notification-wrapper position-relative "
     >
-      <div
-        className="notification-icon"
-        onClick={() =>
-          setShowDropdown(!showDropdown)
-        }
+      <div className="notification-icon"
         style={{
           position: "relative",
           cursor: "pointer"
         }}
+        onClick={
+          handleBellClick
+        }
       >
         <svg
           width="24"
@@ -78,111 +120,119 @@ function Notification() {
           />
         </svg>
 
-        <span
-          className="position-absolute"
-          style={{
-            top: "-6px",
-            right: "-6px",
-            background: "#d9534f",
-            color: "#fff",
-            padding: "2px 6px",
-            borderRadius: "12px",
-            fontSize: "12px"
-          }}
-        >
-          {unreadCount}
-        </span>
+        {unreadCount >
+          0 && (
+            <span
+              className="position-absolute"
+              style={{
+                top: "-6px",
+                right:
+                  "-6px",
+                background:
+                  "#d9534f",
+                color:
+                  "#fff",
+                padding:
+                  "2px 6px",
+                borderRadius:
+                  "12px",
+                fontSize:
+                  "12px"
+              }}
+            >
+              {
+                unreadCount
+              }
+            </span>
+          )}
       </div>
 
-      {showDropdown && (
-        <div
-          className="shadow"
-          style={{
-            position: "absolute",
-            right: 0,
-            top: "40px",
-            width: "450px",
-            maxHeight: "450px",
-            background: "#fff",
-            borderRadius: "8px",
-            overflow: "auto",
-            zIndex: 3000
-          }}
-        >
-          <div className="p-2 border-bottom d-flex justify-content-between">
-            <strong>Notifications</strong>
+      {
+        showDropdown && (
+          <div
+            className="shadow"
+            style={{
+              position: "absolute",
+              right: 0,
+              top: "40px",
+              width: "450px",
+              maxHeight: "450px",
+              background: "#fff",
+              borderRadius: "8px",
+              overflow: "auto",
+              zIndex: 99999
+            }}
+          >
+            <div className="p-2 border-bottom d-flex justify-content-between">
+              <strong>Notifications</strong>
 
-            <a
-              href="#"
-              className="text-primary"
-              style={{
-                fontSize: "14px",
-                textDecoration: "none",
-                cursor: "pointer"
-              }}
-              onClick={(e) => {
-                e.preventDefault();
+              <button
+                className="btn btn-link p-0 text-primary"
+                onClick={() => {
+                  const confirmed =
+                    window.confirm(
+                      "Mark all notifications as read?"
+                    );
 
-                const confirmed = window.confirm(
-                  "Mark all notifications as read?"
-                );
-
-                if (confirmed) {
-                  markAllRead();
-                }
-              }}
-            >
-              Mark all read
-            </a>
-          </div>
-
-          {notifications.length > 0 ? (
-            notifications.map((item) => (
-              <div
-                key={item.id}
-                className="p-3 border-bottom"
+                  if (
+                    confirmed
+                  ) {
+                    markAllRead();
+                  }
+                }}
               >
-                <div
-                  style={{
-                    fontWeight: "600"
-                  }}
-                >
-                  {item.message}
-                </div>
-
-                <div
-                  style={{
-                    fontSize: "13px",
-                    color: "#777",
-                    marginTop: "5px"
-                  }}
-                >
-                  {new Date(
-                    item.created_at
-                  ).toLocaleString()}
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="p-3 text-center">
-              No new notifications
+                Mark all read
+              </button>
             </div>
-          )}
 
-          <div className="p-2 border-top text-center">
-            <Link
-              to="/notifications/all"
-              className="small"
-              style={{
-                textDecoration: "none"
-              }}
-            >
-              View all
-            </Link>
+            {notifications.length > 0 ? (
+              notifications.map((item) => (
+                <div
+                  key={item.id}
+                  className="p-3 border-bottom"
+                >
+                  <div
+                    style={{
+                      fontWeight: "600"
+                    }}
+                  >
+                    {item.message}
+                  </div>
+
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      color: "#777",
+                      marginTop: "5px"
+                    }}
+                  >
+                    {new Date(
+                      item.created_at
+                    ).toLocaleString()}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="p-3 text-center">
+                No new notifications
+              </div>
+            )}
+
+            <div className="p-2 border-top text-center">
+              <Link
+                to="/notifications/all"
+                className="small"
+                style={{
+                  textDecoration: "none"
+                }}
+              >
+                View all
+              </Link>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )
+      }
+    </div >
   );
 }
 

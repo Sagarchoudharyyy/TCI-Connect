@@ -1,21 +1,12 @@
-.fixed-header {
-    position: fixed;
-    top: 0;
-    z-index: 9999;
-    background: #fff;
-}
-
-.header {
-    background: #fff;
+.doctor-header {
     border-bottom: 1px solid #e8e8e8;
+    width: 100%;
     height: 90px;
-}
-
-.header-inner {
+    background: #fff;
     padding: 0 30px;
 }
 
-.header h2 {
+.doctor-header h2 {
     font-family: 'Roboto';
     font-weight: 600;
     font-size: 24px;
@@ -24,17 +15,43 @@
     margin-right: 5px;
 }
 
+@media (min-width: 768px) {
+    .col-md-6 {
+        flex: 0 0 auto;
+        width: 50%;
+    }
+}
+
+.flex-dd {
+    flex: auto;
+    padding-right: 20px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.notification-wrapper {
+    display: flex;
+    align-items: center;
+}
+
 .notification-icon {
     background-color: white;
     border: 1px solid #e9ecef;
     border-radius: 8px;
-    padding: 7px;
+    padding: 10px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .lab-badge {
     border-left: 1px solid #e8e8e8;
-    width: 386px;
+    width: auto;
     height: 100%;
     font-family: 'Roboto';
     font-weight: 700;

@@ -1,13 +1,20 @@
 .main-content {
-    margin-left: 16.66667%;
-    background-color: #f8f9fa;
-    min-height: 100vh;
+    margin-left: auto;
     padding: 0;
 }
 
-@media (min-width: 1400px) {
-    .col-xxl-10 {
-        flex: 0 0 auto;
-        width: 83.33333333%;
-    }
+.main-content-inner {
+    height: 100%;
+}
+
+
+.dashboard-main {
+    min-height: 100vh;
+}
+
+body {
+    background-color: #f8f9fa;
+    font-family: "Roboto", sans-serif;
+    margin: 0;
+    padding: 0;
 }
