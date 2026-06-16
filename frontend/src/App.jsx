@@ -26,7 +26,8 @@ import DoctorPricing from "./Doctor/DoctorPricing";
 import ClientChat from "./Doctor/ClientChat";
 import QuestionAnswer from "./Doctor/QuestionAnswer";
 import HelpandFAQ from "./Doctor/Help&FAQ";
-import ViewCaseDetail from "./components/pages/ViewCaseDetail";
+import ForgotPassword from "./components/pages/ForgotPassword";
+import ResetPassword from "./components/pages/ResetPassword";
 function App() {
   return (
     <BrowserRouter>
@@ -41,7 +42,8 @@ function App() {
           path="/login"
           element={<Login />}
         />
-
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route
           path="/register"
           element={<Register />}
@@ -65,20 +67,12 @@ function App() {
           }
         />
 
-        <Route
-          path="/admin/view-case/:id"
-          element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <ViewCaseDetail />
-            </ProtectedRoute>
-          }
-        />
 
         <Route
           path="/admin/dashboard"
           element={
             <ProtectedRoute
-              allowedRoles={["admin"]}
+              allowedRoles={["admin", "doctor"]}
             >
               <Dashboard />
             </ProtectedRoute>
@@ -89,7 +83,7 @@ function App() {
           path="/admin/recent-case"
           element={
             <ProtectedRoute
-              allowedRoles={["admin"]}
+              allowedRoles={["admin", "doctor"]}
             >
               <RecentCases />
             </ProtectedRoute>

@@ -7,7 +7,10 @@ from app.database.database import get_db
 from app.models.user_model import User
 from app.models.blacklist_model import Blacklist
 from app.models.notification_model import Notification
-
+from app.schemas.forgot_password_schema import (
+    ForgotPasswordRequest,
+    ResetPasswordRequest
+)
 from app.core.security import (
     hash_password,
     verify_password,
@@ -184,7 +187,54 @@ def login(
         "role": db_user.role
     }
 }
-   
+    
+@router.post("/forgot-password")
+def forgot_password(
+    request: ForgotPasswordRequest,
+    db: Session = Depends(get_db)
+):
+
+    user = db.query(User).filter(
+        User.email == request.email
+    ).first()
+
+    if not user:
+        return {
+            "success": False,
+            "message": "Email not found"
+        }
+
+    return {
+        "success": True,
+        "message": "Email exists"
+    }
+@router.post("/reset-password")
+def reset_password(
+    request: ResetPasswordRequest,
+    db: Session = Depends(get_db)
+):
+    print("EMAIL RECEIVED:", request.email)
+
+    user = db.query(User).filter(
+        User.email == request.email
+    ).first()
+
+    if not user:
+        return {
+            "success": False,
+            "message": "Email not found"
+        }
+
+    print("USER FOUND:", user.email)
+
+    user.password = hash_password(request.password)
+
+    db.commit()
+
+    return {
+        "success": True,
+        "message": "Password updated successfully"
+    }
 @router.post("/logout")
 def logout(
     authorization: str = Header(None),
