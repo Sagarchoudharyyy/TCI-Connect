@@ -8,7 +8,7 @@ from app.database.database import Base
 from app.models.case_model import Case
 from app.models.user_model import User
 from app.models.case_file_model import CaseFile
-from app.models.CaseDetail_model import CaseDetail
+from app.models.case_detail_model import CaseDetail
 
 from dotenv import load_dotenv
 import os
