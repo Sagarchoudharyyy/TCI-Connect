@@ -11,6 +11,8 @@ function ResetPassword() {
   const navigate = useNavigate();
 
   const userEmail = location.state?.email;
+  console.log("Location State:", location.state);
+  console.log("User Email:", userEmail);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,7 +28,7 @@ function ResetPassword() {
 
       if (response.data.success) {
         alert("Password updated successfully");
-        // navigate("/login");
+        navigate("/login");
       } else {
         alert(response.data.message);
       }
