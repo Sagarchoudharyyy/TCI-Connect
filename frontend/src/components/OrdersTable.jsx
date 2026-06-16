@@ -18,7 +18,7 @@ function OrdersTable() {
     const [searchTerm, setSearchTerm] = useState("");
     const [cases, setCases] = useState([]);
     const navigate = useNavigate();
-    const [cases, setCases] = useState([]);
+    
 
     useEffect(() => {
 
