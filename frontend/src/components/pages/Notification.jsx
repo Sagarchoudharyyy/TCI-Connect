@@ -44,7 +44,7 @@ function Notification() {
       try {
         const response =
           await axios.get(
-            "http://127.0.0.1:8000/notifications"
+            "http://127.0.0.1:8000/api/notifications"
           );
 
         console.log(
@@ -64,7 +64,7 @@ function Notification() {
   const markAllRead = async () => {
     try {
       await axios.put(
-        "http://127.0.0.1:8000/notifications/read-all"
+        "http://127.0.0.1:8000/api/notifications/read-all"
       );
 
       setNotifications([]);

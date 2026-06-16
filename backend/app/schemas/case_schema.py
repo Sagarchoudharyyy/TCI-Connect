@@ -2,7 +2,8 @@ from pydantic import BaseModel
 from datetime import datetime, date
 from typing import Optional
 from app.schemas.case_detail_schema import (
-    CaseDetailCreate
+    CaseDetailCreate,
+    CaseDetailResponse
 )
 
 
@@ -29,7 +30,7 @@ class CaseCreate(BaseModel):
 
     status: Optional[str] = "Not Submitted"
     
-    details: CaseDetailCreate
+    details: Optional[CaseDetailCreate] = None
 
 
 class CaseUpdate(BaseModel):
@@ -88,6 +89,9 @@ class CaseResponse(BaseModel):
     created_at: Optional[datetime] = None
 
     files: list = []
+
+    details: Optional[CaseDetailResponse] = None
+
 
     class Config:
         from_attributes = True

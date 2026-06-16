@@ -29,6 +29,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
     "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
     "http://127.0.0.1:5174",
 ],
     allow_credentials=True,
@@ -37,15 +39,13 @@ app.add_middleware(
 )
 
 Base.metadata.create_all(bind=engine)
-app.include_router(auth_router)
-app.include_router(doctor_router)
-app.include_router(case_router)
-app.include_router(chat.router)
-app.include_router(pricing_router)
-app.include_router(category_router)
-app.include_router(material_router)
 
-app.include_router(notification_router)
+app.include_router(auth_router, prefix="/api")
+app.include_router(chat.router, prefix="/api")
+app.include_router(pricing_router, prefix="/api")
+app.include_router(category_router, prefix="/api")
+app.include_router(material_router, prefix="/api")
+app.include_router(notification_router, prefix="/api")
 
 app.include_router(
     doctor_router,
@@ -58,6 +58,7 @@ app.include_router(
     prefix="/api",
     tags=["Cases"]
 )
+
 app.mount(
     "/uploads",
     StaticFiles(

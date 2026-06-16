@@ -27,13 +27,13 @@ function ReviewConfirm({
 
                 <p>
                     <strong>Patient Id:</strong>{" "}
-                    {formData.patientId ||
+                    {formData.patient_id ||
                         "Not provided"}
                 </p>
 
                 <p>
                     <strong>Patient Name:</strong>{" "}
-                    {formData.patientName ||
+                    {formData.patient_name ||
                         "Not provided"}
                 </p>
 
@@ -47,13 +47,13 @@ function ReviewConfirm({
                     <strong>
                         Next Appointment Date:
                     </strong>{" "}
-                    {formData.nextAppointmentDate ||
+                    {formData.next_appointment_date ||
                         "Not provided"}
                 </p>
 
                 <p>
                     <strong>Time:</strong>{" "}
-                    {formData.appointmentTime ||
+                    {formData.appointment_time ||
                         "Not provided"}
                 </p>
 
@@ -61,7 +61,7 @@ function ReviewConfirm({
                     <strong>
                         Delivery Deadline:
                     </strong>{" "}
-                    {formData.deliveryDeadline ||
+                    {formData.delivery_deadline ||
                         "Not provided"}
                 </p>
 
@@ -73,98 +73,112 @@ function ReviewConfirm({
 
                 <p>
                     <strong>Case Stage:</strong>{" "}
-                    {formData.caseStage ||
-                        "None"}
+                    {
+                        formData.case_stage
+                        || "None"
+                    }
                 </p>
-
                 <h3 className="fw-semibold mb-2 mt-3">
                     Shade Instructions
                 </h3>
-
                 <p>
                     <strong>
                         Surface Texture:
                     </strong>{" "}
-                    {formData.surfaceTexture ||
-                        "None"}
+                    {
+                        formData.surface_texture
+                        || "None"
+                    }
                 </p>
-
                 <p>
                     <strong>
                         Glazed Polish:
                     </strong>{" "}
-                    {formData.glazedPolish ||
-                        "None"}
+                    {
+                        formData.glazed_polish
+                        || "None"
+                    }
                 </p>
 
                 <p>
                     <strong>
                         Incisal Translucency:
                     </strong>{" "}
-                    {formData.incisalTranslucency ||
-                        "None"}
+                    {
+                        formData
+                            .incisal_translucency
+                        || "None"
+                    }
                 </p>
 
                 <p>
                     <strong>
                         Prepared Tooth Shade:
                     </strong>{" "}
-                    {formData.preparedToothShade ||
-                        "None"}
+                    {
+                        formData
+                            .prepared_tooth_shade
+                        || "None"
+                    }
                 </p>
 
                 <p>
                     <strong>
                         Shade Guide Color:
                     </strong>{" "}
-                    {formData.shadeGuideColor ||
-                        "None"}
+                    {
+                        formData
+                            .shade_guide_color
+                        || "None"
+                    }
                 </p>
 
                 <p>
                     <strong>
                         Material Type:
                     </strong>{" "}
-                    {Array.isArray(
-                        formData.materialType
-                    )
-                        ? formData.materialType.join(", ") ||
-                        "None"
-                        : "None"}
+                    {
+                        formData
+                            .material_type
+                            ?.join(", ")
+                        || "None"
+                    }
                 </p>
 
                 <p>
                     <strong>
                         Crown Bridge:
                     </strong>{" "}
-                    {Array.isArray(
-                        formData.crownBridge
-                    )
-                        ? formData.crownBridge.join(", ") ||
-                        "None"
-                        : "None"}
+                    {
+                        formData
+                            .crown_bridge
+                            ?.join(", ")
+                        || "None"
+                    }
                 </p>
 
                 <p>
                     <strong>
                         Additional Restorations:
                     </strong>{" "}
-                    {Array.isArray(
-                        formData.additionalRestorations
-                    )
-                        ? formData.additionalRestorations.join(", ") ||
-                        "None"
-                        : "None"}
+                    {
+                        formData
+                            .additional_restorations
+                            ?.join(", ")
+                        || "None"
+                    }
                 </p>
 
                 <p>
                     <strong>
                         Additional Instructions:
                     </strong>{" "}
-                    {formData.additionalInstructions ||
-                        "None"}
+                    {
+                        formData
+                            .additional_instructions
+                        || "None"
+                    }
                 </p>
-
                 <p>
                     <strong>Digital Files:</strong>
                 </p>
@@ -204,11 +218,11 @@ function ReviewConfirm({
                 <input
                     type="checkbox"
                     id="gdprConfirm"
-                    checked={formData.gdprConfirm}
+                    checked={formData.gdpr_confirm}
                     onChange={(e) =>
                         setFormData(prev => ({
                             ...prev,
-                            gdprConfirm:
+                            gdpr_confirm:
                                 e.target.checked
                         }))
                     }
@@ -229,10 +243,10 @@ function ReviewConfirm({
                 </label>
 
                 {
-                    checkboxErrors?.gdprConfirm && (
+                    checkboxErrors?.gdpr_confirm && (
                         <p className="text-danger mt-1">
                             {
-                                checkboxErrors.gdprConfirm
+                                checkboxErrors.gdpr_confirm
                             }
                         </p>
                     )
@@ -247,11 +261,11 @@ function ReviewConfirm({
                 <input
                     type="checkbox"
                     id="dpcaConfirm"
-                    checked={formData.dpcaConfirm}
+                    checked={formData.dpca_confirm}
                     onChange={(e) =>
                         setFormData(prev => ({
                             ...prev,
-                            dpcaConfirm:
+                            dpca_confirm:
                                 e.target.checked
                         }))
                     }
@@ -279,10 +293,10 @@ function ReviewConfirm({
                 </label>
 
                 {
-                    checkboxErrors?.dpcaConfirm && (
+                    checkboxErrors?.dpca_confirm && (
                         <p className="text-danger mt-1">
                             {
-                                checkboxErrors.dpcaConfirm
+                                checkboxErrors.dpca_confirm
                             }
                         </p>
                     )
@@ -297,12 +311,12 @@ function ReviewConfirm({
                     type="checkbox"
                     id="patientConsent"
                     checked={
-                        formData.patientConsent
+                        formData.patient_consent
                     }
                     onChange={(e) =>
                         setFormData(prev => ({
                             ...prev,
-                            patientConsent:
+                            patient_consent:
                                 e.target.checked
                         }))
                     }
@@ -323,10 +337,10 @@ function ReviewConfirm({
                 </label>
 
                 {
-                    checkboxErrors?.patientConsent && (
+                    checkboxErrors?.patient_consent && (
                         <p className="text-danger mt-1">
                             {
-                                checkboxErrors.patientConsent
+                                checkboxErrors.patient_consent
                             }
                         </p>
                     )

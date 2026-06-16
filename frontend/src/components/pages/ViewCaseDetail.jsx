@@ -7,14 +7,11 @@ import "../../styles/ViewCaseDetail.css";
 
 function ViewCaseDetail() {
 
-    const [doctordata, setdoctordata] = useState(null);
+    const [doctordata, setdoctordata] = useState({});
     const [casedata, setCasedata] = useState(null);
     const { id } = useParams();
     const [caselist, setCaseList] = useState(null);
 
-    useEffect(() => {
-        fetchDoctorData();
-    }, []);
     useEffect(() => {
         getCaseDetails();
     }, []);
@@ -26,23 +23,44 @@ function ViewCaseDetail() {
             const response = await axios.get(
                 `http://127.0.0.1:8000/api/cases/${id}`
             )
-            console.log(response.data);
+            console.log(
+                "Full Case API:",
+                JSON.stringify(
+                    response.data,
+                    null,
+                    2
+                )
+            );
             setCasedata(response.data);
+
+            if (
+                response.data.doctor_id
+            ) {
+                fetchDoctorData(
+                    response.data
+                        .doctor_id
+                );
+            }
         }
         catch (error) {
             console.error("Error fetching case", error);
         }
     }
 
-    const fetchDoctorData = async () => {
+    const fetchDoctorData = async (id) => {
         try {
+            console.log(
+                "Doctor Id:",
+                id
+            );
+
             const response = await axios.get(
                 `http://127.0.0.1:8000/api/doctors/${id}`
             );
             console.log(
-                "doctor Api:",
-                response.data.id
-            )
+                "Full Doctor API:",
+                response.data
+            );
             setdoctordata(
                 response.data
             );
@@ -53,248 +71,308 @@ function ViewCaseDetail() {
                 error
             );
         }
-
     }
 
     return (
         <div className="container-fluid">
-            <div className="dashboard-main">
-                <div className="row g-0">
-
-                    <Sidebar />
-
-                    <div
-                        className="
-                        offset-2
-                        col-12
-                        col-md-9
-                        col-lg-9
-                        offset-lg-3
-                        col-xl-9
-                        col-xxl-10
-                        offset-xl-3
-                        offset-xxl-2
-                        main-content
-                    "
-                    >
-
-                        <Header title="Dashboard" />
-
-                        <div className="main-c-inner">
+            <div className=" row g-0 dashboard-main">
+                <Sidebar />
+                <div className="col-md-9 main-content">
+                    <div className="main-content-inner">
+                        <div className="row g-5 h-100">
+                            <div className="col-lg-12">
+                                <Header title="Dashboard" />
 
 
-                            <section className="view-case-section">
-                                <div className="container">
-                                    <h1 className="text-center mb-4" style={{ color: "#0152a8" }}>View Case Details</h1>
+                                <div className="main-c-inner">
 
-                                    <div className="card ">
-                                        <div className="card-header">Doctor / User Information</div>
-                                        <div className="card-body">
-                                            <div className="row mb-3">
-                                                <div className="col-md-3 text-center mb-3 mb-md-0">
-                                                    <img src="assets\hero.png" className="user-profile-img"></img>
+
+                                    <section className="view-case-section">
+                                        <div className="container">
+                                            <h1 className="text-center mb-4" style={{ color: "#0152a8" }}>View Case Details</h1>
+
+                                            <div className="card ">
+                                                <div className="card-header">Doctor / User Information</div>
+                                                <div className="card-body">
+                                                    <div className="row mb-3">
+                                                        <div className="col-md-3 text-center mb-3 mb-md-0">
+                                                            <img src="TCI-Connect\frontend\src\assets\hero.png" className="user-profile-img"></img>
+                                                        </div>
+                                                        <div className="col-md-9">
+                                                            <div className="row mb-2">
+                                                                <div className="col-md-6">
+                                                                    <span className="label">Full Name:</span>
+                                                                    <span className="value">{doctordata?.full_name}</span>
+                                                                </div>
+                                                                <div className="col-md-6">
+                                                                    <span className="label">Phone:</span>
+                                                                    <span className="value">{doctordata?.phone}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="row mb-2">
+                                                                <div className="col-md-6">
+                                                                    <span className="label">Email:</span>
+                                                                    <span className="value">{doctordata?.email}</span>
+                                                                </div>
+                                                                <div className="col-md-6">
+                                                                    <span className="label">Business Name:</span>
+                                                                    <span className="value">{doctordata?.business_name}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="row mb-2">
+                                                                <div className="col-md-6">
+                                                                    <span className="label">Business Type:</span>
+                                                                    <span className="value"></span>
+                                                                </div>
+                                                                <div className="col-md-6">
+                                                                    <span className="label">Country:</span>
+                                                                    <span className="value">{doctordata?.country}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="row mb-2">
+                                                                <div className="col-md-6">
+                                                                    <span className="label">Address:</span>
+                                                                    <span className="value"></span>
+                                                                </div>
+                                                                <div className="col-md-6">
+                                                                    <span className="label">Registration Number:</span>
+                                                                    <span className="value">{doctordata?.license_number}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="row mb-2">
+                                                                <div className="col-md-6">
+                                                                    <span className="label">VAT / Tax ID:</span>
+                                                                    <span className="value">{doctordata?.vat_id}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div className="col-md-9">
+                                            </div>
+                                            <div className="card">
+                                                <div className="card-header">Patient Case Information</div>
+
+                                                <div className="card-body">
                                                     <div className="row mb-2">
                                                         <div className="col-md-6">
-                                                            <span className="label">Full Name:</span>
-                                                            <span className="value">{doctordata?.full_name}</span>
+                                                            <span className="label">Patient ID:</span>
+                                                            <span className="value">{casedata?.id}</span>
                                                         </div>
                                                         <div className="col-md-6">
-                                                            <span className="label">Phone:</span>
-                                                            <span className="value">{doctordata?.phone}</span>
+                                                            <span className="label">Patient Name:</span>
+                                                            <span className="value">{casedata?.patient_name}</span>
                                                         </div>
                                                     </div>
                                                     <div className="row mb-2">
                                                         <div className="col-md-6">
-                                                            <span className="label">Email:</span>
-                                                            <span className="value">{doctordata?.email}</span>
+                                                            <span className="label">Gender:</span>
+                                                            <span className="value">{casedata?.gender}</span>
                                                         </div>
                                                         <div className="col-md-6">
-                                                            <span className="label">Business Name:</span>
-                                                            <span className="value">{doctordata?.business_name}</span>
+                                                            <span className="label">Age:</span>
+                                                            <span className="value">{casedata?.age}</span>
                                                         </div>
                                                     </div>
                                                     <div className="row mb-2">
                                                         <div className="col-md-6">
-                                                            <span className="label">Business Type:</span>
-                                                            <span className="value"></span>
+                                                            <span className="label">Delivery Deadline:</span>
+                                                            <span className="value">{casedata?.delivery_deadline}</span>
                                                         </div>
                                                         <div className="col-md-6">
-                                                            <span className="label">Country:</span>
-                                                            <span className="value">{doctordata?.country}</span>
+                                                            <span className="label">Next Appointment Date:</span>
+                                                            <span className="value">{casedata?.appointment_date}</span>
                                                         </div>
                                                     </div>
                                                     <div className="row mb-2">
                                                         <div className="col-md-6">
-                                                            <span className="label">Address:</span>
-                                                            <span className="value"></span>
+                                                            <span className="label">Appointment Time:</span>
+                                                            <span className="value">{casedata?.appointment_time}</span>
                                                         </div>
                                                         <div className="col-md-6">
-                                                            <span className="label">Registration Number:</span>
-                                                            <span className="value"></span>
+                                                            <span className="label">Case Stage:</span>
+                                                            <span className="value">{casedata?.details?.case_stage || "N/A"}</span>
                                                         </div>
                                                     </div>
                                                     <div className="row mb-2">
                                                         <div className="col-md-6">
-                                                            <span className="label">VAT / Tax ID:</span>
-                                                            <span className="value">{doctordata?.vat_id}</span>
+                                                            <span className="label">Material Type:</span>
+                                                            <span className="value">{casedata?.details?.material_type || "N/A"}</span>
+                                                        </div>
+                                                        <div className="col-md-6">
+                                                            <span className="label">Shade Guide Color:</span>
+                                                            <span className="value">{casedata?.details?.shade_guide_color || "N/A"}</span>
                                                         </div>
                                                     </div>
+                                                    <div className="row mb-2">
+                                                        <div className="col-md-6">
+                                                            <span className="label">Surface Texture:</span>
+                                                            <span className="value">{casedata?.details?.surface_texture || "N/A"}</span>
+                                                        </div>
+                                                        <div className="col-md-6">
+                                                            <span className="label">Glazed Polish:</span>
+                                                            <span className="value">{casedata?.details?.glazed_polish || "N/A"}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row mb-2">
+                                                        <div className="col-md-6">
+                                                            <span className="label">Prepared Tooth Shade:</span>
+                                                            <span className="value">
+                                                                {casedata?.details?.prepared_tooth_shade || "N/A"}
+                                                            </span>
+                                                        </div>
+                                                        <div className="col-md-6">
+                                                            <span className="label">Incisal Translucency:</span>
+                                                            <span className="value">{casedata?.details?.incisal_translucency || "N/A"}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row mb-2">
+                                                        <div className="col-md-6">
+                                                            <span className="label">Crown Bridge:</span>
+                                                            <span className="value">
+                                                                {casedata?.details?.crown_bridge || "N/A"}
+                                                            </span>
+                                                        </div>
+                                                        <div className="col-md-6">
+                                                            <span className="label">Additional Restorations:</span>
+                                                            <span className="value">{casedata?.details?.additional_restorations || "N/A"}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="row mb-2">
+                                                        <div className="col-12">
+                                                            <span className="label">Implant Info:</span>
+                                                            <div className="table-responsive mt-2">
+                                                                <table className="implant-table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Implant Type</th>
+                                                                            <th>Platform Diameter</th>
+                                                                            <th>Screw Retained</th>
+                                                                            <th>Screw Retained Hybrid</th>
+                                                                            <th>Cement Retained TI Abutment</th>
+                                                                            <th>ZR Abutment</th>
+                                                                            <th>Implant Bar Type</th>
+                                                                            <th>Attachment Type</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        {casedata?.details?.implant_details?.map(
+                                                                            (item, index) => (
+                                                                                <tr key={index}>
+                                                                                    <td>{item.implant_type}</td>
+                                                                                    <td>{item.platform_diameter}</td>
+                                                                                    <td>{item.screw_retained}</td>
+                                                                                    <td>{item.screw_retained_hybrid}</td>
+                                                                                    <td>
+                                                                                        {item.cement_retained_ti_abutment}
+                                                                                    </td>
+                                                                                    <td>{item.zr_abutment}</td>
+                                                                                    <td>{item.implant_bar_type}</td>
+                                                                                    <td>{item.attachment_type}</td>
+                                                                                </tr>
+                                                                            )
+                                                                        )}
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            {casedata?.details?.implant_details?.length === 0
+                                                                ? "N/A" : ""}
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="row mb-2">
+                                                        <div className="col-12">
+                                                            <span className="label">Additional Instructions:</span>
+                                                            <span className="value">{casedata?.details?.additional_instructions || "N/A"}</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="row mb-2">
+                                                        <div className="col-12">
+                                                            <span className="label">GDPR Confirmation:</span>
+                                                            <span className="value">
+                                                                <span style={{ color: "green", fontWeight: 600 }}>
+                                                                    Yes
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="row mb-2">
+                                                        <div className="col-12">
+                                                            <span className="label">Data Processing Agreement:</span>
+                                                            <span className="value">
+                                                                <span style={{ color: "green", fontWeight: 600 }}>
+                                                                    Yes
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="row mb-2">
+                                                        <div className="col-12">
+                                                            <span className="label">Patient Consent:</span>
+                                                            <span className="value">
+                                                                <span style={{ color: "green", fontWeight: 600 }}>
+                                                                    Yes
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="row mb-2">
+                                                        <div className="col-12">
+                                                            <span className="label">Status:</span>
+                                                            <span className="value">
+                                                                <span style={{ color: "green", fontWeight: 600 }}>
+                                                                    {casedata?.status}
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="card">
+                                                <div className="card-header fw-bold">Uploaded Files</div>
+                                                <div className="card-body">
+                                                    <h5>Case PDF</h5>
+                                                    <div className="file-item d-flex flex-wrap align-items-center justify-content-between mb-2 p-2">
+                                                        <span className="file-name text-truncate">22_1781259934_22_1781259933_01_forza7_porsche_gt2rs_02_4k_v2_noflag.jpg</span>
+                                                        <div className="file-buttons d-flex flex-wrap gap-2 mt-2 mt-sm-0">
+
+                                                            <a href="https://tcidentallab.com/preview-files?file=uploads%2Fcases%2F22_1781259934_22_1781259933_01_forza7_porsche_gt2rs_02_4k_v2_noflag.jpg" target="_blank" className="btn btn-sm btn-primary">
+                                                                <i className="bi bi-eye"></i> Preview
+                                                            </a>
+                                                            <a href="https://tcidentallab.com/uploads/cases/22_1781259934_22_1781259933_01_forza7_porsche_gt2rs_02_4k_v2_noflag.jpg" download="" className="btn btn-sm btn-success">
+                                                                <i className="bi bi-download"></i> Download
+                                                            </a>
+                                                        </div>
+                                                    </div>
+
+                                                    <h5 className="mt-4">Digital Files</h5>
+                                                    <div className="file-item d-flex flex-wrap align-items-center justify-content-between mb-2 p-2">
+                                                        <span className="file-name text-truncate">22_1781259950_22_1781259949_WhatsAppImage2026-06-01at07.41.52.jpeg</span>
+                                                        <div className="file-buttons d-flex flex-wrap gap-2 mt-2 mt-sm-0">
+                                                            <a href="https://tcidentallab.com/preview-files?file=uploads%2Fcases%2F22_1781259950_22_1781259949_WhatsAppImage2026-06-01at07.41.52.jpeg" target="_blank" className="btn btn-sm btn-primary">
+                                                                <i className="bi bi-eye"></i> Preview
+                                                            </a>
+                                                            <a href="https://tcidentallab.com/uploads/cases/22_1781259950_22_1781259949_WhatsAppImage2026-06-01at07.41.52.jpeg" download="" className="btn btn-sm btn-success">
+                                                                <i className="bi bi-download"></i> Download
+                                                            </a>
+                                                        </div>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="card">
-                                        <div className="card-header">Patient Case Information</div>
-
-                                        <div className="card-body">
-                                            <div className="row mb-2">
-                                                <div className="col-md-6">
-                                                    <span className="label">Patient ID:</span>
-                                                    <span className="value">{casedata?.patient_id}</span>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <span className="label">Patient Name:</span>
-                                                    <span className="value">{casedata?.patient_name}</span>
-                                                </div>
-                                            </div>
-                                            <div className="row mb-2">
-                                                <div className="col-md-6">
-                                                    <span className="label">Gender:</span>
-                                                    <span className="value">{casedata?.gender}</span>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <span className="label">Age:</span>
-                                                    <span className="value">{casedata?.age}</span>
-                                                </div>
-                                            </div>
-                                            <div className="row mb-2">
-                                                <div className="col-md-6">
-                                                    <span className="label">Delivery Deadline:</span>
-                                                    <span className="value">{casedata?.delivery_deadline}</span>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <span className="label">Next Appointment Date:</span>
-                                                    <span className="value">{casedata?.appointment_date}</span>
-                                                </div>
-                                            </div>
-                                            <div className="row mb-2">
-                                                <div className="col-md-6">
-                                                    <span className="label">Appointment Time:</span>
-                                                    <span className="value">{casedata?.appointment_time}</span>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <span className="label">Case Stage:</span>
-                                                    <span className="value">{casedata?.case_stage}</span>
-                                                </div>
-                                            </div>
-                                            <div className="row mb-2">
-                                                <div className="col-md-6">
-                                                    <span className="label">Material Type:</span>
-                                                    <span className="value">{casedata?.material_type}</span>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <span className="label">Shade Guide Color:</span>
-                                                    <span className="value">{casedata?.shade_guide_color}</span>
-                                                </div>
-                                            </div>
-                                            <div className="row mb-2">
-                                                <div className="col-md-6">
-                                                    <span className="label">Surface Texture:</span>
-                                                    <span className="value">{casedata?.surface_texture}</span>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <span className="label">Glazed Polish:</span>
-                                                    <span className="value">{casedata?.glazed_polish}</span>
-                                                </div>
-                                            </div>
-                                            <div className="row mb-2">
-                                                <div className="col-md-6">
-                                                    <span className="label">Prepared Tooth Shade:</span>
-                                                    <span className="value">{casedata?.prepared_tooth_shade}</span>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <span className="label">Incisal Translucency:</span>
-                                                    <span className="value">{casedata?.incisal_translucency}</span>
-                                                </div>
-                                            </div>
-                                            <div className="row mb-2">
-                                                <div className="col-md-6">
-                                                    <span className="label">Crown Bridge:</span>
-                                                    <span className="value">{casedata?.crown_bridge}</span>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <span className="label">Additional Restorations:</span>
-                                                    <span className="value">{casedata?.additional_restorations}</span>
-                                                </div>
-                                            </div>
-                                            <div className="row mb-2">
-                                                <div className="col-12">
-                                                    <span className="label">Implant Info:</span>
-                                                    <span className="value">{casedata?.implant_type}</span>
-                                                </div>
-                                            </div>
-
-                                            <div className="row mb-2">
-                                                <div className="col-12">
-                                                    <span className="label">Additional Instructions:</span>
-                                                    <span className="value">{casedata?.additional_instructions}</span>
-                                                </div>
-                                            </div>
-
-                                            <div className="row mb-2">
-                                                <div className="col-12">
-                                                    <span className="label">GDPR Confirmation:</span>
-                                                    <span className="value">
-                                                        <span style={{ color: "green", fontWeight: 600 }}>
-
-                                                        </span>
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div className="row mb-2">
-                                                <div className="col-12">
-                                                    <span className="label">Data Processing Agreement:</span>
-                                                    <span className="value">
-                                                        <span style={{ color: "green", fontWeight: 600 }}>
-
-                                                        </span>
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div className="row mb-2">
-                                                <div className="col-12">
-                                                    <span className="label">Patient Consent:</span>
-                                                    <span className="value">
-                                                        <span style={{ color: "green", fontWeight: 600 }}>
-                                                            Yes
-                                                        </span>
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            <div className="row mb-2">
-                                                <div className="col-12">
-                                                    <span className="label">Status:</span>
-                                                    <span className="value">
-                                                        <span style={{ color: "green", fontWeight: 600 }}>
-                                                            InProduction
-                                                        </span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    </section>
                                 </div>
-                            </section>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
 
     )
 }

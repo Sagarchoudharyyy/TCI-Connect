@@ -30,189 +30,293 @@ function UpdateCase() {
 
   const [formData, setFormData] =
     useState({
-      patientName: "",
-      patientPhone: "",
-      patientId: "",
-      nextAppointmentDate: "",
-      deliveryDeadline: "",
+
+      patient_name: "",
+      patient_phone: "",
+      patient_id: "",
+
+      next_appointment_date: "",
+      appointment_time: "",
+      delivery_deadline: "",
+
       age: "",
       gender: "",
-      caseStage: [],
 
-      caseStage: "",
+      case_stage: "",
 
-      surfaceTexture: "",
-      glazedPolish: "",
-      incisalTranslucency: "",
-      preparedToothShade: "",
-      shadeGuideColor: "",
+      surface_texture: "",
+      glazed_polish: "",
+      incisal_translucency: "",
+      prepared_tooth_shade: "",
+      shade_guide_color: "",
 
-      materialType: [],
-      crownBridge: [],
+      material_type: [],
+      crown_bridge: [],
+      additional_restorations: [],
 
-      implantType: "",
-      platformDiameter: "",
+      additional_instructions: "",
+      design_preview: false,
 
-      screwRetained: false,
-      screwRetainedHybrid: false,
-      cementRetainedTiAbutment: false,
-      zrAbutment: false,
-
-      implantBarType: "",
-      attachmentType: "",
-
-      additionalRestorations: [],
-      additionalInstructions: "",
-      designPreview: "",
       files: [],
 
-      gdprConfirm: false,
-      dpcaConfirm: false,
-      patientConsent: false
+      implant_details: [
+        {
+          implant_type: "",
+          platform_diameter: "",
+          screw_retained: "",
+          screw_retained_hybrid: "",
+          cement_retained_ti_abutment: "",
+          zr_abutment: "",
+          implant_bar_type: "",
+          attachment_type: ""
+        }
+      ],
+
+      gdpr_confirm: false,
+      dpca_confirm: false,
+      patient_consent: false
     });
-  console.log(formData);
 
   useEffect(() => {
 
-    fetchCase();
+    const fetchCase = async () => {
 
-  }, []);
+      try {
 
-  const fetchCase = async () => {
+        const response =
+          await axios.get(
+            `http://localhost:8000/api/cases/${caseId}`
+          );
 
-    try {
+        console.log(response.data);
+        const data = response.data;
 
-      const response =
-        await axios.get(
-          `http://localhost:8000/api/cases/${caseId}`
-        );
+        // handle string or array safely
+        const materialTypes =
+          Array.isArray(
+            data.details?.material_type
+          )
+            ? data.details.material_type
+            : typeof data.details
+              ?.material_type ===
+              "string"
+              ? data.details.material_type
+                .split(",")
+                .map(item =>
+                  item.trim()
+                )
+              : [];
 
+        const crownBridge =
+          Array.isArray(
+            data.details?.crown_bridge
+          )
+            ? data.details.crown_bridge
+            : typeof data.details
+              ?.crown_bridge ===
+              "string"
+              ? data.details.crown_bridge
+                .split(",")
+                .map(item =>
+                  item.trim()
+                )
+              : [];
 
-      console.log(response.data);
-      console.log(response.data.files);
-
-      const data =
-        response.data;
-
-      setFormData(prev => ({
-        ...prev,
-
-        patientName:
-          data.patient_name || "",
-
-        patientPhone:
-          data.patient_phone || "",
-
-        patientId:
-          data.id || "",
-
-        nextAppointmentDate:
-          data.appointment_date
-            ?.split("T")[0] || "",
-
-        appointmentTime:
-          data.appointment_time || "",
-
-        deliveryDeadline:
-          data.delivery_deadline
-            ?.split("T")[0] || "",
-
-        age:
-          data.age || "",
-
-        gender:
-          data.gender || "",
-
-        caseStage:
-          data.details?.case_stage || "",
-
-        surfaceTexture:
-          data.details?.surface_texture || "",
-
-        glazedPolish:
-          data.details?.glazed_polish || "",
-
-        incisalTranslucency:
-          data.details
-            ?.incisal_translucency || "",
-
-        preparedToothShade:
-          data.details
-            ?.prepared_tooth_shade || "",
-
-        shadeGuideColor:
-          data.details
-            ?.shade_guide_color || "",
-
-        materialType:
-          typeof data.details
-            ?.material_type === "string"
-            ? data.details
-              .material_type
-              .split(",")
-            : [],
-
-        crownBridge:
-          typeof data.details
-            ?.crown_bridge === "string"
-            ? data.details
-              .crown_bridge
-              .split(",")
-            : [],
-
-        additionalRestorations:
-          typeof data.details
-            ?.additional_restorations === "string"
+        const restorations =
+          Array.isArray(
+            data.details
+              ?.additional_restorations
+          )
             ? data.details
               .additional_restorations
-              .split(",")
-            : [],
+            : typeof data.details
+              ?.additional_restorations ===
+              "string"
+              ? data.details
+                .additional_restorations
+                .split(",")
+                .map(item =>
+                  item.trim()
+                )
+              : [];
 
-        additionalInstructions:
-          data.details
-            ?.additional_instructions || "",
+        setFormData(prev => {
 
-        files:
-          Array.isArray(data.files) &&
-            data.files.length > 0
-            ? data.files.map(file => ({
-              id: file.id,
-              name: file.file_name,
-              path: file.file_path
-            }))
-            : []
-      }));
+          if (prev.patient_id === data.id) {
+            return prev;
+          }
 
+          return {
+            ...prev,
 
-    } catch (error) {
+            patient_name:
+              data.patient_name || "",
 
-      console.log(error);
+            patient_phone:
+              data.patient_phone || "",
+
+            patient_id:
+              data.id || "",
+
+            next_appointment_date:
+              data.appointment_date
+                ?.split("T")[0] || "",
+
+            appointment_time:
+              data.appointment_time
+                ?.slice(0, 5) || "",
+
+            delivery_deadline:
+              data.delivery_deadline
+                ?.split("T")[0] || "",
+
+            age:
+              data.age || "",
+
+            gender:
+              data.gender || "",
+
+            case_stage:
+              data.details
+                ?.case_stage || "",
+
+            surface_texture:
+              data.details
+                ?.surface_texture || "",
+
+            glazed_polish:
+              data.details
+                ?.glazed_polish || "",
+
+            incisal_translucency:
+              data.details
+                ?.incisal_translucency || "",
+
+            prepared_tooth_shade:
+              data.details
+                ?.prepared_tooth_shade || "",
+
+            shade_guide_color:
+              data.details
+                ?.shade_guide_color || "",
+
+            material_type:
+              materialTypes,
+
+            crown_bridge:
+              crownBridge,
+
+            additional_restorations:
+              restorations,
+
+            implant_details:
+              data.details
+                ?.implant_details
+                ?.length > 0
+                ? data.details
+                  .implant_details
+                : [
+                  {
+                    implant_type: "",
+                    platform_diameter: "",
+                    screw_retained: "",
+                    screw_retained_hybrid: "",
+                    cement_retained_ti_abutment: "",
+                    zr_abutment: "",
+                    implant_bar_type: "",
+                    attachment_type: ""
+                  }
+                ],
+
+            design_preview:
+              data.details
+                ?.design_preview || false,
+
+            additional_instructions:
+              data.details
+                ?.additional_instructions || "",
+
+            files:
+              Array.isArray(
+                data.files
+              ) &&
+                data.files.length > 0
+                ? data.files.map(
+                  file => ({
+                    id: file.id,
+                    name:
+                      file.file_name,
+                    path:
+                      file.file_path
+                  })
+                )
+                : []
+          };
+        });
+
+      }
+      catch (error) {
+
+        console.log(
+          "FETCH ERROR:",
+          error
+        );
+
+      } finally {
+
+        setLoading(false);
+      }
+    };
+
+    if (caseId) {
+      fetchCase();
     }
-
-    setLoading(false);
-  };
-
+  }, [caseId]);
   const handleNext = () => {
 
     let newErrors = {};
 
-    if (
-      step === 1 &&
-      !formData.patientName.trim()
-    ) {
-      newErrors.patientName =
-        "Patient Name is required";
+    // Step 1
+    if (step === 1) {
+
+      if (
+        !formData
+          .patient_name
+          ?.trim()
+      ) {
+
+        newErrors.patient_name =
+          "Patient name is required";
+      }
     }
 
+    // Step 2
     if (step === 2) {
+
       if (
         !formData.files ||
         formData.files.length === 0
       ) {
+
         newErrors.files =
           "Upload at least 1 digital file.";
       }
     }
+
+    console.log(
+      "CURRENT STEP:",
+      step
+    );
+
+    console.log(
+      "FORM DATA:",
+      formData
+    );
+
+    console.log(
+      "ERRORS:",
+      newErrors
+    );
 
     setErrors(newErrors);
 
@@ -223,9 +327,8 @@ function UpdateCase() {
       return;
     }
 
-    setStep(step + 1);
+    setStep(prev => prev + 1);
   };
-
   const handlePrevious = () => {
 
     setStep(step - 1);
@@ -235,32 +338,46 @@ function UpdateCase() {
     let newErrors = {};
 
     if (
-      !formData.gdprConfirm
+      !formData.gdpr_confirm
     ) {
-      newErrors.gdprConfirm =
+
+      newErrors.gdpr_confirm =
         "You must confirm GDPR compliance.";
-      setCheckboxErrors(newErrors);
+
+      setCheckboxErrors(
+        newErrors
+      );
+
       return;
     }
 
     if (
-      !formData.dpcaConfirm
+      !formData.dpca_confirm
     ) {
-      newErrors.dpcaConfirm =
+
+      newErrors.dpca_confirm =
         "You must confirm Data Processing & Confidentiality Agreement.";
-      setCheckboxErrors(newErrors);
+
+      setCheckboxErrors(
+        newErrors
+      );
+
       return;
     }
 
     if (
-      !formData.patientConsent
+      !formData.patient_consent
     ) {
-      newErrors.patientConsent =
+
+      newErrors.patient_consent =
         "You must confirm that the patient has provided consent for transmitting these medical files (including scans and photos) to the laboratory.";
-      setCheckboxErrors(newErrors);
+
+      setCheckboxErrors(
+        newErrors
+      );
+
       return;
     }
-
     setCheckboxErrors({});
 
     if (
@@ -274,29 +391,44 @@ function UpdateCase() {
 
       const payload = {
 
-        doctor_id: 4,
-
         patient_name:
-          formData.patientName,
+          formData.patient_name,
 
         patient_phone:
-          formData.patientPhone,
+          formData.patient_phone,
 
         gender:
-          formData.gender,
+          formData.gender || null,
 
         age:
           formData.age
-            ? Number(formData.age)
+            ? Number(
+              formData.age
+            )
             : null,
+
         case_type:
-          formData.caseStage || "",
+          formData.case_stage
+          || null,
 
         appointment_date:
-          formData.nextAppointmentDate || null,
+          formData
+            .next_appointment_date
+            ? new Date(
+              formData
+                .next_appointment_date
+            ).toISOString()
+            : null,
+
+        appointment_time:
+          formData
+            .appointment_time
+          || null,
 
         delivery_deadline:
-          formData.deliveryDeadline || null,
+          formData
+            .delivery_deadline
+          || null,
 
         preview_status:
           "Pending",
@@ -305,64 +437,70 @@ function UpdateCase() {
           "Submitted",
 
         details: {
+
           case_stage:
-            formData.caseStage || "",
+            formData
+              .case_stage
+            || null,
 
           surface_texture:
-            formData.surfaceTexture || "",
+            formData
+              .surface_texture
+            || null,
 
           glazed_polish:
-            formData.glazedPolish || "",
+            formData
+              .glazed_polish
+            || null,
 
           incisal_translucency:
-            formData.incisalTranslucency || "",
+            formData
+              .incisal_translucency
+            || null,
 
           prepared_tooth_shade:
-            formData.preparedToothShade || "",
+            formData
+              .prepared_tooth_shade
+            || null,
 
           shade_guide_color:
-            formData.shadeGuideColor || "",
+            formData
+              .shade_guide_color
+            || null,
 
           material_type:
-            formData.materialType || [],
+            formData
+              .material_type || [],
 
           crown_bridge:
-            formData.crownBridge || [],
-
-          implant_type:
-            formData.implantType || "",
-
-          platform_diameter:
-            formData.platformDiameter || "",
-
-          screw_retained:
-            formData.screwRetained || false,
-
-          screw_retained_hybrid:
-            formData.screwRetainedHybrid || false,
-
-          cement_retained_ti_abutment:
-            formData.cementRetainedTiAbutment || false,
-
-          zr_abutment:
-            formData.zrAbutment || false,
-
-          implant_bar_type:
-            formData.implantBarType || "",
-
-          attachment_type:
-            formData.attachmentType || "",
+            formData
+              .crown_bridge || [],
 
           additional_restorations:
-            formData.additionalRestorations || [],
+            formData
+              .additional_restorations
+            || [],
+
+          implant_details:
+            formData
+              .implant_details
+            || [],
 
           design_preview:
-            formData.designPreview || "",
+            formData
+              .design_preview
+            || false,
 
           additional_instructions:
-            formData.additionalInstructions || ""
+            formData
+              .additional_instructions
+            || null
         }
       };
+      console.log(
+        "PAYLOAD:",
+        payload
+      );
 
       const updateResponse =
         await axios.put(
@@ -375,25 +513,16 @@ function UpdateCase() {
         updateResponse.data
       );
 
-      console.log(
-        "FILES:",
-        formData.files
-      );
-
       if (
         formData.files &&
         formData.files.length > 0
       ) {
+
         for (const file of formData.files) {
 
           if (!(file instanceof File)) {
             continue;
           }
-
-          console.log(
-            "Uploading:",
-            file.name
-          );
 
           const fileData =
             new FormData();
@@ -432,8 +561,11 @@ function UpdateCase() {
         error
       );
     }
-  };
+  }
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className="container-fluid p-0">
 
@@ -500,15 +632,12 @@ function UpdateCase() {
                   {step === 1 && (
                     <PurchaseOrder
                       formData={formData}
-                      setFormData={
-                        setFormData
-                      }
-                      handleNext={
-                        handleNext
-                      }
+                      setFormData={setFormData}
+                      handleNext={handleNext}
                       errors={errors}
                     />
                   )}
+
 
                   {step === 2 && (
                     <UploadDigitalFiles

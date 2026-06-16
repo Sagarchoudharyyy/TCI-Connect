@@ -27,7 +27,7 @@ function AllDoctors() {
     try {
 
       const response = await axios.get(
-        "http://127.0.0.1:8000/doctors"
+        "http://127.0.0.1:8000/api/doctors"
       );
 
       setDoctors(response.data);
@@ -43,7 +43,7 @@ function AllDoctors() {
 
         const response =
           await axios.put(
-            `http://127.0.0.1:8000/toggle-doctor-status/${doctorId}`
+            `http://127.0.0.1:8000/api/toggle-doctor-status/${doctorId}`
           );
 
         console.log(
@@ -71,7 +71,7 @@ function AllDoctors() {
     try {
 
       await axios.delete(
-        `http://127.0.0.1:8000/doctors/${doctorId}`
+        `http://127.0.0.1:8000/api/doctors/${doctorId}`
       );
 
       alert("Doctor deleted successfully");

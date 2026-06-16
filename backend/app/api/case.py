@@ -17,6 +17,7 @@ from app.models.user_model import User
 from app.models.notification_model import Notification
 from pydantic import BaseModel
 from fastapi.responses import FileResponse
+from sqlalchemy.orm import joinedload
 from app.models.case_detail_model import CaseDetail
 
 from app.schemas.case_schema import (
@@ -30,172 +31,397 @@ class StatusUpdate(BaseModel):
         status: str
 
 @router.post(
-        "/cases",
-        response_model=CaseResponse
-    )
+    "/cases",
+    response_model=CaseResponse
+)
 def create_case(
-        case: CaseCreate,
-        db: Session = Depends(get_db)
-    ):
+    case: CaseCreate,
+    db: Session = Depends(get_db)
+):
 
-        new_case = Case(
-            doctor_id=case.doctor_id,
-            patient_name=case.patient_name,
-            patient_phone=case.patient_phone,
-            gender=case.gender,
-            age=case.age,
-            case_type=case.case_type,
-            appointment_date=case.appointment_date,
-            appointment_time=case.appointment_time,
-            delivery_deadline=case.delivery_deadline,
-            preview_status=case.preview_status,
-            status=case.status
-        )
+    new_case = Case(
+        doctor_id=case.doctor_id,
+        patient_name=case.patient_name,
+        patient_phone=case.patient_phone,
+        gender=case.gender,
+        age=case.age,
+        case_type=case.case_type,
+        appointment_date=case.appointment_date,
+        appointment_time=case.appointment_time,
+        delivery_deadline=case.delivery_deadline,
+        preview_status=case.preview_status,
+        status=case.status
+    )
 
-        db.add(new_case)
-        db.commit()
-        db.refresh(new_case)
+    db.add(new_case)
+    db.commit()
+    db.refresh(new_case)
 
-        case_detail = CaseDetail(
-            case_id=new_case.id,
+    # Handle implant details safely
+    implant = (
+        case.details.implant_details[0]
+        if case.details
+        and case.details.implant_details
+        else None
+    )
 
-            case_stage=
-            case.details.case_stage,
+    case_detail = CaseDetail(
+        case_id=new_case.id,
 
-            surface_texture=
-            case.details.surface_texture,
+        case_stage=
+        case.details.case_stage
+        if case.details else None,
 
-            glazed_polish=
-            case.details.glazed_polish,
+        surface_texture=
+        case.details.surface_texture
+        if case.details else None,
 
-            incisal_translucency=
-            case.details.incisal_translucency,
+        glazed_polish=
+        case.details.glazed_polish
+        if case.details else None,
 
-            prepared_tooth_shade=
-            case.details.prepared_tooth_shade,
+        incisal_translucency=
+        case.details.incisal_translucency
+        if case.details else None,
 
-            shade_guide_color=
-            case.details.shade_guide_color,
+        prepared_tooth_shade=
+        case.details.prepared_tooth_shade
+        if case.details else None,
 
-            material_type=",".join(
-            case.details.material_type
-            ),
+        shade_guide_color=
+        case.details.shade_guide_color
+        if case.details else None,
 
-            crown_bridge=",".join(
-            case.details.crown_bridge
-            ),
+        material_type=",".join(
+            case.details.material_type or []
+        ) if case.details else None,
 
-            implant_type=
-            case.details.implant_type,
+        crown_bridge=",".join(
+            case.details.crown_bridge or []
+        ) if case.details else None,
 
-            platform_diameter=
-            case.details.platform_diameter,
+        implant_type=
+        implant.implant_type
+        if implant else None,
 
-            screw_retained=
-                case.details.screw_retained,
+        platform_diameter=
+        implant.platform_diameter
+        if implant else None,
 
-            screw_retained_hybrid=
-                case.details.screw_retained_hybrid,
+        screw_retained=
+        implant.screw_retained
+        if implant else None,
 
-            cement_retained_ti_abutment=
-                case.details
-                .cement_retained_ti_abutment,
+        screw_retained_hybrid=
+        implant.screw_retained_hybrid
+        if implant else None,
 
-            zr_abutment=
-                case.details.zr_abutment,
+        cement_retained_ti_abutment=
+        implant.cement_retained_ti_abutment
+        if implant else None,
 
-            implant_bar_type=
-                case.details.implant_bar_type,
+        zr_abutment=
+        implant.zr_abutment
+        if implant else None,
 
-            attachment_type=
-                case.details.attachment_type,
+        implant_bar_type=
+        implant.implant_bar_type
+        if implant else None,
 
-            additional_restorations=
-                ",".join(
-                    case.details
-                    .additional_restorations
-                ),
+        attachment_type=
+        implant.attachment_type
+        if implant else None,
 
-            design_preview=
-                case.details.design_preview,
+        additional_restorations=",".join(
+            case.details.additional_restorations or []
+        ) if case.details else None,
 
-            additional_instructions=
-            case.details
-            .additional_instructions
-        )
+        design_preview=
+        case.details.design_preview
+        if case.details else None,
 
-        db.add(case_detail)
-        db.commit()
+        additional_instructions=
+        case.details.additional_instructions
+        if case.details else None
+    )
 
-        doctor = db.query(User).filter(
-            User.id == new_case.doctor_id
-        ).first()
+    db.add(case_detail)
+    db.commit()
 
+    doctor = db.query(User).filter(
+        User.id == new_case.doctor_id
+    ).first()
+
+    if doctor:
         notification = Notification(
             message=f"New case submitted by Dr. {doctor.full_name} (Case ID: {new_case.id})"
         )
 
         db.add(notification)
         db.commit()
-        return {
+
+    return {
             "id": new_case.id,
             "doctor_id": new_case.doctor_id,
-            "doctor_name": doctor.full_name,
-            "patient_name": new_case.patient_name,
-            "patient_phone": new_case.patient_phone,
-            "gender": new_case.gender,
-            "age": new_case.age,
-            "case_type": new_case.case_type,
-            "appointment_date": new_case.appointment_date,
-            "appointment_time":new_case.appointment_time,
-            "delivery_deadline": new_case.delivery_deadline,
-            "preview_status": new_case.preview_status,
-            "status": new_case.status,
-            "created_at": new_case.created_at,
+
+            "doctor_name":
+                doctor.full_name
+                if doctor else None,
+
+            "patient_name":
+                new_case.patient_name,
+
+            "patient_phone":
+                new_case.patient_phone,
+
+            "gender":
+                new_case.gender,
+
+            "age":
+                new_case.age,
+
+            "case_type":
+                new_case.case_type,
+
+            "appointment_date":
+                new_case.appointment_date,
+
+            "appointment_time":
+                new_case.appointment_time,
+
+            "delivery_deadline":
+                new_case.delivery_deadline,
+
+            "preview_status":
+                new_case.preview_status,
+
+            "status":
+                new_case.status,
+
+            "created_at":
+                new_case.created_at,
+
+            "details": {
+                "case_stage":
+                    case_detail.case_stage,
+
+                "surface_texture":
+                    case_detail.surface_texture,
+
+                "glazed_polish":
+                    case_detail.glazed_polish,
+
+                "incisal_translucency":
+                    case_detail
+                    .incisal_translucency,
+
+                "prepared_tooth_shade":
+                    case_detail
+                    .prepared_tooth_shade,
+
+                "shade_guide_color":
+                    case_detail
+                    .shade_guide_color,
+
+                "material_type":
+                    case_detail
+                    .material_type
+                    .split(",")
+                    if case_detail
+                    .material_type
+                    else [],
+
+                "crown_bridge":
+                    case_detail
+                    .crown_bridge
+                    .split(",")
+                    if case_detail
+                    .crown_bridge
+                    else [],
+
+                "additional_restorations":
+                    case_detail
+                    .additional_restorations
+                    .split(",")
+                    if case_detail
+                    .additional_restorations
+                    else [],
+
+                "implant_details": [
+                    {
+                        "implant_type":
+                            case_detail
+                            .implant_type,
+
+                        "platform_diameter":
+                            case_detail
+                            .platform_diameter,
+
+                        "screw_retained":
+                            case_detail
+                            .screw_retained,
+
+                        "screw_retained_hybrid":
+                            case_detail
+                            .screw_retained_hybrid,
+
+                        "cement_retained_ti_abutment":
+                            case_detail
+                            .cement_retained_ti_abutment,
+
+                        "zr_abutment":
+                            case_detail
+                            .zr_abutment,
+
+                        "implant_bar_type":
+                            case_detail
+                            .implant_bar_type,
+
+                        "attachment_type":
+                            case_detail
+                            .attachment_type
+                    }
+                ]
+            },
+
             "files": []
         }
 
+
 @router.get(
-        "/cases",
-        response_model=list[CaseResponse]
-    )
+    "/cases",
+    response_model=list[CaseResponse]
+)
 def get_cases(
-        db: Session = Depends(get_db)
-    ):
+    db: Session = Depends(get_db)
+):
 
-        cases = db.query(Case).all()
+    cases = db.query(Case).all()
+    result = []
 
-        result = []
+    for case in cases:
 
-        for case in cases:
+        case_detail = (
+            db.query(CaseDetail)
+            .filter(
+                CaseDetail.case_id == case.id
+            )
+            .first()
+        )
 
-            result.append({
-                "id": case.id,
-                "doctor_id": case.doctor_id,
-                "doctor_name": case.doctor.full_name,
-                "doctor_phone":case.doctor.phone,
-                "patient_name": case.patient_name,
-                "patient_phone": case.patient_phone,
-                "gender": case.gender,
-                "age": case.age,
-                "case_type": case.case_type,
-                "appointment_date": case.appointment_date,
-                "appointment_time":case.appointment_time,
-                "delivery_deadline": case.delivery_deadline,
-                "preview_status": case.preview_status,
-                "status": case.status,
-                "created_at": case.created_at,
-                "files": [
-                    {
-                        "id": file.id,
-                        "file_name": file.file_name,
-                        "file_path": file.file_path
-                    }
-                    for file in case.files
-                ]
-            })
+        result.append({
+            "id": case.id,
+            "doctor_id": case.doctor_id,
+            "doctor_name":
+                case.doctor.full_name
+                if case.doctor else None,
 
-        return result
+            "doctor_phone":
+                case.doctor.phone
+                if case.doctor else None,
+            "patient_name": case.patient_name,
+            "patient_phone": case.patient_phone,
+            "gender": case.gender,
+            "age": case.age,
+            "case_type": case.case_type,
+            "appointment_date": case.appointment_date,
+            "appointment_time": case.appointment_time,
+            "delivery_deadline": case.delivery_deadline,
+            "preview_status": case.preview_status,
+            "status": case.status,
+            "created_at": case.created_at,
+
+            "details": {
+    "case_stage":
+        case.details.case_stage
+        if case.details else None,
+
+    "material_type":
+        case.details.material_type.split(",")
+        if case.details
+        and case.details.material_type
+        else [],
+
+    "shade_guide_color":
+        case.details.shade_guide_color
+        if case.details else None,
+
+    "surface_texture":
+        case.details.surface_texture
+        if case.details else None,
+
+    "crown_bridge":
+        case.details.crown_bridge.split(",")
+        if case.details
+        and case.details.crown_bridge
+        else [],
+
+    "glazed_polish":
+        case.details.glazed_polish
+        if case.details else None,
+
+    "incisal_translucency":
+        case.details.incisal_translucency
+        if case.details else None,
+
+    "additional_restorations":
+        case.details.additional_restorations.split(",")
+        if case.details
+        and case.details.additional_restorations
+        else [],
+
+    "additional_instructions":
+        case.details.additional_instructions
+        if case.details else None,
+
+    "prepared_tooth_shade":
+        case.details.prepared_tooth_shade
+        if case.details else None,
+
+    "implant_details": [
+        {
+            "implant_type":
+                case.details.implant_type,
+
+            "platform_diameter":
+                case.details.platform_diameter,
+
+            "screw_retained":
+                case.details.screw_retained,
+
+            "screw_retained_hybrid":
+                case.details
+                .screw_retained_hybrid,
+
+            "cement_retained_ti_abutment":
+                case.details
+                .cement_retained_ti_abutment,
+
+            "zr_abutment":
+                case.details.zr_abutment,
+
+            "implant_bar_type":
+                case.details
+                .implant_bar_type,
+
+            "attachment_type":
+                case.details
+                .attachment_type,
+        }
+    ] if case.details else [],
+},
+
+            "files": [
+                {
+                    "id": file.id,
+                    "file_name": file.file_name,
+                    "file_path": file.file_path
+                }
+                for file in case.files
+            ]
+        })
+
+    return result
 
 @router.get(
         "/cases/{case_id}",
@@ -207,10 +433,15 @@ def get_case(
     ):
 
         case = (
-            db.query(Case)
-            .filter(Case.id == case_id)
-            .first()
+        db.query(Case)
+        .options(joinedload(Case.details))
+        .filter(Case.id == case_id)
+        .first()
         )
+
+        print("CASE:", case.id)
+        print("DETAILS:", case.details)
+
 
         if not case:
             raise HTTPException(
@@ -244,41 +475,85 @@ def get_case(
                 for file in case.files
             ],
             "details": {
-            "case_stage":
-             case.details.case_stage
-                if case.details else None,
+                "case_stage":
+                    case.details.case_stage
+                    if case.details else None,
 
-            "material_type":
-                case.details.material_type
-                if case.details else None,
+               "material_type":
+                    case.details.material_type.split(",")
+                    if case.details
+                    and case.details.material_type
+                    else [],
 
-            "shade_guide_color":
-                case.details.shade_guide_color
-                if case.details else None,
+                "shade_guide_color":
+                    case.details.shade_guide_color
+                    if case.details else None,
 
-            "surface_texture":
-                case.details.surface_texture
-                if case.details else None,
+                "surface_texture":
+                    case.details.surface_texture
+                    if case.details else None,
 
-            "crown_bridge":
-                case.details.crown_bridge
-                if case.details else None,
+                "crown_bridge":
+                    case.details.crown_bridge.split(",")
+                    if case.details
+                    and case.details.crown_bridge
+                    else [],
 
-            "glazed_polish":
-                case.details.glazed_polish
-                if case.details else None,
 
-            "incisal_translucency":
-                case.details.incisal_translucency
-                if case.details else None,
+                "glazed_polish":
+                    case.details.glazed_polish
+                    if case.details else None,
 
-            "additional_restorations":
-                case.details.additional_restorations
-                if case.details else None,
+                "incisal_translucency":
+                    case.details.incisal_translucency
+                    if case.details else None,
 
-            "additional_instructions":
-                case.details.additional_instructions
-                if case.details else None,
+                "additional_restorations":
+                    case.details.additional_restorations.split(",")
+                    if case.details
+                    and case.details.additional_restorations
+                    else [],
+
+                "additional_instructions":
+                    case.details.additional_instructions
+                    if case.details else None,
+
+                # ADD FROM HERE
+                "prepared_tooth_shade":
+                    case.details.prepared_tooth_shade
+                    if case.details else None,
+
+                "implant_details": [
+                    {
+                        "implant_type":
+                            case.details.implant_type,
+
+                        "platform_diameter":
+                            case.details.platform_diameter,
+
+                        "screw_retained":
+                            case.details.screw_retained,
+
+                        "screw_retained_hybrid":
+                            case.details
+                            .screw_retained_hybrid,
+
+                        "cement_retained_ti_abutment":
+                            case.details
+                            .cement_retained_ti_abutment,
+
+                        "zr_abutment":
+                            case.details.zr_abutment,
+
+                        "implant_bar_type":
+                            case.details
+                            .implant_bar_type,
+
+                        "attachment_type":
+                            case.details
+                            .attachment_type,
+                    }
+                ] if case.details else [],
             }
         }
 
@@ -362,60 +637,52 @@ def update_case(
                 updated_case.details.crown_bridge
             )
 
+            implant = (
+                updated_case.details.implant_details[0]
+                if updated_case.details.implant_details
+                else None
+            )
+
             case_detail.implant_type = (
-                updated_case.details
-                .implant_type
+                implant.implant_type
+                if implant else None
             )
 
             case_detail.platform_diameter = (
-                updated_case.details
-                .platform_diameter
+                implant.platform_diameter
+                if implant else None
             )
 
             case_detail.screw_retained = (
-                updated_case.details
-                .screw_retained
+                implant.screw_retained
+                if implant else None
             )
 
             case_detail.screw_retained_hybrid = (
-                updated_case.details
-                .screw_retained_hybrid
+                implant.screw_retained_hybrid
+                if implant else None
             )
 
             case_detail.cement_retained_ti_abutment = (
-                updated_case.details
-                .cement_retained_ti_abutment
+                implant.cement_retained_ti_abutment
+                if implant else None
             )
 
             case_detail.zr_abutment = (
-                updated_case.details
-                .zr_abutment
+                implant.zr_abutment
+                if implant else None
             )
 
             case_detail.implant_bar_type = (
-                updated_case.details
-                .implant_bar_type
+                implant.implant_bar_type
+                if implant else None
             )
 
             case_detail.attachment_type = (
-                updated_case.details
-                .attachment_type
+                implant.attachment_type
+                if implant else None
             )
-
-            case_detail.additional_restorations = ",".join(
-                updated_case.details
-                .additional_restorations
-            )
-
-            case_detail.design_preview = (
-                updated_case.details
-                .design_preview
-            )
-
-            case_detail.additional_instructions = (
-                updated_case.details
-                .additional_instructions
-            )
+                    
 
         db.commit()
         db.refresh(case)
@@ -423,27 +690,130 @@ def update_case(
         return {
             "id": case.id,
             "doctor_id": case.doctor_id,
-            "doctor_name": case.doctor.full_name,
-            "patient_name": case.patient_name,
-            "patient_phone": case.patient_phone,
-            "gender": case.gender,
-            "age": case.age,
-            "case_type": case.case_type,
-            "appointment_date": case.appointment_date,
-            "appointment_time":case.appointment_time,
-            "delivery_deadline": case.delivery_deadline,
-            "preview_status": case.preview_status,
-            "status": case.status,
-            "created_at": case.created_at,
-            "files": [
-                {
-                    "id": file.id,
-                    "file_name": file.file_name,
-                    "file_path": file.file_path
-                }
-                for file in case.files
-            ]
+
+            "doctor_name":
+                case.doctor.full_name
+                if case.doctor else None,
+
+            "patient_name":
+                case.patient_name,
+
+            "patient_phone":
+                case.patient_phone,
+
+            "gender":
+                case.gender,
+
+            "age":
+                case.age,
+
+            "case_type":
+                case.case_type,
+
+            "appointment_date":
+                case.appointment_date,
+
+            "appointment_time":
+                case.appointment_time,
+
+            "delivery_deadline":
+                case.delivery_deadline,
+
+            "preview_status":
+                case.preview_status,
+
+            "status":
+                case.status,
+
+            "created_at":
+                case.created_at,
+
+            "details": {
+                "case_stage":
+                    case_detail.case_stage,
+
+                "surface_texture":
+                    case_detail.surface_texture,
+
+                "glazed_polish":
+                    case_detail.glazed_polish,
+
+                "incisal_translucency":
+                    case_detail
+                    .incisal_translucency,
+
+                "prepared_tooth_shade":
+                    case_detail
+                    .prepared_tooth_shade,
+
+                "shade_guide_color":
+                    case_detail
+                    .shade_guide_color,
+
+                "material_type":
+                    case_detail
+                    .material_type
+                    .split(",")
+                    if case_detail
+                    .material_type
+                    else [],
+
+                "crown_bridge":
+                    case_detail
+                    .crown_bridge
+                    .split(",")
+                    if case_detail
+                    .crown_bridge
+                    else [],
+
+                "additional_restorations":
+                    case_detail
+                    .additional_restorations
+                    .split(",")
+                    if case_detail
+                    .additional_restorations
+                    else [],
+
+                "implant_details": [
+                    {
+                        "implant_type":
+                            case_detail
+                            .implant_type,
+
+                        "platform_diameter":
+                            case_detail
+                            .platform_diameter,
+
+                        "screw_retained":
+                            case_detail
+                            .screw_retained,
+
+                        "screw_retained_hybrid":
+                            case_detail
+                            .screw_retained_hybrid,
+
+                        "cement_retained_ti_abutment":
+                            case_detail
+                            .cement_retained_ti_abutment,
+
+                        "zr_abutment":
+                            case_detail
+                            .zr_abutment,
+
+                        "implant_bar_type":
+                            case_detail
+                            .implant_bar_type,
+
+                        "attachment_type":
+                            case_detail
+                            .attachment_type
+                    }
+                ]
+            },
+
+            "files": []
         }
+
 
 @router.put("/cases/{case_id}/status")
 def update_case_status(
@@ -602,12 +972,6 @@ async def upload_case_file(
             "file_name": file.filename
         }
 
-
-@router.get("/case_files")
-def get_case_files(
-    db: Session = Depends(get_db)
-):
-    return db.query(CaseFile).all()
 
 @router.get(
         "/download-file")

@@ -13,17 +13,8 @@ function PurchaseOrder({
             [id]: value
         });
     };
-
-    const handleCheckboxChange = (e) => {
-        const { id, checked } = e.target;
-
-        setFormData({
-            ...formData,
-            [id]: checked
-        });
-    };
     return (
-        <div className="step-content active" style={{ display: "block" }}>
+        <div className="step-content active " style={{ display: "block" }}>
             <h2 className="text-xl font-semibold mb-4" style={{ color: "#0152a8" }}>1. Purchase Order</h2>
             <div className="row mb-3">
                 <div className="col-md-6">
@@ -36,18 +27,18 @@ function PurchaseOrder({
                         type="text"
                         className="form-control"
                         name="patientName"
-                        value={formData.patientName}
+                        value={formData.patient_name || ""}
                         onChange={(e) =>
                             setFormData({
                                 ...formData,
-                                patientName: e.target.value
+                                patient_name: e.target.value
                             })
                         }
                     />
                     {
-                        errors.patientName && (
+                        errors.patient_name && (
                             <span className="text-danger">
-                                {errors.patientName}
+                                {errors.patient_name}
                             </span>
                         )
                     }
@@ -66,15 +57,15 @@ function PurchaseOrder({
                         type="text"
                         className="form-control"
                         id="patientId"
-                        value={formData.patientId || ""}
+                        value={formData.patient_id || ""}
                         onChange={(e) =>
                             setFormData({
                                 ...formData,
-                                patientId:
+                                patient_id:
                                     e.target.value
                             })
                         }
-                        readOnly
+
                     />
 
                     <span
@@ -88,23 +79,20 @@ function PurchaseOrder({
 
                     </label>
 
+
                     <input
-                        type="datetime-local"
+                        type="date"
                         className="form-control"
-                        id="nextAppointmentDate"
+                        id="next_appointment_date"
                         value={
-                            formData.nextAppointmentDate
-                                ? formData.nextAppointmentDate.includes("T")
-                                    ? formData.nextAppointmentDate.slice(0, 16)
-                                    : `${formData.nextAppointmentDate}T00:00`
-                                : ""
+                            formData.next_appointment_date || ""
                         }
                         onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                nextAppointmentDate:
+                            setFormData(prev => ({
+                                ...prev,
+                                next_appointment_date:
                                     e.target.value
-                            })
+                            }))
                         }
                     />
                     <span
@@ -120,16 +108,16 @@ function PurchaseOrder({
                     <input
                         type="time"
                         className="form-control"
-                        id="time"
+                        id="appointment_time"
                         value={
-                            formData.appointmentTime ||""
+                            formData.appointment_time || ""
                         }
                         onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                appointmentTime:
+                            setFormData(prev => ({
+                                ...prev,
+                                appointment_time:
                                     e.target.value
-                            })
+                            }))
                         }
                     />
                 </div>
@@ -141,14 +129,16 @@ function PurchaseOrder({
                     <input
                         type="date"
                         className="form-control"
-                        id="deliveryDeadline"
-                        value={formData.deliveryDeadline ||""}
+                        id="delivery_deadline"
+                        value={
+                            formData.delivery_deadline || ""
+                        }
                         onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                deliveryDeadline:
+                            setFormData(prev => ({
+                                ...prev,
+                                delivery_deadline:
                                     e.target.value
-                            })
+                            }))
                         }
                     />
                     <span
@@ -165,7 +155,7 @@ function PurchaseOrder({
                         type="number"
                         className="form-control"
                         id="age"
-                        value={formData.age}
+                        value={formData.age || ""}
                         onChange={(e) =>
                             setFormData({
                                 ...formData,
@@ -186,6 +176,7 @@ function PurchaseOrder({
 
                     <div className="form-check form-check-inline">
                         <input
+                            id="genderMale"
                             className="form-check-input"
                             type="radio"
                             name="gender"
@@ -193,9 +184,15 @@ function PurchaseOrder({
                             checked={
                                 formData.gender === "Male"
                             }
-                            onChange={handleCheckboxChange
+                            onChange={(e) =>
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    gender: e.target.value
+                                }))
+
                             }
                         />
+
 
                         <label
                             className="form-check-label"
@@ -205,8 +202,10 @@ function PurchaseOrder({
                         </label>
                     </div>
 
+
                     <div className="form-check form-check-inline">
                         <input
+                            id="genderFemale"
                             className="form-check-input"
                             type="radio"
                             name="gender"
@@ -214,9 +213,15 @@ function PurchaseOrder({
                             checked={
                                 formData.gender === "Female"
                             }
-                            onChange={handleCheckboxChange
+                            onChange={(e) =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    gender: e.target.value
+                                }))
                             }
+
                         />
+
 
                         <label
                             className="form-check-label"
@@ -225,11 +230,6 @@ function PurchaseOrder({
                             Female
                         </label>
                     </div>
-
-                    <span
-                        className="validation-msg"
-                        id="errorGender"
-                    ></span>
                 </div>
                 <div className="col-md-6 my-3">
                     <label className="form-label d-block">
@@ -239,15 +239,21 @@ function PurchaseOrder({
                     <div className="form-check form-check-inline">
                         <input
                             className="form-check-input"
-                            type="radio"
+                            type="checkbox"
                             name="caseStage"
                             id="tryInFramework"
                             value="Try-In Framework"
                             checked={
-                                formData.caseStage ===
-                                "Try-In Framework"
+                                formData.case_stage === "Try-In Framework"
+
                             }
-                            onChange={handleCheckboxChange}
+                            onChange={(e) => {
+                                setFormData(prev => ({
+                                    ...prev, case_stage: "Try-In Framework"
+                                }))
+                            }
+                            }
+
                         />
 
                         <label
@@ -261,16 +267,21 @@ function PurchaseOrder({
                     <div className="form-check form-check-inline">
                         <input
                             className="form-check-input"
-                            type="radio"
+                            type="checkbox"
                             name="caseStage"
                             id="tryInCeramics"
                             value="Try-In Ceramics"
                             checked={
-                                formData.caseStage ===
-                                "Try-In Ceramics"
+                                formData.case_stage === "Try-In Ceramics"
                             }
-                            onChange={handleCheckboxChange
+                            onChange={(e) => {
+                                setFormData(prev => ({
+                                    ...prev, case_stage: "Try-In Ceramics"
+                                }))
                             }
+
+                            }
+
                         />
 
                         <label
@@ -281,13 +292,18 @@ function PurchaseOrder({
                         </label>
                     </div>
 
+
                     <div className="form-check form-check-inline">
                         <input
                             className="form-check-input"
                             type="checkbox"
                             id="finish"
-                            checked={formData.finish || false}
-                            onChange={handleCheckboxChange
+                            checked={formData.case_stage === "Finish"}
+                            onChange={(e) => {
+                                setFormData(prev => ({
+                                    ...prev, case_stage: "Finish"
+                                }))
+                            }
                             }
                         />
 
@@ -317,12 +333,18 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            id="smooth"
-                            checked={formData.smooth || false}
-                            onChange={handleCheckboxChange
+                            checked={
+                                formData.surface_texture ===
+                                "Smooth"
+                            }
+                            onChange={() =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    surface_texture:
+                                        "Smooth"
+                                }))
                             }
                         />
-
                         <label
                             className="form-check-label"
                             htmlFor="smooth"
@@ -334,9 +356,16 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            id="moderate"
-                            checked={formData.moderate || false}
-                            onChange={handleCheckboxChange
+                            checked={
+                                formData.surface_texture ===
+                                "Moderate"
+                            }
+                            onChange={() =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    surface_texture:
+                                        "Moderate"
+                                }))
                             }
                         />
 
@@ -352,9 +381,16 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            id="heavy"
-                            checked={formData.heavy || false}
-                            onChange={handleCheckboxChange
+                            checked={
+                                formData.surface_texture ===
+                                "Heavy"
+                            }
+                            onChange={() =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    surface_texture:
+                                        "Heavy"
+                                }))
                             }
                         />
 
@@ -376,9 +412,16 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            id="high"
-                            checked={formData.high || false}
-                            onChange={handleCheckboxChange
+                            checked={
+                                formData.glazed_polish ===
+                                "High"
+                            }
+                            onChange={() =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    glazed_polish:
+                                        "High"
+                                }))
                             }
                         />
 
@@ -394,9 +437,16 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            id="moderatePolish"
-                            checked={formData.moderatePolish || false}
-                            onChange={handleCheckboxChange
+                            checked={
+                                formData.glazed_polish ===
+                                "Moderate"
+                            }
+                            onChange={() =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    glazed_polish:
+                                        "Moderate"
+                                }))
                             }
                         />
 
@@ -412,9 +462,16 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            id="light"
-                            checked={formData.light || false}
-                            onChange={handleCheckboxChange
+                            checked={
+                                formData.glazed_polish ===
+                                "Light"
+                            }
+                            onChange={() =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    glazed_polish:
+                                        "Light"
+                                }))
                             }
                         />
 
@@ -439,9 +496,16 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            id="translucencyNone"
-                            checked={formData.translucencyNone || false}
-                            onChange={handleCheckboxChange
+                            checked={
+                                formData.incisal_translucency ===
+                                "None"
+                            }
+                            onChange={() =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    incisal_translucency:
+                                        "None"
+                                }))
                             }
                         />
 
@@ -457,9 +521,16 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            id="translucency0_5mm"
-                            checked={formData.translucency0_5mm || false}
-                            onChange={handleCheckboxChange
+                            checked={
+                                formData.incisal_translucency ===
+                                "0.5mm"
+                            }
+                            onChange={() =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    incisal_translucency:
+                                        "0.5mm"
+                                }))
                             }
                         />
 
@@ -475,9 +546,16 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            id="translucency1mm"
-                            checked={formData.translucency1mm || false}
-                            onChange={handleCheckboxChange
+                            checked={
+                                formData.incisal_translucency ===
+                                "1mm"
+                            }
+                            onChange={() =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    incisal_translucency:
+                                        "1mm"
+                                }))
                             }
                         />
 
@@ -493,11 +571,19 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            id="translucencyMax1_5mm"
-                            checked={formData.translucencyMax1_5mm || false}
-                            onChange={handleCheckboxChange
+                            checked={
+                                formData.incisal_translucency ===
+                                "Maximum 1.5mm"
+                            }
+                            onChange={() =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    incisal_translucency:
+                                        "Maximum 1.5mm"
+                                }))
                             }
                         />
+
 
                         <label
                             className="form-check-label"
@@ -517,9 +603,16 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            id="greyDiscolored"
-                            checked={formData.greyDiscolored || false}
-                            onChange={handleCheckboxChange
+                            checked={
+                                formData.prepared_tooth_shade ===
+                                "Grey Discolored"
+                            }
+                            onChange={() =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    prepared_tooth_shade:
+                                        "Grey Discolored"
+                                }))
                             }
                         />
 
@@ -535,9 +628,16 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            id="natural"
-                            checked={formData.natural || false}
-                            onChange={handleCheckboxChange
+                            checked={
+                                formData.prepared_tooth_shade ===
+                                "Natural"
+                            }
+                            onChange={() =>
+                                setFormData(prev => ({
+                                    ...prev,
+                                    prepared_tooth_shade:
+                                        "Natural"
+                                }))
                             }
                         />
 
@@ -553,18 +653,18 @@ function PurchaseOrder({
                 <div className="col-md-12 my-3">
                     <label className="form-label">
                         Shade Guide Color
-                        {/* <span className="required-star">*</span> */}
+
                     </label>
 
                     <input
                         type="text"
                         className="form-control"
                         id="shadeGuideColor"
-                        value={formData.shadeGuideColor || ""}
+                        value={formData.shade_guide_color || ""}
                         onChange={(e) =>
                             setFormData({
                                 ...formData,
-                                shadeGuideColor: e.target.value
+                                shade_guide_color: e.target.value
                             })
                         }
                     />
@@ -579,7 +679,7 @@ function PurchaseOrder({
                 <label className="form-label d-block">
                     Material Type
 
-                    {/* <span className="required-star">*</span> */}
+
                 </label>
 
                 <div className="row">
@@ -591,8 +691,29 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="titan"
-                                checked={formData.titan || false}
-                                onChange={handleCheckboxChange
+                                checked={
+                                    formData.material_type?.includes(
+                                        "TITAN"
+                                    )
+                                }
+                                onChange={() =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        material_type:
+                                            prev.material_type?.includes(
+                                                "TITAN"
+                                            )
+                                                ? prev.material_type.filter(
+                                                    item =>
+                                                        item !== "TITAN"
+                                                )
+                                                : [
+                                                    ...(
+                                                        prev.material_type || []
+                                                    ),
+                                                    "TITAN"
+                                                ]
+                                    }))
                                 }
                             />
 
@@ -609,8 +730,29 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="zirconia"
-                                checked={formData.zirconia || false}
-                                onChange={handleCheckboxChange
+                                checked={
+                                    formData.material_type?.includes(
+                                        "Zirconia"
+                                    )
+                                }
+                                onChange={() =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        material_type:
+                                            prev.material_type?.includes(
+                                                "Zirconia"
+                                            )
+                                                ? prev.material_type.filter(
+                                                    item =>
+                                                        item !== "Zirconia"
+                                                )
+                                                : [
+                                                    ...(
+                                                        prev.material_type || []
+                                                    ),
+                                                    "Zirconia"
+                                                ]
+                                    }))
                                 }
                             />
 
@@ -627,8 +769,29 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="multilayerZirconiaKatana"
-                                checked={formData.multilayerZirconiaKatana || false}
-                                onChange={handleCheckboxChange
+                                checked={
+                                    formData.material_type?.includes(
+                                        "Multilayer Zirconia Katana"
+                                    )
+                                }
+                                onChange={() =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        material_type:
+                                            prev.material_type?.includes(
+                                                "Multilayer Zirconia Katana"
+                                            )
+                                                ? prev.material_type.filter(
+                                                    item =>
+                                                        item !== "Multilayer Zirconia Katana"
+                                                )
+                                                : [
+                                                    ...(
+                                                        prev.material_type || []
+                                                    ),
+                                                    "Multilayer Zirconia Katana"
+                                                ]
+                                    }))
                                 }
                             />
 
@@ -649,8 +812,29 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="nickelChrome"
-                                checked={formData.nickelChrome || false}
-                                onChange={handleCheckboxChange
+                                checked={
+                                    formData.material_type?.includes(
+                                        "Nickel-Chrome"
+                                    )
+                                }
+                                onChange={() =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        material_type:
+                                            prev.material_type?.includes(
+                                                "Nickel-Chrome"
+                                            )
+                                                ? prev.material_type.filter(
+                                                    item =>
+                                                        item !== "Nickel-Chrome"
+                                                )
+                                                : [
+                                                    ...(
+                                                        prev.material_type || []
+                                                    ),
+                                                    "Nickel-Chrome"
+                                                ]
+                                    }))
                                 }
                             />
 
@@ -667,8 +851,29 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="pmma"
-                                checked={formData.pmma || false}
-                                onChange={handleCheckboxChange
+                                checked={
+                                    formData.material_type?.includes(
+                                        "PMMA"
+                                    )
+                                }
+                                onChange={() =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        material_type:
+                                            prev.material_type?.includes(
+                                                "PMMA"
+                                            )
+                                                ? prev.material_type.filter(
+                                                    item =>
+                                                        item !== "PMMA"
+                                                )
+                                                : [
+                                                    ...(
+                                                        prev.material_type || []
+                                                    ),
+                                                    "PMMA"
+                                                ]
+                                    }))
                                 }
                             />
 
@@ -685,8 +890,29 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="chromeCobaltKeraCadCam"
-                                checked={formData.chromeCobaltKeraCadCam || false}
-                                onChange={handleCheckboxChange
+                                checked={
+                                    formData.material_type?.includes(
+                                        "Chrome-Cobalt Kera CAD/CAM"
+                                    )
+                                }
+                                onChange={() =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        material_type:
+                                            prev.material_type?.includes(
+                                                "Chrome-Cobalt Kera CAD/CAM"
+                                            )
+                                                ? prev.material_type.filter(
+                                                    item =>
+                                                        item !== "Chrome-Cobalt Kera CAD/CAM"
+                                                )
+                                                : [
+                                                    ...(
+                                                        prev.material_type || []
+                                                    ),
+                                                    "Chrome-Cobalt Kera CAD/CAM"
+                                                ]
+                                    }))
                                 }
                             />
 
@@ -711,7 +937,7 @@ function PurchaseOrder({
                 <label className="form-label d-block">
                     Crown &amp; Bridge Instructions
 
-                    {/* <span className="required-star">*</span> */}
+
                 </label>
 
                 <div className="row">
@@ -723,8 +949,27 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="crown"
-                                checked={formData.crown || false}
-                                onChange={handleCheckboxChange
+                                checked={
+                                    formData.crown_bridge?.includes(
+                                        "Crown"
+                                    )
+                                }
+                                onChange={() =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        crown_bridge:
+                                            prev.crown_bridge?.includes(
+                                                "Crown"
+                                            )
+                                                ? prev.crown_bridge.filter(
+                                                    item =>
+                                                        item !== "Crown"
+                                                )
+                                                : [
+                                                    ...(prev.crown_bridge || []),
+                                                    "Crown"
+                                                ]
+                                    }))
                                 }
                             />
 
@@ -741,8 +986,27 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="bridge"
-                                checked={formData.bridge || false}
-                                onChange={handleCheckboxChange
+                                checked={
+                                    formData.crown_bridge?.includes(
+                                        "Bridge"
+                                    )
+                                }
+                                onChange={() =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        crown_bridge:
+                                            prev.crown_bridge?.includes(
+                                                "Bridge"
+                                            )
+                                                ? prev.crown_bridge.filter(
+                                                    item =>
+                                                        item !== "Bridge"
+                                                )
+                                                : [
+                                                    ...(prev.crown_bridge || []),
+                                                    "Bridge"
+                                                ]
+                                    }))
                                 }
                             />
 
@@ -759,8 +1023,27 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="fullContourCrown"
-                                checked={formData.fullContourCrown || false}
-                                onChange={handleCheckboxChange
+                                checked={
+                                    formData.crown_bridge?.includes(
+                                        " Full Contour Crown"
+                                    )
+                                }
+                                onChange={() =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        crown_bridge:
+                                            prev.crown_bridge?.includes(
+                                                " Full Contour Crown"
+                                            )
+                                                ? prev.crown_bridge.filter(
+                                                    item =>
+                                                        item !== " Full Contour Crown"
+                                                )
+                                                : [
+                                                    ...(prev.crown_bridge || []),
+                                                    " Full Contour Crown"
+                                                ]
+                                    }))
                                 }
                             />
 
@@ -781,8 +1064,27 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="inlayOnlay"
-                                checked={formData.inlayOnlay || false}
-                                onChange={handleCheckboxChange
+                                checked={
+                                    formData.crown_bridge?.includes(
+                                        "Inlay/Onlay"
+                                    )
+                                }
+                                onChange={() =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        crown_bridge:
+                                            prev.crown_bridge?.includes(
+                                                "Inlay/Onlay"
+                                            )
+                                                ? prev.crown_bridge.filter(
+                                                    item =>
+                                                        item !== "Inlay/Onlay"
+                                                )
+                                                : [
+                                                    ...(prev.crown_bridge || []),
+                                                    "Inlay/Onlay"
+                                                ]
+                                    }))
                                 }
                             />
 
@@ -799,9 +1101,29 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="postCore"
-                                checked={formData.postCore || false}
-                                onChange={handleCheckboxChange
+                                checked={
+                                    formData.crown_bridge?.includes(
+                                        "Post & Core"
+                                    )
                                 }
+                                onChange={() =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        crown_bridge:
+                                            prev.crown_bridge?.includes(
+                                                "Post & Core"
+                                            )
+                                                ? prev.crown_bridge.filter(
+                                                    item =>
+                                                        item !== "Post & Core"
+                                                )
+                                                : [
+                                                    ...(prev.crown_bridge || []),
+                                                    "Post & Core"
+                                                ]
+                                    }))
+                                }
+
                             />
 
                             <label
@@ -817,8 +1139,27 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="veneer"
-                                checked={formData.veneer || false}
-                                onChange={handleCheckboxChange
+                                checked={
+                                    formData.crown_bridge?.includes(
+                                        "Veneer"
+                                    )
+                                }
+                                onChange={() =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        crown_bridge:
+                                            prev.crown_bridge?.includes(
+                                                "Veneer"
+                                            )
+                                                ? prev.crown_bridge.filter(
+                                                    item =>
+                                                        item !== "Veneer"
+                                                )
+                                                : [
+                                                    ...(prev.crown_bridge || []),
+                                                    "Veneer"
+                                                ]
+                                    }))
                                 }
                             />
 
@@ -876,8 +1217,23 @@ function PurchaseOrder({
                                     type="text"
                                     className="form-control"
                                     id="implantType1"
-                                    value={formData.implantType1 || ""}
-                                    onChange={handleChange}
+                                    value={
+                                        formData.implant_details?.[0]
+                                            ?.implant_type || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[0]
+                                                    || {}
+                                                ),
+                                                implant_type:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
                                 />
                             </td>
 
@@ -886,8 +1242,23 @@ function PurchaseOrder({
                                     type="text"
                                     className="form-control"
                                     id="platformDiameter1"
-                                    value={formData.platformDiameter1 || ""}
-                                    onChange={handleChange}
+                                    value={
+                                        formData.implant_details?.[0]
+                                            ?.implant_type || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[0]
+                                                    || {}
+                                                ),
+                                                implant_type:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
                                 />
                             </td>
 
@@ -896,8 +1267,23 @@ function PurchaseOrder({
                                     type="text"
                                     className="form-control"
                                     id="screwRetained1"
-                                    value={formData.screwRetained1 || ""}
-                                    onChange={handleChange}
+                                    value={
+                                        formData.implant_details?.[0]
+                                            ?.implant_type || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[0]
+                                                    || {}
+                                                ),
+                                                implant_type:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
                                 />
                             </td>
 
@@ -906,8 +1292,23 @@ function PurchaseOrder({
                                     type="text"
                                     className="form-control"
                                     id="screwRetainedHybrid1"
-                                    value={formData.screwRetainedHybrid1 || ""}
-                                    onChange={handleChange}
+                                    value={
+                                        formData.implant_details?.[0]
+                                            ?.implant_type || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[0]
+                                                    || {}
+                                                ),
+                                                implant_type:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
                                 />
                             </td>
 
@@ -916,8 +1317,23 @@ function PurchaseOrder({
                                     type="text"
                                     className="form-control"
                                     id="cementRetainedTiAbutment1"
-                                    value={formData.cementRetainedTiAbutment1 || ""}
-                                    onChange={handleChange}
+                                    value={
+                                        formData.implant_details?.[0]
+                                            ?.implant_type || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[0]
+                                                    || {}
+                                                ),
+                                                implant_type:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
                                 />
                             </td>
 
@@ -926,8 +1342,23 @@ function PurchaseOrder({
                                     type="text"
                                     className="form-control"
                                     id="zrAbutment1"
-                                    value={formData.zrAbutment1 || ""}
-                                    onChange={handleChange}
+                                    value={
+                                        formData.implant_details?.[0]
+                                            ?.implant_type || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[0]
+                                                    || {}
+                                                ),
+                                                implant_type:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
                                 />
                             </td>
 
@@ -936,8 +1367,23 @@ function PurchaseOrder({
                                     type="text"
                                     className="form-control"
                                     id="implantBarType1"
-                                    value={formData.implantBarType1 || ""}
-                                    onChange={handleChange}
+                                    value={
+                                        formData.implant_details?.[0]
+                                            ?.implant_type || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[0]
+                                                    || {}
+                                                ),
+                                                implant_type:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
                                 />
                             </td>
 
@@ -946,8 +1392,23 @@ function PurchaseOrder({
                                     type="text"
                                     className="form-control"
                                     id="attachmentType1"
-                                    value={formData.attachmentType1 || ""}
-                                    onChange={handleChange}
+                                    value={
+                                        formData.implant_details?.[0]
+                                            ?.implant_type || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[0]
+                                                    || {}
+                                                ),
+                                                implant_type:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
                                 />
                             </td>
                         </tr>
@@ -974,8 +1435,28 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="bleachingTray"
-                                checked={formData.bleachingTray || false}
-                                onChange={handleCheckboxChange
+                                checked={
+                                    formData.additional_restorations?.includes(
+                                        "Bleaching Tray"
+                                    )
+                                }
+                                onChange={() =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        additional_restorations:
+                                            prev.additional_restorations?.includes(
+                                                "Bleaching Tray"
+                                            )
+                                                ? prev.additional_restorations.filter(
+                                                    item =>
+                                                        item !==
+                                                        "Bleaching Tray"
+                                                )
+                                                : [
+                                                    ...(prev.additional_restorations || []),
+                                                    "Bleaching Tray"
+                                                ]
+                                    }))
                                 }
                             />
 
@@ -992,8 +1473,27 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="pei"
-                                checked={formData.pei || false}
-                                onChange={handleCheckboxChange
+                                checked={
+                                    formData.additional_restorations?.includes(
+                                        "P.E.I"
+                                    )
+                                }
+                                onChange={() =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        additional_restorations:
+                                            prev.additional_restorations?.includes(
+                                                "P.E.I"
+                                            )
+                                                ? prev.additional_restorations.filter(
+                                                    item =>
+                                                        item !== "P.E.I"
+                                                )
+                                                : [
+                                                    ...(prev.additional_restorations || []),
+                                                    "P.E.I"
+                                                ]
+                                    }))
                                 }
                             />
 
@@ -1014,8 +1514,28 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="transparentNightGuard"
-                                checked={formData.transparentNightGuard || false}
-                                onChange={handleCheckboxChange
+                                checked={
+                                    formData.additional_restorations?.includes(
+                                        "Transparent Night Guard Soft / Hard Dual"
+                                    )
+                                }
+                                onChange={() =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        additional_restorations:
+                                            prev.additional_restorations?.includes(
+                                                "Transparent Night Guard Soft / Hard Dual"
+                                            )
+                                                ? prev.additional_restorations.filter(
+                                                    item =>
+                                                        item !==
+                                                        "Transparent Night Guard Soft / Hard Dual"
+                                                )
+                                                : [
+                                                    ...(prev.additional_restorations || []),
+                                                    "Transparent Night Guard Soft / Hard Dual"
+                                                ]
+                                    }))
                                 }
                             />
 
@@ -1032,8 +1552,28 @@ function PurchaseOrder({
                                 className="form-check-input"
                                 type="checkbox"
                                 id="fullArchPrintedMasterModel"
-                                checked={formData.fullArchPrintedMasterModel || false}
-                                onChange={handleCheckboxChange
+                                checked={
+                                    formData.additional_restorations?.includes(
+                                        "Full Arch Printed Master Model"
+                                    )
+                                }
+                                onChange={() =>
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        additional_restorations:
+                                            prev.additional_restorations?.includes(
+                                                "Full Arch Printed Master Model"
+                                            )
+                                                ? prev.additional_restorations.filter(
+                                                    item =>
+                                                        item !==
+                                                        "Full Arch Printed Master Model"
+                                                )
+                                                : [
+                                                    ...(prev.additional_restorations || []),
+                                                    "Full Arch Printed Master Model"
+                                                ]
+                                    }))
                                 }
                             />
 
@@ -1060,8 +1600,15 @@ function PurchaseOrder({
                         id="designPreview"
                         name="design_preview_request"
                         value="1"
-                        checked={formData.designPreview || false}
-                        onChange={handleCheckboxChange
+                        checked={
+                            formData.design_preview
+                        }
+                        onChange={(e) =>
+                            setFormData(prev => ({
+                                ...prev,
+                                design_preview:
+                                    e.target.checked
+                            }))
                         }
                     />
 
@@ -1082,11 +1629,11 @@ function PurchaseOrder({
                     className="form-control"
                     rows="3"
                     id="additionalInstructions"
-                    value={formData.additionalInstructions || ""}
+                    value={formData.additional_instructions || ""}
                     onChange={(e) =>
                         setFormData({
                             ...formData,
-                            additionalInstructions: e.target.value
+                            additional_instructions: e.target.value
                         })
                     }
                 ></textarea>

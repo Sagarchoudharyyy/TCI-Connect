@@ -15,14 +15,45 @@ function NewCases() {
     const [step, setStep] = useState(1);
 
     const initialFormData = {
-        patientName: "",
-        patientPhone: "",
-        patientId: "",
-        nextAppointmentDate: "",
-        deliveryDeadline: "",
+        patient_name: "",
+        patient_phone: "",
+        patient_id: "",
+
+        next_appointment_date: "",
+        appointment_time: "",
+        delivery_deadline: "",
+
         age: "",
         gender: "",
-        caseStage: [],
+
+        case_stage: "",
+
+        surface_texture: "",
+        glazed_polish: "",
+        incisal_translucency: "",
+        prepared_tooth_shade: "",
+        shade_guide_color: "",
+
+        material_type: [],
+        crown_bridge: [],
+        additional_restorations: [],
+
+        implant_details: [
+            {
+                implant_type: "",
+                platform_diameter: "",
+                screw_retained: "",
+                screw_retained_hybrid: "",
+                cement_retained_ti_abutment: "",
+                zr_abutment: "",
+                implant_bar_type: "",
+                attachment_type: ""
+            }
+        ],
+
+        design_preview: false,
+        additional_instructions: "",
+
         files: [],
 
         gdprConfirm: false,
@@ -45,18 +76,21 @@ function NewCases() {
 
         let newErrors = {};
 
+        // Step 1
         if (step === 1) {
 
             if (
                 !formData
-                    .patientName
+                    .patient_name
                     ?.trim()
             ) {
 
-                newErrors.patientName =
+                newErrors.patient_name =
                     "Patient name is required";
             }
         }
+
+        // Step 2
         if (step === 2) {
 
             if (
@@ -68,6 +102,17 @@ function NewCases() {
                     "At least one file is required";
             }
         }
+        console.log("CURRENT STEP:", step);
+
+        console.log(
+            "FORM DATA:",
+            formData
+        );
+
+        console.log(
+            "ERRORS:",
+            newErrors
+        );
 
         setErrors(newErrors);
 
@@ -78,13 +123,25 @@ function NewCases() {
             return;
         }
 
-        setStep(prev => prev + 1);
+        setStep(prev => {
+
+            console.log(
+                "STEP CHANGED:",
+                prev,
+                "->",
+                prev + 1
+            );
+
+            return prev + 1;
+        });
     };
 
     const handlePrevious = () => {
 
         setStep(prev => prev - 1);
     };
+
+
 
     const handleSubmit = async () => {
         let newErrors =
@@ -158,46 +215,108 @@ function NewCases() {
                     user?.id || 1,
 
                 patient_name:
-                    formData.patientName,
+                    formData.patient_name,
 
                 patient_phone:
-                    formData.patientPhone || null,
+                    formData.patient_phone || null,
 
                 gender:
                     formData.gender || null,
 
                 age:
                     formData.age
-                        ? Number(
-                            formData.age
-                        )
+                        ? Number(formData.age)
                         : null,
 
                 case_type:
-                    formData.caseStage
-                        ?.join(", ") || null,
+                    formData.case_stage || null,
 
                 appointment_date:
-                    formData
-                        .nextAppointmentDate
+                    formData.next_appointment_date
                         ? new Date(
                             formData
-                                .nextAppointmentDate
+                                .next_appointment_date
                         ).toISOString()
                         : null,
 
                 delivery_deadline:
-                    formData
-                        .deliveryDeadline ||
-                    null,
+                    formData.delivery_deadline
+                    || null,
 
                 preview_status:
                     "Pending",
 
                 status:
-                    "Submitted"
+                    "Submitted",
+
+                details: {
+
+                    case_stage:
+                        formData.case_stage
+                        || null,
+
+                    surface_texture:
+                        formData.surface_texture
+                        || null,
+
+                    glazed_polish:
+                        formData.glazed_polish
+                        || null,
+
+                    incisal_translucency:
+                        formData
+                            .incisal_translucency
+                        || null,
+
+                    prepared_tooth_shade:
+                        formData
+                            .prepared_tooth_shade
+                        || null,
+
+                    shade_guide_color:
+                        formData
+                            .shade_guide_color
+                        || null,
+
+                    material_type:
+                        formData.material_type
+                        || [],
+
+                    crown_bridge:
+                        formData.crown_bridge
+                        || [],
+
+                    additional_restorations:
+                        formData
+                            .additional_restorations
+                        || [],
+
+                    implant_details:
+                        formData
+                            .implant_details
+                        || [],
+
+                    design_preview:
+                        formData
+                            .design_preview
+                        || false,
+
+                    additional_instructions:
+                        formData
+                            .additional_instructions
+                        || null
+                }
             };
 
+            console.log(
+                "FORM DATA:",
+                formData
+            );
+
+            console.log(
+                "PAYLOAD:",
+                payload
+            );
             const response =
                 await axios.post(
                     "http://localhost:8000/api/cases",
