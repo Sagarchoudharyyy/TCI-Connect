@@ -35,7 +35,7 @@ function ClientChat() {
     try {
 
       const res = await axios.get(
-        `http://127.0.0.1:8000/user/${receiver_id}`
+        `http://127.0.0.1:8000/api/user/${receiver_id}`
       );
 
       setUser(res.data);
@@ -49,7 +49,7 @@ function ClientChat() {
     try {
 
       const res = await axios.get(
-        `http://127.0.0.1:8000/messages/${sender_id}/${receiver_id}`
+        `http://127.0.0.1:8000/api/messages/${sender_id}/${receiver_id}`
       );
 
       setMessages(res.data);
@@ -66,7 +66,7 @@ function ClientChat() {
     try {
 
       await axios.post(
-        "http://127.0.0.1:8000/send-message",
+        "http://127.0.0.1:8000/api/send-message",
         {
           sender_id,
           receiver_id: Number(receiver_id),

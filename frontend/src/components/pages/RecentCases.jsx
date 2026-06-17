@@ -346,7 +346,7 @@ function RecentCases() {
                                                         {item.files?.length > 0 ? (
                                                             <>
                                                                 <Link
-                                                                    to={`http://127.0.0.1:8000/${item.files[0].file_path}`}
+                                                                    to={`http://127.0.0.1:8000/api/${item.files[0].file_path}`}
                                                                     target="_blank"
                                                                     rel="noreferrer"
                                                                     style={{
@@ -359,7 +359,7 @@ function RecentCases() {
                                                                 </Link>
 
                                                                 <Link
-                                                                    to={`http://127.0.0.1:8000/${item.files[0].file_path}`}
+                                                                    to={`http://127.0.0.1:8000/api/${item.files[0].file_path}`}
                                                                     download
                                                                     style={{
                                                                         color: "#0152a8",
@@ -379,7 +379,7 @@ function RecentCases() {
                                                             item.files.map((file, index) => (
                                                                 <div key={index}>
                                                                     <Link
-                                                                        to={`http://127.0.0.1:8000/${file.file_path}`}
+                                                                        to={`http://127.0.0.1:8000/api/${file.file_path}`}
                                                                         target="_blank"
                                                                         rel="noreferrer"
                                                                         style={{
@@ -401,7 +401,7 @@ function RecentCases() {
                                                                     </Link>
 
                                                                     <Link
-                                                                        to={`http://127.0.0.1:8000/${file.file_path}`}
+                                                                        to={`http://127.0.0.1:8000/api/${file.file_path}`}
                                                                         download
                                                                         style={{
                                                                             color: "#0152a8"

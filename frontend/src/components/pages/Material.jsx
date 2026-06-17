@@ -31,7 +31,7 @@ function Material() {
 
     const getMaterial = () => {
         axios
-            .get("http://127.0.0.1:8000/material")
+            .get("http://127.0.0.1:8000/api/material")
             .then((res) => {
                 setMaterials(res.data);
             })

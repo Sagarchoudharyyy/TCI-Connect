@@ -31,7 +31,7 @@ function DoctorPricing() {
         try {
 
             const res = await axios.get(
-                "http://127.0.0.1:8000/pricing"
+                "http://127.0.0.1:8000/api/pricing"
             );
 
             console.log("Pricing API:", res.data);

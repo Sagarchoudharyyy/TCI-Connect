@@ -119,7 +119,7 @@ function Pricing() {
   };
   const getPricingData = async () => {
     try {
-      axios.get("http://127.0.0.1:8000/pricing").then((response) => {
+      axios.get("http://127.0.0.1:8000/api/pricing").then((response) => {
         setPricingData(response.data);
       });
     }

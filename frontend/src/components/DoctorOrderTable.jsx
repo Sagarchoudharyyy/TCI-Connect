@@ -346,7 +346,7 @@ function DoctorOrderTable({
                                                             {item.files?.length > 0 ? (
                                                                 <>
                                                                     <Link
-                                                                        to={`http://127.0.0.1:8000/${item.files[0].file_path}`}
+                                                                        to={`http://127.0.0.1:8000/api/${item.files[0].file_path}`}
                                                                         target="_blank"
                                                                         rel="noreferrer"
                                                                         style={{
