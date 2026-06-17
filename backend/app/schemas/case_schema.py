@@ -5,6 +5,7 @@ from app.schemas.case_detail_schema import (
     CaseDetailCreate,
     CaseDetailResponse
 )
+from typing import List
 
 
 class CaseCreate(BaseModel):
@@ -18,7 +19,7 @@ class CaseCreate(BaseModel):
 
     age: Optional[int] = None
 
-    case_type: Optional[str] = None
+    case_type: List[str] = []
 
     appointment_date: Optional[datetime] = None
 
@@ -43,7 +44,7 @@ class CaseUpdate(BaseModel):
 
     age: Optional[int] = None
 
-    case_type: Optional[str] = None
+    case_type: List[str] = []
 
     appointment_date: Optional[datetime] = None
 
@@ -74,7 +75,7 @@ class CaseResponse(BaseModel):
 
     age: Optional[int] = None
 
-    case_type: Optional[str] = None
+    case_type: List[str] = []
 
     appointment_date: Optional[datetime] = None
 

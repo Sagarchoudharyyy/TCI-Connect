@@ -14,11 +14,11 @@ class ImplantDetail(BaseModel):
 
 
 class CaseDetailCreate(BaseModel):
-    case_stage: Optional[str] = None
-    surface_texture: Optional[str] = None
-    glazed_polish: Optional[str] = None
-    incisal_translucency: Optional[str] = None
-    prepared_tooth_shade: Optional[str] = None
+    case_stage: List[str] = Field(default_factory=list)
+    surface_texture: List[str] = Field(default_factory=list)
+    glazed_polish: List[str] = Field(default_factory=list)
+    incisal_translucency: List[str] = Field(default_factory=list)
+    prepared_tooth_shade: List[str] = Field(default_factory=list)
     shade_guide_color: Optional[str] = None
 
 
@@ -33,11 +33,11 @@ class CaseDetailCreate(BaseModel):
 
 
 class CaseDetailResponse(BaseModel):
-    case_stage: Optional[str] = None
-    surface_texture: Optional[str] = None
-    glazed_polish: Optional[str] = None
-    incisal_translucency: Optional[str] = None
-    prepared_tooth_shade: Optional[str] = None
+    case_stage: List[str] = Field(default_factory=list)
+    surface_texture: List[str] = Field(default_factory=list)
+    glazed_polish: List[str] = Field(default_factory=list)
+    incisal_translucency: List[str] = Field(default_factory=list)
+    prepared_tooth_shade: List[str] = Field(default_factory=list)
     shade_guide_color: Optional[str] = None
 
     # FIX HERE

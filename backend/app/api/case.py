@@ -45,7 +45,7 @@ def create_case(
         patient_phone=case.patient_phone,
         gender=case.gender,
         age=case.age,
-        case_type=case.case_type,
+        case_type=",".join(case.case_type or []),
         appointment_date=case.appointment_date,
         appointment_time=case.appointment_time,
         delivery_deadline=case.delivery_deadline,
@@ -68,26 +68,28 @@ def create_case(
     case_detail = CaseDetail(
         case_id=new_case.id,
 
-        case_stage=
-        case.details.case_stage
-        if case.details else None,
 
-        surface_texture=
-        case.details.surface_texture
-        if case.details else None,
+        case_stage=", ".join(
+        case.details.case_stage or []
+        ) if case.details else None,
 
-        glazed_polish=
-        case.details.glazed_polish
-        if case.details else None,
+        surface_texture=", ".join(
+            case.details.surface_texture or []
+        ) if case.details else None,
 
-        incisal_translucency=
-        case.details.incisal_translucency
-        if case.details else None,
+        glazed_polish=", ".join(
+            case.details.glazed_polish or []
+        ) if case.details else None,
 
-        prepared_tooth_shade=
-        case.details.prepared_tooth_shade
-        if case.details else None,
+        incisal_translucency=", ".join(
+            case.details.incisal_translucency or []
+        ) if case.details else None,
 
+        prepared_tooth_shade=", ".join(
+            case.details.prepared_tooth_shade or []
+        ) if case.details else None,
+
+        
         shade_guide_color=
         case.details.shade_guide_color
         if case.details else None,
@@ -180,8 +182,11 @@ def create_case(
             "age":
                 new_case.age,
 
-            "case_type":
-                new_case.case_type,
+            "case_type": (
+            new_case.case_type.split(",")
+            if new_case.case_type
+            else []
+            ),
 
             "appointment_date":
                 new_case.appointment_date,
@@ -203,21 +208,29 @@ def create_case(
 
             "details": {
                 "case_stage":
-                    case_detail.case_stage,
+                    case_detail.case_stage.split(",")
+                    if case_detail.case_stage
+                    else [],
 
                 "surface_texture":
-                    case_detail.surface_texture,
+                    case_detail.surface_texture.split(",")
+                    if case_detail.surface_texture
+                    else [],
 
                 "glazed_polish":
-                    case_detail.glazed_polish,
+                    case_detail.glazed_polish.split(",")
+                    if case_detail.glazed_polish
+                    else [],
 
                 "incisal_translucency":
-                    case_detail
-                    .incisal_translucency,
+                    case_detail.incisal_translucency.split(",")
+                    if case_detail.incisal_translucency
+                    else [],
 
                 "prepared_tooth_shade":
-                    case_detail
-                    .prepared_tooth_shade,
+                    case_detail.prepared_tooth_shade.split(",")
+                    if case_detail.prepared_tooth_shade
+                    else [],
 
                 "shade_guide_color":
                     case_detail
@@ -323,7 +336,12 @@ def get_cases(
             "patient_phone": case.patient_phone,
             "gender": case.gender,
             "age": case.age,
-            "case_type": case.case_type,
+            "case_type": (
+            case.case_type.split(",")
+            if case.case_type
+            else []
+            ),
+
             "appointment_date": case.appointment_date,
             "appointment_time": case.appointment_time,
             "delivery_deadline": case.delivery_deadline,
@@ -332,84 +350,101 @@ def get_cases(
             "created_at": case.created_at,
 
             "details": {
-    "case_stage":
-        case.details.case_stage
-        if case.details else None,
+             "case_stage":
+                    case.details.case_stage.split(",")
+                    if case.details and case.details.case_stage
+                    else [],
 
-    "material_type":
-        case.details.material_type.split(",")
-        if case.details
-        and case.details.material_type
-        else [],
+                "surface_texture":
+                    case.details.surface_texture.split(",")
+                    if case.details
+                    and case.details.surface_texture
+                    else [],
 
-    "shade_guide_color":
-        case.details.shade_guide_color
-        if case.details else None,
+                "glazed_polish":
+                    case.details.glazed_polish.split(",")
+                    if case.details
+                    and case.details.glazed_polish
+                    else [],
 
-    "surface_texture":
-        case.details.surface_texture
-        if case.details else None,
 
-    "crown_bridge":
-        case.details.crown_bridge.split(",")
-        if case.details
-        and case.details.crown_bridge
-        else [],
+                "incisal_translucency":
+                    case.details.incisal_translucency.split(",")
+                    if case.details
+                    and case.details.incisal_translucency
+                    else [],
 
-    "glazed_polish":
-        case.details.glazed_polish
-        if case.details else None,
 
-    "incisal_translucency":
-        case.details.incisal_translucency
-        if case.details else None,
+                 "prepared_tooth_shade":
+                    case.details.prepared_tooth_shade.split(",")
+                    if case.details
+                    and case.details.prepared_tooth_shade
+                    else [],
 
-    "additional_restorations":
-        case.details.additional_restorations.split(",")
-        if case.details
-        and case.details.additional_restorations
-        else [],
+                
+                "shade_guide_color":
+                    case.details.shade_guide_color
+                    if case.details else None,
 
-    "additional_instructions":
-        case.details.additional_instructions
-        if case.details else None,
 
-    "prepared_tooth_shade":
-        case.details.prepared_tooth_shade
-        if case.details else None,
 
-    "implant_details": [
-        {
-            "implant_type":
-                case.details.implant_type,
+               "material_type":
+                    case.details.material_type.split(",")
+                    if case.details
+                    and case.details.material_type
+                    else [],
 
-            "platform_diameter":
-                case.details.platform_diameter,
+                "crown_bridge":
+                    case.details.crown_bridge.split(",")
+                    if case.details
+                    and case.details.crown_bridge
+                    else [],
 
-            "screw_retained":
-                case.details.screw_retained,
 
-            "screw_retained_hybrid":
-                case.details
-                .screw_retained_hybrid,
+                 "additional_restorations":
+                    case.details.additional_restorations.split(",")
+                    if case.details
+                    and case.details.additional_restorations
+                    else [],
 
-            "cement_retained_ti_abutment":
-                case.details
-                .cement_retained_ti_abutment,
+                "additional_instructions":
+                    case.details.additional_instructions
+                    if case.details else None,
 
-            "zr_abutment":
-                case.details.zr_abutment,
 
-            "implant_bar_type":
-                case.details
-                .implant_bar_type,
+                "implant_details": [
+                    {
+                        "implant_type":
+                            case.details.implant_type,
 
-            "attachment_type":
-                case.details
-                .attachment_type,
-        }
-    ] if case.details else [],
-},
+                        "platform_diameter":
+                            case.details.platform_diameter,
+
+                        "screw_retained":
+                            case.details.screw_retained,
+
+                        "screw_retained_hybrid":
+                            case.details
+                            .screw_retained_hybrid,
+
+                        "cement_retained_ti_abutment":
+                            case.details
+                            .cement_retained_ti_abutment,
+
+                        "zr_abutment":
+                            case.details.zr_abutment,
+
+                        "implant_bar_type":
+                            case.details
+                            .implant_bar_type,
+
+                        "attachment_type":
+                            case.details
+                            .attachment_type,
+                    }
+                 ] 
+                if case.details else [],
+            },
 
             "files": [
                 {
@@ -457,7 +492,12 @@ def get_case(
             "patient_phone": case.patient_phone,
             "gender": case.gender,
             "age": case.age,
-            "case_type": case.case_type,
+            "case_type": (
+            case.case_type.split(",")
+            if case.case_type
+            else []
+            ),
+
             "appointment_date": case.appointment_date,
             "appointment_time":case.appointment_time,
             "delivery_deadline": case.delivery_deadline,
@@ -476,8 +516,42 @@ def get_case(
             ],
             "details": {
                 "case_stage":
-                    case.details.case_stage
+                    case.details.case_stage.split(",")
+                    if case.details and case.details.case_stage
+                    else [],
+
+                "surface_texture":
+                    case.details.surface_texture.split(",")
+                    if case.details
+                    and case.details.surface_texture
+                    else [],
+
+                "glazed_polish":
+                    case.details.glazed_polish.split(",")
+                    if case.details
+                    and case.details.glazed_polish
+                    else [],
+
+
+                "incisal_translucency":
+                    case.details.incisal_translucency.split(",")
+                    if case.details
+                    and case.details.incisal_translucency
+                    else [],
+
+
+                 "prepared_tooth_shade":
+                    case.details.prepared_tooth_shade.split(",")
+                    if case.details
+                    and case.details.prepared_tooth_shade
+                    else [],
+
+                
+                "shade_guide_color":
+                    case.details.shade_guide_color
                     if case.details else None,
+
+
 
                "material_type":
                     case.details.material_type.split(",")
@@ -485,13 +559,7 @@ def get_case(
                     and case.details.material_type
                     else [],
 
-                "shade_guide_color":
-                    case.details.shade_guide_color
-                    if case.details else None,
 
-                "surface_texture":
-                    case.details.surface_texture
-                    if case.details else None,
 
                 "crown_bridge":
                     case.details.crown_bridge.split(",")
@@ -500,28 +568,6 @@ def get_case(
                     else [],
 
 
-                "glazed_polish":
-                    case.details.glazed_polish
-                    if case.details else None,
-
-                "incisal_translucency":
-                    case.details.incisal_translucency
-                    if case.details else None,
-
-                "additional_restorations":
-                    case.details.additional_restorations.split(",")
-                    if case.details
-                    and case.details.additional_restorations
-                    else [],
-
-                "additional_instructions":
-                    case.details.additional_instructions
-                    if case.details else None,
-
-                # ADD FROM HERE
-                "prepared_tooth_shade":
-                    case.details.prepared_tooth_shade
-                    if case.details else None,
 
                 "implant_details": [
                     {
@@ -552,8 +598,20 @@ def get_case(
                         "attachment_type":
                             case.details
                             .attachment_type,
-                    }
-                ] if case.details else [],
+                    } 
+                ]
+                
+                if case.details else [],
+
+                "additional_restorations":
+                    case.details.additional_restorations.split(",")
+                    if case.details
+                    and case.details.additional_restorations
+                    else [],
+
+                "additional_instructions":
+                    case.details.additional_instructions
+                    if case.details else None,
             }
         }
 

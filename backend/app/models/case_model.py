@@ -4,7 +4,8 @@ from sqlalchemy import (
         String,
         Date,
         DateTime,
-        ForeignKey
+        ForeignKey,
+        Text
     )
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -48,8 +49,8 @@ class Case(Base):
         )
 
         case_type = Column(
-            String(100),
-            nullable=True
+        Text,
+        nullable=True
         )
 
         appointment_date = Column(

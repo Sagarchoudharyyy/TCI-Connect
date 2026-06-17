@@ -24,6 +24,7 @@ class User(Base):
     vat_id = Column(String, nullable=True)
 
     country = Column(String, nullable=True)
+    
     address = Column(String, nullable=True)
 
     password = Column(String, nullable=False)
