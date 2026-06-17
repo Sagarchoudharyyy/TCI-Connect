@@ -6,6 +6,7 @@ import axios from "axios"; import "../../styles/resetpassword.css";
 function ResetPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -17,9 +18,20 @@ function ResetPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    setError("");
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/reset-password",
+        "http://127.0.0.1:8000/api/reset-password",
         {
           email: userEmail,
           password: password,
@@ -104,7 +116,11 @@ function ResetPassword() {
                           required
                         />
                       </div>
-
+                      {error && (
+                        <p className="text-danger mt-2">
+                          {error}
+                        </p>
+                      )}
                       <button
                         className="reset-btn-all"
                         type="submit"

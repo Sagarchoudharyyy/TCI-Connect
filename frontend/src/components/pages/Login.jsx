@@ -179,26 +179,21 @@ function Login() {
                                                 />
                                             </div>
                                             <div className="form-group mb-3">
-                                                <div className="password-field position-relative">
-                                                    <input
-                                                        type={showPassword ? "text" : "password"}
-                                                        className="form-control"
-                                                        name="password"
-                                                        placeholder="Enter your password"
-                                                        autoComplete="off"
-                                                        value={password}
-                                                        onChange={(e) => setPassword(e.target.value)}
-                                                        required
-                                                    />
-                                                    <button
-                                                        type="button"
-                                                        className="toggle-btn border-0 bg-transparent position-absolute end-0 top-50 translate-middle-y me-2"
-                                                        onClick={() => setShowPassword(!showPassword)}
-                                                    >
-                                                        {showPassword ? <BiHide size={22} /> : <BiShow size={22} />}
-                                                    </button>
-                                                </div>
+                                                <input
+                                                    type={showPassword ? "text" : "password"}
+                                                    placeholder="Enter your password"
+                                                    value={password}
+                                                    onChange={(e) => setPassword(e.target.value)}
+                                                    className={`form-control ${error ? "is-invalid" : ""}`}
+                                                />
+
+                                                {error && (
+                                                    <small className="text-danger d-block mt-2">
+                                                        {error}
+                                                    </small>
+                                                )}
                                             </div>
+
                                             <div className="form-group text-end mb-3">
                                                 <p>
                                                     <a href="/forgot-password" className="forgot">
@@ -206,18 +201,15 @@ function Login() {
                                                     </a>
                                                 </p>
                                             </div>
+
                                             <button className="btn-all w-100" type="submit">
-                                                Login
+                                                {loading ? "Logging in..." : "Login"}
                                             </button>
                                         </form>
                                         <p className="form-para">New to TCI Dental Lab?  <Link to="/register">
                                             Create your account here.
                                         </Link></p>
-                                        {/* <p className="form-para">New to TCI Dental Lab?
-                                            <Link to="/register">
-                                                Create your account here.
-                                            </Link>
-                                        </p> */}
+
                                     </div>
                                 </div>
                             </div>

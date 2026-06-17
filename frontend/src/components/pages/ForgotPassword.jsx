@@ -7,30 +7,47 @@ import "../../styles/forgotpassword.css";
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/forgot-password",
+        "http://127.0.0.1:8000/api/forgot-password",
         {
           email: email,
         }
       );
-
       if (response.data.success) {
-        navigate("/reset-password", {
-          state: {
-            email: email,
-          },
-        });
+
+        setSuccess("Email found. Redirecting...");
+        setError("");
+
+        setTimeout(() => {
+          navigate("/reset-password", {
+            state: {
+              email: email,
+            },
+          });
+        }, 1000);
+
       } else {
-        alert(response.data.message);
+
+        setError(response.data.message);
+        setSuccess("");
+
       }
     } catch (error) {
       console.log(error);
-      alert("Something went wrong");
+
+      setError(
+        error.response?.data?.message ||
+        "Something went wrong"
+      );
+
+      setSuccess("");
     }
   };
 
@@ -97,7 +114,17 @@ function ForgotPassword() {
                               onChange={(e) => setEmail(e.target.value)}
                             />
                           </div>
+                          {error && (
+                            <p className="text-danger mt-2">
+                              {error}
+                            </p>
+                          )}
 
+                          {success && (
+                            <p className="text-success mt-2">
+                              {success}
+                            </p>
+                          )}
                           <button
                             className="btn-all"
                             id="submitBtn"
