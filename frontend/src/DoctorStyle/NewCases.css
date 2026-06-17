@@ -65,3 +65,14 @@
     margin-bottom: .5rem;
     font-weight: bold;
 }
+
+.implant-header tr th {
+    background-color: #c7d8d0 !important;
+    border-color: black;
+}
+
+.table-bordered,
+.table-bordered th,
+.table-bordered td {
+    border: #0A1A0A !important;
+}

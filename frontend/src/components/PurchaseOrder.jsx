@@ -1,7 +1,10 @@
+import "../DoctorStyle/NewCases.css";
+
 function PurchaseOrder({
     formData,
     setFormData,
     handleNext,
+    handleCheckboxSelection,
     errors
 }) {
 
@@ -244,14 +247,15 @@ function PurchaseOrder({
                             id="tryInFramework"
                             value="Try-In Framework"
                             checked={
-                                formData.case_stage === "Try-In Framework"
-
+                                formData.case_stage.includes(
+                                    "Try-In Framework"
+                                )
                             }
-                            onChange={(e) => {
-                                setFormData(prev => ({
-                                    ...prev, case_stage: "Try-In Framework"
-                                }))
-                            }
+                            onChange={() =>
+                                handleCheckboxSelection(
+                                    "case_stage",
+                                    "Try-In Framework"
+                                )
                             }
 
                         />
@@ -272,16 +276,16 @@ function PurchaseOrder({
                             id="tryInCeramics"
                             value="Try-In Ceramics"
                             checked={
-                                formData.case_stage === "Try-In Ceramics"
+                                formData.case_stage.includes(
+                                    "Try-In Ceramics"
+                                )
                             }
-                            onChange={(e) => {
-                                setFormData(prev => ({
-                                    ...prev, case_stage: "Try-In Ceramics"
-                                }))
+                            onChange={() =>
+                                handleCheckboxSelection(
+                                    "case_stage",
+                                    "Try-In Ceramics"
+                                )
                             }
-
-                            }
-
                         />
 
                         <label
@@ -298,12 +302,16 @@ function PurchaseOrder({
                             className="form-check-input"
                             type="checkbox"
                             id="finish"
-                            checked={formData.case_stage === "Finish"}
-                            onChange={(e) => {
-                                setFormData(prev => ({
-                                    ...prev, case_stage: "Finish"
-                                }))
+                            checked={
+                                formData.case_stage.includes(
+                                    "Finish"
+                                )
                             }
+                            onChange={() =>
+                                handleCheckboxSelection(
+                                    "case_stage",
+                                    "Finish"
+                                )
                             }
                         />
 
@@ -333,18 +341,16 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            checked={
-                                formData.surface_texture ===
-                                "Smooth"
-                            }
+                            id="smooth"
+                            checked={formData.surface_texture.includes("Smooth")}
                             onChange={() =>
-                                setFormData(prev => ({
-                                    ...prev,
-                                    surface_texture:
-                                        "Smooth"
-                                }))
+                                handleCheckboxSelection(
+                                    "surface_texture",
+                                    "Smooth"
+                                )
                             }
                         />
+
                         <label
                             className="form-check-label"
                             htmlFor="smooth"
@@ -352,20 +358,18 @@ function PurchaseOrder({
                             Smooth
                         </label>
                     </div>
+
                     <div className="form-check form-check-inline">
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            checked={
-                                formData.surface_texture ===
-                                "Moderate"
-                            }
+                            id="moderate"
+                            checked={formData.surface_texture.includes("Moderate")}
                             onChange={() =>
-                                setFormData(prev => ({
-                                    ...prev,
-                                    surface_texture:
-                                        "Moderate"
-                                }))
+                                handleCheckboxSelection(
+                                    "surface_texture",
+                                    "Moderate"
+                                )
                             }
                         />
 
@@ -381,16 +385,13 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            checked={
-                                formData.surface_texture ===
-                                "Heavy"
-                            }
+                            id="heavy"
+                            checked={formData.surface_texture.includes("Heavy")}
                             onChange={() =>
-                                setFormData(prev => ({
-                                    ...prev,
-                                    surface_texture:
-                                        "Heavy"
-                                }))
+                                handleCheckboxSelection(
+                                    "surface_texture",
+                                    "Heavy"
+                                )
                             }
                         />
 
@@ -412,16 +413,13 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            checked={
-                                formData.glazed_polish ===
-                                "High"
-                            }
+                            id="high"
+                            checked={formData.glazed_polish.includes("High")}
                             onChange={() =>
-                                setFormData(prev => ({
-                                    ...prev,
-                                    glazed_polish:
-                                        "High"
-                                }))
+                                handleCheckboxSelection(
+                                    "glazed_polish",
+                                    "High"
+                                )
                             }
                         />
 
@@ -437,16 +435,13 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            checked={
-                                formData.glazed_polish ===
-                                "Moderate"
-                            }
+                            id="moderatePolish"
+                            checked={formData.glazed_polish.includes("Moderate")}
                             onChange={() =>
-                                setFormData(prev => ({
-                                    ...prev,
-                                    glazed_polish:
-                                        "Moderate"
-                                }))
+                                handleCheckboxSelection(
+                                    "glazed_polish",
+                                    "Moderate"
+                                )
                             }
                         />
 
@@ -462,16 +457,13 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            checked={
-                                formData.glazed_polish ===
-                                "Light"
-                            }
+                            id="light"
+                            checked={formData.glazed_polish.includes("Light")}
                             onChange={() =>
-                                setFormData(prev => ({
-                                    ...prev,
-                                    glazed_polish:
-                                        "Light"
-                                }))
+                                handleCheckboxSelection(
+                                    "glazed_polish",
+                                    "Light"
+                                )
                             }
                         />
 
@@ -483,7 +475,6 @@ function PurchaseOrder({
                         </label>
                     </div>
                 </div>
-
             </div>
             <div className="row mb-3">
 
@@ -496,16 +487,13 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            checked={
-                                formData.incisal_translucency ===
-                                "None"
-                            }
+                            id="translucencyNone"
+                            checked={formData.incisal_translucency.includes("None")}
                             onChange={() =>
-                                setFormData(prev => ({
-                                    ...prev,
-                                    incisal_translucency:
-                                        "None"
-                                }))
+                                handleCheckboxSelection(
+                                    "incisal_translucency",
+                                    "None"
+                                )
                             }
                         />
 
@@ -521,16 +509,13 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            checked={
-                                formData.incisal_translucency ===
-                                "0.5mm"
-                            }
+                            id="translucency0_5mm"
+                            checked={formData.incisal_translucency.includes("0.5mm")}
                             onChange={() =>
-                                setFormData(prev => ({
-                                    ...prev,
-                                    incisal_translucency:
-                                        "0.5mm"
-                                }))
+                                handleCheckboxSelection(
+                                    "incisal_translucency",
+                                    "0.5mm"
+                                )
                             }
                         />
 
@@ -546,16 +531,13 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            checked={
-                                formData.incisal_translucency ===
-                                "1mm"
-                            }
+                            id="translucency1mm"
+                            checked={formData.incisal_translucency.includes("1mm")}
                             onChange={() =>
-                                setFormData(prev => ({
-                                    ...prev,
-                                    incisal_translucency:
-                                        "1mm"
-                                }))
+                                handleCheckboxSelection(
+                                    "incisal_translucency",
+                                    "1mm"
+                                )
                             }
                         />
 
@@ -571,19 +553,17 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            checked={
-                                formData.incisal_translucency ===
+                            id="translucencyMax1_5mm"
+                            checked={formData.incisal_translucency.includes(
                                 "Maximum 1.5mm"
-                            }
+                            )}
                             onChange={() =>
-                                setFormData(prev => ({
-                                    ...prev,
-                                    incisal_translucency:
-                                        "Maximum 1.5mm"
-                                }))
+                                handleCheckboxSelection(
+                                    "incisal_translucency",
+                                    "Maximum 1.5mm"
+                                )
                             }
                         />
-
 
                         <label
                             className="form-check-label"
@@ -593,7 +573,6 @@ function PurchaseOrder({
                         </label>
                     </div>
                 </div>
-
                 <div className="col-md-6 my-3">
                     <label className="form-label d-block">
                         Prepared Tooth Shade
@@ -603,16 +582,15 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            checked={
-                                formData.prepared_tooth_shade ===
+                            id="greyDiscolored"
+                            checked={formData.prepared_tooth_shade.includes(
                                 "Grey Discolored"
-                            }
+                            )}
                             onChange={() =>
-                                setFormData(prev => ({
-                                    ...prev,
-                                    prepared_tooth_shade:
-                                        "Grey Discolored"
-                                }))
+                                handleCheckboxSelection(
+                                    "prepared_tooth_shade",
+                                    "Grey Discolored"
+                                )
                             }
                         />
 
@@ -628,16 +606,15 @@ function PurchaseOrder({
                         <input
                             className="form-check-input"
                             type="checkbox"
-                            checked={
-                                formData.prepared_tooth_shade ===
+                            id="natural"
+                            checked={formData.prepared_tooth_shade.includes(
                                 "Natural"
-                            }
+                            )}
                             onChange={() =>
-                                setFormData(prev => ({
-                                    ...prev,
-                                    prepared_tooth_shade:
-                                        "Natural"
-                                }))
+                                handleCheckboxSelection(
+                                    "prepared_tooth_shade",
+                                    "Natural"
+                                )
                             }
                         />
 
@@ -649,31 +626,29 @@ function PurchaseOrder({
                         </label>
                     </div>
                 </div>
+            </div>
+            <div className="col-md-12 my-3">
+                <label className="form-label">
+                    Shade Guide Color
+                </label>
 
-                <div className="col-md-12 my-3">
-                    <label className="form-label">
-                        Shade Guide Color
+                <input
+                    type="text"
+                    className="form-control"
+                    id="shadeGuideColor"
+                    value={formData.shade_guide_color || ""}
+                    onChange={(e) =>
+                        setFormData((prev) => ({
+                            ...prev,
+                            shade_guide_color: e.target.value
+                        }))
+                    }
+                />
 
-                    </label>
-
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="shadeGuideColor"
-                        value={formData.shade_guide_color || ""}
-                        onChange={(e) =>
-                            setFormData({
-                                ...formData,
-                                shade_guide_color: e.target.value
-                            })
-                        }
-                    />
-
-                    <span
-                        className="validation-msg"
-                        id="errorShadeGuideColor"
-                    ></span>
-                </div>
+                <span
+                    className="validation-msg"
+                    id="errorShadeGuideColor"
+                ></span>
             </div>
             <div className="mb-4">
                 <label className="form-label d-block">
@@ -1183,9 +1158,7 @@ function PurchaseOrder({
             <h4 className="fw-bold mb-3">Implant Instructions</h4>
             <div className="table-responsive">
                 <table className="table table-bordered align-middle text-center">
-
-                    <thead className="table-success">
-
+                    <thead className="implant-header">
                         <tr>
                             <th colSpan="2">
                                 Implant Information
@@ -1244,7 +1217,7 @@ function PurchaseOrder({
                                     id="platformDiameter1"
                                     value={
                                         formData.implant_details?.[0]
-                                            ?.implant_type || ""
+                                            ?.platform_diameter || ""
                                     }
                                     onChange={(e) =>
                                         setFormData(prev => ({
@@ -1254,7 +1227,7 @@ function PurchaseOrder({
                                                     prev.implant_details?.[0]
                                                     || {}
                                                 ),
-                                                implant_type:
+                                                platform_diameter:
                                                     e.target.value
                                             }]
                                         }))
@@ -1269,7 +1242,7 @@ function PurchaseOrder({
                                     id="screwRetained1"
                                     value={
                                         formData.implant_details?.[0]
-                                            ?.implant_type || ""
+                                            ?.screw_retained || ""
                                     }
                                     onChange={(e) =>
                                         setFormData(prev => ({
@@ -1279,7 +1252,7 @@ function PurchaseOrder({
                                                     prev.implant_details?.[0]
                                                     || {}
                                                 ),
-                                                implant_type:
+                                                screw_retained:
                                                     e.target.value
                                             }]
                                         }))
@@ -1294,7 +1267,7 @@ function PurchaseOrder({
                                     id="screwRetainedHybrid1"
                                     value={
                                         formData.implant_details?.[0]
-                                            ?.implant_type || ""
+                                            ?.screw_retained_hybrid || ""
                                     }
                                     onChange={(e) =>
                                         setFormData(prev => ({
@@ -1304,7 +1277,7 @@ function PurchaseOrder({
                                                     prev.implant_details?.[0]
                                                     || {}
                                                 ),
-                                                implant_type:
+                                                screw_retained_hybrid:
                                                     e.target.value
                                             }]
                                         }))
@@ -1319,7 +1292,7 @@ function PurchaseOrder({
                                     id="cementRetainedTiAbutment1"
                                     value={
                                         formData.implant_details?.[0]
-                                            ?.implant_type || ""
+                                            ?.cement_retained_ti_abutment || ""
                                     }
                                     onChange={(e) =>
                                         setFormData(prev => ({
@@ -1329,7 +1302,7 @@ function PurchaseOrder({
                                                     prev.implant_details?.[0]
                                                     || {}
                                                 ),
-                                                implant_type:
+                                                cement_retained_ti_abutment:
                                                     e.target.value
                                             }]
                                         }))
@@ -1344,7 +1317,7 @@ function PurchaseOrder({
                                     id="zrAbutment1"
                                     value={
                                         formData.implant_details?.[0]
-                                            ?.implant_type || ""
+                                            ?.zr_abutment || ""
                                     }
                                     onChange={(e) =>
                                         setFormData(prev => ({
@@ -1354,7 +1327,7 @@ function PurchaseOrder({
                                                     prev.implant_details?.[0]
                                                     || {}
                                                 ),
-                                                implant_type:
+                                                zr_abutment:
                                                     e.target.value
                                             }]
                                         }))
@@ -1369,7 +1342,7 @@ function PurchaseOrder({
                                     id="implantBarType1"
                                     value={
                                         formData.implant_details?.[0]
-                                            ?.implant_type || ""
+                                            ?.implant_bar_type || ""
                                     }
                                     onChange={(e) =>
                                         setFormData(prev => ({
@@ -1379,7 +1352,7 @@ function PurchaseOrder({
                                                     prev.implant_details?.[0]
                                                     || {}
                                                 ),
-                                                implant_type:
+                                                implant_bar_type:
                                                     e.target.value
                                             }]
                                         }))
@@ -1394,7 +1367,7 @@ function PurchaseOrder({
                                     id="attachmentType1"
                                     value={
                                         formData.implant_details?.[0]
-                                            ?.implant_type || ""
+                                            ?.attachment_type || ""
                                     }
                                     onChange={(e) =>
                                         setFormData(prev => ({
@@ -1404,7 +1377,409 @@ function PurchaseOrder({
                                                     prev.implant_details?.[0]
                                                     || {}
                                                 ),
+                                                attachment_type:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="implantType1"
+                                    value={
+                                        formData.implant_details?.[1]
+                                            ?.implant_type || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[1]
+                                                    || {}
+                                                ),
                                                 implant_type:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
+                                />
+                            </td>
+
+                            <td>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="platformDiameter1"
+                                    value={
+                                        formData.implant_details?.[1]
+                                            ?.platform_diameter || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[1]
+                                                    || {}
+                                                ),
+                                                platform_diameter:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
+                                />
+                            </td>
+
+                            <td>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="screwRetained1"
+                                    value={
+                                        formData.implant_details?.[1]
+                                            ?.screw_retained || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[1]
+                                                    || {}
+                                                ),
+                                                screw_retained:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
+                                />
+                            </td>
+
+                            <td>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="screwRetainedHybrid1"
+                                    value={
+                                        formData.implant_details?.[1]
+                                            ?.screw_retained_hybrid || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[1]
+                                                    || {}
+                                                ),
+                                                screw_retained_hybrid:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
+                                />
+                            </td>
+
+                            <td>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="cementRetainedTiAbutment1"
+                                    value={
+                                        formData.implant_details?.[1]
+                                            ?.cement_retained_ti_abutment || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[1]
+                                                    || {}
+                                                ),
+                                                cement_retained_ti_abutment:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
+                                />
+                            </td>
+
+                            <td>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="zrAbutment1"
+                                    value={
+                                        formData.implant_details?.[1]
+                                            ?.zr_abutment || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[1]
+                                                    || {}
+                                                ),
+                                                zr_abutment:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
+                                />
+                            </td>
+
+                            <td>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="implantBarType1"
+                                    value={
+                                        formData.implant_details?.[1]
+                                            ?.implant_bar_type || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[1]
+                                                    || {}
+                                                ),
+                                                implant_bar_type:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
+                                />
+                            </td>
+
+                            <td>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="attachmentType1"
+                                    value={
+                                        formData.implant_details?.[1]
+                                            ?.attachment_type || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[1]
+                                                    || {}
+                                                ),
+                                                attachment_type:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="implantType1"
+                                    value={
+                                        formData.implant_details?.[2]
+                                            ?.implant_type || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[2]
+                                                    || {}
+                                                ),
+                                                implant_type:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
+                                />
+                            </td>
+
+                            <td>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="platformDiameter1"
+                                    value={
+                                        formData.implant_details?.[2]
+                                            ?.platform_diameter || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[2]
+                                                    || {}
+                                                ),
+                                                platform_diameter:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
+                                />
+                            </td>
+
+                            <td>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="screwRetained1"
+                                    value={
+                                        formData.implant_details?.[2]
+                                            ?.screw_retained || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[2]
+                                                    || {}
+                                                ),
+                                                screw_retained:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
+                                />
+                            </td>
+
+                            <td>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="screwRetainedHybrid1"
+                                    value={
+                                        formData.implant_details?.[2]
+                                            ?.screw_retained_hybrid || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[2]
+                                                    || {}
+                                                ),
+                                                screw_retained_hybrid:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
+                                />
+                            </td>
+
+                            <td>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="cementRetainedTiAbutment1"
+                                    value={
+                                        formData.implant_details?.[2]
+                                            ?.cement_retained_ti_abutment || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[2]
+                                                    || {}
+                                                ),
+                                                cement_retained_ti_abutment:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
+                                />
+                            </td>
+
+                            <td>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="zrAbutment1"
+                                    value={
+                                        formData.implant_details?.[2]
+                                            ?.zr_abutment || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[2]
+                                                    || {}
+                                                ),
+                                                zr_abutment:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
+                                />
+                            </td>
+
+                            <td>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="implantBarType1"
+                                    value={
+                                        formData.implant_details?.[2]
+                                            ?.implant_bar_type || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[2]
+                                                    || {}
+                                                ),
+                                                implant_bar_type:
+                                                    e.target.value
+                                            }]
+                                        }))
+                                    }
+                                />
+                            </td>
+
+                            <td>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="attachmentType1"
+                                    value={
+                                        formData.implant_details?.[2]
+                                            ?.attachment_type || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            implant_details: [{
+                                                ...(
+                                                    prev.implant_details?.[2]
+                                                    || {}
+                                                ),
+                                                attachment_type:
                                                     e.target.value
                                             }]
                                         }))

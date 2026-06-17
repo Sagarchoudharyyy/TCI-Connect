@@ -26,13 +26,13 @@ function NewCases() {
         age: "",
         gender: "",
 
-        case_stage: "",
+        case_stage: [],
 
-        surface_texture: "",
-        glazed_polish: "",
-        incisal_translucency: "",
-        prepared_tooth_shade: "",
-        shade_guide_color: "",
+        surface_texture: [],
+        glazed_polish: [],
+        incisal_translucency: [],
+        prepared_tooth_shade: [],
+        shade_guide_color: [],
 
         material_type: [],
         crown_bridge: [],
@@ -56,9 +56,9 @@ function NewCases() {
 
         files: [],
 
-        gdprConfirm: false,
-        dpcaConfirm: false,
-        patientConsent: false
+        gdpr_confirm: false,
+        dpca_confirm: false,
+        patient_consent: false
     };
 
     const [formData, setFormData] =
@@ -71,6 +71,19 @@ function NewCases() {
         setCheckboxErrors
     ] = useState({});
 
+    const handleCheckboxSelection = (
+        field,
+        value
+    ) => {
+        setFormData((prev) => ({
+            ...prev,
+            [field]: prev[field].includes(value)
+                ? prev[field].filter(
+                    (item) => item !== value
+                )
+                : [...prev[field], value]
+        }));
+    };
 
     const handleNext = () => {
 
@@ -149,11 +162,11 @@ function NewCases() {
 
         if (
             !formData
-                .gdprConfirm
+                .gdpr_confirm
         ) {
 
             newErrors
-                .gdprConfirm =
+                .gdpr_confirm =
                 "You must confirm GDPR compliance.";
 
             setCheckboxErrors(
@@ -165,11 +178,11 @@ function NewCases() {
 
         if (
             !formData
-                .dpcaConfirm
+                .dpca_confirm
         ) {
 
             newErrors
-                .dpcaConfirm =
+                .dpca_confirm =
                 "You must confirm Data Processing & Confidentiality Agreement.";
 
             setCheckboxErrors(
@@ -181,11 +194,11 @@ function NewCases() {
 
         if (
             !formData
-                .patientConsent
+                .patient_consent
         ) {
 
             newErrors
-                .patientConsent =
+                .patient_consent =
                 "Patient consent is required.";
 
             setCheckboxErrors(
@@ -465,6 +478,7 @@ function NewCases() {
                                             handleNext={
                                                 handleNext
                                             }
+                                            handleCheckboxSelection={handleCheckboxSelection}
                                             errors={
                                                 errors
                                             }

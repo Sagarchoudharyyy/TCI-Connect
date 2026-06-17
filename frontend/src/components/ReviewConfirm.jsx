@@ -73,55 +73,28 @@ function ReviewConfirm({
 
                 <p>
                     <strong>Case Stage:</strong>{" "}
-                    {
-                        formData.case_stage
-                        || "None"
-                    }
+                    {formData.case_stage?.join(", ") || "None"}
                 </p>
                 <h3 className="fw-semibold mb-2 mt-3">
                     Shade Instructions
                 </h3>
                 <p>
-                    <strong>
-                        Surface Texture:
-                    </strong>{" "}
-                    {
-                        formData.surface_texture
-                        || "None"
-                    }
+                    <strong>Surface Texture:</strong>{" "}
+                    {formData.surface_texture?.join(", ") || "None"}
                 </p>
                 <p>
-                    <strong>
-                        Glazed Polish:
-                    </strong>{" "}
-                    {
-                        formData.glazed_polish
-                        || "None"
-                    }
+                    <strong>Glazed Polish:</strong>{" "}
+                    {formData.glazed_polish?.join(", ") || "None"}
                 </p>
 
                 <p>
-                    <strong>
-                        Incisal Translucency:
-                    </strong>{" "}
-                    {
-                        formData
-                            .incisal_translucency
-                        || "None"
-                    }
+                    <strong>Incisal Translucency:</strong>{" "}
+                    {formData.incisal_translucency?.join(", ") || "None"}
                 </p>
-
                 <p>
-                    <strong>
-                        Prepared Tooth Shade:
-                    </strong>{" "}
-                    {
-                        formData
-                            .prepared_tooth_shade
-                        || "None"
-                    }
+                    <strong>Prepared Tooth Shade:</strong>{" "}
+                    {formData.prepared_tooth_shade?.join(", ") || "None"}
                 </p>
-
                 <p>
                     <strong>
                         Shade Guide Color:
@@ -156,6 +129,58 @@ function ReviewConfirm({
                         || "None"
                     }
                 </p>
+
+                <h5>Implant Instructions:</h5>
+
+                <ul>
+                    {formData.implant_details?.map((implant, index) => (
+                        <li key={index}>
+                            <strong>Row {index + 1}:</strong>
+
+                            <ul>
+                                <li>
+                                    <strong>Implant Type:</strong>{" "}
+                                    {implant.implant_type || "N/A"}
+                                </li>
+
+                                <li>
+                                    <strong>Platform Diameter:</strong>{" "}
+                                    {implant.platform_diameter || "N/A"}
+                                </li>
+
+                                <li>
+                                    <strong>Screw Retained:</strong>{" "}
+                                    {implant.screw_retained || "N/A"}
+                                </li>
+
+                                <li>
+                                    <strong>Screw Retained Hybrid:</strong>{" "}
+                                    {implant.screw_retained_hybrid || "N/A"}
+                                </li>
+
+                                <li>
+                                    <strong>Cement Retained - Ti Abutment:</strong>{" "}
+                                    {implant.cement_retained_ti_abutment || "N/A"}
+                                </li>
+
+                                <li>
+                                    <strong>Zr Abutment:</strong>{" "}
+                                    {implant.zr_abutment || "N/A"}
+                                </li>
+
+                                <li>
+                                    <strong>Implant Bar Type:</strong>{" "}
+                                    {implant.implant_bar_type || "N/A"}
+                                </li>
+
+                                <li>
+                                    <strong>Attachment Type:</strong>{" "}
+                                    {implant.attachment_type || "N/A"}
+                                </li>
+                            </ul>
+                        </li>
+                    ))}
+                </ul>
 
                 <p>
                     <strong>
