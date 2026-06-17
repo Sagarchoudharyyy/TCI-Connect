@@ -26,6 +26,7 @@ import DoctorPricing from "./Doctor/DoctorPricing";
 import ClientChat from "./Doctor/ClientChat";
 import QuestionAnswer from "./Doctor/QuestionAnswer";
 import HelpandFAQ from "./Doctor/Help&FAQ";
+import ViewCaseDetail from "./components/pages/ViewCaseDetail";
 import ForgotPassword from "./components/pages/ForgotPassword";
 import ResetPassword from "./components/pages/ResetPassword";
 function App() {
@@ -83,9 +84,19 @@ function App() {
           path="/admin/recent-case"
           element={
             <ProtectedRoute
-              allowedRoles={["admin", "doctor"]}
+              allowedRoles={["admin"]}
             >
               <RecentCases />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/view-case/:id"
+          element={
+            <ProtectedRoute
+              allowedRoles={["admin"]}
+            >
+              <ViewCaseDetail />
             </ProtectedRoute>
           }
         />
@@ -106,8 +117,8 @@ function App() {
           element={
             <ProtectedRoute
               allowedRoles={[
-                "admin",
-                "doctor"
+                "admin"
+
               ]}
             >
               <Chat />
@@ -145,7 +156,7 @@ function App() {
         <Route
           path="/client/pricing"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={["admin","doctor"]}>
               <DoctorPricing />
             </ProtectedRoute>
           }

@@ -23,7 +23,7 @@ const Chat = () => {
     try {
 
       const res = await axios.get(
-        `http://127.0.0.1:8000/messages/${sender_id}/${user.id}`
+        `http://127.0.0.1:8000/api/messages/${sender_id}/${user.id}`
       );
 
       setMessages(res.data);
@@ -35,7 +35,7 @@ const Chat = () => {
   const getActiveUsers = async () => {
     try {
       const res = await axios.get(
-        "http://127.0.0.1:8000/active-users"
+        "http://127.0.0.1:8000/api/active-users"
       )
       setUsers(res.data);
 
@@ -56,7 +56,7 @@ const Chat = () => {
     try {
 
       await axios.post(
-        "http://127.0.0.1:8000/send-message",
+        "http://127.0.0.1:8000/api/send-message",
         {
           sender_id,
           receiver_id: selectedUser.id,
