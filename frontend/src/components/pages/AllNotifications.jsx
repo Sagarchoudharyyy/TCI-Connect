@@ -23,7 +23,7 @@ function AllNotifications() {
   const fetchNotifications = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/notifications/all"
+        "http://127.0.0.1:8000/api/notifications/all"
       );
 
       setNotifications(response.data);
@@ -31,6 +31,22 @@ function AllNotifications() {
       console.log(error);
     }
   };
+
+
+
+  const markAsRead = async (id) => {
+    try {
+      await axios.put(
+        `http://127.0.0.1:8000/api/notifications/${id}/read`
+      );
+
+      fetchNotifications();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
 
   return (
     <div className="container-fluid">
@@ -56,6 +72,7 @@ function AllNotifications() {
                   <div
                     key={item.id}
                     className="border-bottom p-3"
+                    onClick={() => markAsRead(item.id)}
 
                     style={{
                       backgroundColor:
@@ -67,20 +84,36 @@ function AllNotifications() {
                       transition: "0.2s"
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor =
-                        "#d9f3f3";
+                      e.currentTarget.style.opacity = "0.9";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor =
-                        "#ffffff";
+                      e.currentTarget.style.opacity = "1";
                     }}
                   >
-                    <div
-                      style={{
-                        fontWeight: "600"
-                      }}
-                    >
-                      {item.message}
+                    <div>
+                      {!item.is_read && (
+                        <span
+                          style={{
+                            backgroundColor: "#0d6efd",
+                            color: "#fff",
+                            fontSize: "11px",
+                            padding: "4px 10px",
+                            borderRadius: "20px",
+                            display: "inline-block",
+                            marginBottom: "10px"
+                          }}
+                        >
+                          NEW
+                        </span>
+                      )}
+
+                      <div
+                        style={{
+                          fontWeight: "600"
+                        }}
+                      >
+                        {item.message}
+                      </div>
                     </div>
 
                     <div

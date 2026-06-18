@@ -83,7 +83,7 @@ const Chat = () => {
 
           <div className="offset-2 col-12 col-md-9 col-lg-9 
                     offset-lg-3 col-xl-9 col-xxl-10 offset-xl-3 offset-xxl-2 
-                    main-content">
+                   main-content">
 
             <Header title="Dashboard" />
             <div className="main-c-inner">
