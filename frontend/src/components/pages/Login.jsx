@@ -179,13 +179,21 @@ function Login() {
                                                 />
                                             </div>
                                             <div className="form-group mb-3">
-                                                <input
-                                                    type={showPassword ? "text" : "password"}
-                                                    placeholder="Enter your password"
-                                                    value={password}
-                                                    onChange={(e) => setPassword(e.target.value)}
-                                                    className={`form-control ${error ? "is-invalid" : ""}`}
-                                                />
+                                                <div className="password-wrapper">
+                                                    <input
+                                                        type={showPassword ? "text" : "password"}
+                                                        placeholder="Enter your password"
+                                                        value={password}
+                                                        onChange={(e) => setPassword(e.target.value)}
+                                                        className={`form-control ${error ? "is-invalid" : ""}`}
+                                                    />
+
+                                                    <i
+                                                        className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"
+                                                            } password-eye`}
+                                                        onClick={() => setShowPassword(!showPassword)}
+                                                    ></i>
+                                                </div>
 
                                                 {error && (
                                                     <small className="text-danger d-block mt-2">
@@ -215,9 +223,9 @@ function Login() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div >
 
-            </section>
+            </section >
             <footer className="form-footer">
                 <div className="container">
                     <div className="row justify-content-between">

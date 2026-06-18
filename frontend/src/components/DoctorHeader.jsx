@@ -99,7 +99,7 @@ function DoctorHeader({ title = "Dashboard" }) {
                             <li>
                                 <Link
                                     className="dropdown-item"
-                                    to="/client/change-password"
+                                    to="/change-password"
                                 >
                                     <i className="bi bi-lock-fill me-2"></i>
                                     Change Password

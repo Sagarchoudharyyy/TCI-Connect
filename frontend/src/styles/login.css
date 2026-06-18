@@ -326,3 +326,18 @@ p {
     font-size: 16px;
     color: inherit;
 }
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-eye {
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    z-index: 999;
+    color: #0152A8;
+    font-size: 20px;
+}

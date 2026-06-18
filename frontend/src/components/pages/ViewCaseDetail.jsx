@@ -96,7 +96,7 @@ function ViewCaseDetail() {
                                                 <div className="card-body">
                                                     <div className="row mb-3">
                                                         <div className="col-md-3 text-center mb-3 mb-md-0">
-                                                            <img src="TCI-Connect\frontend\src\assets\hero.png" className="user-profile-img"></img>
+                                                            <img src="C:\Project\TCI-Connet\TCI-Connect\frontend\src\assets\398420.jpg" className="user-profile-img"></img>
                                                         </div>
                                                         <div className="col-md-9">
                                                             <div className="row mb-2">

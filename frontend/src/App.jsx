@@ -29,6 +29,7 @@ import HelpandFAQ from "./Doctor/Help&FAQ";
 import ViewCaseDetail from "./components/pages/ViewCaseDetail";
 import ForgotPassword from "./components/pages/ForgotPassword";
 import ResetPassword from "./components/pages/ResetPassword";
+import ChangePassword from "./Doctor/ChangePassword";
 function App() {
   return (
     <BrowserRouter>
@@ -45,6 +46,7 @@ function App() {
         />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/change-password" element={<ChangePassword />} />
         <Route
           path="/register"
           element={<Register />}
@@ -156,7 +158,7 @@ function App() {
         <Route
           path="/client/pricing"
           element={
-            <ProtectedRoute allowedRoles={["admin","doctor"]}>
+            <ProtectedRoute allowedRoles={["admin", "doctor"]}>
               <DoctorPricing />
             </ProtectedRoute>
           }

@@ -14,12 +14,14 @@ from app.schemas.forgot_password_schema import (
 from app.core.security import (
     hash_password,
     verify_password,
-    create_access_token
+    create_access_token,
+    decode_access_token
 )
 
 from app.schemas.user_schema import (
     UserRegister,
-    UserLogin
+    UserLogin,
+    ChangePasswordRequest
 )
 
 router = APIRouter()
@@ -235,6 +237,54 @@ def reset_password(
         "success": True,
         "message": "Password updated successfully"
     }
+    
+
+@router.post("/change-password")
+def change_password(
+    request: ChangePasswordRequest,
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db)
+):
+    payload = decode_access_token(token)
+
+    if not payload:
+        return {
+            "success": False,
+            "message": "Invalid token"
+        }
+
+    user_id = payload.get("user_id")
+
+    user = db.query(User).filter(
+        User.id == user_id
+    ).first()
+
+    if not user:
+        return {
+            "success": False,
+            "message": "User not found"
+        }
+
+    if not verify_password(
+        request.current_password,
+        user.password
+    ):
+        return {
+            "success": False,
+            "message": "Current password is incorrect"
+        }
+
+    user.password = hash_password(
+        request.new_password
+    )
+
+    db.commit()
+
+    return {
+        "success": True,
+        "message": "Password updated successfully"
+    }
+    
 @router.post("/logout")
 def logout(
     authorization: str = Header(None),
