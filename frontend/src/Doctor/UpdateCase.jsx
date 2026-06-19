@@ -57,9 +57,31 @@ function UpdateCase() {
       additional_instructions: "",
       design_preview: false,
 
+      pdfUpload: null,
+
       files: [],
 
       implant_details: [
+        {
+          implant_type: "",
+          platform_diameter: "",
+          screw_retained: "",
+          screw_retained_hybrid: "",
+          cement_retained_ti_abutment: "",
+          zr_abutment: "",
+          implant_bar_type: "",
+          attachment_type: ""
+        },
+        {
+          implant_type: "",
+          platform_diameter: "",
+          screw_retained: "",
+          screw_retained_hybrid: "",
+          cement_retained_ti_abutment: "",
+          zr_abutment: "",
+          implant_bar_type: "",
+          attachment_type: ""
+        },
         {
           implant_type: "",
           platform_diameter: "",
@@ -90,6 +112,9 @@ function UpdateCase() {
 
         console.log(response.data);
         const data = response.data;
+
+        console.log("FULL RESPONSE:", data);
+        console.log("FILES FROM API:", data.files);
 
         // handle string or array safely
         const materialTypes =
@@ -236,21 +261,24 @@ function UpdateCase() {
               data.details
                 ?.additional_instructions || "",
 
+            pdfUpload:
+              data.files?.find(
+                file =>
+                  file.file_category ===
+                  "case_document"
+              ) || null,
+
             files:
-              Array.isArray(
-                data.files
-              ) &&
-                data.files.length > 0
-                ? data.files.map(
-                  file => ({
-                    id: file.id,
-                    name:
-                      file.file_name,
-                    path:
-                      file.file_path
-                  })
-                )
-                : []
+              data.files?.filter(
+                file =>
+                  file.file_category ===
+                  "digital_file"
+              ).map(file => ({
+                id: file.id,
+                name: file.file_name,
+                path: file.file_path,
+                file_category: file.file_category
+              })) || []
           };
         });
 
@@ -407,10 +435,6 @@ function UpdateCase() {
             )
             : null,
 
-        case_type:
-          formData.case_stage
-          || null,
-
         appointment_date:
           formData
             .next_appointment_date
@@ -513,6 +537,38 @@ function UpdateCase() {
         updateResponse.data
       );
 
+      if (formData.pdfUpload instanceof File) {
+
+        const pdfData = new FormData();
+
+        pdfData.append(
+          "file",
+          formData.pdfUpload
+        );
+
+        pdfData.append(
+          "category",
+          "case_document"
+        );
+
+        const pdfResponse =
+          await axios.post(
+            `http://localhost:8000/api/cases/${caseId}/upload`,
+            pdfData,
+            {
+              headers: {
+                "Content-Type":
+                  "multipart/form-data"
+              }
+            }
+          );
+
+        console.log(
+          "CASE DOCUMENT UPLOADED:",
+          pdfResponse.data
+        );
+      }
+
       if (
         formData.files &&
         formData.files.length > 0
@@ -524,12 +580,16 @@ function UpdateCase() {
             continue;
           }
 
-          const fileData =
-            new FormData();
+          const fileData = new FormData();
 
           fileData.append(
             "file",
             file
+          );
+
+          fileData.append(
+            "category",
+            "digital_file"
           );
 
           const uploadResponse =

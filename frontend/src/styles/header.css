@@ -1,12 +1,18 @@
-.doctor-header {
-    border-bottom: 1px solid #e8e8e8;
-    width: 100%;
-    height: 90px;
+.header {
     background: #fff;
+    border-bottom: 1px solid #e8e8e8;
+    height: 90px;
+
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.header-inner {
     padding: 0 30px;
 }
 
-.doctor-header h2 {
+.header h2 {
     font-family: 'Roboto';
     font-weight: 600;
     font-size: 24px;
@@ -15,44 +21,43 @@
     margin-right: 5px;
 }
 
-@media (min-width: 768px) {
-    .col-md-6 {
-        flex: 0 0 auto;
-        width: 50%;
-    }
+.search-box {
+    position: relative;
+    width: 300px;
 }
 
-.flex-dd {
-    flex: auto;
-    padding-right: 20px;
+.search-box input {
+    padding-right: 40px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    background-color: white;
+    height: 40px;
+    font-family: 'Roboto';
+    font-weight: 400;
+    font-size: 12px;
+    color: #666;
 }
 
-.header-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.notification-wrapper {
-    display: flex;
-    align-items: center;
+.search-box i {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
 }
 
 .notification-icon {
     background-color: white;
     border: 1px solid #e9ecef;
     border-radius: 8px;
-    padding: 10px;
+    padding: 7px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .lab-badge {
     border-left: 1px solid #e8e8e8;
     width: auto;
-    height: 100%;
+    height: 90px;
     font-family: 'Roboto';
     font-weight: 700;
     font-size: 24px;
@@ -61,4 +66,157 @@
     display: flex;
     align-items: center;
     padding: 0 30px;
+}
+
+
+.header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.notification-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+
+.mobile-menu {
+    cursor: pointer;
+}
+
+/* Tablet */
+@media (max-width: 991px) {
+
+    .header-inner {
+        padding: 0 15px;
+    }
+
+
+    .header-right {
+        gap: 10px;
+        width: auto;
+    }
+
+    .lab-badge {
+        font-size: 18px;
+        padding: 0 15px;
+    }
+
+    .header h2 {
+        font-size: 20px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+
+    .header {
+        height: 70px;
+    }
+
+    .header-inner {
+        padding: 0 10px;
+    }
+
+    .header-right {
+        gap: 8px;
+    }
+
+    .header h2 {
+        font-size: 18px;
+    }
+
+    .lab-badge {
+        font-size: 12px;
+        padding: 0 6px;
+        border-left: none;
+    }
+
+    .header-right {
+        gap: 10px;
+    }
+}
+
+/* Very small devices */
+@media (max-width: 575px) {
+
+    .header h2 {
+        display: none;
+    }
+
+    .lab-badge {
+        font-size: 12px;
+        padding: 0 8px;
+    }
+
+    .notification-icon {
+        padding: 5px;
+    }
+}
+
+
+/* Notification Dropdown */
+.notif-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    width: 450px;
+    max-height: 450px;
+    background: #fff;
+    border-radius: 8px;
+    overflow-y: auto;
+    z-index: 3000;
+}
+
+.notif-item {
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.notif-item:last-child {
+    border-bottom: none;
+}
+
+/* Tablet */
+@media (max-width: 991px) {
+    .notif-dropdown {
+        width: 380px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+
+    .notif-dropdown {
+        position: fixed !important;
+        top: 70px !important;
+        left: 10px !important;
+        right: 10px !important;
+        width: auto !important;
+        max-height: 70vh !important;
+        z-index: 99999 !important;
+    }
+}
+
+/* Small Phones */
+@media (max-width: 575px) {
+    .notif-dropdown {
+        width: 95vw;
+        right: 0;
+    }
+
+    .notification-icon svg {
+        width: 20px;
+        height: 20px;
+    }
 }

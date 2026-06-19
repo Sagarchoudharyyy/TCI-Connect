@@ -31,11 +31,12 @@ import ForgotPassword from "./components/pages/ForgotPassword";
 import ResetPassword from "./components/pages/ResetPassword";
 import ChangePassword from "./Doctor/ChangePassword";
 import RGPDpolicy from "./Doctor/RGPDpolicy";
+import UploadPreview from "./components/pages/UploadPreview";
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         <Route
           path="/"
           element={<Login />}
@@ -172,7 +173,14 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+        <Route
+          path="/admin/upload-preview/:id"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <UploadPreview />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/update-price/:id"
           element={
@@ -229,6 +237,8 @@ function App() {
         <Route path="/client/help-faq"
           element={<HelpandFAQ />} />
       </Routes>
+
+
 
     </BrowserRouter >
   );

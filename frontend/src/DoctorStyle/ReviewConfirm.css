@@ -2,3 +2,28 @@ p {
     margin-top: 0;
     margin-bottom: 1rem;
 }
+
+.row-wise {
+    list-style-type: disc !important;
+}
+
+
+.unordered,
+.row-wise {
+    margin-top: 0;
+    margin-bottom: 1rem !important;
+}
+
+.unordered,
+.row-wise {
+    padding-left: 2rem !important;
+}
+
+.unordered {
+    display: block;
+    list-style-type: disc !important;
+    margin-block-start: 1em !important;
+    margin-block-end: 1em !important;
+    padding-inline-start: 40px;
+    unicode-bidi: isolate !important;
+}

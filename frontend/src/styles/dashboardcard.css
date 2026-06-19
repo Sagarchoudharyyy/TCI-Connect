@@ -1,24 +1,3 @@
-.main-c-inner {
-    padding: 30px 20px 10px 30px;
-}
-
-.row {
-    --bs-gutter-x: 1.5rem;
-    --bs-gutter-y: 0;
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: calc(-1 * var(--bs-gutter-y));
-    margin-right: calc(-.5 * var(--bs-gutter-x));
-    margin-left: calc(-.5 * var(--bs-gutter-x));
-}
-
-@media (min-width: 992px) {
-    .col-lg-6 {
-        flex: 0 0 auto;
-        width: 50%;
-    }
-}
-
 .stats-card {
     background: white;
     border-radius: 12px;
@@ -33,6 +12,10 @@
 
 .stats-card.total-doctor {
     background: #d1e9fc;
+}
+
+.stats-card.recent-orders {
+    background: #d0f2fe;
 }
 
 .stats-icon {
@@ -54,12 +37,81 @@
     color: #676767;
 }
 
+.stats-content h3 {
+    font-family: 'Roboto';
+    font-weight: 500;
+    font-size: 24px;
+    color: #1c1c1c;
+}
+
+.stats-change {
+    font-family: 'Roboto';
+    font-weight: 500;
+    font-size: 14px;
+    text-align: right;
+    color: #14cc26;
+}
+
 .stats-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.stats-card.recent-orders {
-    background: #d0f2fe;
+.stats-change.positive {
+    color: #14cc26;
+
+}
+
+.stats-change i {
+    margin-right: 4px;
+}
+
+
+.chart-section {
+    padding: 24px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 14px;
+    margin-bottom: 24px;
+}
+
+.chart-header h5 {
+    margin: 0;
+    font-family: 'Roboto';
+    font-weight: 500;
+    font-size: 18px;
+    color: #1c1c1c;
+}
+
+.chart-controls {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.chart-controls span {
+    font-family: 'Roboto';
+    font-weight: 400;
+    font-size: 12px;
+    color: #676767;
+}
+
+.chart-controls select {
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-family: 'Roboto';
+    font-weight: 400;
+    font-size: 12px;
+    color: #676767;
+    width: 90px;
+}
+
+
+.chart-container {
+    height: 300px;
+    position: relative;
 }

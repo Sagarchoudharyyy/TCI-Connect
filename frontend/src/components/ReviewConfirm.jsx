@@ -130,58 +130,26 @@ function ReviewConfirm({
                     }
                 </p>
 
-                <h5>Implant Instructions:</h5>
+                <strong>Implant Instructions:</strong>
 
-                <ul>
+                <ul className="mb-0 row-wise">
                     {formData.implant_details?.map((implant, index) => (
-                        <li key={index}>
-                            <strong>Row {index + 1}:</strong>
-
-                            <ul>
-                                <li>
-                                    <strong>Implant Type:</strong>{" "}
-                                    {implant.implant_type || "N/A"}
-                                </li>
-
-                                <li>
-                                    <strong>Platform Diameter:</strong>{" "}
-                                    {implant.platform_diameter || "N/A"}
-                                </li>
-
-                                <li>
-                                    <strong>Screw Retained:</strong>{" "}
-                                    {implant.screw_retained || "N/A"}
-                                </li>
-
-                                <li>
-                                    <strong>Screw Retained Hybrid:</strong>{" "}
-                                    {implant.screw_retained_hybrid || "N/A"}
-                                </li>
-
-                                <li>
-                                    <strong>Cement Retained - Ti Abutment:</strong>{" "}
-                                    {implant.cement_retained_ti_abutment || "N/A"}
-                                </li>
-
-                                <li>
-                                    <strong>Zr Abutment:</strong>{" "}
-                                    {implant.zr_abutment || "N/A"}
-                                </li>
-
-                                <li>
-                                    <strong>Implant Bar Type:</strong>{" "}
-                                    {implant.implant_bar_type || "N/A"}
-                                </li>
-
-                                <li>
-                                    <strong>Attachment Type:</strong>{" "}
-                                    {implant.attachment_type || "N/A"}
-                                </li>
+                        <li key={index} className="mb-2">
+                            <strong>Row {index + 1}</strong>
+                            <ul className="unordered">
+                                <li><strong>Implant Type:</strong> {implant.implant_type || "N/A"}</li>
+                                <li><strong>Platform Diameter:</strong> {implant.platform_diameter || "N/A"}</li>
+                                <li><strong>Screw Retained:</strong> {implant.screw_retained || "N/A"}</li>
+                                <li><strong>Screw Retained Hybrid:</strong> {implant.screw_retained_hybrid || "N/A"}</li>
+                                <li><strong>Cement Retained - Ti Abutment:</strong> {implant.cement_retained_ti_abutment || "N/A"}</li>
+                                <li><strong>Zr Abutment:</strong> {implant.zr_abutment || "N/A"}</li>
+                                <li><strong>Implant Bar Type:</strong> {implant.implant_bar_type || "N/A"}</li>
+                                <li><strong>Attachment Type:</strong> {implant.attachment_type || "N/A"}</li>
                             </ul>
+
                         </li>
                     ))}
                 </ul>
-
                 <p>
                     <strong>
                         Additional Restorations:
@@ -202,6 +170,15 @@ function ReviewConfirm({
                         formData
                             .additional_instructions
                         || "None"
+                    }
+                </p>
+                <p className="mb-3">
+                    <strong>Case Document:</strong>
+                    <br />
+                    {
+                        formData.pdfUpload
+                            ? formData.pdfUpload.name
+                            : "No document uploaded"
                     }
                 </p>
                 <p>

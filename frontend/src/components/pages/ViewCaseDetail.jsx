@@ -4,6 +4,7 @@ import Header from "../Header";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../styles/ViewCaseDetail.css";
+import heroImg from "../../assets/hero.png";
 
 function ViewCaseDetail() {
 
@@ -11,26 +12,46 @@ function ViewCaseDetail() {
     const [casedata, setCasedata] = useState(null);
     const { id } = useParams();
     const [caselist, setCaseList] = useState(null);
+    const [files, setFiles] = useState([]);
 
     useEffect(() => {
         getCaseDetails();
+        getCaseFiles();
     }, []);
 
     useEffect(() => {
     }, []);
+
+    const getCaseFiles = async () => {
+        try {
+
+            const response = await axios.get(
+                `http://127.0.0.1:8000/api/case_files/${id}`
+            );
+            console.log("CASE File", response.data);
+            setFiles(response.data);
+
+        }
+        catch (error) {
+            console.error(
+                "Error fetching files",
+                error
+            );
+        }
+    };
     const getCaseDetails = async () => {
         try {
             const response = await axios.get(
                 `http://127.0.0.1:8000/api/cases/${id}`
             )
-            console.log(
-                "Full Case API:",
-                JSON.stringify(
-                    response.data,
-                    null,
-                    2
-                )
-            );
+            // console.log(
+            //     "Full Case API:",
+            //     JSON.stringify(
+            //         response.data,
+            //         null,
+            //         2
+            //     )
+            // );
             setCasedata(response.data);
 
             if (
@@ -72,6 +93,26 @@ function ViewCaseDetail() {
             );
         }
     }
+    const casePdfs =
+        casedata?.files?.filter(
+            file =>
+                file.file_category ===
+                "case_document"
+        ) || [];
+
+    const digitalFiles =
+        casedata?.files?.filter(
+            file =>
+                file.file_category ===
+                "digital_file"
+        ) || [];
+
+
+    console.log("CASE DATA", casedata);
+    console.log("FILES", files);
+    console.log("CASE PDFS", casePdfs);
+    console.log("DIGITAL FILES", digitalFiles);
+
 
     return (
         <div className="container-fluid">
@@ -96,7 +137,7 @@ function ViewCaseDetail() {
                                                 <div className="card-body">
                                                     <div className="row mb-3">
                                                         <div className="col-md-3 text-center mb-3 mb-md-0">
-                                                            <img src="C:\Project\TCI-Connet\TCI-Connect\frontend\src\assets\398420.jpg" className="user-profile-img"></img>
+                                                            <img src={heroImg} className="user-profile-img"></img>
                                                         </div>
                                                         <div className="col-md-9">
                                                             <div className="row mb-2">
@@ -335,32 +376,87 @@ function ViewCaseDetail() {
                                             <div className="card">
                                                 <div className="card-header fw-bold">Uploaded Files</div>
                                                 <div className="card-body">
-                                                    <h5>Case PDF</h5>
-                                                    <div className="file-item d-flex flex-wrap align-items-center justify-content-between mb-2 p-2">
-                                                        <span className="file-name text-truncate">22_1781259934_22_1781259933_01_forza7_porsche_gt2rs_02_4k_v2_noflag.jpg</span>
-                                                        <div className="file-buttons d-flex flex-wrap gap-2 mt-2 mt-sm-0">
 
-                                                            <a href="https://tcidentallab.com/preview-files?file=uploads%2Fcases%2F22_1781259934_22_1781259933_01_forza7_porsche_gt2rs_02_4k_v2_noflag.jpg" target="_blank" className="btn btn-sm btn-primary">
-                                                                <i className="bi bi-eye"></i> Preview
-                                                            </a>
-                                                            <a href="https://tcidentallab.com/uploads/cases/22_1781259934_22_1781259933_01_forza7_porsche_gt2rs_02_4k_v2_noflag.jpg" download="" className="btn btn-sm btn-success">
-                                                                <i className="bi bi-download"></i> Download
-                                                            </a>
-                                                        </div>
-                                                    </div>
+                                                    <strong>Case PDF</strong>
+                                                    {casePdfs.map((file) => (
 
-                                                    <h5 className="mt-4">Digital Files</h5>
-                                                    <div className="file-item d-flex flex-wrap align-items-center justify-content-between mb-2 p-2">
-                                                        <span className="file-name text-truncate">22_1781259950_22_1781259949_WhatsAppImage2026-06-01at07.41.52.jpeg</span>
-                                                        <div className="file-buttons d-flex flex-wrap gap-2 mt-2 mt-sm-0">
-                                                            <a href="https://tcidentallab.com/preview-files?file=uploads%2Fcases%2F22_1781259950_22_1781259949_WhatsAppImage2026-06-01at07.41.52.jpeg" target="_blank" className="btn btn-sm btn-primary">
-                                                                <i className="bi bi-eye"></i> Preview
-                                                            </a>
-                                                            <a href="https://tcidentallab.com/uploads/cases/22_1781259950_22_1781259949_WhatsAppImage2026-06-01at07.41.52.jpeg" download="" className="btn btn-sm btn-success">
-                                                                <i className="bi bi-download"></i> Download
-                                                            </a>
+                                                        <div
+                                                            key={file.id}
+                                                            className="file-item d-flex flex-wrap align-items-center justify-content-between mb-2 p-2"
+                                                        >
+
+                                                            <span className="file-name text-truncate">
+                                                                {file.file_name}
+                                                            </span>
+
+                                                            <div className="file-buttons d-flex flex-wrap gap-2 mt-2 mt-sm-0">
+
+                                                                <a
+                                                                    href={`http://127.0.0.1:8000/${file.file_path.replace(/\\/g, "/")}`}
+                                                                    target="_blank"
+                                                                    rel="noreferrer"
+                                                                    className="btn btn-sm btn-primary"
+                                                                >
+                                                                    <i className="bi bi-eye"></i>
+                                                                    {" "}
+                                                                    Preview
+                                                                </a>
+
+                                                                <a
+                                                                    href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
+                                                                    download
+                                                                    className="btn btn-sm btn-success"
+                                                                >
+                                                                    <i className="bi bi-download"></i>
+                                                                    {" "}
+                                                                    Download
+                                                                </a>
+
+                                                            </div>
+
                                                         </div>
-                                                    </div>
+
+                                                    ))}
+
+                                                    <strong>Digital File</strong>
+                                                    {digitalFiles.map((file) => (
+
+                                                        <div
+                                                            key={file.id}
+                                                            className="file-item d-flex flex-wrap align-items-center justify-content-between mb-2 p-2"
+                                                        >
+
+                                                            <span className="file-name text-truncate">
+                                                                {file.file_name}
+                                                            </span>
+
+                                                            <div className="file-buttons d-flex flex-wrap gap-2 mt-2 mt-sm-0">
+
+                                                                <a
+                                                                    href={`http://127.0.0.1:8000/${file.file_path.replace(/\\/g, "/")}`}
+                                                                    target="_blank"
+                                                                    rel="noreferrer"
+                                                                    className="btn btn-sm btn-primary"
+                                                                >
+                                                                    <i className="bi bi-eye"></i>
+                                                                    {" "}
+                                                                    Preview
+                                                                </a>
+
+                                                                <a
+                                                                    href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
+                                                                    className="btn btn-sm btn-success"
+                                                                >
+                                                                    <i className="bi bi-download"></i>
+                                                                    {" "}
+                                                                    Download
+                                                                </a>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    ))}
 
                                                 </div>
                                             </div>

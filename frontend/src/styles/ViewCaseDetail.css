@@ -2,7 +2,6 @@
     padding: 30px 20px 30px 30px;
 }
 
-
 .card {
     background: #fff;
     border-radius: 12px;
@@ -42,7 +41,7 @@
 @media (min-width: 768px) {
     .col-md-9 {
         flex: 0 0 auto;
-        width: 75%;
+
     }
 }
 
@@ -84,4 +83,15 @@
 
 .card-header:first-child {
     border-radius: var(--bs-card-inner-border-radius) var(--bs-card-inner-border-radius) 0 0;
+}
+
+.file-item {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    background: #f1f1f1;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
 }

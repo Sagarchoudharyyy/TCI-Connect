@@ -27,3 +27,8 @@ class CaseFile(Base):
     
     case=relationship("Case",back_populates="files")
 
+    file_category = Column(
+    String(50),
+    nullable=True
+)
+
