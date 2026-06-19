@@ -13,6 +13,7 @@ const Chat = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
+  const [showSidebar, setShowSidebar] = useState(false);
 
   const sender_id = 1;
 
@@ -75,17 +76,27 @@ const Chat = () => {
   };
 
   return (
-    <div className="container-fluid">
+    <div className="container-fluid p-0">
       <div className="dashboard-main">
         <div className="row g-0">
+          <>
+            {showSidebar && (
+              <div
+                className="sidebar-overlay"
+                onClick={() => setShowSidebar(false)}
+              />
+            )}
 
-          <Sidebar />
+            <Sidebar
+              showSidebar={showSidebar}
+            />
+          </>
 
-          <div className="offset-2 col-12 col-md-9 col-lg-9 
-                    offset-lg-3 col-xl-9 col-xxl-10 offset-xl-3 offset-xxl-2 
-                    main-content">
-
-            <Header title="Dashboard" />
+          <div className=" main-content">
+            <Header
+              title="Dashboard"
+              setShowSidebar={setShowSidebar}
+            />
             <div className="main-c-inner">
               <div className="chat-container">
                 <div className="chat-wrapper">

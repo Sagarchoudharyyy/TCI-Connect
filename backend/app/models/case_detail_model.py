@@ -71,47 +71,6 @@ class CaseDetail(Base):
         Text,
         nullable=True
     )
-
-    implant_type = Column(
-        Text,
-        nullable=True
-    )
-
-    platform_diameter = Column(
-        Text,
-        nullable=True
-    )
-
-    screw_retained = Column(
-        Text,
-        nullable=True
-    )
-
-    screw_retained_hybrid = Column(
-        Text,
-        nullable=True
-    )
-
-    cement_retained_ti_abutment = Column(
-        Text,
-        nullable=True
-    )
-
-    zr_abutment = Column(
-        Text,
-        nullable=True
-    )
-
-    implant_bar_type = Column(
-        Text,
-        nullable=True
-    )
-
-    attachment_type = Column(
-        Text,
-        nullable=True
-    )
-
    
     additional_restorations = Column(
         Text,
@@ -133,3 +92,9 @@ class CaseDetail(Base):
         "Case",
         back_populates="details"
     )
+
+    implant_details = relationship(
+    "ImplantDetail",
+    back_populates="case_detail",
+    cascade="all, delete-orphan"
+)

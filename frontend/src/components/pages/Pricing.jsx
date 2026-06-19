@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-import "../../styles/dashboard.css";
-import "../../styles/sidebar.css";
-import "../../styles/header.css";
-import "../../styles/tables.css";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
@@ -25,6 +22,7 @@ function Pricing() {
   const [pricingData, setPricingData] = useState([]);
   const [message, setMessage] = useState("");
   const location = useLocation();
+  const [showSidebar, setShowSidebar] = useState(false);
 
   const categoryMap = {
     3: "Crown",
@@ -90,7 +88,7 @@ function Pricing() {
       return;
     }
     try {
-      await axios.delete(`http://127.0.0.1:8000/pricing/${id}`);
+      await axios.delete(`http://127.0.0.1:8000/api/pricing/${id}`);
       setMessage("Price deleted successfully");
       setTimeout(() => {
         setMessage("")
@@ -108,7 +106,7 @@ function Pricing() {
   const fetchPrices = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/pricing"
+        "http://127.0.0.1:8000/api/pricing"
       );
 
       console.log("Pricing Data:", response.data);
@@ -128,17 +126,27 @@ function Pricing() {
     }
   };
   return (
-    <div className="container-fluid">
+    <div className="container-fluid p-0">
       <div className="dashboard-main">
         <div className="row g-0">
+          <>
+            {showSidebar && (
+              <div
+                className="sidebar-overlay"
+                onClick={() => setShowSidebar(false)}
+              />
+            )}
 
-          <Sidebar />
+            <Sidebar
+              showSidebar={showSidebar}
+            />
+          </>
 
-          <div className="offset-2 col-12 col-md-9 col-lg-9 
-                    offset-lg-3 col-xl-9 col-xxl-10 offset-xl-3 offset-xxl-2 
-                    main-content">
-
-            <Header title="Dashboard" />
+          <div className=" main-content">
+            <Header
+              title="Dashboard"
+              setShowSidebar={setShowSidebar}
+            />
             <div className="main-c-inner">
               {message && (
                 <div className="alert alert-success">
@@ -153,7 +161,7 @@ function Pricing() {
               </button>
 
               <div className="table-responsive">
-                <table className="table table-bordered table-striped align-middle">
+                <table className=" custom-table table table-bordered table-striped align-middle">
                   <thead className="table-light">
                     <tr>
                       <th>Product</th>

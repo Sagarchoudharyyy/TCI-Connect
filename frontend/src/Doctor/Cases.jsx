@@ -317,116 +317,81 @@ function DoctorCases() {
                                                         </td>
                                                         <td>{item.age}</td>
                                                         <td>
-                                                            {item.files?.length > 0 ? (() => {
-
-                                                                const casePdfFile =
-                                                                    item.files.find(file =>
-                                                                        file.file_path
-                                                                            ?.endsWith(".pdf") ||
-                                                                        file.file_path
-                                                                            ?.endsWith(".jpg") ||
-                                                                        file.file_path
-                                                                            ?.endsWith(".jpeg") ||
-                                                                        file.file_path
-                                                                            ?.endsWith(".png")
-                                                                    );
-
-                                                                if (!casePdfFile)
-                                                                    return <span>-</span>;
-
-                                                                const fileUrl =
-                                                                    `http://127.0.0.1:8000/${casePdfFile.file_path}`;
-
-                                                                const extension =
-                                                                    casePdfFile.file_path
-                                                                        .split(".")
-                                                                        .pop()
-                                                                        .toLowerCase();
-
-                                                                return (
-                                                                    <a
-                                                                        href={fileUrl}
-                                                                        target="_blank"
-                                                                        rel="noreferrer"
-                                                                    >
-                                                                        {["jpg", "jpeg", "png"]
-                                                                            .includes(extension) ? (
-
-                                                                            <img
-                                                                                src={fileUrl}
-                                                                                alt="preview"
-                                                                                width="50"
-                                                                                height="50"
-                                                                                style={{
-                                                                                    objectFit:
-                                                                                        "cover",
-                                                                                    borderRadius:
-                                                                                        "8px"
-                                                                                }}
-                                                                            />
-
-                                                                        ) : extension ===
-                                                                            "pdf" ? (
-
-                                                                            <span
-                                                                                style={{
-                                                                                    fontSize:
-                                                                                        "25px"
-                                                                                }}
-                                                                            >
-                                                                                📄
-                                                                            </span>
-
-                                                                        ) : (
-                                                                            "-"
-                                                                        )}
-                                                                    </a>
-                                                                );
-                                                            })() : (
-                                                                <span>-</span>
-                                                            )}
-                                                        </td>
-                                                        <td>
-                                                            {item.files?.length > 0 ? (
-                                                                item.files.map((file, index) => (
-                                                                    <div key={index}>
-                                                                        <Link
-                                                                            to={`http://127.0.0.1:8000/${file.file_path}`}
+                                                            {
+                                                                item.files
+                                                                    ?.filter(
+                                                                        file =>
+                                                                            file.file_category === "case_document"
+                                                                    )
+                                                                    .map((file, index) => (
+                                                                        <a
+                                                                            key={index}
+                                                                            href={`http://127.0.0.1:8000/${file.file_path}`}
                                                                             target="_blank"
                                                                             rel="noreferrer"
                                                                             style={{
-                                                                                textDecoration: "none",
-                                                                                marginRight: "12px",
-                                                                                color: "#0152a8"
+                                                                                color: "#0152a8",
+                                                                                textDecoration: "none"
                                                                             }}
                                                                         >
-                                                                            Preview File {index + 1}
-
-                                                                            {file.file_path?.endsWith(".png")
-                                                                                ? " (PNG)"
-                                                                                : file.file_path?.endsWith(".stl")
-                                                                                    ? " (STL)"
-                                                                                    : file.file_path?.endsWith(".jpg") ||
-                                                                                        file.file_path?.endsWith(".jpeg")
-                                                                                        ? " (JPG)"
-                                                                                        : ""}
-                                                                        </Link>
-
-                                                                        <a
-                                                                            href={`http://127.0.0.1:8000/api/download-file?file_path=${file.file_path}`}
-                                                                            style={{
-                                                                                color: "#0152a8"
-                                                                            }}
-                                                                        >
-                                                                            <FaDownload />
+                                                                            <FaEye />
                                                                         </a>
+                                                                    ))
+                                                            }
 
-                                                                    </div>
-                                                                ))
-                                                            ) : (
-                                                                <span>No File</span>
-                                                            )}
+                                                            {
+                                                                !item.files?.some(
+                                                                    file =>
+                                                                        file.file_category === "case_document"
+                                                                ) && <span>-</span>
+                                                            }
                                                         </td>
+                                                        <td>
+
+                                                            {
+                                                                item.files
+                                                                    ?.filter(
+                                                                        file =>
+                                                                            file.file_category === "digital_file"
+                                                                    )
+                                                                    .map((file, index) => (
+                                                                        <div key={index}>
+
+
+                                                                            <a
+                                                                                href={`http://127.0.0.1:8000/${file.file_path}`}
+                                                                                target="_blank"
+                                                                                rel="noreferrer"
+                                                                                style={{
+                                                                                    textDecoration: "none",
+                                                                                    marginRight: "12px",
+                                                                                    color: "#0152a8"
+                                                                                }}
+                                                                            >
+
+                                                                                Preview File {index + 1}
+                                                                            </a>
+
+                                                                            <a
+                                                                                href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
+                                                                                style={{
+                                                                                    color: "#0152a8"
+                                                                                }}
+                                                                            >
+                                                                                <FaDownload />
+                                                                            </a>    
+                                                                        </div>
+                                                                    ))
+                                                            }
+
+                                                            {
+                                                                !item.files?.some(
+                                                                    file =>
+                                                                        file.file_category === "digital_file"
+                                                                ) && <span>No File</span>
+                                                            }
+                                                        </td>
+
                                                         <td>
                                                             {item.delivery_deadline
                                                                 ? new Date(

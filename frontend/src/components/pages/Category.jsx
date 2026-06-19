@@ -22,7 +22,7 @@ function Category() {
 
     const getCategories = () => {
         axios
-            .get("http://127.0.0.1:8000/category")
+            .get("http://127.0.0.1:8000/api/category")
             .then((res) => {
                 setCategories(res.data);
             })
@@ -41,7 +41,7 @@ function Category() {
         try {
             if (editId) {
                 await axios.put(
-                    `http://127.0.0.1:8000/category/${editId}`,
+                    `http://127.0.0.1:8000/api/category/${editId}`,
                     formData
                 );
 
@@ -49,7 +49,7 @@ function Category() {
             }
             else {
                 await axios.post(
-                    "http://127.0.0.1:8000/category",
+                    "http://127.0.0.1:8000/api/category",
                     formData
                 );
                 setMessage("Category added successfully")
@@ -85,7 +85,7 @@ function Category() {
 
         try {
             await axios.delete(
-                `http://127.0.0.1:8000/category/${id}`
+                `http://127.0.0.1:8000/api/category/${id}`
             );
 
             setMessage("Category deleted successfully");

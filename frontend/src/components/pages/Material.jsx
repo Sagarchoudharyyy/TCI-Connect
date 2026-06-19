@@ -50,14 +50,14 @@ function Material() {
 
             if (editId) {
                 await axios.put(
-                    `http://127.0.0.1:8000/material/${editId}`,
+                    `http://127.0.0.1:8000/api/material/${editId}`,
                     formData
                 );
 
                 setMessage("Material updated successfully");
             } else {
                 await axios.post(
-                    "http://127.0.0.1:8000/material",
+                    "http://127.0.0.1:8000/api/material",
                     formData
                 );
 
@@ -95,7 +95,7 @@ function Material() {
         }
         try {
             await axios.delete(
-                `http://127.0.0.1:8000/material/${id}`
+                `http://127.0.0.1:8000/api/material/${id}`
             );
             setMessage("Material deleted successfully");
             getMaterial();

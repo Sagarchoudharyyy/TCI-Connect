@@ -1,15 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
-import "../../styles/dashboard.css";
-import "../../styles/sidebar.css";
-import "../../styles/header.css";
-import "../../styles/tables.css";
-
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import Sidebar from "../Sidebar";
 import Header from "../Header";
+import "../../styles/tables.css";
 
 import { FaEye, FaTrash } from "react-icons/fa";
 
@@ -18,6 +13,8 @@ function AllDoctors() {
   const [doctors, setDoctors] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [entriesPerPage, setEntriesPerPage] = useState(10);
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchDoctors();
@@ -96,245 +93,241 @@ function AllDoctors() {
   });
 
   const visibleDoctors = filteredDoctors.slice(0, entriesPerPage);
+  const totalEntries = filteredDoctors.length;
+
+  const startEntry =
+    totalEntries === 0
+      ? 0
+      : (currentPage - 1) * entriesPerPage + 1;
+
+  const endEntry = Math.min(
+    currentPage * entriesPerPage,
+    totalEntries
+  );
 
   return (
-    <div className="container-fluid">
-
+    <div className="container-fluid p-0">
       <div className="dashboard-main">
-
         <div className="row g-0">
+          <>
+            {showSidebar && (
+              <div
+                className="sidebar-overlay"
+                onClick={() => setShowSidebar(false)}
+              />
+            )}
 
-          <Sidebar />
+            <Sidebar
+              showSidebar={showSidebar}
+            />
+          </>
 
-          <div
-            className="
-                        offset-2 
-                        col-12 
-                        col-md-9 
-                        col-lg-9
-                        offset-lg-3 
-                        col-xl-9
-                        col-xxl-10
-                        offset-xl-3
-                        offset-xxl-2
-                        main-content
-                        "
-          >
-
-            <Header title="All Doctors" />
-
+          <div className=" main-content">
+            <Header
+              title="Dashboard"
+              setShowSidebar={setShowSidebar}
+            />
             <div className="main-c-inner">
-
               <div className="table-responsive">
-
-                <div className="card border-0 shadow-sm p-3">
-
-
-
-                  <div className="d-flex justify-content-between align-items-center flex-wrap mb-3">
-
+                <div className="row mt-2 justify-content-between">
+                  <div className="d-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">
                     <div className="d-flex align-items-center gap-2">
-
                       <select
-                        className="form-select"
-                        style={{ width: "90px" }}
                         value={entriesPerPage}
+                        style={{ width: "90px" }}
                         onChange={(e) =>
-                          setEntriesPerPage(
-                            Number(e.target.value)
-                          )
+                          setEntriesPerPage(Number(e.target.value))
                         }
+                        className="form-select form-select-sm"
                       >
-                        <option value={10}>10</option>
-                        <option value={25}>25</option>
-                        <option value={50}>50</option>
-                        <option value={100}>100</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
                       </select>
-
                       <span>entries per page</span>
-
                     </div>
-
+                  </div>
+                  <div className="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto">
                     <div className="d-flex align-items-center gap-2">
-
-                      <label>Search:</label>
-
+                      <label htmlFor="dt-search-0">Search:</label>
                       <input
-                        type="text"
-                        className="form-control"
+                        type="search"
+                        className="form-control form-control-sm"
+                        id="dt-search-0"
+                        placeholder=""
                         value={searchTerm}
                         onChange={(e) =>
-                          setSearchTerm(e.target.value)
+                          setSearchTerm(
+                            e.target.value
+                          )
                         }
                       />
-
                     </div>
-
                   </div>
+                </div>
+                {/* Table */}
 
-                  {/* Table */}
+                <table className="table table-striped custom-table">
 
-                  <table className="table table-striped custom-table">
+                  <thead>
 
-                    <thead>
+                    <tr>
+                      <th>Full Name</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Business Name</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
 
-                      <tr>
-                        <th>Full Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Business Name</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                      </tr>
+                  </thead>
 
-                    </thead>
+                  <tbody>
 
-                    <tbody>
+                    {visibleDoctors.length > 0 ? (
 
-                      {visibleDoctors.length > 0 ? (
+                      visibleDoctors.map((doctor) => (
 
-                        visibleDoctors.map((doctor) => (
+                        <tr key={doctor.id}>
 
-                          <tr key={doctor.id}>
+                          <td>
+                            {doctor.full_name}
+                          </td>
 
-                            <td>
-                              {doctor.full_name}
-                            </td>
+                          <td>
+                            {doctor.email}
+                          </td>
 
-                            <td>
-                              {doctor.email}
-                            </td>
+                          <td>
+                            {doctor.phone}
+                          </td>
 
-                            <td>
-                              {doctor.phone}
-                            </td>
+                          <td>
+                            {doctor.business_name}
+                          </td>
 
-                            <td>
-                              {doctor.business_name}
-                            </td>
+                          <td>
 
-                            <td>
+                            <span
+                              onClick={() =>
+                                toggleDoctorStatus(
+                                  doctor.id
+                                )
+                              }
+                              style={{
+                                color:
+                                  doctor.status ===
+                                    "approved"
+                                    ? "green"
+                                    : "orange",
+                                fontWeight: "bold",
+                                cursor: "pointer",
+                              }}
+                            >
+                              {doctor.status ===
+                                "approved"
+                                ? "Approved"
+                                : "Pending"}
+                            </span>
 
-                              <span
-                                onClick={() =>
-                                  toggleDoctorStatus(
-                                    doctor.id
-                                  )
-                                }
+                          </td>
+
+                          <td>
+
+                            <div className="d-flex gap-3">
+
+                              <FaEye
                                 style={{
-                                  color:
-                                    doctor.status ===
-                                      "approved"
-                                      ? "green"
-                                      : "orange",
-                                  fontWeight: "bold",
+                                  color: "#0d6efd",
                                   cursor: "pointer",
                                 }}
-                              >
-                                {doctor.status ===
-                                  "approved"
-                                  ? "Approved"
-                                  : "Pending"}
-                              </span>
+                              />
 
-                            </td>
+                              <FaTrash
+                                onClick={() => deleteDoctor(doctor.id)}
+                                style={{
+                                  color: "red",
+                                  cursor: "pointer",
+                                }}
+                              />
 
-                            <td>
+                            </div>
 
-                              <div className="d-flex gap-3">
-
-                                <FaEye
-                                  style={{
-                                    color: "#0d6efd",
-                                    cursor: "pointer",
-                                  }}
-                                />
-
-                                <FaTrash
-                                  onClick={() => deleteDoctor(doctor.id)}
-                                  style={{
-                                    color: "red",
-                                    cursor: "pointer",
-                                  }}
-                                />
-
-                              </div>
-
-                            </td>
-
-                          </tr>
-
-                        ))
-
-                      ) : (
-
-                        <tr>
-
-                          <td
-                            colSpan="6"
-                            className="text-center"
-                          >
-                            No Doctors Found
                           </td>
 
                         </tr>
 
-                      )}
+                      ))
 
-                    </tbody>
+                    ) : (
 
-                  </table>
+                      <tr>
 
-                  {/* Footer */}
+                        <td
+                          colSpan="6"
+                          className="text-center"
+                        >
+                          No Doctors Found
+                        </td>
 
-                  <div className="d-flex justify-content-between align-items-center flex-wrap mt-3">
+                      </tr>
 
-                    <div>
+                    )}
 
-                      Showing 1 to {visibleDoctors.length} of{" "}
-                      {filteredDoctors.length} entries
+                  </tbody>
 
-                    </div>
+                </table>
 
-                    <nav>
+                {/* Footer */}
 
-                      <ul className="pagination mb-0">
+                <div className="d-flex justify-content-between align-items-center flex-wrap mt-3">
 
-                        <li className="page-item disabled">
-                          <button className="page-link">
-                            «
-                          </button>
-                        </li>
-
-                        <li className="page-item disabled">
-                          <button className="page-link">
-                            ‹
-                          </button>
-                        </li>
-
-                        <li className="page-item active">
-                          <button className="page-link">
-                            1
-                          </button>
-                        </li>
-
-                        <li className="page-item disabled">
-                          <button className="page-link">
-                            ›
-                          </button>
-                        </li>
-
-                        <li className="page-item disabled">
-                          <button className="page-link">
-                            »
-                          </button>
-                        </li>
-
-                      </ul>
-
-                    </nav>
-
+                  <div
+                    className="dt-info"
+                    aria-live="polite"
+                    id="data-table_info"
+                    role="status"
+                  >
+                    Showing {startEntry} to {endEntry} of {totalEntries} entries
                   </div>
+
+                  <nav>
+
+                    <ul className="pagination mb-0">
+
+                      <li className="page-item disabled">
+                        <button className="page-link">
+                          «
+                        </button>
+                      </li>
+
+                      <li className="page-item disabled">
+                        <button className="page-link">
+                          ‹
+                        </button>
+                      </li>
+
+                      <li className="page-item active">
+                        <button className="page-link">
+                          1
+                        </button>
+                      </li>
+
+                      <li className="page-item disabled">
+                        <button className="page-link">
+                          ›
+                        </button>
+                      </li>
+
+                      <li className="page-item disabled">
+                        <button className="page-link">
+                          »
+                        </button>
+                      </li>
+
+                    </ul>
+
+                  </nav>
 
                 </div>
 
@@ -349,6 +342,7 @@ function AllDoctors() {
       </div>
 
     </div>
+
   );
 }
 

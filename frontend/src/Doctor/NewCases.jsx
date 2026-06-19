@@ -32,13 +32,34 @@ function NewCases() {
         glazed_polish: [],
         incisal_translucency: [],
         prepared_tooth_shade: [],
-        shade_guide_color: [],
+        shade_guide_color: "",
 
         material_type: [],
         crown_bridge: [],
         additional_restorations: [],
 
         implant_details: [
+            {
+                implant_type: "",
+                platform_diameter: "",
+                screw_retained: "",
+                screw_retained_hybrid: "",
+                cement_retained_ti_abutment: "",
+                zr_abutment: "",
+                implant_bar_type: "",
+                attachment_type: ""
+            },
+
+            {
+                implant_type: "",
+                platform_diameter: "",
+                screw_retained: "",
+                screw_retained_hybrid: "",
+                cement_retained_ti_abutment: "",
+                zr_abutment: "",
+                implant_bar_type: "",
+                attachment_type: ""
+            },
             {
                 implant_type: "",
                 platform_diameter: "",
@@ -85,6 +106,23 @@ function NewCases() {
         }));
     };
 
+    const handleImplantChange = (index, field, value) => {
+        setFormData(prev => {
+            const updatedImplantDetails = [
+                ...(prev.implant_details || [])
+            ];
+
+            updatedImplantDetails[index] = {
+                ...(updatedImplantDetails[index] || {}),
+                [field]: value
+            };
+
+            return {
+                ...prev,
+                implant_details: updatedImplantDetails
+            };
+        });
+    };
     const handleNext = () => {
 
         let newErrors = {};
@@ -241,9 +279,6 @@ function NewCases() {
                         ? Number(formData.age)
                         : null,
 
-                case_type:
-                    formData.case_stage || null,
-
                 appointment_date:
                     formData.next_appointment_date
                         ? new Date(
@@ -341,6 +376,32 @@ function NewCases() {
                 response.data
             );
 
+            if (formData.pdfUpload) {
+
+                const pdfData = new FormData();
+
+                pdfData.append(
+                    "file",
+                    formData.pdfUpload
+                );
+
+                pdfData.append(
+                    "category",
+                    "case_document"
+                );
+
+                await axios.post(
+                    `http://localhost:8000/api/cases/${response.data.id}/upload`,
+                    pdfData,
+                    {
+                        headers: {
+                            "Content-Type":
+                                "multipart/form-data"
+                        }
+                    }
+                );
+            }
+
             if (
                 formData.files &&
                 formData.files.length > 0
@@ -354,6 +415,11 @@ function NewCases() {
                     fileData.append(
                         "file",
                         file
+                    );
+
+                    fileData.append(
+                        "category",
+                        "digital_file"
                     );
 
                     await axios.post(
@@ -479,6 +545,7 @@ function NewCases() {
                                                 handleNext
                                             }
                                             handleCheckboxSelection={handleCheckboxSelection}
+                                            handleImplantChange={handleImplantChange}
                                             errors={
                                                 errors
                                             }

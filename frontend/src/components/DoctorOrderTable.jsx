@@ -1,6 +1,5 @@
 
 import "../DoctorStyle/Cases.css";
-import "../DoctorStyle/DoctorOrderTable.css";
 import {
     FaEye,
     FaUpload,
@@ -321,189 +320,270 @@ function DoctorOrderTable({
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {visibleCases.map((item) => (
-                                                    <tr key={item.id}>
-                                                        <td>
-                                                            {item.id}
-                                                        </td>
-                                                        <td>{item.patient_name}</td>
-                                                        <td>
-                                                            {item.appointment_date
-                                                                ? new Date(item.appointment_date)
-                                                                    .toLocaleString("en-GB", {
-                                                                        day: "2-digit",
-                                                                        month: "short",
-                                                                        year: "numeric",
-                                                                        hour: "2-digit",
-                                                                        minute: "2-digit",
-                                                                        hour12: true
-                                                                    })
-                                                                    .replace(",", "")
-                                                                : "-"}
-                                                        </td>
-                                                        <td>{item.age}</td>
-                                                        <td>
-                                                            {item.files?.length > 0 ? (
-                                                                <>
-                                                                    <Link
-                                                                        to={`http://127.0.0.1:8000/api/${item.files[0].file_path}`}
-                                                                        target="_blank"
-                                                                        rel="noreferrer"
-                                                                        style={{
-                                                                            color: "#0152a8",
-                                                                            marginLeft: "8px",
-                                                                            textDecoration: "none"
-                                                                        }}
-                                                                    >
-                                                                        <FaEye />
-                                                                    </Link>
-                                                                </>
-                                                            ) : (
-                                                                <span>-</span>
-                                                            )}
-                                                        </td>
-                                                        <td>
-                                                            {item.files?.length > 0 ? (
-                                                                item.files.map((file, index) => (
-                                                                    <div key={index}>
-                                                                        <Link
-                                                                            to={`http://127.0.0.1:8000/${file.file_path}`}
-                                                                            target="_blank"
-                                                                            rel="noreferrer"
-                                                                            style={{
-                                                                                textDecoration: "none",
-                                                                                marginRight: "12px",
-                                                                                color: "#0152a8"
-                                                                            }}
-                                                                        >
-                                                                            Preview File {index + 1}
-
-                                                                            {file.file_path?.endsWith(".png")
-                                                                                ? " (PNG)"
-                                                                                : file.file_path?.endsWith(".stl")
-                                                                                    ? " (STL)"
-                                                                                    : file.file_path?.endsWith(".jpg") ||
-                                                                                        file.file_path?.endsWith(".jpeg")
-                                                                                        ? " (JPG)"
-                                                                                        : ""}
-                                                                        </Link>
-
-                                                                        <Link
-                                                                            to={`http://127.0.0.1:8000/${file.file_path}`}
-                                                                            download
-                                                                            style={{
-                                                                                color: "#0152a8"
-                                                                            }}
-                                                                        >
-                                                                            <FaDownload />
-                                                                        </Link>
-                                                                    </div>
-                                                                ))
-                                                            ) : (
-                                                                <span>No File</span>
-                                                            )}
-                                                        </td>
-                                                        <td>
-                                                            {item.delivery_deadline ? (() => {
-
-                                                                const today = new Date();
-                                                                const deadline =
-                                                                    new Date(item.delivery_deadline);
-
-                                                                // remove time for proper comparison
-                                                                today.setHours(0, 0, 0, 0);
-                                                                deadline.setHours(0, 0, 0, 0);
-
-                                                                const diffTime =
-                                                                    deadline - today;
-
-                                                                const daysLeft =
-                                                                    Math.ceil(
-                                                                        diffTime /
-                                                                        (1000 * 60 * 60 * 24)
-                                                                    );
-
-                                                                const isPassed =
-                                                                    deadline < today;
-
-                                                                return (
-                                                                    <>
-                                                                        <div>
-                                                                            {deadline.toLocaleDateString(
-                                                                                "en-GB",
-                                                                                {
-                                                                                    day: "2-digit",
-                                                                                    month: "short",
-                                                                                    year: "numeric"
-                                                                                }
-                                                                            )}
-                                                                        </div>
-
-                                                                        <div
-                                                                            style={{
-                                                                                color: isPassed
-                                                                                    ? "red"
-                                                                                    : "#0152a8",
-                                                                                fontWeight: "600"
-                                                                            }}
-                                                                        >
-                                                                            {isPassed
-                                                                                ? "(Deadline passed)"
-                                                                                : `(${daysLeft} day${daysLeft > 1
-                                                                                    ? "s"
-                                                                                    : ""
-                                                                                } left)`
-                                                                            }
-                                                                        </div>
-                                                                    </>
-                                                                );
-                                                            })() : (
-                                                                "-"
-                                                            )}
-                                                        </td>
-                                                        <td>{item.preview_status}</td>
-                                                        <td>
-                                                            <span
-                                                                style={{
-                                                                    fontWeight: "600",
-                                                                    color:
-                                                                        item.status === "Submitted"
-                                                                            ? "#6c757d"
-                                                                            : item.status === "InProduction"
-                                                                                ? "#0d6efd"
-                                                                                : item.status === "QualityCheck"
-                                                                                    ? "#fd7e14"
-                                                                                    : item.status === "Shipped"
-                                                                                        ? "#198754"
-                                                                                        : item.status === "Delivered"
-                                                                                            ? "#0dcaf0"
-                                                                                            : "black"
-                                                                }}
-                                                            >
-                                                                {item.status}
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            <Link
-                                                                to={`/client/update-case/${item.id}`}
-                                                            >
-                                                                <FaEdit className="me-2" />
-                                                            </Link>
-
-                                                            <FaTrash
-                                                                className="text-danger"
-                                                                style={{ cursor: "pointer" }}
-                                                                onClick={() =>
-                                                                    handleDelete(
-                                                                        item.id
-                                                                    )
+                                                {visibleCases.map((item) => {
+                                                    const previewFiles =
+                                                        item.files?.filter(
+                                                            file =>
+                                                                file.file_category ===
+                                                                "preview_file"
+                                                        ) || [];
+                                                    return (
+                                                        <tr key={item.id}>
+                                                            <td>
+                                                                {item.id}
+                                                            </td>
+                                                            <td>{item.patient_name}</td>
+                                                            <td>
+                                                                {item.appointment_date
+                                                                    ? new Date(item.appointment_date)
+                                                                        .toLocaleString("en-GB", {
+                                                                            day: "2-digit",
+                                                                            month: "short",
+                                                                            year: "numeric",
+                                                                            hour: "2-digit",
+                                                                            minute: "2-digit",
+                                                                            hour12: true
+                                                                        })
+                                                                        .replace(",", "")
+                                                                    : "-"}
+                                                            </td>
+                                                            <td>{item.age}</td>
+                                                            <td>
+                                                                {
+                                                                    item.files
+                                                                        ?.filter(
+                                                                            file =>
+                                                                                file.file_category === "case_document"
+                                                                        )
+                                                                        .map((file, index) => (
+                                                                            <a
+                                                                                key={index}
+                                                                                href={`http://127.0.0.1:8000/${file.file_path}`}
+                                                                                target="_blank"
+                                                                                rel="noreferrer"
+                                                                                style={{
+                                                                                    color: "#0152a8",
+                                                                                    textDecoration: "none"
+                                                                                }}
+                                                                            >
+                                                                                <FaEye />
+                                                                            </a>
+                                                                        ))
                                                                 }
-                                                            />
-                                                        </td>
-                                                    </tr>
-                                                )
-                                                )
-                                                }
+
+                                                                {
+                                                                    !item.files?.some(
+                                                                        file =>
+                                                                            file.file_category === "case_document"
+                                                                    ) && <span>-</span>
+                                                                }
+                                                            </td>
+                                                            <td>
+
+                                                                {
+                                                                    console.log(
+                                                                        "DIGITAL FILES",
+                                                                        item.files
+                                                                    ),
+                                                                    item.files
+                                                                        ?.filter(
+                                                                            file =>
+                                                                                file.file_category === "digital_file"
+                                                                        )
+                                                                        .map((file, index) => (
+                                                                            <div key={index}>
+
+
+                                                                                <a
+                                                                                    href={`http://127.0.0.1:8000/${file.file_path}`}
+                                                                                    target="_blank"
+                                                                                    rel="noreferrer"
+                                                                                    style={{
+                                                                                        textDecoration: "none",
+                                                                                        marginRight: "12px",
+                                                                                        color: "#0152a8"
+                                                                                    }}
+                                                                                >
+                                                                                    Preview File {index + 1}
+                                                                                </a>
+
+                                                                                <a
+                                                                                    href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
+                                                                                    style={{
+                                                                                        color: "#0152a8"
+                                                                                    }}
+                                                                                >
+                                                                                    <FaDownload />
+                                                                                </a>
+                                                                            </div>
+                                                                        ))
+                                                                }
+
+                                                                {
+                                                                    !item.files?.some(
+                                                                        file =>
+                                                                            file.file_category === "digital_file"
+                                                                    ) && <span>No File</span>
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {item.delivery_deadline ? (() => {
+
+                                                                    const today = new Date();
+                                                                    const deadline =
+                                                                        new Date(item.delivery_deadline);
+
+                                                                    today.setHours(0, 0, 0, 0);
+                                                                    deadline.setHours(0, 0, 0, 0);
+
+                                                                    const diffTime =
+                                                                        deadline - today;
+
+                                                                    const daysLeft =
+                                                                        Math.ceil(
+                                                                            diffTime /
+                                                                            (1000 * 60 * 60 * 24)
+                                                                        );
+
+                                                                    const isPassed =
+                                                                        deadline < today;
+
+                                                                    return (
+                                                                        <>
+                                                                            <div>
+                                                                                {deadline.toLocaleDateString(
+                                                                                    "en-GB",
+                                                                                    {
+                                                                                        day: "2-digit",
+                                                                                        month: "short",
+                                                                                        year: "numeric"
+                                                                                    }
+                                                                                )}
+                                                                            </div>
+
+                                                                            <div
+                                                                                style={{
+                                                                                    color: isPassed
+                                                                                        ? "red"
+                                                                                        : "#0152a8",
+                                                                                    fontWeight: "600"
+                                                                                }}
+                                                                            >
+                                                                                {isPassed
+                                                                                    ? "(Deadline passed)"
+                                                                                    : `(${daysLeft} day${daysLeft > 1
+                                                                                        ? "s"
+                                                                                        : ""
+                                                                                    } left)`
+                                                                                }
+                                                                            </div>
+                                                                        </>
+                                                                    );
+                                                                })() : (
+                                                                    "-"
+                                                                )}
+                                                            </td>
+                                                            <td>
+
+                                                                {previewFiles.length > 0 ? (
+
+                                                                    <>
+                                                                        {previewFiles.map((file, index) => (
+
+                                                                            <div key={file.id}>
+
+                                                                                <a
+                                                                                    href={`http://127.0.0.1:8000/${file.file_path.replace(/\\/g, "/")}`}
+                                                                                    target="_blank"
+                                                                                    rel="noreferrer"
+                                                                                >
+                                                                                    Preview {index + 1}
+                                                                                    {" "}
+                                                                                    (
+                                                                                    {file.file_name
+                                                                                        .split(".")
+                                                                                        .pop()
+                                                                                        .toUpperCase()}
+                                                                                    )
+                                                                                </a>
+
+                                                                                <br />
+
+                                                                                <a
+                                                                                    href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
+                                                                                >
+                                                                                    <FaDownload />
+                                                                                </a>
+
+                                                                            </div>
+
+                                                                        ))}
+
+                                                                        <div className="mt-2">
+
+                                                                            <button
+                                                                                className="btn btn-sm btn-primary me-2"
+                                                                            >
+                                                                                ✓
+                                                                            </button>
+
+                                                                            <button
+                                                                                className="btn btn-sm btn-danger"
+                                                                            >
+                                                                                ✕
+                                                                            </button>
+
+                                                                        </div>
+
+                                                                    </>
+
+                                                                ) : (
+
+                                                                    "-"
+                                                                )}
+
+                                                            </td>
+                                                            <td>
+                                                                <span
+                                                                    style={{
+                                                                        fontWeight: "600",
+                                                                        color:
+                                                                            item.status === "Submitted"
+                                                                                ? "#6c757d"
+                                                                                : item.status === "InProduction"
+                                                                                    ? "#0d6efd"
+                                                                                    : item.status === "QualityCheck"
+                                                                                        ? "#fd7e14"
+                                                                                        : item.status === "Shipped"
+                                                                                            ? "#198754"
+                                                                                            : item.status === "Delivered"
+                                                                                                ? "#0dcaf0"
+                                                                                                : "black"
+                                                                    }}
+                                                                >
+                                                                    {item.status}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <Link
+                                                                    to={`/client/update-case/${item.id}`}
+                                                                >
+                                                                    <FaEdit className="me-2" />
+                                                                </Link>
+
+                                                                <FaTrash
+                                                                    className="text-danger"
+                                                                    style={{ cursor: "pointer" }}
+                                                                    onClick={() =>
+                                                                        handleDelete(
+                                                                            item.id
+                                                                        )
+                                                                    }
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
                                             </tbody>
                                         </table>
                                     </div>

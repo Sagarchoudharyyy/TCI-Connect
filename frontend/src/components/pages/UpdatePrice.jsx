@@ -48,14 +48,14 @@ function UpdatePrice() {
         try {
             if (id) {
                 await axios.put(
-                    `http://127.0.0.1:8000/pricing/${id}`,
+                    `http://127.0.0.1:8000/api/pricing/${id}`,
                     formData
                 );
 
             }
             else {
                 await axios.post(
-                    "http://127.0.0.1:8000/pricing",
+                    "http://127.0.0.1:8000/api/pricing",
                     formData
                 );
 
@@ -80,7 +80,7 @@ function UpdatePrice() {
         if (id) {
             axios
                 .get(
-                    `http://127.0.0.1:8000/pricing/${id}`
+                    `http://127.0.0.1:8000/api/pricing/${id}`
                 )
                 .then((res) => {
                     setFormData(res.data);

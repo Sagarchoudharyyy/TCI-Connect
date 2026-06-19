@@ -9,7 +9,7 @@ import {
     LogOut
 } from "lucide-react";
 
-function Sidebar() {
+function Sidebar({ showSidebar }) {
     const location = useLocation();
     const navigate = useNavigate();
     const user =
@@ -37,12 +37,9 @@ function Sidebar() {
         console.log("logout working");
     };
     return (
-        <div className="col-md-3 sidebar">
+        <div className={`sidebar ${showSidebar ? "show-bar" : ""}`}>
             <div className="sidebar-header">
                 <h4 className="text-primary">TCI Online</h4>
-                <div className="dashboard-new-side-bar d-block d-md-none">
-                    <i className="bi bi-filter-left"></i>
-                </div>
             </div>
             <nav>
                 <ul className="nav flex-column">

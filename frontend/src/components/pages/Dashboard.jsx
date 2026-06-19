@@ -2,10 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 import "../../styles/dashboard.css";
-import "bootstrap/dist/css/bootstrap.min.css";
 import "../../styles/sidebar.css";
 import "../../styles/header.css";
-
 import "../../styles/dashboardcard.css";
 
 import Sidebar from "../Sidebar";
@@ -16,6 +14,7 @@ import OrdersTable from "../OrdersTable";
 function Dashboard() {
 
     const [cases, setCases] = useState([]);
+    const [showSidebar, setShowSidebar] = useState(false);
 
     useEffect(() => {
         fetchDashboardData();
@@ -36,17 +35,34 @@ function Dashboard() {
     };
 
     return (
-        <div className="container-fluid">
-            <div className=" row g-0 dashboard-main">
-                <Sidebar />
-                <div className="col-md-9 main-content">
-                    <div className="main-content-inner">
-                        <div className="row g-5 h-100">
-                            <div className="col-lg-12">
-                                <Header title="Dashboard" />
-                                <DashboardCard
-                                    cases={cases}
+        <>
+            <div className="container-fluid p-0">
+                <div className="dashboard-main">
+                    <div className="row g-0">
+                        <>
+                            {showSidebar && (
+                                <div
+                                    className="sidebar-overlay"
+                                    onClick={() => setShowSidebar(false)}
                                 />
+                            )}
+
+                            <Sidebar
+                                showSidebar={showSidebar}
+                            />
+                        </>
+
+                        <div className=" main-content">
+                            <Header
+                                title="Dashboard"
+                                setShowSidebar={setShowSidebar}
+                            />
+                            <div className="main-c-inner">
+                                <div className="row g-5">
+                                    <DashboardCard
+                                        cases={cases}
+                                    />
+                                </div>
 
                                 <OrdersTable
                                     cases={cases}
@@ -56,7 +72,7 @@ function Dashboard() {
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 

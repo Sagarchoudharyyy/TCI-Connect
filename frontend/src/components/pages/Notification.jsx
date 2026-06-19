@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import "../../styles/header.css";
+import { FaBars } from "react-icons/fa";
 
 function Notification() {
   const [notifications, setNotifications] = useState([]);
@@ -89,9 +90,9 @@ function Notification() {
   return (
     <div
       ref={notificationRef}
-      className="notification-wrapper position-relative "
+      className="notification-wrapper position-relative"
     >
-      <div className="notification-icon"
+      <div id="notifToggle" className="notification-icon"
         style={{
           position: "relative",
           cursor: "pointer"
@@ -105,6 +106,7 @@ function Notification() {
           height="24"
           viewBox="0 0 24 24"
           fill="none"
+          xmlns="http://www.w3.org/2000/svg"
         >
           <path
             d="M12.02 20.53C9.68999 20.53 7.35999 20.16 5.14999 19.42C4.30999 19.13 3.66999 18.54 3.38999 17.77C3.09999 17 3.19999 16.15 3.65999 15.39L4.80999 13.48C5.04999 13.08 5.26999 12.28 5.26999 11.81V8.92C5.26999 5.2 8.29999 2.17 12.02 2.17C15.74 2.17 18.77 5.2 18.77 8.92V11.81C18.77 12.27 18.99 13.08 19.23 13.49L20.37 15.39C20.8 16.11 20.88 16.98 20.59 17.77C20.3 18.56 19.67 19.16 18.88 19.42C16.68 20.16 14.35 20.53 12.02 20.53Z"
@@ -123,21 +125,17 @@ function Notification() {
         {unreadCount >
           0 && (
             <span
-              className="position-absolute"
+              id="notifCount"
+              className="notif-badge position-absolute"
               style={{
                 top: "-6px",
-                right:
-                  "-6px",
-                background:
-                  "#d9534f",
-                color:
-                  "#fff",
-                padding:
-                  "2px 6px",
-                borderRadius:
-                  "12px",
-                fontSize:
-                  "12px"
+                right: "-6px",
+                display: "inline-block",
+                background: "rgb(217, 83, 79)",
+                color: "#fff",
+                padding: "2px 6px",
+                borderRadius: "12px",
+                fontSize: "12px"
               }}
             >
               {
@@ -150,90 +148,102 @@ function Notification() {
       {
         showDropdown && (
           <div
-            className="shadow"
-            style={{
-              position: "absolute",
-              right: 0,
-              top: "40px",
-              width: "450px",
-              maxHeight: "450px",
-              background: "#fff",
-              borderRadius: "8px",
-              overflow: "auto",
-              zIndex: 99999
-            }}
+            id="notifDropdownBox"
+            className="notif-dropdown shadow"
           >
-            <div className="p-2 border-bottom d-flex justify-content-between">
-              <strong>Notifications</strong>
+            <div className="p-2 border-bottom">
+              <div className="d-flex justify-content-between align-items-center">
+                <strong>Notifications</strong>
+                <button
+                  id="markAllReadBtn"
+                  type="button"
+                  className="btn btn-sm btn-link"
+                  onClick={() => {
+                    const confirmed =
+                      window.confirm(
+                        "Mark all notifications as read?"
+                      );
 
-              <button
-                className="btn btn-link p-0 text-primary"
-                onClick={() => {
-                  const confirmed =
-                    window.confirm(
-                      "Mark all notifications as read?"
-                    );
-
-                  if (
-                    confirmed
-                  ) {
-                    markAllRead();
-                  }
-                }}
-              >
-                Mark all read
-              </button>
+                    if (
+                      confirmed
+                    ) {
+                      markAllRead();
+                    }
+                  }}
+                >
+                  Mark all read
+                </button>
+              </div>
             </div>
 
-            {notifications.length > 0 ? (
-              notifications.map((item) => (
-                <div
-                  key={item.id}
-                  className="p-3 border-bottom"
-                >
-                  <div
-                    style={{
-                      fontWeight: "600"
-                    }}
-                  >
-                    {item.message}
-                  </div>
+            <div id="notifList" style={{
+              minHeight: "360px",
+              overflowY: "auto",
 
+            }}>
+              {notifications.length > 0 ? (
+
+                notifications.map((item) => (
                   <div
-                    style={{
-                      fontSize: "13px",
-                      color: "#777",
-                      marginTop: "5px"
-                    }}
+                    key={item.id}
+                    className="notif-item"
                   >
-                    {new Date(
-                      item.created_at
-                    ).toLocaleString()}
+
+
+                    <div className="title p-2 border-bottom" style={{ fontWeight: "600" }}>
+
+                      {!item.is_read && (
+                        <span
+                          style={{
+                            background: "#0d6efd",
+                            color: "white",
+                            fontSize: "10px",
+                            padding: "2px 6px",
+                            borderRadius: "4px",
+                            marginRight: "8px"
+                          }}
+                        >
+                          NEW
+                        </span>
+                      )}
+                      {item.message}
+                      <div
+                        style={{
+                          color: "#777",
+                          fontSize: "14px",
+                          marginTop: "5px"
+                        }}
+                      >
+                        {item.created_at}
+                      </div>
+                    </div>
                   </div>
+                ))
+              ) : (
+
+                <div className="text-center p-3">
+                  No notifications found
                 </div>
-              ))
-            ) : (
-              <div className="p-3 text-center">
-                No new notifications
-              </div>
-            )}
 
-            <div className="p-2 border-top text-center">
-              <Link
-                to="/notifications/all"
-                className="small"
-                style={{
-                  textDecoration: "none"
-                }}
-              >
-                View all
-              </Link>
+              )}
+              <div className="p-2 border-top text-center">
+                <Link
+                  to="/notifications/all"
+                  className="small"
+                  style={{
+                    textDecoration: "none"
+                  }}
+                >
+                  View all
+                </Link>
+              </div>
             </div>
           </div>
         )
       }
     </div >
-  );
+  )
 }
-
 export default Notification;
+
+

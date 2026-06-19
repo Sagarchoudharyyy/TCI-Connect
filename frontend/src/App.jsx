@@ -29,11 +29,12 @@ import HelpandFAQ from "./Doctor/Help&FAQ";
 import ViewCaseDetail from "./components/pages/ViewCaseDetail";
 import ForgotPassword from "./components/pages/ForgotPassword";
 import ResetPassword from "./components/pages/ResetPassword";
+import UploadPreview from "./components/pages/UploadPreview";
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         <Route
           path="/"
           element={<Login />}
@@ -156,7 +157,7 @@ function App() {
         <Route
           path="/client/pricing"
           element={
-            <ProtectedRoute allowedRoles={["admin","doctor"]}>
+            <ProtectedRoute allowedRoles={["admin", "doctor"]}>
               <DoctorPricing />
             </ProtectedRoute>
           }
@@ -169,7 +170,14 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+        <Route
+          path="/admin/upload-preview/:id"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <UploadPreview />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/update-price/:id"
           element={
@@ -223,6 +231,8 @@ function App() {
         <Route path="/client/help-faq"
           element={<HelpandFAQ />} />
       </Routes>
+
+
 
     </BrowserRouter >
   );

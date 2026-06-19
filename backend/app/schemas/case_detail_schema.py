@@ -26,7 +26,7 @@ class CaseDetailCreate(BaseModel):
     crown_bridge: List[str] = Field(default_factory=list)
     additional_restorations: List[str] = Field(default_factory=list)
 
-    implant_details: List[ImplantDetail] = []
+    implant_details: List[ImplantDetail] = Field(default_factory=list)
 
     design_preview: Optional[bool] = False
     additional_instructions: Optional[str] = None
@@ -45,7 +45,7 @@ class CaseDetailResponse(BaseModel):
     crown_bridge: List[str] = []
     additional_restorations: List[str] = []
 
-    implant_details: List[ImplantDetail] = []
+    implant_details: List[ImplantDetail] = Field(default_factory=list)
 
     design_preview: Optional[bool] = False
     additional_instructions: Optional[str] = None

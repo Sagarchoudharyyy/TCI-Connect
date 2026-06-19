@@ -5,6 +5,7 @@ function PurchaseOrder({
     setFormData,
     handleNext,
     handleCheckboxSelection,
+    handleImplantChange,
     errors
 }) {
 
@@ -1195,17 +1196,11 @@ function PurchaseOrder({
                                             ?.implant_type || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[0]
-                                                    || {}
-                                                ),
-                                                implant_type:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(
+                                            0,
+                                            "implant_type",
+                                            e.target.value
+                                        )
                                     }
                                 />
                             </td>
@@ -1220,17 +1215,11 @@ function PurchaseOrder({
                                             ?.platform_diameter || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[0]
-                                                    || {}
-                                                ),
-                                                platform_diameter:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(
+                                            0,
+                                            "platform_diameter",
+                                            e.target.value
+                                        )
                                     }
                                 />
                             </td>
@@ -1245,17 +1234,11 @@ function PurchaseOrder({
                                             ?.screw_retained || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[0]
-                                                    || {}
-                                                ),
-                                                screw_retained:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(
+                                            0,
+                                            "screw_retained",
+                                            e.target.value
+                                        )
                                     }
                                 />
                             </td>
@@ -1270,17 +1253,7 @@ function PurchaseOrder({
                                             ?.screw_retained_hybrid || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[0]
-                                                    || {}
-                                                ),
-                                                screw_retained_hybrid:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(0, "screw_retained_hybrid", e.target.value)
                                     }
                                 />
                             </td>
@@ -1295,17 +1268,8 @@ function PurchaseOrder({
                                             ?.cement_retained_ti_abutment || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[0]
-                                                    || {}
-                                                ),
-                                                cement_retained_ti_abutment:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(0, "cement_retained_ti_abutment", e.target.value)
+
                                     }
                                 />
                             </td>
@@ -1320,17 +1284,7 @@ function PurchaseOrder({
                                             ?.zr_abutment || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[0]
-                                                    || {}
-                                                ),
-                                                zr_abutment:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(0, "zr_abutment", e.target.value)
                                     }
                                 />
                             </td>
@@ -1345,17 +1299,7 @@ function PurchaseOrder({
                                             ?.implant_bar_type || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[0]
-                                                    || {}
-                                                ),
-                                                implant_bar_type:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(0, "implant_bar_type", e.target.value)
                                     }
                                 />
                             </td>
@@ -1370,17 +1314,7 @@ function PurchaseOrder({
                                             ?.attachment_type || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[0]
-                                                    || {}
-                                                ),
-                                                attachment_type:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(0, "attachment_type", e.target.value)
                                     }
                                 />
                             </td>
@@ -1396,17 +1330,11 @@ function PurchaseOrder({
                                             ?.implant_type || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[1]
-                                                    || {}
-                                                ),
-                                                implant_type:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(
+                                            1,
+                                            "implant_type",
+                                            e.target.value
+                                        )
                                     }
                                 />
                             </td>
@@ -1421,17 +1349,11 @@ function PurchaseOrder({
                                             ?.platform_diameter || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[1]
-                                                    || {}
-                                                ),
-                                                platform_diameter:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(
+                                            1,
+                                            "platform_diameter",
+                                            e.target.value
+                                        )
                                     }
                                 />
                             </td>
@@ -1446,17 +1368,11 @@ function PurchaseOrder({
                                             ?.screw_retained || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[1]
-                                                    || {}
-                                                ),
-                                                screw_retained:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(
+                                            1,
+                                            "screw_retained",
+                                            e.target.value
+                                        )
                                     }
                                 />
                             </td>
@@ -1471,17 +1387,7 @@ function PurchaseOrder({
                                             ?.screw_retained_hybrid || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[1]
-                                                    || {}
-                                                ),
-                                                screw_retained_hybrid:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(1, "screw_retained_hybrid", e.target.value)
                                     }
                                 />
                             </td>
@@ -1496,17 +1402,8 @@ function PurchaseOrder({
                                             ?.cement_retained_ti_abutment || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[1]
-                                                    || {}
-                                                ),
-                                                cement_retained_ti_abutment:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(1, "cement_retained_ti_abutment", e.target.value)
+
                                     }
                                 />
                             </td>
@@ -1521,17 +1418,7 @@ function PurchaseOrder({
                                             ?.zr_abutment || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[1]
-                                                    || {}
-                                                ),
-                                                zr_abutment:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(1, "zr_abutment", e.target.value)
                                     }
                                 />
                             </td>
@@ -1546,17 +1433,7 @@ function PurchaseOrder({
                                             ?.implant_bar_type || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[1]
-                                                    || {}
-                                                ),
-                                                implant_bar_type:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(1, "implant_bar_type", e.target.value)
                                     }
                                 />
                             </td>
@@ -1571,17 +1448,7 @@ function PurchaseOrder({
                                             ?.attachment_type || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[1]
-                                                    || {}
-                                                ),
-                                                attachment_type:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(1, "attachment_type", e.target.value)
                                     }
                                 />
                             </td>
@@ -1597,17 +1464,11 @@ function PurchaseOrder({
                                             ?.implant_type || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[2]
-                                                    || {}
-                                                ),
-                                                implant_type:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(
+                                            2,
+                                            "implant_type",
+                                            e.target.value
+                                        )
                                     }
                                 />
                             </td>
@@ -1622,17 +1483,11 @@ function PurchaseOrder({
                                             ?.platform_diameter || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[2]
-                                                    || {}
-                                                ),
-                                                platform_diameter:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(
+                                            2,
+                                            "platform_diameter",
+                                            e.target.value
+                                        )
                                     }
                                 />
                             </td>
@@ -1647,17 +1502,11 @@ function PurchaseOrder({
                                             ?.screw_retained || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[2]
-                                                    || {}
-                                                ),
-                                                screw_retained:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(
+                                            2,
+                                            "screw_retained",
+                                            e.target.value
+                                        )
                                     }
                                 />
                             </td>
@@ -1672,17 +1521,7 @@ function PurchaseOrder({
                                             ?.screw_retained_hybrid || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[2]
-                                                    || {}
-                                                ),
-                                                screw_retained_hybrid:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(2, "screw_retained_hybrid", e.target.value)
                                     }
                                 />
                             </td>
@@ -1697,17 +1536,8 @@ function PurchaseOrder({
                                             ?.cement_retained_ti_abutment || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[2]
-                                                    || {}
-                                                ),
-                                                cement_retained_ti_abutment:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(2, "cement_retained_ti_abutment", e.target.value)
+
                                     }
                                 />
                             </td>
@@ -1722,17 +1552,7 @@ function PurchaseOrder({
                                             ?.zr_abutment || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[2]
-                                                    || {}
-                                                ),
-                                                zr_abutment:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(2, "zr_abutment", e.target.value)
                                     }
                                 />
                             </td>
@@ -1747,17 +1567,7 @@ function PurchaseOrder({
                                             ?.implant_bar_type || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[2]
-                                                    || {}
-                                                ),
-                                                implant_bar_type:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(2, "implant_bar_type", e.target.value)
                                     }
                                 />
                             </td>
@@ -1772,17 +1582,7 @@ function PurchaseOrder({
                                             ?.attachment_type || ""
                                     }
                                     onChange={(e) =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            implant_details: [{
-                                                ...(
-                                                    prev.implant_details?.[2]
-                                                    || {}
-                                                ),
-                                                attachment_type:
-                                                    e.target.value
-                                            }]
-                                        }))
+                                        handleImplantChange(2, "attachment_type", e.target.value)
                                     }
                                 />
                             </td>
@@ -2029,6 +1829,10 @@ function PurchaseOrder({
                         })
                     }
                 />
+                <p>
+                    PDF Upload:
+                    {JSON.stringify(formData.pdfUpload)}
+                </p>    
 
                 <div
                     id="pdfProgressContainer"
