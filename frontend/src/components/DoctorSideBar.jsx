@@ -211,8 +211,8 @@ function DoctorSideBar() {
                     </li>
                     <li className="nav-item">
                         <Link
-                            to="/client/gdpr-policy"
-                            className={`nav-link ${location.pathname === "/client/ gdpr-policy"
+                            to="/client/rgpd-policy"
+                            className={`nav-link ${location.pathname === "/client/ rgpd-policy"
                                 ? "active"
                                 : ""
                                 }`}
@@ -264,7 +264,7 @@ function DoctorSideBar() {
                             onClick={handleLogout}
                             className="nav-link logout-btn border-0 w-100 text-start"
                         >
-                            
+
                             Logout
                         </button>
                     </li>

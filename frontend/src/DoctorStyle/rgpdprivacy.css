@@ -1,0 +1,162 @@
+/* ================= RGPD / PRIVACY POLICY ================= */
+
+.doctor-main-content {
+  background-color: #f5f7fa;
+  min-height: 100vh;
+
+
+}
+
+.privacy-policy-meta {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  margin: 20px 20px 20px 20px;
+}
+
+/* Main Title */
+.privacy-policy-meta h2 {
+  color: #212121;
+  margin-bottom: 25px;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+/* Section Heading - Data Controller, Scope, etc. */
+.privacy-policy-meta h3 {
+  /* color: #212121; */
+
+  font-weight: 600;
+  margin: 18px 0 15px;
+  font-size: 22px;
+
+}
+
+/* Company Name */
+.privacy-policy-meta strong {
+  color: #212121;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Paragraphs */
+.privacy-policy-meta p {
+  color: #000000;
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 8px;
+  font-weight: 300;
+}
+
+/* Lists */
+.privacy-policy-meta ul {
+  padding-left: 20px;
+  margin-bottom: 15px;
+}
+
+.privacy-policy-meta ul li {
+  list-style: disc;
+  color: #000000;
+  margin-bottom: 8px;
+  line-height: 1.1;
+  list-style-type: circle;
+  font-weight: 400;
+}
+
+/* Table */
+.privacy-policy-meta table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  background: #ffffff;
+  border: 1px solid #000000;
+}
+
+.privacy-policy-meta table th {
+  background: #ffffff;
+  color: #000000;
+  font-weight: 700;
+  border: 1px solid #000000;
+  padding: 10px;
+}
+
+.privacy-policy-meta table td {
+  padding: 12px;
+  border: 1px solid #000000;
+}
+
+/* .privacy-policy-meta table tr:nth-child(even) {
+  background: #f8f9fa;
+} */
+
+/* Normal Links */
+.privacy-policy-meta a {
+
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0d6efd;
+}
+
+.privacy-policy-meta a:hover {
+  text-decoration: underline;
+}
+
+/* Horizontal Line */
+.privacy-policy-meta hr {
+  border: none;
+  height: 1px;
+  background: #8a8a8a;
+  margin: 25px 0;
+}
+
+/* Download Buttons Only */
+/* .privacy-policy-meta ul li a[href$=".pdf"] {
+  display: inline-block;
+  padding: 10px 18px;
+  background: #205170;
+  color: #ffffff;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.privacy-policy-meta ul li a[href$=".pdf"]:hover {
+  background: #173c52;
+  color: #ffffff;
+  text-decoration: none;
+} */
+.privacy-policy-meta a {
+  color: #0d6efd;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.privacy-policy-meta a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+
+  .privacy-policy-meta {
+    margin: 10px;
+    padding: 20px;
+  }
+
+  .privacy-policy-meta h2 {
+    font-size: 24px;
+    line-height: 1.4;
+  }
+
+  .privacy-policy-meta h3 {
+    font-size: 18px;
+  }
+
+  .privacy-policy-meta table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}

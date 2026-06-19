@@ -30,6 +30,7 @@ import ViewCaseDetail from "./components/pages/ViewCaseDetail";
 import ForgotPassword from "./components/pages/ForgotPassword";
 import ResetPassword from "./components/pages/ResetPassword";
 import ChangePassword from "./Doctor/ChangePassword";
+import RGPDpolicy from "./Doctor/RGPDpolicy";
 function App() {
   return (
     <BrowserRouter>
@@ -212,6 +213,9 @@ function App() {
         <Route
           path="/client/setting"
           element={<Profile />}
+        />
+        <Route path="/client/rgpd-policy"
+          element={<RGPDpolicy />}
         />
 
         <Route

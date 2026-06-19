@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import "../styles/dashboardcard.css";
 function DashboardCard({ cases }) {
 
     const [doctorCount, setDoctorCount] =
