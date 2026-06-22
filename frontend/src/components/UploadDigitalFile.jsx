@@ -5,10 +5,13 @@ function UploadDigitalFiles({
     setFormData,
     handleNext,
     handlePrevious,
+    digitalProgress,
+    setDigitalProgress,
     errors
 }) {
+    const handleFileChange = async (e) => {
 
-    const handleFileChange = (e) => {
+        setDigitalProgress(0);
 
         const selectedFiles =
             Array.from(e.target.files);
@@ -27,8 +30,42 @@ function UploadDigitalFiles({
                 ...selectedFiles
             ]
         }));
-        if (errors.files) {
-            errors.files = "";
+
+        const uploadData = new FormData();
+
+        selectedFiles.forEach(file => {
+            uploadData.append("file", file);
+        });
+
+        try {
+
+            await axios.post(
+                "http://localhost:8000/api/temp-upload",
+                uploadData,
+                {
+                    headers: {
+                        "Content-Type":
+                            "multipart/form-data"
+                    },
+                    onUploadProgress: (
+                        progressEvent
+                    ) => {
+
+                        const percent =
+                            Math.round(
+                                (progressEvent.loaded * 100) /
+                                progressEvent.total
+                            );
+
+                        setDigitalProgress(
+                            percent
+                        );
+                    }
+                }
+            );
+
+        } catch (error) {
+            console.log(error);
         }
     };
 
@@ -102,6 +139,31 @@ function UploadDigitalFiles({
                 className="form-control mb-3"
                 onChange={handleFileChange}
             />
+            {digitalProgress > 0 && digitalProgress < 100 && (
+                <div className="mt-2">
+                    <div className="progress">
+                        <div
+                            className="progress-bar progress-bar-striped progress-bar-animated"
+                            role="progressbar"
+                            style={{
+                                width: `${digitalProgress}%`
+                            }}
+                        >
+                            {digitalProgress}%
+                        </div>
+                    </div>
+                </div>
+            )}
+            {digitalProgress === 100 && (
+                <div className="progress mt-2">
+                    <div
+                        className="progress-bar bg-success"
+                        style={{ width: "100%" }}
+                    >
+                        Uploaded ✓
+                    </div>
+                </div>
+            )}
             {
                 errors?.files && (
                     <p className="text-danger mb-2">

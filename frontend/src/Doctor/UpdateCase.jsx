@@ -28,6 +28,10 @@ function UpdateCase() {
     setCheckboxErrors
   ] = useState({});
 
+  const [pdfProgress, setPdfProgress] = useState(0);
+  const [uploadedPdf, setUploadedPdf] = useState(null);
+  const [digitalProgress, setDigitalProgress] = useState(0);
+
   const [formData, setFormData] =
     useState({
 
@@ -113,10 +117,6 @@ function UpdateCase() {
         console.log(response.data);
         const data = response.data;
 
-        console.log("FULL RESPONSE:", data);
-        console.log("FILES FROM API:", data.files);
-
-        // handle string or array safely
         const materialTypes =
           Array.isArray(
             data.details?.material_type
@@ -304,7 +304,6 @@ function UpdateCase() {
 
     let newErrors = {};
 
-    // Step 1
     if (step === 1) {
 
       if (
@@ -318,7 +317,6 @@ function UpdateCase() {
       }
     }
 
-    // Step 2
     if (step === 2) {
 
       if (
@@ -551,17 +549,23 @@ function UpdateCase() {
           "case_document"
         );
 
-        const pdfResponse =
-          await axios.post(
-            `http://localhost:8000/api/cases/${caseId}/upload`,
-            pdfData,
-            {
-              headers: {
-                "Content-Type":
-                  "multipart/form-data"
-              }
+        const pdfResponse = await axios.post(
+          `http://localhost:8000/api/cases/${caseId}/upload`,
+          pdfData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            },
+            onUploadProgress: (progressEvent) => {
+              const percentCompleted = Math.round(
+                (progressEvent.loaded * 100) /
+                progressEvent.total
+              );
+
+              setPdfProgress(percentCompleted);
             }
-          );
+          }
+        );
 
         console.log(
           "CASE DOCUMENT UPLOADED:",
@@ -694,6 +698,9 @@ function UpdateCase() {
                       formData={formData}
                       setFormData={setFormData}
                       handleNext={handleNext}
+                      pdfProgress={pdfProgress}
+                      setPdfProgress={setPdfProgress}
+                      setUploadedPdf={setUploadedPdf}
                       errors={errors}
                     />
                   )}
@@ -702,15 +709,11 @@ function UpdateCase() {
                   {step === 2 && (
                     <UploadDigitalFiles
                       formData={formData}
-                      setFormData={
-                        setFormData
-                      }
-                      handleNext={
-                        handleNext
-                      }
-                      handlePrevious={
-                        handlePrevious
-                      }
+                      setFormData={setFormData}
+                      handleNext={handleNext}
+                      handlePrevious={handlePrevious}
+                      digitalProgress={digitalProgress}
+                      setDigitalProgress={setDigitalProgress}
                       errors={errors}
                     />
                   )}

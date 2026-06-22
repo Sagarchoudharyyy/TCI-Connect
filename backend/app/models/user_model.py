@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
+from sqlalchemy import DateTime
+from sqlalchemy.sql import func
 
 from app.database.database import Base
 
@@ -28,6 +30,12 @@ class User(Base):
     address = Column(String, nullable=True)
 
     password = Column(String, nullable=False)
+
+    business_type = Column(String)
+    
+    created_at = Column(DateTime,server_default=func.now())
+
+    last_updated = Column(DateTime,server_default=func.now())
 
     role = Column(String, nullable=False)
 

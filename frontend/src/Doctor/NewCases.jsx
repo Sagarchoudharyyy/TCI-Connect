@@ -13,6 +13,8 @@ import "../DoctorStyle/NewCases.css";
 function NewCases() {
 
     const [step, setStep] = useState(1);
+    const [pdfProgress, setPdfProgress] = useState(0);
+    const [uploadedPdf, setUploadedPdf] = useState(null);
 
     const initialFormData = {
         patient_name: "",
@@ -71,6 +73,8 @@ function NewCases() {
                 attachment_type: ""
             }
         ],
+
+        pdfUpload: null,
 
         design_preview: false,
         additional_instructions: "",
@@ -395,8 +399,15 @@ function NewCases() {
                     pdfData,
                     {
                         headers: {
-                            "Content-Type":
-                                "multipart/form-data"
+                            "Content-Type": "multipart/form-data"
+                        },
+                        onUploadProgress: (progressEvent) => {
+                            const percentCompleted = Math.round(
+                                (progressEvent.loaded * 100) /
+                                progressEvent.total
+                            );
+
+                            setPdfProgress(percentCompleted);
                         }
                     }
                 );
@@ -541,6 +552,9 @@ function NewCases() {
                                             setFormData={
                                                 setFormData
                                             }
+                                            pdfProgress={pdfProgress}
+                                            setPdfProgress={setPdfProgress}
+                                            setUploadedPdf={setUploadedPdf}
                                             handleNext={
                                                 handleNext
                                             }
