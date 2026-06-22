@@ -240,7 +240,7 @@ function App() {
           path="/client/setting"
           element={
             <ProtectedRoute allowedRoles={["doctor"]}>
-              <Settings />
+              <Profile />
             </ProtectedRoute>}
         />
         <Route path="/client/rgpd-policy"

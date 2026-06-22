@@ -800,7 +800,16 @@ def update_case_status(
             )
 
         case.status = status_data.status
+        
+        notification = Notification(
+        message=f"Case #{case.id} status changed to {status_data.status}",
+        case_id=case.id,
+        is_read=False
+        )
 
+        db.add(notification)
+
+        
         db.commit()
         db.refresh(case)
 
