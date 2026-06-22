@@ -1021,3 +1021,25 @@ def delete_case_file(
             "message":
             "File deleted successfully"
         }
+
+@router.post("/temp-upload")
+async def temp_upload(file: UploadFile = File(...)):
+
+    upload_dir = "temp_uploads"
+    os.makedirs(upload_dir, exist_ok=True)
+
+    file_path = os.path.join(
+        upload_dir,
+        file.filename
+    )
+
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(
+            file.file,
+            buffer
+        )
+
+    return {
+        "file_name": file.filename,
+        "file_path": file_path
+    }

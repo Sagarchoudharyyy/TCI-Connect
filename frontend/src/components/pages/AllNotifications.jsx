@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 function AllNotifications() {
   const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
+  const [showSidebar, setShowSidebar] = useState(false);
 
   useEffect(() => {
     fetchNotifications();
@@ -18,14 +19,13 @@ function AllNotifications() {
       const response = await axios.get(
         "http://127.0.0.1:8000/api/notifications/all"
       );
-
+      console.log(response.data);
       setNotifications(response.data);
+
     } catch (error) {
       console.log(error);
     }
   };
-
-
 
   const markAsRead = async (item) => {
 
@@ -44,93 +44,104 @@ function AllNotifications() {
   };
 
   return (
-    <div className="container-fluid">
+    <div className="container-fluid p-0">
       <div className="dashboard-main">
         <div className="row g-0">
-          <Sidebar />
+          <>
+            {showSidebar && (
+              <div
+                className="sidebar-overlay"
+                onClick={() => setShowSidebar(false)}
+              />
+            )}
 
-          <div className="offset-2 col-12 col-md-9 col-lg-9 offset-lg-3 col-xl-9 col-xxl-10 offset-xl-3 offset-xxl-2 main-content">
-            <Header />
+            <Sidebar
+              showSidebar={showSidebar}
+            />
+          </>
 
-            <div
-              className="container"
-              style={{
-                marginTop: "60px",
-                marginLeft: "70px"
+          <div className=" main-content">
+            <Header
+              title="Dashboard"
+              setShowSidebar={setShowSidebar}
+            />
 
-              }}
-            >
-              <h4>All Notifications</h4>
+            <div className="main-c-inner">
+              <div className="container my-4">
+                <h4>All Notifications</h4>
 
-              <div className="mt-4">
-                {notifications.map((item) => (
-                  <div
-                    key={item.id}
-                    className="border-bottom p-3"
-                    onClick={() => markAsRead(item)}
+                <div className="mt-4">
+                  {notifications.map((item) => (
+                    <div
+                      key={item.id}
+                      className="border-bottom p-3"
+                      onClick={() => markAsRead(item)}
 
-                    style={{
-                      backgroundColor:
-                        item.is_read
+                      style={{
+                        backgroundColor:
+                          item.is_read
+                            ? "#fff"
+                            : "#e8f4ff",
+                        maxWidth: "100%",
+                        cursor: "pointer",
+                        transition: "0.2s"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#e8f4ff";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = item.is_read
                           ? "#fff"
-                          : "#e8f4ff",
-                      maxWidth: "1020px",
-                      cursor: "pointer",
-                      transition: "0.2s"
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.opacity = "0.9";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.opacity = "1";
-                    }}
-                  >
-                    <div>
-                      {!item.is_read && (
-                        <span
+                          : "#e8f4ff";
+                      }}
+                    >
+                      <div>
+                        {!item.is_read && (
+                          <span
+                            style={{
+                              backgroundColor: "#0d6efd",
+                              color: "#fff",
+                              fontSize: "11px",
+                              padding: "4px 10px",
+                              borderRadius: "20px",
+                              display: "inline-block",
+                              marginBottom: "10px"
+                            }}
+                          >
+                            NEW
+                          </span>
+                        )}
+
+                        <div
                           style={{
-                            backgroundColor: "#0d6efd",
-                            color: "#fff",
-                            fontSize: "11px",
-                            padding: "4px 10px",
-                            borderRadius: "20px",
-                            display: "inline-block",
-                            marginBottom: "10px"
+                            fontWeight: "600"
                           }}
                         >
-                          NEW
-                        </span>
-                      )}
+                          {item.message}
+                        </div>
+                      </div>
 
                       <div
                         style={{
-                          fontWeight: "600"
+                          fontSize: "13px",
+                          color: "#777",
+                          marginTop: "5px"
                         }}
                       >
-                        {item.message}
+                        {new Date(
+                          item.created_at
+                        ).toLocaleString()}
                       </div>
                     </div>
 
-                    <div
-                      style={{
-                        fontSize: "13px",
-                        color: "#777",
-                        marginTop: "5px"
-                      }}
-                    >
-                      {new Date(
-                        item.created_at
-                      ).toLocaleString()}
-                    </div>
-                  </div>
-
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div >
+      </div >
+    </div>
   );
 }
 

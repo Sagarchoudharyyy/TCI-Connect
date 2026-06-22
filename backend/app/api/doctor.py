@@ -55,6 +55,7 @@ def create_doctor(user: UserRegister, db: Session = Depends(get_db)):
         email=user.email,
         phone=user.phone,
         business_name=user.business_name,
+        business_type=user.business_type,
         license_number=user.license_number,
         vat_id=user.vat_id,
         country=user.country,

@@ -21,7 +21,7 @@ import DoctorCases from "./Doctor/Cases";
 import Cases from "./Doctor/Cases";
 import UpdateCase from "./Doctor/UpdateCase";
 import NewCases from "./Doctor/NewCases";
-import Profile from "./Doctor/Setting";
+import Profile from "./Doctor/Profile";
 import DoctorPricing from "./Doctor/DoctorPricing";
 import ClientChat from "./Doctor/ClientChat";
 import QuestionAnswer from "./Doctor/QuestionAnswer";
@@ -32,7 +32,6 @@ import ResetPassword from "./components/pages/ResetPassword";
 import ChangePassword from "./Doctor/ChangePassword";
 import RGPDpolicy from "./Doctor/RGPDpolicy";
 import UploadPreview from "./components/pages/UploadPreview";
-import { Settings } from "lucide-react";
 import UserDetails from "./components/pages/UserDetails";
 
 function App() {
@@ -163,8 +162,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
-
         <Route
           path="/chat/:id"
           element={
@@ -240,7 +237,7 @@ function App() {
           path="/client/setting"
           element={
             <ProtectedRoute allowedRoles={["doctor"]}>
-              <Settings />
+              <Profile />
             </ProtectedRoute>}
         />
         <Route path="/client/rgpd-policy"
@@ -249,7 +246,6 @@ function App() {
               <RGPDpolicy />
             </ProtectedRoute>}
         />
-
         <Route
           path="/client/update-case/:caseId"
           element={

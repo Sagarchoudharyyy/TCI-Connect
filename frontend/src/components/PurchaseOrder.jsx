@@ -1,13 +1,102 @@
 import "../DoctorStyle/NewCases.css";
+import axios from "axios";
 
 function PurchaseOrder({
     formData,
     setFormData,
     handleNext,
+    pdfUpload,
+    pdfProgress,
+    setPdfProgress,
+    setUploadedPdf,
     handleCheckboxSelection,
     handleImplantChange,
     errors
 }) {
+
+    const removePdfFile = async () => {
+
+        try {
+
+            if (formData.pdfUpload?.id) {
+
+                await axios.delete(
+                    `http://localhost:8000/api/case-files/${formData.pdfUpload.id}`
+                );
+            }
+
+            setFormData({
+                ...formData,
+                pdfUpload: null
+            });
+
+            setPdfProgress(0);
+
+        } catch (error) {
+
+            console.log(error);
+
+            alert("Failed to delete file");
+        }
+    };
+
+    const handlePdfChange = async (e) => {
+
+        // Prevent uploading if a file already exists
+        if (formData.pdfUpload) {
+
+            alert(
+                "Please delete the existing case document before uploading a new one."
+            );
+
+            e.target.value = "";
+            return;
+        }
+
+        setPdfProgress(0);
+
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        setFormData({
+            ...formData,
+            pdfUpload: file
+        });
+
+        const uploadData = new FormData();
+        uploadData.append("file", file);
+
+        try {
+
+            const response = await axios.post(
+                "http://localhost:8000/api/temp-upload",
+                uploadData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    },
+                    onUploadProgress: (progressEvent) => {
+
+                        const percent = Math.round(
+                            (progressEvent.loaded * 100) /
+                            progressEvent.total
+                        );
+
+                        setPdfProgress(percent);
+                    }
+                }
+            );
+
+            setUploadedPdf(response.data);
+
+        } catch (error) {
+
+            console.log(error);
+
+            alert("Failed to upload file");
+        }
+    };
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -1817,22 +1906,60 @@ function PurchaseOrder({
                 <label className="form-label">
                     Case Document
                 </label>
-
                 <input
                     type="file"
                     className="form-control"
                     id="pdfUpload"
-                    onChange={(e) =>
-                        setFormData({
-                            ...formData,
-                            pdfUpload: e.target.files[0]
-                        })
-                    }
+                    onChange={handlePdfChange}
                 />
-                <p>
-                    PDF Upload:
-                    {JSON.stringify(formData.pdfUpload)}
-                </p>    
+                {formData.pdfUpload && (
+                    <div className="d-flex justify-content-between align-items-center border rounded p-2 mt-2">
+                        <span>
+                            {
+                                formData.pdfUpload.file_name ||
+                                formData.pdfUpload.name
+                            }
+                        </span>
+
+                        <button
+                            type="button"
+                            className="btn btn-danger btn-sm"
+                            onClick={removePdfFile}
+                        >
+                            Remove
+                        </button>
+                    </div>
+                )}
+                {pdfProgress > 0 && pdfProgress < 100 && (
+                    <div className="mt-2">
+                        <div className="progress">
+                            <div
+                                className="progress-bar"
+                                role="progressbar"
+                                style={{
+                                    width: `${pdfProgress}%`
+                                }}
+                            >
+                                {pdfProgress}%
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {pdfProgress === 100 && (
+                    <div className="mt-2">
+                        <div className="progress">
+                            <div
+                                className="progress-bar bg-success"
+                                role="progressbar"
+                                style={{
+                                    width: "100%"
+                                }}
+                            >
+                                Uploaded ✓
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 <div
                     id="pdfProgressContainer"

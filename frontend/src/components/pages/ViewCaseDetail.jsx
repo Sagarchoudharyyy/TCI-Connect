@@ -44,14 +44,7 @@ function ViewCaseDetail() {
             const response = await axios.get(
                 `http://127.0.0.1:8000/api/cases/${id}`
             )
-            // console.log(
-            //     "Full Case API:",
-            //     JSON.stringify(
-            //         response.data,
-            //         null,
-            //         2
-            //     )
-            // );
+
             setCasedata(response.data);
 
             if (
