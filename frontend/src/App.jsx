@@ -32,6 +32,8 @@ import ResetPassword from "./components/pages/ResetPassword";
 import ChangePassword from "./Doctor/ChangePassword";
 import RGPDpolicy from "./Doctor/RGPDpolicy";
 import UploadPreview from "./components/pages/UploadPreview";
+import { Settings } from "lucide-react";
+import UserDetails from "./components/pages/UserDetails";
 
 function App() {
   return (
@@ -115,6 +117,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/admin/user-details/:id"
+          element={
+            <ProtectedRoute
+              allowedRoles={["admin"]}
+            >
+              <UserDetails />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/admin/chats"
@@ -129,6 +141,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/admin/upload-preview/:id"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <UploadPreview />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/client/chatclient"
           element={
@@ -160,7 +182,7 @@ function App() {
         <Route
           path="/client/pricing"
           element={
-            <ProtectedRoute allowedRoles={["admin", "doctor"]}>
+            <ProtectedRoute allowedRoles={["doctor"]}>
               <DoctorPricing />
             </ProtectedRoute>
           }
@@ -173,14 +195,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/admin/upload-preview/:id"
-          element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <UploadPreview />
-            </ProtectedRoute>
-          }
-        />
+
         <Route
           path="/update-price/:id"
           element={
@@ -200,7 +215,7 @@ function App() {
         <Route
           path="/client/dashboard"
           element={
-            <ProtectedRoute allowedRoles={["admin", "doctor"]}>
+            <ProtectedRoute allowedRoles={["doctor"]}>
               <DoctorDashboard />
             </ProtectedRoute>
           }
@@ -208,38 +223,54 @@ function App() {
         <Route
           path="/client/cases"
           element={
-            <ProtectedRoute allowedRoles={["admin", "doctor"]}>
+            <ProtectedRoute allowedRoles={["doctor"]}>
               <DoctorCases />
             </ProtectedRoute>
           }
         />
         <Route
           path="/client/new-cases"
-          element={<NewCases />}
+          element={
+            <ProtectedRoute allowedRoles={["doctor"]}>
+              <NewCases />
+            </ProtectedRoute>}
         />
 
         <Route
           path="/client/setting"
-          element={<Profile />}
+          element={
+            <ProtectedRoute allowedRoles={["doctor"]}>
+              <Settings />
+            </ProtectedRoute>}
         />
         <Route path="/client/rgpd-policy"
-          element={<RGPDpolicy />}
+          element={
+            <ProtectedRoute allowedRoles={["doctor"]}>
+              <RGPDpolicy />
+            </ProtectedRoute>}
         />
 
         <Route
           path="/client/update-case/:caseId"
-          element={<UpdateCase />}
+          element={
+            <ProtectedRoute allowedRoles={["doctor"]}>
+              <UpdateCase />
+            </ProtectedRoute>}
         />
         <Route
           path="/client/questions-answers"
-          element={<QuestionAnswer />}
+          element={
+            <ProtectedRoute allowedRoles={["doctor"]}>
+              <QuestionAnswer />
+            </ProtectedRoute>}
         />
         <Route path="/client/help-faq"
-          element={<HelpandFAQ />} />
+          element={
+            <ProtectedRoute allowedRoles={["doctor"]}>
+              <HelpandFAQ />
+            </ProtectedRoute>}
+        />
       </Routes>
-
-
-
     </BrowserRouter >
   );
 }

@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Sidebar from "../Sidebar";
 import Header from "../Header";
 import "../../styles/tables.css";
+import { useNavigate } from "react-router-dom";
 
 import { FaEye, FaTrash } from "react-icons/fa";
 
@@ -15,6 +16,7 @@ function AllDoctors() {
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [showSidebar, setShowSidebar] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchDoctors();
@@ -235,13 +237,19 @@ function AllDoctors() {
                           <td>
 
                             <div className="d-flex gap-3">
-
-                              <FaEye
-                                style={{
-                                  color: "#0d6efd",
-                                  cursor: "pointer",
-                                }}
-                              />
+                              <button
+                                className="btn btn-link p-0 me-3"
+                                onClick={() =>
+                                  navigate(`/admin/user-details/${doctor.id}`)
+                                }
+                              >
+                                <FaEye
+                                  style={{
+                                    color: "#0152a8",
+                                    cursor: "pointer"
+                                  }}
+                                />
+                              </button>
 
                               <FaTrash
                                 onClick={() => deleteDoctor(doctor.id)}

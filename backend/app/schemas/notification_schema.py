@@ -6,6 +6,7 @@ class NotificationResponse(BaseModel):
     message: str
     is_read: bool
     created_at: datetime
+    case_id:int|None
 
     class Config:
         from_attributes = True

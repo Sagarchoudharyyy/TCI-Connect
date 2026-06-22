@@ -1,4 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import {
     LayoutDashboard,
     FilePlus2,
@@ -10,6 +11,16 @@ import {
 } from "lucide-react";
 
 function Sidebar({ showSidebar }) {
+
+    console.log("Sidebar Render");
+
+    useEffect(() => {
+        console.log("Sidebar Mounted");
+
+        return () => {
+            console.log("Sidebar Unmounted");
+        };
+    }, []);
     const location = useLocation();
     const navigate = useNavigate();
     const user =

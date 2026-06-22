@@ -35,6 +35,24 @@ def mark_all_read(
     return{
         "message": "All notifications marked as read"
     }
+
+@router.put("/notifications/{notification_id}/read")
+def mark_notification_read(
+    notification_id:int,
+    db:Session=Depends(get_db)
+):
+    notification=(
+        db.query(Notification).filter(Notification.id==notification_id).first()
+    )
+
+    if not notification:
+        return {"message":"Notification not found"}
+
+    notification.is_read=True
+    db.commit()
+    return{
+        "message": "Notifications marked as read"
+    }
     
 @router.get("/notifications/all")
 def get_all_notifications(

@@ -140,7 +140,7 @@ def create_case(
 
     if doctor:
         notification = Notification(
-            message=f"New case submitted by Dr. {doctor.full_name} (Case ID: {new_case.id})"
+            message=f"New case submitted by Dr. {doctor.full_name}",case_id=new_case.id,is_read=False
         )
 
         db.add(notification)

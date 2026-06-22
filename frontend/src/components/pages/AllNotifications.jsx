@@ -3,21 +3,14 @@ import axios from "axios";
 import Sidebar from "../Sidebar";
 import Header from "../Header";
 
+import { useNavigate } from "react-router-dom";
+
 function AllNotifications() {
   const [notifications, setNotifications] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-
     fetchNotifications();
-
-    const interval =
-      setInterval(() => {
-        fetchNotifications();
-      }, 5000);
-
-    return () =>
-      clearInterval(interval);
-
   }, []);
 
   const fetchNotifications = async () => {
@@ -34,19 +27,21 @@ function AllNotifications() {
 
 
 
-  const markAsRead = async (id) => {
+  const markAsRead = async (item) => {
+
+    console.log("Full item:", item);
     try {
-      await axios.put(
-        `http://127.0.0.1:8000/api/notifications/${id}/read`
+
+      const response = await axios.put(
+        `http://127.0.0.1:8000/api/notifications/${item.id}/read`
       );
 
+      navigate(`/admin/view-case/${item.case_id}`);
       fetchNotifications();
     } catch (error) {
       console.log(error);
     }
   };
-
-
 
   return (
     <div className="container-fluid">
@@ -72,7 +67,7 @@ function AllNotifications() {
                   <div
                     key={item.id}
                     className="border-bottom p-3"
-                    onClick={() => markAsRead(item.id)}
+                    onClick={() => markAsRead(item)}
 
                     style={{
                       backgroundColor:

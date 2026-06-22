@@ -107,13 +107,6 @@ function ViewCaseDetail() {
                 "digital_file"
         ) || [];
 
-
-    console.log("CASE DATA", casedata);
-    console.log("FILES", files);
-    console.log("CASE PDFS", casePdfs);
-    console.log("DIGITAL FILES", digitalFiles);
-
-
     return (
         <div className="container-fluid">
             <div className=" row g-0 dashboard-main">

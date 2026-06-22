@@ -161,7 +161,7 @@ function Pricing() {
               </button>
 
               <div className="table-responsive">
-                <table className=" custom-table table table-bordered table-striped align-middle">
+                <table className="custom-table">
                   <thead className="table-light">
                     <tr>
                       <th>Product</th>
@@ -174,7 +174,7 @@ function Pricing() {
                       <th width="120">Action</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody >
                     {prices.map((price) => (
                       <tr key={price.id}>
                         <td>{price.product}</td>

@@ -10,6 +10,8 @@ class Notification(Base):
   message=Column(String,nullable=False)
 
   is_read=Column(Boolean,default=False)
+
+  case_id=Column(Integer)
   
   created_at = Column( DateTime, server_default=func.now()
   )
