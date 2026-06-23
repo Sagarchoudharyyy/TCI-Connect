@@ -1094,6 +1094,23 @@ def confirm_preview_files(
             detail="Case not found"
         )
 
+@router.put("/cases/{case_id}/confirm-preview-files")
+def confirm_preview_files(
+    case_id: int,
+    db: Session = Depends(get_db)
+):
+    case = (
+        db.query(Case)
+        .filter(Case.id == case_id)
+        .first()
+    )
+
+    if not case:
+        raise HTTPException(
+            status_code=404,
+            detail="Case not found"
+        )
+
     files = (
         db.query(CaseFile)
         .filter(
@@ -1113,7 +1130,7 @@ def confirm_preview_files(
     for file in files:
         file.is_confirmed = True
 
-    case.preview_status = "waiting User"
+    case.preview_status = "Waiting User"
 
     db.commit()
     db.refresh(case)
@@ -1122,3 +1139,58 @@ def confirm_preview_files(
         "message": "Preview files confirmed",
         "preview_status": case.preview_status
     }
+
+
+# @router.put("/cases/{case_id}/reject-preview")
+# def reject_preview(
+#     case_id: int,
+#     db: Session = Depends(get_db)
+# ):
+#     case = (
+#         db.query(Case)
+#         .filter(Case.id == case_id)
+#         .first()
+#     )
+
+#     if not case:
+#         raise HTTPException(
+#             status_code=404,
+#             detail="Case not found"
+#         )
+
+#     case.preview_status = "Preview Rejected"
+
+#     db.commit()
+#     db.refresh(case)
+
+#     return {
+#         "message": "Preview rejected successfully",
+#         "preview_status": case.preview_status
+#     }
+
+# @router.put("/cases/{case_id}/approve-preview")
+# def approve_preview(
+#     case_id: int,
+#     db: Session = Depends(get_db)
+# ):
+#     case = (
+#         db.query(Case)
+#         .filter(Case.id == case_id)
+#         .first()
+#     )
+
+#     if not case:
+#         raise HTTPException(
+#             status_code=404,
+#             detail="Case not found"
+#         )
+
+#     case.preview_status = "Approved"
+
+#     db.commit()
+#     db.refresh(case)
+
+#     return {
+#         "message": "Preview approved successfully",
+#         "preview_status": case.preview_status
+#     }

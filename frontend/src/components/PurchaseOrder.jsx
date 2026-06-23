@@ -1912,54 +1912,51 @@ function PurchaseOrder({
                     onChange={handlePdfChange}
                 />
                 {formData.pdfUpload && (
-                    <div className="d-flex justify-content-between align-items-center border rounded p-2 mt-2">
-                        <span>
-                            {
-                                formData.pdfUpload.file_name ||
-                                formData.pdfUpload.name
-                            }
+                    <div className="d-flex align-items-center gap-3 mb-3 p-2 border rounded mt-2">
+
+                        <span style={{ width: "350px" }}>
+                            {formData.pdfUpload.file_name ||
+                                formData.pdfUpload.name}
                         </span>
 
-                        <button
-                            type="button"
-                            className="btn btn-danger btn-sm"
-                            onClick={removePdfFile}
+                        <span
+                            className={`badge ${pdfProgress === 100
+                                ? "bg-success"
+                                : "bg-secondary"
+                                }`}
                         >
-                            Remove
-                        </button>
-                    </div>
-                )}
-                {pdfProgress > 0 && pdfProgress < 100 && (
-                    <div className="mt-2">
-                        <div className="progress">
+                            {pdfProgress === 100
+                                ? "uploaded"
+                                : "uploading"}
+                        </span>
+
+                        <div className="progress flex-grow-1">
                             <div
-                                className="progress-bar"
+                                className={`progress-bar ${pdfProgress === 100
+                                    ? "bg-success"
+                                    : ""
+                                    }`}
                                 role="progressbar"
                                 style={{
                                     width: `${pdfProgress}%`
                                 }}
                             >
-                                {pdfProgress}%
+                                {pdfProgress === 100
+                                    ? "100%"
+                                    : `${pdfProgress}%`}
                             </div>
                         </div>
-                    </div>
-                )}
-                {pdfProgress === 100 && (
-                    <div className="mt-2">
-                        <div className="progress">
-                            <div
-                                className="progress-bar bg-success"
-                                role="progressbar"
-                                style={{
-                                    width: "100%"
-                                }}
-                            >
-                                Uploaded ✓
-                            </div>
-                        </div>
-                    </div>
-                )}
 
+                        <button
+                            type="button"
+                            className="btn btn-danger btn-sm"
+                            onClick={removePdfFile}
+                            disabled={pdfProgress < 100}
+                        >
+                            Remove
+                        </button>
+                    </div>
+                )}
                 <div
                     id="pdfProgressContainer"
                     className="mt-2"
@@ -1976,8 +1973,13 @@ function PurchaseOrder({
                 ></span>
             </div>
             <div className="text-end">
-                <button className="btn btn-primary"
-                    onClick={handleNext}>Next</button>
+                <button
+                    className="btn btn-primary"
+                    onClick={handleNext}
+                    disabled={formData.pdfUpload && pdfProgress < 100}
+                >
+                    Next
+                </button>
             </div>
 
         </div>
