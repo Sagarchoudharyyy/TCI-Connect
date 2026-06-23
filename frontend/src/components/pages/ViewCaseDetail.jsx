@@ -44,7 +44,6 @@ function ViewCaseDetail() {
             const response = await axios.get(
                 `http://127.0.0.1:8000/api/cases/${id}`
             )
-
             setCasedata(response.data);
 
             if (
