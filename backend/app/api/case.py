@@ -1077,11 +1077,14 @@ async def temp_upload(file: UploadFile = File(...)):
         "file_name": file.filename,
         "file_path": file_path
     }
+
 @router.put("/cases/{case_id}/confirm-preview-files")
 def confirm_preview_files(
     case_id: int,
     db: Session = Depends(get_db)
 ):
+    
+    print("CASE ID:", case_id)
     case = (
         db.query(Case)
         .filter(Case.id == case_id)
@@ -1093,23 +1096,7 @@ def confirm_preview_files(
             status_code=404,
             detail="Case not found"
         )
-
-@router.put("/cases/{case_id}/confirm-preview-files")
-def confirm_preview_files(
-    case_id: int,
-    db: Session = Depends(get_db)
-):
-    case = (
-        db.query(Case)
-        .filter(Case.id == case_id)
-        .first()
-    )
-
-    if not case:
-        raise HTTPException(
-            status_code=404,
-            detail="Case not found"
-        )
+    print("CASE FOUND:", case)
 
     files = (
         db.query(CaseFile)
@@ -1121,19 +1108,25 @@ def confirm_preview_files(
         .all()
     )
 
+    print("FILES FOUND:", len(files))
+
     if not files:
         raise HTTPException(
         status_code=404,
         detail="No preview files found"
     )
 
+
+
     for file in files:
         file.is_confirmed = True
 
     case.preview_status = "Waiting User"
+    print("STATUS BEFORE COMMIT:", case.preview_status)
 
     db.commit()
     db.refresh(case)
+    print("STATUS AFTER COMMIT:", case.preview_status)
 
     return {
         "message": "Preview files confirmed",

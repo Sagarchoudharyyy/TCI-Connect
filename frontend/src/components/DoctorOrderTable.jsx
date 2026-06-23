@@ -342,16 +342,16 @@ function DoctorOrderTable({
                                             </colgroup>
                                             <thead>
                                                 <tr>
-                                                    <th>Case Id</th>
-                                                    <th>Patient Name</th>
-                                                    <th>Appointment Date</th>
-                                                    <th>Age</th>
-                                                    <th>Case PDF</th>
-                                                    <th>Digital Files</th>
-                                                    <th>Delivery Deadline</th>
-                                                    <th>Preview Status</th>
-                                                    <th>Status</th>
-                                                    <th>Action</th>
+                                                    <th className="text-center">Case Id</th>
+                                                    <th className="text-center">Patient Name</th>
+                                                    <th className="text-center">Appointment Date</th>
+                                                    <th className="text-center">Age</th>
+                                                    <th className="text-center">Case PDF</th>
+                                                    <th className="text-center">Digital Files</th>
+                                                    <th className="text-center">Delivery Deadline</th>
+                                                    <th className="text-center">Preview Status</th>
+                                                    <th className="text-center">Status</th>
+                                                    <th className="text-center">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -364,11 +364,11 @@ function DoctorOrderTable({
                                                         ) || [];
                                                     return (
                                                         <tr key={item.id}>
-                                                            <td>
+                                                            <td className="text-center">
                                                                 {item.id}
                                                             </td>
-                                                            <td>{item.patient_name}</td>
-                                                            <td>
+                                                            <td className="text-center">{item.patient_name}</td>
+                                                            <td className="text-center">
                                                                 {item.appointment_date
                                                                     ? new Date(item.appointment_date)
                                                                         .toLocaleString("en-GB", {
@@ -382,8 +382,8 @@ function DoctorOrderTable({
                                                                         .replace(",", "")
                                                                     : "-"}
                                                             </td>
-                                                            <td>{item.age}</td>
-                                                            <td>
+                                                            <td className="text-center">{item.age}</td>
+                                                            <td className="text-center">
                                                                 {
                                                                     item.files
                                                                         ?.filter(
@@ -413,7 +413,7 @@ function DoctorOrderTable({
                                                                     ) && <span>-</span>
                                                                 }
                                                             </td>
-                                                            <td>
+                                                            <td className="text-center">
 
                                                                 {
                                                                     console.log(
@@ -461,7 +461,7 @@ function DoctorOrderTable({
                                                                     ) && <span>No File</span>
                                                                 }
                                                             </td>
-                                                            <td>
+                                                            <td className="text-center">
                                                                 {item.delivery_deadline ? (() => {
 
                                                                     const today = new Date();
@@ -485,7 +485,7 @@ function DoctorOrderTable({
 
                                                                     return (
                                                                         <>
-                                                                            <div>
+                                                                            <div className="text-center">
                                                                                 {deadline.toLocaleDateString(
                                                                                     "en-GB",
                                                                                     {
@@ -496,7 +496,7 @@ function DoctorOrderTable({
                                                                                 )}
                                                                             </div>
 
-                                                                            <div
+                                                                            <div className="text-center"
                                                                                 style={{
                                                                                     color: isPassed
                                                                                         ? "red"
@@ -518,105 +518,110 @@ function DoctorOrderTable({
                                                                     "-"
                                                                 )}
                                                             </td>
-                                                            <td>
+                                                            <td className="text-center">
 
-                                                                {previewFiles.length > 0 ? (
+                                                                {previewFiles.length > 0 ||
 
-                                                                    <>
-                                                                        {previewFiles.map((file, index) => (
+                                                                    item.preview_status === "Waiting User" ||
+                                                                    item.preview_status === "Approved" ||
+                                                                    item.preview_status === "Preview Rejected" ?
+                                                                    (
 
-                                                                            <div key={file.id}>
+                                                                        <>
+                                                                            {previewFiles.map((file, index) => (
 
-                                                                                <a
-                                                                                    href={`http://127.0.0.1:8000/${file.file_path.replace(/\\/g, "/")}`}
-                                                                                    target="_blank"
-                                                                                    rel="noreferrer"
-                                                                                >
-                                                                                    Preview {index + 1}
-                                                                                    {" "}
-                                                                                    (
-                                                                                    {file.file_name
-                                                                                        .split(".")
-                                                                                        .pop()
-                                                                                        .toUpperCase()}
-                                                                                    )
-                                                                                </a>
+                                                                                <div key={file.id} className="text-center">
 
-                                                                                <br />
+                                                                                    <a
+                                                                                        href={`http://127.0.0.1:8000/${file.file_path.replace(/\\/g, "/")}`}
+                                                                                        target="_blank"
+                                                                                        rel="noreferrer"
+                                                                                    >
+                                                                                        Preview {index + 1}
+                                                                                        {" "}
+                                                                                        (
+                                                                                        {file.file_name
+                                                                                            .split(".")
+                                                                                            .pop()
+                                                                                            .toUpperCase()}
+                                                                                        )
+                                                                                    </a>
 
-                                                                                <a
-                                                                                    href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
-                                                                                >
-                                                                                    <FaDownload />
-                                                                                </a>
+                                                                                    <br />
+
+                                                                                    <a
+                                                                                        href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
+                                                                                    >
+                                                                                        <FaDownload />
+                                                                                    </a>
+
+                                                                                </div>
+
+                                                                            ))}
+
+                                                                            <div className="mt-2 text-center">
+
+                                                                                {item.preview_status?.toLowerCase() === "waiting user" && (
+                                                                                    <>
+                                                                                        <button
+                                                                                            className="btn btn-sm btn-primary me-2"
+                                                                                            onClick={() =>
+                                                                                                handlePreviewStatus(
+                                                                                                    item.id,
+                                                                                                    "Approved"
+                                                                                                )
+                                                                                            }
+                                                                                        >
+                                                                                            ✓
+                                                                                        </button>
+
+                                                                                        <button
+                                                                                            className="btn btn-sm btn-danger"
+                                                                                            onClick={() =>
+                                                                                                handlePreviewStatus(
+                                                                                                    item.id,
+                                                                                                    "Preview Rejected"
+                                                                                                )
+                                                                                            }
+                                                                                        >
+                                                                                            ✕
+                                                                                        </button>
+                                                                                    </>
+                                                                                )}
+
+                                                                                {item.preview_status?.toLowerCase() === "approved" && (
+                                                                                    <span
+                                                                                        style={{
+                                                                                            color: "green",
+                                                                                            fontWeight: "600"
+                                                                                        }}
+                                                                                    >
+                                                                                        Approved
+                                                                                    </span>
+                                                                                )}
+
+                                                                                {item.preview_status?.toLowerCase() === "preview rejected" && (
+                                                                                    <span
+                                                                                        style={{
+                                                                                            color: "red",
+                                                                                            fontWeight: "600"
+                                                                                        }}
+                                                                                    >
+                                                                                        Rejected
+                                                                                    </span>
+                                                                                )}
 
                                                                             </div>
 
-                                                                        ))}
+                                                                        </>
 
-                                                                        <div className="mt-2">
+                                                                    ) : (
 
-                                                                            {item.preview_status?.toLowerCase() === "waiting user" && (
-                                                                                <>
-                                                                                    <button
-                                                                                        className="btn btn-sm btn-primary me-2"
-                                                                                        onClick={() =>
-                                                                                            handlePreviewStatus(
-                                                                                                item.id,
-                                                                                                "Approved"
-                                                                                            )
-                                                                                        }
-                                                                                    >
-                                                                                        ✓
-                                                                                    </button>
-
-                                                                                    <button
-                                                                                        className="btn btn-sm btn-danger"
-                                                                                        onClick={() =>
-                                                                                            handlePreviewStatus(
-                                                                                                item.id,
-                                                                                                "Preview Rejected"
-                                                                                            )
-                                                                                        }
-                                                                                    >
-                                                                                        ✕
-                                                                                    </button>
-                                                                                </>
-                                                                            )}
-
-                                                                            {item.preview_status?.toLowerCase() === "approved" && (
-                                                                                <span
-                                                                                    style={{
-                                                                                        color: "green",
-                                                                                        fontWeight: "600"
-                                                                                    }}
-                                                                                >
-                                                                                    Approved
-                                                                                </span>
-                                                                            )}
-
-                                                                            {item.preview_status?.toLowerCase() === "preview rejected" && (
-                                                                                <span
-                                                                                    style={{
-                                                                                        color: "red",
-                                                                                        fontWeight: "600"
-                                                                                    }}
-                                                                                >
-                                                                                    Rejected  
-                                                                                </span>
-                                                                            )}
-
-                                                                        </div>
-
-                                                                    </>
-
-                                                                ) : (
-
-                                                                    "-"
-                                                                )}
+                                                                        "-"
+                                                                    )}
 
                                                             </td>
-                                                            <td>
+                                                            <td className="text-center">
                                                                 <span
                                                                     style={{
                                                                         fontWeight: "600",
@@ -637,7 +642,7 @@ function DoctorOrderTable({
                                                                     {item.status}
                                                                 </span>
                                                             </td>
-                                                            <td>
+                                                            <td className="text-center">
                                                                 <Link
                                                                     to={`/client/update-case/${item.id}`}
                                                                 >

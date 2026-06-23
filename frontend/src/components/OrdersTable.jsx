@@ -361,7 +361,7 @@ function OrdersTable() {
                                     <col data-dt-column="9" style={{ width: "136px" }} />
                                     <col data-dt-column="10" style={{ width: "93.3194px" }} />
                                 </colgroup>
-                                <thead>
+                                <thead >
                                     <tr>
                                         <th data-dt-column="0" className="dt-orderable-none" rowSpan="1" colSpan="1">
                                             <div className="dt-column-header">
@@ -463,7 +463,7 @@ function OrdersTable() {
                                             ) || [];
                                         return (
                                             < tr key={item.id} >
-                                                <td>
+                                                <td className="text-center">
                                                     <img
                                                         src={heroImage}
                                                         alt="profile"
@@ -478,7 +478,7 @@ function OrdersTable() {
 
                                                 <td>{item.patient_name}</td>
 
-                                                <td>
+                                                <td >
                                                     {
                                                         item.files
                                                             ?.filter(
@@ -518,7 +518,7 @@ function OrdersTable() {
                                                         ) && <span>No File</span>
                                                     }
                                                 </td>
-                                                <td>
+                                                <td >
 
                                                     {
                                                         console.log(
@@ -625,20 +625,127 @@ function OrdersTable() {
                                                         <span>No deadline</span>
                                                     )}
                                                 </td>
+
                                                 <td>
+                                                    <div
+                                                        style={{
+                                                            fontWeight: "600"
+                                                        }}
+                                                    >
+                                                        {item.preview_status === "-" ? (
+                                                            <>
+                                                                <div
+                                                                    style={{
+                                                                        color: "#0152a8"
+                                                                    }}
+                                                                >
+                                                                    No Preview Requested
+                                                                </div>
+
+                                                                <div
+                                                                    style={{
+                                                                        color: "#0152a8",
+                                                                        fontWeight: "600",
+                                                                        cursor: "pointer"
+                                                                    }}
+                                                                >
+                                                                    (Upload Now)
+                                                                </div>
+
+                                                                <small
+                                                                    style={{
+                                                                        color: "#6c757d"
+                                                                    }}
+                                                                >
+                                                                    No preview files uploaded.
+                                                                </small>
+                                                            </>
+                                                        ) : item.preview_status ===
+                                                            "Waiting User" ? (
+                                                            <>
+                                                                <span
+                                                                    style={{
+                                                                        color: "#0152a8"
+                                                                    }}
+                                                                >
+                                                                    Preview Uploaded
+                                                                </span>
+
+                                                                <br />
+
+                                                                <span
+                                                                    style={{
+                                                                        color: "#0152a8"
+                                                                    }}
+                                                                >
+                                                                    (Waiting User)
+                                                                </span>
+                                                            </>
+                                                        ) : item.preview_status ===
+                                                            "Approved" ? (
+                                                            <span
+                                                                style={{
+                                                                    color: "green"
+                                                                }}
+                                                            >
+                                                                Preview Approved
+                                                            </span>
+                                                        ) : item.preview_status ===
+                                                            "Preview Rejected" ? (
+                                                            <span
+                                                                style={{
+                                                                    color: "red"
+                                                                }}
+                                                            >
+                                                                Preview Rejected
+                                                            </span>
+                                                        ) : null}
+                                                    </div>
+
+                                                    {previewFiles.length > 0 && (
+                                                        <>
+                                                            <small
+                                                                style={{
+                                                                    color: "#6c757d"
+                                                                }}
+                                                            >
+                                                                ({previewFiles.length} file
+                                                                {previewFiles.length > 1
+                                                                    ? "s"
+                                                                    : ""}
+                                                                )
+                                                            </small>
+
+                                                            {previewFiles.map(
+                                                                (file, index) => (
+                                                                    <div key={file.id}>
+                                                                        <a
+                                                                            href={`http://127.0.0.1:8000/${file.file_path.replace(
+                                                                                /\\/g,
+                                                                                "/"
+                                                                            )}`}
+                                                                            target="_blank"
+                                                                            rel="noreferrer"
+                                                                        >
+                                                                            Preview {index + 1}
+                                                                            {" "}
+                                                                            (
+                                                                            {file.file_name
+                                                                                .split(".")
+                                                                                .pop()
+                                                                                .toUpperCase()}
+                                                                            )
+                                                                        </a>
+                                                                    </div>
+                                                                )
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </td>
+                                                {/* <td>
 
                                                     {previewFiles.length > 0 ? (
                                                         <>
-                                                            {/* <div
-                                                                style={{
-                                                                    color: "#0152a8",
-                                                                    fontWeight: "600"
-                                                                }}
-                                                            >
-                                                                Preview Uploaded
-                                                                <br />
-                                                                (Waiting User)
-                                                            </div> */}
                                                             <div
                                                                 style={{
                                                                     fontWeight: "600"
@@ -653,7 +760,7 @@ function OrdersTable() {
                                                                     >
                                                                         Preview Approved
                                                                     </span>
-                                                                ) : item.preview_status?.toLowerCase() === "rejected" ? (
+                                                                ) : item.preview_status?.toLowerCase() === "preview rejected" ? (
                                                                     <span
                                                                         style={{
                                                                             color: "red"
@@ -755,7 +862,7 @@ function OrdersTable() {
                                                         </>
                                                     )}
 
-                                                </td>
+                                                </td> */}
 
                                                 <td>
                                                     <select

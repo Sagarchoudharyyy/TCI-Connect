@@ -1905,62 +1905,58 @@ function PurchaseOrder({
                 <label className="form-label">
                     Case Document
                 </label>
+
                 <input
                     type="file"
                     className="form-control"
                     id="pdfUpload"
                     onChange={handlePdfChange}
                 />
+
                 {formData.pdfUpload && (
-                    <div className="d-flex align-items-center gap-3 mb-3 p-2 border rounded mt-2">
+                    <div className="border rounded p-3 mt-3">
 
-                        <span style={{ width: "350px" }}>
-                            {formData.pdfUpload.file_name ||
-                                formData.pdfUpload.name}
-                        </span>
+                        <div className="d-flex justify-content-between align-items-start">
 
-                        <span
-                            className={`badge ${pdfProgress === 100
-                                ? "bg-success"
-                                : "bg-secondary"
-                                }`}
-                        >
-                            {pdfProgress === 100
-                                ? "uploaded"
-                                : "uploading"}
-                        </span>
+                            <div className="flex-grow-1 me-3">
 
-                        <div className="progress flex-grow-1">
-                            <div
-                                className={`progress-bar ${pdfProgress === 100
-                                    ? "bg-success"
-                                    : ""
-                                    }`}
-                                role="progressbar"
-                                style={{
-                                    width: `${pdfProgress}%`
-                                }}
-                            >
-                                {pdfProgress === 100
-                                    ? "100%"
-                                    : `${pdfProgress}%`}
+                                <div className="mb-2">
+                                    {
+                                        formData.pdfUpload.file_name ||
+                                        formData.pdfUpload.name
+                                    }
+                                </div>
+
+                                <div className="progress">
+                                    <div
+                                        className={`progress-bar ${pdfProgress === 100
+                                                ? "bg-success"
+                                                : "progress-bar-striped progress-bar-animated"
+                                            }`}
+                                        role="progressbar"
+                                        style={{
+                                            width: `${pdfProgress}%`
+                                        }}
+                                    >
+                                        {pdfProgress}%
+                                    </div>
+                                </div>
+
                             </div>
+
+                            <button
+                                type="button"
+                                className="btn btn-danger btn-sm"
+                                onClick={removePdfFile}
+                                disabled={pdfProgress < 100}
+                            >
+                                Remove
+                            </button>
+
                         </div>
 
-                        <button
-                            type="button"
-                            className="btn btn-danger btn-sm"
-                            onClick={removePdfFile}
-                            disabled={pdfProgress < 100}
-                        >
-                            Remove
-                        </button>
                     </div>
                 )}
-                <div
-                    id="pdfProgressContainer"
-                    className="mt-2"
-                ></div>
 
                 <span
                     className="validation-msg"
