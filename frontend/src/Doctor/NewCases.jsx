@@ -298,7 +298,7 @@ function NewCases() {
                     || null,
 
                 preview_status:
-                    "Pending",
+                    "-",
 
                 status:
                     "Submitted",
