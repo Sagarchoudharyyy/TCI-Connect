@@ -21,7 +21,6 @@ function OrdersTable() {
     const navigate = useNavigate();
     const [showWelcome, setShowWelcome] = useState(true);
 
-
     useEffect(() => {
 
         fetchCases();
@@ -85,11 +84,32 @@ function OrdersTable() {
         );
     });
 
-    const visibleCases =
-        filteredCases.slice(
-            0,
-            entriesPerPage
-        );
+    const totalEntries = filteredCases.length;
+
+    const startEntry =
+        totalEntries === 0
+            ? 0
+            : (currentPage - 1) * entriesPerPage + 1;
+
+    const endEntry = Math.min(
+        currentPage * entriesPerPage,
+        totalEntries
+    );
+
+    const totalPages = Math.ceil(
+        totalEntries / entriesPerPage
+    );
+
+    const indexOfLastCase =
+        currentPage * entriesPerPage;
+
+    const indexOfFirstCase =
+        indexOfLastCase - entriesPerPage;
+
+    const visibleCases = filteredCases.slice(
+        indexOfFirstCase,
+        indexOfLastCase
+    );
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -194,17 +214,11 @@ function OrdersTable() {
             }
         };
 
-    const totalEntries = filteredCases.length;
 
-    const startEntry =
-        totalEntries === 0
-            ? 0
-            : (currentPage - 1) * entriesPerPage + 1;
+    const startIndex =
+        (currentPage - 1) * entriesPerPage;
 
-    const endEntry = Math.min(
-        currentPage * entriesPerPage,
-        totalEntries
-    );
+
 
     return (
         <div className="table-section">
@@ -742,127 +756,7 @@ function OrdersTable() {
                                                         </>
                                                     )}
                                                 </td>
-                                                {/* <td>
 
-                                                    {previewFiles.length > 0 ? (
-                                                        <>
-                                                            <div
-                                                                style={{
-                                                                    fontWeight: "600"
-                                                                }}
-                                                            >
-
-                                                                {item.preview_status?.toLowerCase() === "approved" ? (
-                                                                    <span
-                                                                        style={{
-                                                                            color: "green"
-                                                                        }}
-                                                                    >
-                                                                        Preview Approved
-                                                                    </span>
-                                                                ) : item.preview_status?.toLowerCase() === "preview rejected" ? (
-                                                                    <span
-                                                                        style={{
-                                                                            color: "red"
-                                                                        }}
-                                                                    >
-                                                                        Preview Rejected
-                                                                    </span>
-                                                                ) : (
-                                                                    <>
-                                                                        <span
-                                                                            style={{
-                                                                                color: "#0152a8"
-                                                                            }}
-                                                                        >
-                                                                            Preview Uploaded
-                                                                        </span>
-
-                                                                        <br />
-
-                                                                        <span
-                                                                            style={{
-                                                                                color: "#0152a8"
-                                                                            }}
-                                                                        >
-                                                                            (Waiting User)
-                                                                        </span>
-                                                                    </>
-                                                                )}
-
-                                                            </div>
-                                                            <small
-                                                                style={{
-                                                                    color: "#6c757d"
-                                                                }}
-                                                            >
-                                                                ({previewFiles.length} file
-                                                                {previewFiles.length > 1 ? "s" : ""})
-                                                            </small>
-
-                                                            {previewFiles.map((file, index) => (
-                                                                <div key={file.id}>
-                                                                    <a
-                                                                        href={`http://127.0.0.1:8000/${file.file_path.replace(/\\/g, "/")}`}
-                                                                        target="_blank"
-                                                                        rel="noreferrer"
-                                                                    >
-                                                                        Preview {index + 1}
-                                                                        {" "}
-                                                                        (
-                                                                        {file.file_name
-                                                                            .split(".")
-                                                                            .pop()
-                                                                            .toUpperCase()}
-                                                                        )
-                                                                    </a>
-                                                                </div>
-
-                                                            ))}
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <div
-                                                                style={{
-                                                                    fontWeight: "600",
-                                                                    color: "#0152a8"
-                                                                }}
-                                                            >
-                                                                {item.preview_status ===
-                                                                    "Preview Requested"
-                                                                    ? "Preview Requested"
-                                                                    : "No Preview Requested"}
-                                                            </div>
-
-                                                            {item.preview_status ===
-                                                                "Preview Requested" && (
-                                                                    <div
-                                                                        style={{
-                                                                            color: "#0152a8",
-                                                                            fontWeight: "600",
-                                                                            cursor: "pointer"
-                                                                        }}
-                                                                        onClick={() =>
-                                                                            navigate(
-                                                                                `/admin/upload-preview/${item.id}`
-                                                                            )
-                                                                        }
-                                                                    >
-                                                                        (Upload Now)
-                                                                    </div>
-                                                                )}
-
-                                                            <small
-                                                                style={{
-                                                                    color: "#6c757d"
-                                                                }}
-                                                            >
-                                                                No preview files uploaded.
-                                                            </small>
-                                                        </>
-                                                    )}
-
-                                                </td> */}
 
                                                 <td>
                                                     <select
@@ -974,17 +868,26 @@ function OrdersTable() {
                                     })}
                                 </tbody>
                             </table>
-
                         </div>
                         <div className="row mt-2 justify-content-between">
+
                             <div className="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">
                                 <div
                                     className="dt-info"
                                     aria-live="polite"
-                                    id="data-table_info"
                                     role="status"
                                 >
-                                    Showing {startEntry} to {endEntry} of {totalEntries} entries
+                                    Showing{" "}
+                                    {filteredCases.length === 0
+                                        ? 0
+                                        : startIndex + 1}
+                                    {" "}to{" "}
+                                    {Math.min(
+                                        startIndex + entriesPerPage,
+                                        filteredCases.length
+                                    )}
+                                    {" "}of{" "}
+                                    {filteredCases.length} entries
                                 </div>
                             </div>
 
@@ -993,90 +896,106 @@ function OrdersTable() {
                                     <nav aria-label="pagination">
                                         <ul className="pagination">
 
-                                            <li className="dt-paging-button page-item disabled">
+                                            {/* First */}
+                                            <li className={`page-item ${currentPage === 1
+                                                ? "disabled"
+                                                : ""
+                                                }`}>
                                                 <button
-                                                    className="page-link first"
-                                                    role="link"
-                                                    type="button"
-                                                    aria-controls="data-table"
-                                                    aria-disabled="true"
-                                                    aria-label="First"
-                                                    data-dt-idx="first"
-                                                    tabIndex={-1}
+                                                    className="page-link"
+                                                    onClick={() =>
+                                                        setCurrentPage(1)
+                                                    }
                                                 >
                                                     «
                                                 </button>
                                             </li>
 
-                                            <li className="dt-paging-button page-item disabled">
+                                            {/* Previous */}
+                                            <li className={`page-item ${currentPage === 1
+                                                ? "disabled"
+                                                : ""
+                                                }`}>
                                                 <button
-                                                    className="page-link previous"
-                                                    role="link"
-                                                    type="button"
-                                                    aria-controls="data-table"
-                                                    aria-disabled="true"
-                                                    aria-label="Previous"
-                                                    data-dt-idx="previous"
-                                                    tabIndex={-1}
+                                                    className="page-link"
+                                                    onClick={() =>
+                                                        setCurrentPage(
+                                                            currentPage - 1
+                                                        )
+                                                    }
                                                 >
                                                     ‹
                                                 </button>
                                             </li>
 
-                                            <li className="dt-paging-button page-item active">
+                                            {/* Page Numbers */}
+                                            {[...Array(totalPages)].map(
+                                                (_, index) => (
+                                                    <li
+                                                        key={index}
+                                                        className={`page-item ${currentPage ===
+                                                            index + 1
+                                                            ? "active"
+                                                            : ""
+                                                            }`}
+                                                    >
+                                                        <button
+                                                            className="page-link"
+                                                            onClick={() =>
+                                                                setCurrentPage(
+                                                                    index + 1
+                                                                )
+                                                            }
+                                                        >
+                                                            {index + 1}
+                                                        </button>
+                                                    </li>
+                                                )
+                                            )}
+
+                                            {/* Next */}
+                                            <li className={`page-item ${currentPage === totalPages
+                                                ? "disabled"
+                                                : ""
+                                                }`}>
                                                 <button
                                                     className="page-link"
-                                                    role="link"
-                                                    type="button"
-                                                    aria-controls="data-table"
-                                                    aria-current="page"
-                                                    data-dt-idx="0"
-                                                >
-                                                    1
-                                                </button>
-                                            </li>
-
-                                            <li className="dt-paging-button page-item disabled">
-                                                <button
-                                                    className="page-link next"
-                                                    role="link"
-                                                    type="button"
-                                                    aria-controls="data-table"
-                                                    aria-disabled="true"
-                                                    aria-label="Next"
-                                                    data-dt-idx="next"
-                                                    tabIndex={-1}
+                                                    onClick={() =>
+                                                        setCurrentPage(
+                                                            currentPage + 1
+                                                        )
+                                                    }
                                                 >
                                                     ›
                                                 </button>
                                             </li>
 
-                                            <li className="dt-paging-button page-item disabled">
+                                            {/* Last */}
+                                            <li className={`page-item ${currentPage === totalPages
+                                                ? "disabled"
+                                                : ""
+                                                }`}>
                                                 <button
-                                                    className="page-link last"
-                                                    role="link"
-                                                    type="button"
-                                                    aria-controls="data-table"
-                                                    aria-disabled="true"
-                                                    aria-label="Last"
-                                                    data-dt-idx="last"
-                                                    tabIndex={-1}
+                                                    className="page-link"
+                                                    onClick={() =>
+                                                        setCurrentPage(
+                                                            totalPages
+                                                        )
+                                                    }
                                                 >
                                                     »
                                                 </button>
                                             </li>
+
                                         </ul>
                                     </nav>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
-
-
     );
 }
 
