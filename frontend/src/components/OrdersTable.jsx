@@ -713,8 +713,6 @@ function OrdersTable() {
 
                                                 </td>
 
-
-
                                                 <td>
                                                     <select
                                                         value={item.status}

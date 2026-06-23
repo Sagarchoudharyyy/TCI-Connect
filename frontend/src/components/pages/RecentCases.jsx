@@ -388,297 +388,375 @@ function RecentCases() {
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                {visibleCases.map((item) => (
-                                                                    <tr key={item.id}>
-                                                                        <td>
-                                                                            <img
-                                                                                src={heroImage}
-                                                                                alt="profile"
-                                                                                width="40"
-                                                                            />
-                                                                        </td>
-                                                                        <td>{item.id}</td>
+                                                                {visibleCases.map((item) => {
+                                                                    const previewFiles =
+                                                                        item.files?.filter(
+                                                                            file =>
+                                                                                file.file_category ===
+                                                                                "preview_file"
+                                                                        ) || [];
+                                                                    return (
+                                                                        <tr key={item.id}>
+                                                                            <td>
+                                                                                <img
+                                                                                    src={heroImage}
+                                                                                    alt="profile"
+                                                                                    width="40"
+                                                                                />
+                                                                            </td>
+                                                                            <td>{item.id}</td>
 
-                                                                        <td>{item.doctor_name}</td>
+                                                                            <td>{item.doctor_name}</td>
 
-                                                                        <td>{item.doctor_phone}</td>
+                                                                            <td>{item.doctor_phone}</td>
 
-                                                                        <td>{item.patient_name}</td>
-
-                                                                        <td>
-                                                                            {item.files?.length > 0 ? (
-                                                                                <>
-                                                                                    <Link
-                                                                                        to={`http://127.0.0.1:8000/api/${item.files[0].file_path}`}
-                                                                                        target="_blank"
-                                                                                        rel="noreferrer"
-                                                                                        style={{
-                                                                                            color: "#0152a8",
-                                                                                            marginRight: "12px",
-                                                                                            textDecoration: "none"
-                                                                                        }}
-                                                                                    >
-                                                                                        <FaEye />
-                                                                                    </Link>
-
-                                                                                    <Link
-                                                                                        to={`http://127.0.0.1:8000/api/${item.files[0].file_path}`}
-                                                                                        download
-                                                                                        style={{
-                                                                                            color: "#0152a8",
-                                                                                            textDecoration: "none"
-                                                                                        }}
-                                                                                    >
-                                                                                        <FaDownload />
-                                                                                    </Link>
-                                                                                </>
-                                                                            ) : (
-                                                                                <span>No File</span>
-                                                                            )}
-                                                                        </td>
-
-                                                                        <td>
-                                                                            {item.files?.length > 0 ? (
-                                                                                item.files.map((file, index) => (
-                                                                                    <div key={index}>
-                                                                                        <Link
-                                                                                            to={`http://127.0.0.1:8000/api/${file.file_path}`}
-                                                                                            target="_blank"
-                                                                                            rel="noreferrer"
-                                                                                            style={{
-                                                                                                textDecoration: "none",
-                                                                                                marginRight: "12px",
-                                                                                                color: "#0152a8"
-                                                                                            }}
-                                                                                        >
-                                                                                            Preview File {index + 1}
-
-                                                                                            {file.file_path?.endsWith(".png")
-                                                                                                ? " (PNG)"
-                                                                                                : file.file_path?.endsWith(".stl")
-                                                                                                    ? " (STL)"
-                                                                                                    : file.file_path?.endsWith(".jpg") ||
-                                                                                                        file.file_path?.endsWith(".jpeg")
-                                                                                                        ? " (JPG)"
-                                                                                                        : ""}
-                                                                                        </Link>
-
-                                                                                        <Link
-                                                                                            to={`http://127.0.0.1:8000/api/${file.file_path}`}
-                                                                                            download
-                                                                                            style={{
-                                                                                                color: "#0152a8"
-                                                                                            }}
-                                                                                        >
-                                                                                            <FaDownload />
-                                                                                        </Link>
-                                                                                    </div>
-                                                                                ))
-                                                                            ) : (
-                                                                                <span>No file available</span>
-                                                                            )}
-                                                                        </td>
-                                                                        <td>
-                                                                            {item.delivery_deadline ? (() => {
-
-                                                                                const today = new Date();
-                                                                                const deadline =
-                                                                                    new Date(item.delivery_deadline);
+                                                                            <td>{item.patient_name}</td>
 
 
-                                                                                today.setHours(0, 0, 0, 0);
-                                                                                deadline.setHours(0, 0, 0, 0);
+                                                                            <td>
+                                                                                {
+                                                                                    item.files
+                                                                                        ?.filter(
+                                                                                            file =>
+                                                                                                file.file_category === "case_document"
+                                                                                        )
+                                                                                        .map((file, index) => (
+                                                                                            <div key={index}>
+                                                                                                <a
+                                                                                                    href={`http://127.0.0.1:8000/${file.file_path}`}
+                                                                                                    target="_blank"
+                                                                                                    rel="noreferrer"
+                                                                                                    style={{
+                                                                                                        color: "#0152a8",
+                                                                                                        textDecoration: "none",
+                                                                                                        marginRight: "10px"
+                                                                                                    }}
+                                                                                                >
+                                                                                                    <FaEye />
+                                                                                                </a>
 
-                                                                                const diffTime =
-                                                                                    deadline - today;
+                                                                                                <a
+                                                                                                    href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
+                                                                                                    style={{
+                                                                                                        color: "#0152a8"
+                                                                                                    }}
+                                                                                                >
+                                                                                                    <FaDownload />
+                                                                                                </a>
+                                                                                            </div>
+                                                                                        ))
+                                                                                }
+                                                                                {
+                                                                                    !item.files?.some(
+                                                                                        file =>
+                                                                                            file.file_category === "case_document"
+                                                                                    ) && <span>No File</span>
+                                                                                }
+                                                                            </td>
+                                                                            <td>
 
-                                                                                const daysLeft =
-                                                                                    Math.ceil(
-                                                                                        diffTime /
-                                                                                        (1000 * 60 * 60 * 24)
-                                                                                    );
+                                                                                {
+                                                                                    console.log(
+                                                                                        "DIGITAL FILES",
+                                                                                        item.files
+                                                                                    ),
+                                                                                    item.files
+                                                                                        ?.filter(
+                                                                                            file =>
+                                                                                                file.file_category === "digital_file"
+                                                                                        )
+                                                                                        .map((file, index) => (
+                                                                                            <div key={index}>
 
-                                                                                const isPassed =
-                                                                                    deadline < today;
 
-                                                                                return (
-                                                                                    <>
-                                                                                        <div>
-                                                                                            {deadline.toLocaleDateString(
-                                                                                                "en-GB",
-                                                                                                {
-                                                                                                    day: "2-digit",
-                                                                                                    month: "short",
-                                                                                                    year: "numeric"
+                                                                                                <a
+                                                                                                    href={`http://127.0.0.1:8000/${file.file_path}`}
+                                                                                                    target="_blank"
+                                                                                                    rel="noreferrer"
+                                                                                                    style={{
+                                                                                                        textDecoration: "none",
+                                                                                                        marginRight: "12px",
+                                                                                                        color: "#0152a8"
+                                                                                                    }}
+                                                                                                >
+                                                                                                    Preview File {index + 1}
+                                                                                                </a>
+
+
+                                                                                                <a
+                                                                                                    href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
+                                                                                                    style={{
+                                                                                                        color: "#0152a8"
+                                                                                                    }}
+                                                                                                >
+                                                                                                    <FaDownload />
+                                                                                                </a>
+                                                                                            </div>
+                                                                                        ))
+                                                                                }
+
+                                                                                {
+                                                                                    !item.files?.some(
+                                                                                        file =>
+                                                                                            file.file_category === "digital_file"
+                                                                                    ) && <span>No File</span>
+                                                                                }
+                                                                            </td>
+
+                                                                            <td>
+                                                                                {item.delivery_deadline ? (() => {
+
+                                                                                    const today = new Date();
+                                                                                    const deadline =
+                                                                                        new Date(item.delivery_deadline);
+
+
+                                                                                    today.setHours(0, 0, 0, 0);
+                                                                                    deadline.setHours(0, 0, 0, 0);
+
+                                                                                    const diffTime =
+                                                                                        deadline - today;
+
+                                                                                    const daysLeft =
+                                                                                        Math.ceil(
+                                                                                            diffTime /
+                                                                                            (1000 * 60 * 60 * 24)
+                                                                                        );
+
+                                                                                    const isPassed =
+                                                                                        deadline < today;
+
+                                                                                    return (
+                                                                                        <>
+                                                                                            <div>
+                                                                                                {deadline.toLocaleDateString(
+                                                                                                    "en-GB",
+                                                                                                    {
+                                                                                                        day: "2-digit",
+                                                                                                        month: "short",
+                                                                                                        year: "numeric"
+                                                                                                    }
+                                                                                                )}
+                                                                                            </div>
+
+                                                                                            <div
+                                                                                                style={{
+                                                                                                    color: isPassed
+                                                                                                        ? "red"
+                                                                                                        : "#0152a8",
+                                                                                                    fontWeight: "600"
+                                                                                                }}
+                                                                                            >
+                                                                                                {isPassed
+                                                                                                    ? "(Deadline passed)"
+                                                                                                    : `(${daysLeft} day${daysLeft > 1
+                                                                                                        ? "s"
+                                                                                                        : ""
+                                                                                                    } left)`
                                                                                                 }
-                                                                                            )}
-                                                                                        </div>
+                                                                                            </div>
+                                                                                        </>
+                                                                                    );
+                                                                                })() : (
+                                                                                    <span>No deadline</span>
+                                                                                )}
+                                                                            </td>
 
+                                                                            <td>
+
+                                                                                {previewFiles.length > 0 ? (
+                                                                                    <>
                                                                                         <div
                                                                                             style={{
-                                                                                                color: isPassed
-                                                                                                    ? "red"
-                                                                                                    : "#0152a8",
+                                                                                                color: "#0152a8",
                                                                                                 fontWeight: "600"
                                                                                             }}
                                                                                         >
-                                                                                            {isPassed
-                                                                                                ? "(Deadline passed)"
-                                                                                                : `(${daysLeft} day${daysLeft > 1
-                                                                                                    ? "s"
-                                                                                                    : ""
-                                                                                                } left)`
-                                                                                            }
+                                                                                            Preview Uploaded
+                                                                                            <br />
+                                                                                            (Waiting User)
                                                                                         </div>
+
+                                                                                        <small
+                                                                                            style={{
+                                                                                                color: "#6c757d"
+                                                                                            }}
+                                                                                        >
+                                                                                            ({previewFiles.length} file
+                                                                                            {previewFiles.length > 1 ? "s" : ""})
+                                                                                        </small>
+
+                                                                                        {previewFiles.map((file, index) => (
+                                                                                            <div key={file.id}>
+                                                                                                <a
+                                                                                                    href={`http://127.0.0.1:8000/${file.file_path.replace(/\\/g, "/")}`}
+                                                                                                    target="_blank"
+                                                                                                    rel="noreferrer"
+                                                                                                >
+                                                                                                    Preview {index + 1}
+                                                                                                    {" "}
+                                                                                                    (
+                                                                                                    {file.file_name
+                                                                                                        .split(".")
+                                                                                                        .pop()
+                                                                                                        .toUpperCase()}
+                                                                                                    )
+                                                                                                </a>
+                                                                                            </div>
+
+                                                                                        ))}
                                                                                     </>
-                                                                                );
-                                                                            })() : (
-                                                                                <span>No deadline</span>
-                                                                            )}
-                                                                        </td>
+                                                                                ) : (
+                                                                                    <>
+                                                                                        <div
+                                                                                            style={{
+                                                                                                fontWeight: "600",
+                                                                                                color: "#0152a8"
+                                                                                            }}
+                                                                                        >
+                                                                                            {item.preview_status ===
+                                                                                                "Preview Requested"
+                                                                                                ? "Preview Requested"
+                                                                                                : "No Preview Requested"}
+                                                                                        </div>
 
+                                                                                        {item.preview_status ===
+                                                                                            "Preview Requested" && (
+                                                                                                <div
+                                                                                                    style={{
+                                                                                                        color: "#0152a8",
+                                                                                                        fontWeight: "600",
+                                                                                                        cursor: "pointer"
+                                                                                                    }}
+                                                                                                    onClick={() =>
+                                                                                                        navigate(
+                                                                                                            `/admin/upload-preview/${item.id}`
+                                                                                                        )
+                                                                                                    }
+                                                                                                >
+                                                                                                    (Upload Now)
+                                                                                                </div>
+                                                                                            )}
 
-                                                                        <td>
-                                                                            <div
-                                                                                style={{
-                                                                                    fontWeight: "600",
-                                                                                    color: "#0152a8"
-                                                                                }}
-                                                                            >
-                                                                                {item.preview_status ===
-                                                                                    "Preview Requested"
-                                                                                    ? "Preview Requested"
-                                                                                    : "No Preview Requested"}
-                                                                            </div>
+                                                                                        <small
+                                                                                            style={{
+                                                                                                color: "#6c757d"
+                                                                                            }}
+                                                                                        >
+                                                                                            No preview files uploaded.
+                                                                                        </small>
+                                                                                    </>
+                                                                                )}
 
-                                                                            {item.preview_status ===
-                                                                                "Preview Requested" && (
-                                                                                    <div
+                                                                            </td>
+
+                                                                            <td>
+                                                                                <select
+                                                                                    value={item.status}
+                                                                                    onChange={(e) =>
+                                                                                        handleStatusChange(
+                                                                                            item.id,
+                                                                                            e.target.value
+                                                                                        )
+                                                                                    }
+                                                                                    style={{
+                                                                                        border: "none",
+                                                                                        background: "transparent",
+                                                                                        color: "#0152a8",
+                                                                                        fontWeight: "600",
+                                                                                        cursor: "pointer",
+                                                                                        outline: "none",
+                                                                                        appearance: "none",
+                                                                                        WebkitAppearance: "none",
+                                                                                        MozAppearance: "none",
+                                                                                        paddingRight: "20px"
+                                                                                    }}
+                                                                                >
+                                                                                    <option value="Submitted">
+                                                                                        Submitted
+                                                                                    </option>
+
+                                                                                    <option value="InProduction">
+                                                                                        InProduction
+                                                                                    </option>
+
+                                                                                    <option value="QualityCheck">
+                                                                                        QualityCheck
+                                                                                    </option>
+
+                                                                                    <option value="Shipped">
+                                                                                        Shipped
+                                                                                    </option>
+
+                                                                                    <option value="Delivered">
+                                                                                        Delivered
+                                                                                    </option>
+                                                                                </select>
+
+                                                                                <span
+                                                                                    style={{
+                                                                                        marginLeft: "-15px",
+                                                                                        color: "#0152a8",
+                                                                                        pointerEvents: "none",
+                                                                                        fontSize: "12px"
+                                                                                    }}
+                                                                                >
+                                                                                    ▼
+                                                                                </span>
+                                                                            </td>
+
+                                                                            <td className="action-icons">
+
+                                                                                <button
+                                                                                    className="btn btn-link p-0 me-3"
+                                                                                    onClick={() =>
+                                                                                        navigate(`/admin/view-case/${item.id}`)
+                                                                                    }
+                                                                                >
+                                                                                    <FaEye
                                                                                         style={{
                                                                                             color: "#0152a8",
-                                                                                            fontWeight: "600",
                                                                                             cursor: "pointer"
                                                                                         }}
+                                                                                    />
+                                                                                </button>
+
+                                                                                {previewFiles.length === 0 && (
+
+                                                                                    <button
+                                                                                        className="btn btn-link p-0 me-3"
                                                                                         onClick={() =>
                                                                                             navigate(
                                                                                                 `/admin/upload-preview/${item.id}`
                                                                                             )
                                                                                         }
                                                                                     >
-                                                                                        (Upload Now)
-                                                                                    </div>
+                                                                                        <FaUpload
+                                                                                            style={{
+                                                                                                color: "#0152a8",
+                                                                                                cursor: "pointer"
+                                                                                            }}
+                                                                                        />
+                                                                                    </button>
+
                                                                                 )}
 
-                                                                            <small
-                                                                                style={{
-                                                                                    color: "#6c757d"
-                                                                                }}
-                                                                            >
-                                                                                No preview files uploaded.
-                                                                            </small>
-                                                                        </td>
-                                                                        <td>
-                                                                            <select
-                                                                                value={item.status}
-                                                                                onChange={(e) =>
-                                                                                    handleStatusChange(
-                                                                                        item.id,
-                                                                                        e.target.value
-                                                                                    )
-                                                                                }
-                                                                                style={{
-                                                                                    border: "none",
-                                                                                    background: "transparent",
-                                                                                    color: "#0152a8",
-                                                                                    fontWeight: "600",
-                                                                                    cursor: "pointer",
-                                                                                    outline: "none",
-                                                                                    appearance: "none",
-                                                                                    WebkitAppearance: "none",
-                                                                                    MozAppearance: "none",
-                                                                                    paddingRight: "20px"
-                                                                                }}
-                                                                            >
-                                                                                <option value="Submitted">
-                                                                                    Submitted
-                                                                                </option>
+                                                                                <button
+                                                                                    className="btn btn-link p-0"
+                                                                                    onClick={() => handleDelete(item.id)}
+                                                                                >
+                                                                                    <FaTrash
+                                                                                        style={{
+                                                                                            color: "red",
+                                                                                            cursor: "pointer"
+                                                                                        }}
+                                                                                    />
+                                                                                </button>
 
-                                                                                <option value="InProduction">
-                                                                                    InProduction
-                                                                                </option>
-
-                                                                                <option value="QualityCheck">
-                                                                                    QualityCheck
-                                                                                </option>
-
-                                                                                <option value="Shipped">
-                                                                                    Shipped
-                                                                                </option>
-
-                                                                                <option value="Delivered">
-                                                                                    Delivered
-                                                                                </option>
-                                                                            </select>
-
-                                                                            <span
-                                                                                style={{
-                                                                                    marginLeft: "-15px",
-                                                                                    color: "#0152a8",
-                                                                                    pointerEvents: "none",
-                                                                                    fontSize: "12px"
-                                                                                }}
-                                                                            >
-                                                                                ▼
-                                                                            </span>
-                                                                        </td>
-
-                                                                        <td className="action-icons">
-
-                                                                            {/* View Case Details */}
-                                                                            <button
-                                                                                className="btn btn-link p-0 me-3"
-                                                                                onClick={() =>
-                                                                                    navigate(`/admin/view-case/${item.id}`)
-                                                                                }
-                                                                            >
-                                                                                <FaEye
-                                                                                    style={{
-                                                                                        color: "#0152a8",
-                                                                                        cursor: "pointer"
-                                                                                    }}
-                                                                                />
-                                                                            </button>
-
-
-                                                                            <button
-                                                                                className="btn btn-link p-0 me-3"
-                                                                                onClick={() =>
-                                                                                    navigate(`/upload-preview/${item.id}`)
-                                                                                }
-                                                                            >
-                                                                                <FaUpload
-                                                                                    style={{
-                                                                                        color: "#0152a8",
-                                                                                        cursor: "pointer"
-                                                                                    }}
-                                                                                />
-                                                                            </button>
-
-                                                                            <button
-                                                                                className="btn btn-link p-0"
-                                                                                onClick={() => handleDelete(item.id)}
-                                                                            >
-                                                                                <FaTrash
-                                                                                    style={{
-                                                                                        color: "red",
-                                                                                        cursor: "pointer"
-                                                                                    }}
-                                                                                />
-                                                                            </button>
-
-                                                                        </td>
-                                                                    </tr>
-                                                                ))}
+                                                                            </td>
+                                                                        </tr>
+                                                                    );
+                                                                })}
                                                             </tbody>
                                                         </table>
                                                     </div>
