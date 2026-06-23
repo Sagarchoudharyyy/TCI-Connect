@@ -9,6 +9,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from app.database.database import Base
+from sqlalchemy import Boolean
 
 
 class CaseFile(Base):
@@ -26,6 +27,12 @@ class CaseFile(Base):
     upload_at=Column(DateTime,server_default=func.now())
     
     case=relationship("Case",back_populates="files")
+
+    is_confirmed = Column(
+    Boolean,
+    default=False,
+    nullable=False
+)
 
     file_category = Column(
     String(50),

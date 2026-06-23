@@ -13,10 +13,117 @@ function UploadPreview() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMsg, setSuccessMsg] = useState("");
 
-    const handlePreviewUpload = (e) => {
-        setPreviewFiles(
-            Array.from(e.target.files)
-        );
+    const handlePreviewUpload = async (e) => {
+        const files = Array.from(e.target.files);
+
+        const uniqueFiles = files.filter((file) => {
+            return !previewFiles.some(
+                (item) =>
+                    item.file.name === file.name &&
+                    item.file.size === file.size &&
+                    item.file.lastModified === file.lastModified
+            );
+        });
+
+        const newFiles = uniqueFiles.map((file) => ({
+            file,
+            progress: 0,
+            status: "uploading",
+        }));
+
+        setPreviewFiles((prev) => [
+            ...prev,
+            ...newFiles,
+        ]);
+
+        for (const file of uniqueFiles) {
+            const formData = new FormData();
+
+            formData.append(
+                "category",
+                "preview_file"
+            );
+
+            formData.append(
+                "file",
+                file
+            );
+
+            try {
+                const response = await axios.post(
+                    `http://127.0.0.1:8000/api/cases/${id}/upload`,
+                    formData,
+                    {
+                        headers: {
+                            "Content-Type":
+                                "multipart/form-data",
+                        },
+                        onUploadProgress: (
+                            progressEvent
+                        ) => {
+                            if (!progressEvent.total)
+                                return;
+
+                            const percent = Math.round(
+                                (progressEvent.loaded * 100) /
+                                progressEvent.total
+                            );
+
+                            setPreviewFiles((prev) =>
+                                prev.map((f) =>
+                                    f.file.name === file.name
+                                        ? {
+                                            ...f,
+                                            progress: percent,
+                                            status: "uploading",
+                                        }
+                                        : f
+                                )
+                            );
+                        },
+                    }
+                );
+
+                setPreviewFiles((prev) =>
+                    prev.map((f) =>
+                        f.file.name === file.name
+                            ? {
+                                ...f,
+                                id: response.data.file_id,
+                                progress: 100,
+                                status: "uploaded",
+                            }
+                            : f
+                    )
+                );
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        e.target.value = "";
+    };
+
+    const removeFile = async (fileId) => {
+        try {
+            await axios.delete(
+                `http://127.0.0.1:8000/api/case-files/${fileId}`
+            );
+
+            setPreviewFiles((prev) =>
+                prev.filter(
+                    (item) =>
+                        item.id !== fileId
+                )
+            );
+        }
+
+        catch (error) {
+            console.error(error);
+            alert(
+                "Failed to remove file."
+            );
+        }
     };
 
     useEffect(() => {
@@ -37,65 +144,52 @@ function UploadPreview() {
             console.error(error);
         }
     };
-
     const submitPreviewFiles = async () => {
-
         try {
-
             setIsSubmitting(true);
 
-            for (const file of previewFiles) {
-
-                const formData =
-                    new FormData();
-
-                formData.append(
-                    "category",
-                    "preview_file"
-                );
-
-                formData.append(
-                    "file",
-                    file
-                );
-
-                await axios.post(
-                    `http://127.0.0.1:8000/api/cases/${id}/upload`,
-                    formData,
-                    {
-                        headers: {
-                            "Content-Type":
-                                "multipart/form-data"
-                        }
-                    }
-                );
-
-            }
+            await axios.put(
+                `http://127.0.0.1:8000/api/cases/${id}/confirm-preview-files`
+            );
 
             setSuccessMsg(
-                "Preview files uploaded successfully!"
+                "Preview files submitted successfully!"
             );
 
             setTimeout(() => {
-
                 navigate("/admin/dashboard");
-
             }, 2000);
-
         }
         catch (error) {
-
-            console.error(error);
-
-            alert(
-                "Failed to upload preview files."
-            );
-
+            console.log(error);
         }
         finally {
-
             setIsSubmitting(false);
+        }
+    };
 
+    const handleCancel = async () => {
+        try {
+            const filesToDelete = previewFiles.filter(
+                (file) => file.id
+            );
+
+            await Promise.all(
+                filesToDelete.map((file) =>
+                    axios.delete(
+                        `http://127.0.0.1:8000/api/case-files/${file.id}`
+                    )
+                )
+            );
+            setPreviewFiles([]);
+
+            navigate("/admin/dashboard");
+        }
+        catch (error) {
+            console.error(error);
+            alert(
+                "Failed to cancel upload."
+            );
         }
     };
     return (
@@ -129,18 +223,65 @@ function UploadPreview() {
                                                 type="file"
                                                 id="previewUpload"
                                                 multiple
+                                                disabled={isSubmitting}
                                                 accept=".stl,.obj,.zip,.jpg,.jpeg,.png,.ply"
                                                 className="form-control"
                                                 onChange={handlePreviewUpload}
                                             />
                                         </div>
-                                        <div id="previewUploadList" className="mb-4"></div>
+                                        <div className="mb-4">
+                                            {previewFiles.map((item) => (
+                                                <div
+                                                    key={item.file.name}
+                                                    className="d-flex align-items-center gap-3 mb-3 p-2 border rounded"
+                                                >
+                                                    <span style={{ width: "350px" }}>
+                                                        {item.file.name}
+                                                    </span>
+
+                                                    <span
+                                                        className={`badge ${item.status === "uploaded"
+                                                            ? "bg-success"
+                                                            : "bg-secondary"
+                                                            }`}
+                                                    >
+                                                        {item.status}
+                                                    </span>
+
+                                                    <div className="progress flex-grow-1">
+                                                        <div
+                                                            className="progress-bar"
+                                                            role="progressbar"
+                                                            style={{
+                                                                width: `${item.progress}%`,
+                                                            }}
+                                                        >
+                                                            {item.progress}%
+                                                        </div>
+                                                    </div>
+
+                                                    <button
+                                                        className="btn btn-danger btn-sm"
+                                                        onClick={() =>
+                                                            removeFile(item.id)
+                                                        }
+                                                        disabled={
+                                                            item.status !== "uploaded"
+                                                        }
+                                                    >
+                                                        Remove
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
                                         <div className="validation-msg" id="errorPreviewFiles"></div>
-                                        <div className="text-success small mb-3" id="successPreviewFiles"></div>
+                                        <div className="text-success small mb-3">
+                                            {successMsg}
+                                        </div>
                                         <div className="d-flex justify-content-between mt-4">
                                             <button
                                                 className="btn btn-secondary px-4"
-                                                onClick={() => navigate(-1)}
+                                                onClick={handleCancel}
                                             >
                                                 Cancel
                                             </button>
@@ -148,7 +289,13 @@ function UploadPreview() {
                                                 className="btn btn-primary px-5"
                                                 id="submitPreviewBtn"
                                                 onClick={submitPreviewFiles}
-                                                disabled={previewFiles.length === 0}
+                                                disabled={
+                                                    previewFiles.length === 0 ||
+                                                    isSubmitting ||
+                                                    previewFiles.some(
+                                                        (file) => file.status !== "uploaded"
+                                                    )
+                                                }
                                             >
                                                 Submit Preview Files
                                             </button>
