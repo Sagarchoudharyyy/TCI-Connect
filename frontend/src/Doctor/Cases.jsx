@@ -316,7 +316,7 @@ function DoctorCases() {
                                                                 : "N/A"}
                                                         </td>
                                                         <td>{item.age}</td>
-                                                        <td>
+                                                        {/* <td>
                                                             {
                                                                 item.files
                                                                     ?.filter(
@@ -343,6 +343,87 @@ function DoctorCases() {
                                                                 !item.files?.some(
                                                                     file =>
                                                                         file.file_category === "case_document"
+                                                                ) && <span>-</span>
+                                                            }
+                                                        </td> */}
+
+
+                                                        <td>
+                                                            {
+                                                                item.files
+                                                                    ?.filter(
+                                                                        file =>
+                                                                            file.file_category === "case_document"
+                                                                    )
+                                                                    .map((file, index) => {
+
+                                                                        const fileUrl =
+                                                                            `http://127.0.0.1:8000/${file.file_path.replace(/\\/g, "/")}`;
+
+                                                                        if (
+                                                                            file.file_type?.startsWith("image/")
+                                                                        ) {
+                                                                            return (
+                                                                                <a
+                                                                                    key={index}
+                                                                                    href={fileUrl}
+                                                                                    target="_blank"
+                                                                                    rel="noreferrer"
+                                                                                >
+                                                                                    <img
+                                                                                        src={fileUrl}
+                                                                                        alt="preview"
+                                                                                        style={{
+                                                                                            width: "60px",
+                                                                                            height: "60px",
+                                                                                            objectFit: "cover",
+                                                                                            borderRadius: "4px"
+                                                                                        }}
+                                                                                    />
+                                                                                </a>
+                                                                            );
+                                                                        }
+
+                                                                        if (
+                                                                            file.file_type ===
+                                                                            "application/pdf"
+                                                                        ) {
+                                                                            return (
+                                                                                <a
+                                                                                    key={index}
+                                                                                    href={fileUrl}
+                                                                                    target="_blank"
+                                                                                    rel="noreferrer"
+                                                                                    style={{
+                                                                                        textDecoration: "none"
+                                                                                    }}
+                                                                                >
+                                                                                    📄 PDF
+                                                                                </a>
+                                                                            );
+                                                                        }
+
+                                                                        return (
+                                                                            <a
+                                                                                key={index}
+                                                                                href={fileUrl}
+                                                                                target="_blank"
+                                                                                rel="noreferrer"
+                                                                                style={{
+                                                                                    textDecoration: "none"
+                                                                                }}
+                                                                            >
+                                                                                📦 FILE
+                                                                            </a>
+                                                                        );
+                                                                    })
+                                                            }
+
+                                                            {
+                                                                !item.files?.some(
+                                                                    file =>
+                                                                        file.file_category ===
+                                                                        "case_document"
                                                                 ) && <span>-</span>
                                                             }
                                                         </td>
@@ -379,7 +460,7 @@ function DoctorCases() {
                                                                                 }}
                                                                             >
                                                                                 <FaDownload />
-                                                                            </a>    
+                                                                            </a>
                                                                         </div>
                                                                     ))
                                                             }
@@ -392,15 +473,173 @@ function DoctorCases() {
                                                             }
                                                         </td>
 
-                                                        <td>
+                                                        {/* <td>
                                                             {item.delivery_deadline
                                                                 ? new Date(
                                                                     item.delivery_deadline
                                                                 ).toLocaleDateString("en-GB")
                                                                 : "N/A"}
+                                                        </td> */}
+                                                        <td>
+                                                            {item.delivery_deadline ? (() => {
+
+                                                                const today = new Date();
+                                                                const deadline = new Date(item.delivery_deadline);
+
+                                                                today.setHours(0, 0, 0, 0);
+                                                                deadline.setHours(0, 0, 0, 0);
+
+                                                                const diffTime = deadline - today;
+
+                                                                const daysLeft = Math.ceil(
+                                                                    diffTime / (1000 * 60 * 60 * 24)
+                                                                );
+
+                                                                const isPassed = deadline < today;
+
+                                                                return (
+                                                                    <>
+                                                                        <div>
+                                                                            {deadline.toLocaleDateString(
+                                                                                "en-GB",
+                                                                                {
+                                                                                    day: "2-digit",
+                                                                                    month: "short",
+                                                                                    year: "numeric"
+                                                                                }
+                                                                            )}
+                                                                        </div>
+
+                                                                        <div
+                                                                            style={{
+                                                                                color: isPassed
+                                                                                    ? "red"
+                                                                                    : "#0152a8",
+                                                                                fontWeight: "600"
+                                                                            }}
+                                                                        >
+                                                                            {isPassed
+                                                                                ? "(Deadline passed)"
+                                                                                : `(${daysLeft} day${daysLeft > 1 ? "s" : ""
+                                                                                } left)`
+                                                                            }
+                                                                        </div>
+                                                                    </>
+                                                                );
+                                                            })() : (
+                                                                "-"
+                                                            )}
                                                         </td>
-                                                        <td>{item.preview_status}</td>
-                                                        <td>{item.status}</td>
+                                                        {/* <td>{item.preview_status}</td> */}
+
+                                                        {/* <td>
+                                                            <span
+                                                                style={{
+                                                                    fontWeight: "600",
+                                                                    color:
+                                                                        item.preview_status?.toLowerCase() === "approved"
+                                                                            ? "green"
+                                                                            : item.preview_status?.toLowerCase() === "rejected"
+                                                                                ? "red"
+                                                                                : item.preview_status?.toLowerCase() === "waiting user"
+                                                                                    ? "#fd7e14"
+                                                                                    : "#0152a8"
+                                                                }}
+                                                            >
+                                                                {item.preview_status}
+                                                            </span>
+                                                        </td> */}
+
+                                                        <td>
+                                                            {/* 
+                                                            {item.files
+                                                                ?.filter(
+                                                                    file =>
+                                                                        file.file_category === "preview_file"
+                                                                )
+                                                                .map((file, index) => (
+
+                                                                    <div key={index}>
+
+                                                                        <a
+                                                                            href={`http://127.0.0.1:8000/${file.file_path.replace(/\\/g, "/")}`}
+                                                                            target="_blank"
+                                                                            rel="noreferrer"
+                                                                            style={{
+                                                                                textDecoration: "none",
+                                                                                color: "#0152a8"
+                                                                            }}
+                                                                        >
+                                                                            Preview File {index + 1}
+                                                                            {" "}
+                                                                            (
+                                                                            {file.file_name
+                                                                                ?.split(".")
+                                                                                .pop()
+                                                                                ?.toUpperCase()}
+                                                                            )
+                                                                        </a>
+
+                                                                        <br />
+
+                                                                        <a
+                                                                            href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
+                                                                            style={{
+                                                                                color: "#0152a8"
+                                                                            }}
+                                                                        >
+                                                                            <FaDownload />
+                                                                        </a>
+
+                                                                    </div>
+
+                                                                ))} */}
+
+                                                            <div className="mt-1">
+
+                                                                <span
+                                                                    style={{
+                                                                        fontWeight: "600",
+                                                                        color:
+                                                                            item.preview_status?.toLowerCase() === "approved"
+                                                                                ? "green"
+                                                                                : item.preview_status?.toLowerCase() === "rejected"
+                                                                                    ? "red"
+                                                                                    : item.preview_status?.toLowerCase() === "waiting user"
+                                                                                        ? "#fd7e14"
+                                                                                        : "#0152a8"
+                                                                    }}
+                                                                >
+                                                                    {item.preview_status}
+                                                                </span>
+
+                                                            </div>
+
+                                                        </td>
+
+
+                                                        {/* <td>{item.status}</td> */}
+                                                        <td>
+                                                            <span
+                                                                style={{
+                                                                    fontWeight: "600",
+                                                                    color:
+                                                                        item.status === "Submitted"
+                                                                            ? "#6c757d"
+                                                                            : item.status === "InProduction"
+                                                                                ? "#0d6efd"
+                                                                                : item.status === "QualityCheck"
+                                                                                    ? "#0d6efd"
+                                                                                    : item.status === "Shipped"
+                                                                                        ? "#0d6efd"
+                                                                                        : item.status === "Delivered"
+                                                                                            ? "#0d6efd"
+                                                                                            : "black"
+                                                                }}
+                                                            >
+                                                                {item.status}
+                                                            </span>
+                                                        </td>
                                                         <td>
                                                             <Link
                                                                 to={`/client/update-case/${item.id}`}
