@@ -32,3 +32,17 @@ export const uploadCaseFile = (caseId, formData) => {
 export const getCaseFiles = () => {
   return axios.get(`${API_URL}/case_files`);
 };
+
+
+
+export const updatePreviewStatus = (
+  caseId,
+  preview_status
+) => {
+  return axios.put(
+    `${API_URL}/cases/${caseId}/preview-status`,
+    {
+      preview_status
+    }
+  );
+};

@@ -31,7 +31,8 @@ router = APIRouter()
 
 class StatusUpdate(BaseModel):
         status: str
-
+class PreviewStatusUpdate(BaseModel):
+    preview_status: str
 @router.post(
     "/cases",
     response_model=CaseResponse
@@ -818,6 +819,30 @@ def update_case_status(
             "status": case.status
         }
 
+@router.put("/cases/{case_id}/preview-status")
+def update_preview_status(
+    case_id:int,
+    preview_data:PreviewStatusUpdate,
+    db:Session=Depends(get_db)
+):
+    
+    case = (
+        db.query(Case)
+        .filter(Case.id == case_id)
+        .first()
+    )
+    if not case:
+        raise HTTPException(
+            status_code=404,
+            detail="Case not found"
+        )
+    case.preview_status = preview_data.preview_status
+    db.commit()
+    db.refresh(case)
+    return {
+        "message": "Preview status updated successfully",
+        "preview_status": case.preview_status
+    }
 
 @router.get("/cases/{case_id}/history")
 def get_case_history(

@@ -629,7 +629,7 @@ function OrdersTable() {
 
                                                     {previewFiles.length > 0 ? (
                                                         <>
-                                                            <div
+                                                            {/* <div
                                                                 style={{
                                                                     color: "#0152a8",
                                                                     fontWeight: "600"
@@ -638,8 +638,52 @@ function OrdersTable() {
                                                                 Preview Uploaded
                                                                 <br />
                                                                 (Waiting User)
-                                                            </div>
+                                                            </div> */}
+                                                            <div
+                                                                style={{
+                                                                    fontWeight: "600"
+                                                                }}
+                                                            >
 
+                                                                {item.preview_status?.toLowerCase() === "approved" ? (
+                                                                    <span
+                                                                        style={{
+                                                                            color: "green"
+                                                                        }}
+                                                                    >
+                                                                        Preview Approved
+                                                                    </span>
+                                                                ) : item.preview_status?.toLowerCase() === "rejected" ? (
+                                                                    <span
+                                                                        style={{
+                                                                            color: "red"
+                                                                        }}
+                                                                    >
+                                                                        Preview Rejected
+                                                                    </span>
+                                                                ) : (
+                                                                    <>
+                                                                        <span
+                                                                            style={{
+                                                                                color: "#0152a8"
+                                                                            }}
+                                                                        >
+                                                                            Preview Uploaded
+                                                                        </span>
+
+                                                                        <br />
+
+                                                                        <span
+                                                                            style={{
+                                                                                color: "#0152a8"
+                                                                            }}
+                                                                        >
+                                                                            (Waiting User)
+                                                                        </span>
+                                                                    </>
+                                                                )}
+
+                                                            </div>
                                                             <small
                                                                 style={{
                                                                     color: "#6c757d"

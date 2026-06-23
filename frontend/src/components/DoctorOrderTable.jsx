@@ -8,7 +8,7 @@ import {
     FaEdit
 } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { getCases, deleteCase } from "../services/caseService";
+import { getCases, deleteCase, updatePreviewStatus } from "../services/caseService";
 import { Link } from "react-router-dom";
 
 
@@ -114,6 +114,41 @@ function DoctorOrderTable({
                 setSuccessMessage(
                     ""
                 );
+            }, 3000);
+        }
+    };
+    const handlePreviewStatus = async (
+        caseId,
+        status
+    ) => {
+
+        try {
+
+            await updatePreviewStatus(
+                caseId,
+                status
+            );
+
+            fetchCases();
+
+            setSuccessMessage(
+                `Preview ${status} successfully`
+            );
+
+            setTimeout(() => {
+                setSuccessMessage("");
+            }, 3000);
+
+        } catch (error) {
+
+            console.log(error);
+
+            setSuccessMessage(
+                "Failed to update preview status"
+            );
+
+            setTimeout(() => {
+                setSuccessMessage("");
             }, 3000);
         }
     };
@@ -521,17 +556,55 @@ function DoctorOrderTable({
 
                                                                         <div className="mt-2">
 
-                                                                            <button
-                                                                                className="btn btn-sm btn-primary me-2"
-                                                                            >
-                                                                                ✓
-                                                                            </button>
+                                                                            {item.preview_status?.toLowerCase() === "pending" && (
+                                                                                <>
+                                                                                    <button
+                                                                                        className="btn btn-sm btn-primary me-2"
+                                                                                        onClick={() =>
+                                                                                            handlePreviewStatus(
+                                                                                                item.id,
+                                                                                                "Approved"
+                                                                                            )
+                                                                                        }
+                                                                                    >
+                                                                                        ✓
+                                                                                    </button>
 
-                                                                            <button
-                                                                                className="btn btn-sm btn-danger"
-                                                                            >
-                                                                                ✕
-                                                                            </button>
+                                                                                    <button
+                                                                                        className="btn btn-sm btn-danger"
+                                                                                        onClick={() =>
+                                                                                            handlePreviewStatus(
+                                                                                                item.id,
+                                                                                                "Rejected"
+                                                                                            )
+                                                                                        }
+                                                                                    >
+                                                                                        ✕
+                                                                                    </button>
+                                                                                </>
+                                                                            )}
+
+                                                                            {item.preview_status?.toLowerCase() === "approved" && (
+                                                                                <span
+                                                                                    style={{
+                                                                                        color: "green",
+                                                                                        fontWeight: "600"
+                                                                                    }}
+                                                                                >
+                                                                                    Approved
+                                                                                </span>
+                                                                            )}
+
+                                                                            {item.preview_status?.toLowerCase() === "rejected" && (
+                                                                                <span
+                                                                                    style={{
+                                                                                        color: "red",
+                                                                                        fontWeight: "600"
+                                                                                    }}
+                                                                                >
+                                                                                    Rejected
+                                                                                </span>
+                                                                            )}
 
                                                                         </div>
 
