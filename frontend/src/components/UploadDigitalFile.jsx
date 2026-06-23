@@ -11,7 +11,7 @@ function UploadDigitalFiles({
     errors
 }) {
 
-    const isUploading = digitalFiles.some(
+    const isUploading = digitalFiles?.some(
         (file) => file.status === "uploading"
     );
 

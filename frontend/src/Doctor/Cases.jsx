@@ -383,7 +383,6 @@ function DoctorCases() {
                                                                                 </a>
                                                                             );
                                                                         }
-
                                                                         if (
                                                                             file.file_type ===
                                                                             "application/pdf"
@@ -395,14 +394,14 @@ function DoctorCases() {
                                                                                     target="_blank"
                                                                                     rel="noreferrer"
                                                                                     style={{
-                                                                                        textDecoration: "none"
+                                                                                        textDecoration: "none",
+                                                                                        color: "#0152a8"
                                                                                     }}
                                                                                 >
                                                                                     📄 PDF
                                                                                 </a>
                                                                             );
                                                                         }
-
                                                                         return (
                                                                             <a
                                                                                 key={index}
@@ -410,7 +409,9 @@ function DoctorCases() {
                                                                                 target="_blank"
                                                                                 rel="noreferrer"
                                                                                 style={{
-                                                                                    textDecoration: "none"
+                                                                                    textDecoration: "none",
+                                                                                    color: "#0047AB",   // slightly darker blue
+
                                                                                 }}
                                                                             >
                                                                                 📦 FILE
@@ -530,28 +531,9 @@ function DoctorCases() {
                                                                 "-"
                                                             )}
                                                         </td>
-                                                        {/* <td>{item.preview_status}</td> */}
-
-                                                        {/* <td>
-                                                            <span
-                                                                style={{
-                                                                    fontWeight: "600",
-                                                                    color:
-                                                                        item.preview_status?.toLowerCase() === "approved"
-                                                                            ? "green"
-                                                                            : item.preview_status?.toLowerCase() === "rejected"
-                                                                                ? "red"
-                                                                                : item.preview_status?.toLowerCase() === "waiting user"
-                                                                                    ? "#fd7e14"
-                                                                                    : "#0152a8"
-                                                                }}
-                                                            >
-                                                                {item.preview_status}
-                                                            </span>
-                                                        </td> */}
 
                                                         <td>
-                                                            {/* 
+
                                                             {item.files
                                                                 ?.filter(
                                                                     file =>
@@ -570,17 +552,22 @@ function DoctorCases() {
                                                                                 color: "#0152a8"
                                                                             }}
                                                                         >
-                                                                            Preview File {index + 1}
-                                                                            {" "}
+                                                                            Preview {index + 1}
+                                                                        </a>
+
+                                                                        <div
+                                                                            style={{
+                                                                                color: "#0152a8",
+                                                                                fontSize: "14px"
+                                                                            }}
+                                                                        >
                                                                             (
                                                                             {file.file_name
                                                                                 ?.split(".")
                                                                                 .pop()
                                                                                 ?.toUpperCase()}
                                                                             )
-                                                                        </a>
-
-                                                                        <br />
+                                                                        </div>
 
                                                                         <a
                                                                             href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
@@ -592,29 +579,73 @@ function DoctorCases() {
                                                                         </a>
 
                                                                     </div>
+                                                                ))}
 
-                                                                ))} */}
 
-                                                            <div className="mt-1">
+                                                            <div className="mt-2">
 
-                                                                <span
-                                                                    style={{
-                                                                        fontWeight: "600",
-                                                                        color:
-                                                                            item.preview_status?.toLowerCase() === "approved"
-                                                                                ? "green"
-                                                                                : item.preview_status?.toLowerCase() === "rejected"
-                                                                                    ? "red"
-                                                                                    : item.preview_status?.toLowerCase() === "waiting user"
-                                                                                        ? "#fd7e14"
-                                                                                        : "#0152a8"
-                                                                    }}
-                                                                >
-                                                                    {item.preview_status}
-                                                                </span>
+                                                                {item.preview_status?.toLowerCase() === "waiting user" && (
+                                                                    <>
+                                                                        <button
+                                                                            className="btn btn-sm btn-primary me-2"
+                                                                            onClick={() =>
+                                                                                handlePreviewStatus(
+                                                                                    item.id,
+                                                                                    "Approved"
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            ✓
+                                                                        </button>
+
+                                                                        <button
+                                                                            className="btn btn-sm btn-danger"
+                                                                            onClick={() =>
+                                                                                handlePreviewStatus(
+                                                                                    item.id,
+                                                                                    "Preview Rejected"
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            ✕
+                                                                        </button>
+                                                                    </>
+                                                                )}
+
+                                                                {item.preview_status?.toLowerCase() === "approved" && (
+                                                                    <span
+                                                                        style={{
+                                                                            color: "green",
+                                                                            fontWeight: "600"
+                                                                        }}
+                                                                    >
+                                                                        Approved
+                                                                    </span>
+                                                                )}
+
+                                                                {item.preview_status?.toLowerCase() === "preview rejected" && (
+                                                                    <span
+                                                                        style={{
+                                                                            color: "red",
+                                                                            fontWeight: "600"
+                                                                        }}
+                                                                    >
+                                                                        Rejected
+                                                                    </span>
+                                                                )}
+
+                                                                {item.preview_status?.toLowerCase() === "pending" && (
+                                                                    <span
+                                                                        style={{
+                                                                            color: "#0152a8",
+                                                                            fontWeight: "600"
+                                                                        }}
+                                                                    >
+                                                                        Pending
+                                                                    </span>
+                                                                )}
 
                                                             </div>
-
                                                         </td>
 
 
@@ -627,13 +658,13 @@ function DoctorCases() {
                                                                         item.status === "Submitted"
                                                                             ? "#6c757d"
                                                                             : item.status === "InProduction"
-                                                                                ? "#0d6efd"
+                                                                                ? "#0152a8"
                                                                                 : item.status === "QualityCheck"
-                                                                                    ? "#0d6efd"
+                                                                                    ? "#0152a8"
                                                                                     : item.status === "Shipped"
-                                                                                        ? "#0d6efd"
+                                                                                        ? "#0152a8"
                                                                                         : item.status === "Delivered"
-                                                                                            ? "#0d6efd"
+                                                                                            ? "#0152a8"
                                                                                             : "black"
                                                                 }}
                                                             >

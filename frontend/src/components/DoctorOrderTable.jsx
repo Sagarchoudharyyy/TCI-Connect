@@ -18,7 +18,7 @@ function DoctorOrderTable({
     showSubmitButton = true,
 
 }) {
-
+    console.log(status)
     const [statusFilter, setStatusFilter] = useState("");
     const [deadlineFilter, setDeadlineFilter] = useState("");
     const [entriesPerPage, setEntriesPerPage] = useState(5);
@@ -34,6 +34,7 @@ function DoctorOrderTable({
         try {
             const response = await getCases();
             console.log("API Response:", response.data);
+
             setCases(response.data);
         } catch (error) {
             console.log(error);
@@ -356,6 +357,12 @@ function DoctorOrderTable({
                                             </thead>
                                             <tbody>
                                                 {visibleCases.map((item) => {
+                                                    console.log(
+                                                        "Case ID:",
+                                                        item.id,
+                                                        "Preview Status:",
+                                                        item.preview_status
+                                                    );
                                                     const previewFiles =
                                                         item.files?.filter(
                                                             file =>
