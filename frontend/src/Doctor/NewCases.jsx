@@ -16,6 +16,7 @@ function NewCases() {
     const [pdfProgress, setPdfProgress] = useState(0);
     const [uploadedPdf, setUploadedPdf] = useState(null);
     const [digitalProgress, setDigitalProgress] = useState(0);
+    const [digitalFiles, setDigitalFiles] = useState([]);
 
     const initialFormData = {
         patient_name: "",
@@ -576,6 +577,8 @@ function NewCases() {
                                             setFormData={setFormData}
                                             handleNext={handleNext}
                                             handlePrevious={handlePrevious}
+                                            digitalFiles={digitalFiles}
+                                            setDigitalFiles={setDigitalFiles}
                                             digitalProgress={digitalProgress}
                                             setDigitalProgress={setDigitalProgress}
                                             errors={errors}

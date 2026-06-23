@@ -556,7 +556,7 @@ function DoctorOrderTable({
 
                                                                         <div className="mt-2">
 
-                                                                            {item.preview_status?.toLowerCase() === "pending" && (
+                                                                            {item.preview_status?.toLowerCase() === "waiting user" && (
                                                                                 <>
                                                                                     <button
                                                                                         className="btn btn-sm btn-primary me-2"
@@ -575,7 +575,7 @@ function DoctorOrderTable({
                                                                                         onClick={() =>
                                                                                             handlePreviewStatus(
                                                                                                 item.id,
-                                                                                                "rejected"
+                                                                                                "Preview Rejected"
                                                                                             )
                                                                                         }
                                                                                     >
@@ -595,14 +595,14 @@ function DoctorOrderTable({
                                                                                 </span>
                                                                             )}
 
-                                                                            {item.preview_status?.toLowerCase() === "rejected" && (
+                                                                            {item.preview_status?.toLowerCase() === "preview rejected" && (
                                                                                 <span
                                                                                     style={{
                                                                                         color: "red",
                                                                                         fontWeight: "600"
                                                                                     }}
                                                                                 >
-                                                                                    Rejected
+                                                                                    Rejected  
                                                                                 </span>
                                                                             )}
 

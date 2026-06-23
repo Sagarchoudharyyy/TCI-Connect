@@ -1,44 +1,74 @@
 import axios from "axios";
+import { useState } from "react";
 
 function UploadDigitalFiles({
     formData,
     setFormData,
     handleNext,
     handlePrevious,
-    digitalProgress,
-    setDigitalProgress,
+    digitalFiles,
+    setDigitalFiles,
     errors
 }) {
-    const handleFileChange = async (e) => {
 
-        setDigitalProgress(0);
+    const isUploading = digitalFiles.some(
+        (file) => file.status === "uploading"
+    );
+
+    const handleFileChange = async (e) => {
 
         const selectedFiles =
             Array.from(e.target.files);
 
-        if (selectedFiles.length > 5) {
+        if (
+            formData.files.length +
+            selectedFiles.length >
+            5
+        ) {
             alert(
                 "You can upload maximum 5 files"
             );
             return;
         }
+        const newFiles = selectedFiles.map(
+            (file) => ({
+                id:
+                    Date.now() +
+                    Math.random(),
+                file,
+                progress: 0,
+                status: "uploading"
+            })
+        );
 
-        setFormData(prev => ({
+        setDigitalFiles((prev) => [
+            ...prev,
+            ...newFiles
+        ]);
+
+        setFormData((prev) => ({
             ...prev,
             files: [
                 ...prev.files,
                 ...selectedFiles
             ]
         }));
-
-        const uploadData = new FormData();
-
-        selectedFiles.forEach(file => {
-            uploadData.append("file", file);
+        newFiles.forEach((fileObj) => {
+            uploadFile(fileObj);
         });
+    }
+    const uploadFile = async (
+        fileObj
+    ) => {
+        const uploadData =
+            new FormData();
+
+        uploadData.append(
+            "file",
+            fileObj.file
+        );
 
         try {
-
             await axios.post(
                 "http://localhost:8000/api/temp-upload",
                 uploadData,
@@ -47,23 +77,45 @@ function UploadDigitalFiles({
                         "Content-Type":
                             "multipart/form-data"
                     },
-                    onUploadProgress: (
-                        progressEvent
-                    ) => {
+                    onUploadProgress:
+                        (event) => {
+                            const percent =
+                                Math.round(
+                                    (event.loaded *
+                                        100) /
+                                    event.total
+                                );
 
-                        const percent =
-                            Math.round(
-                                (progressEvent.loaded * 100) /
-                                progressEvent.total
+                            setDigitalFiles(
+                                (prev) =>
+                                    prev.map(
+                                        (f) =>
+                                            f.id ===
+                                                fileObj.id
+                                                ? {
+                                                    ...f,
+                                                    progress:
+                                                        percent
+                                                }
+                                                : f
+                                    )
                             );
-
-                        setDigitalProgress(
-                            percent
-                        );
-                    }
+                        }
                 }
             );
 
+            setDigitalFiles((prev) =>
+                prev.map((f) =>
+                    f.id === fileObj.id
+                        ? {
+                            ...f,
+                            progress: 100,
+                            status:
+                                "uploaded"
+                        }
+                        : f
+                )
+            );
         } catch (error) {
             console.log(error);
         }
@@ -93,6 +145,12 @@ function UploadDigitalFiles({
                 files:
                     updatedFiles
             }));
+
+            setDigitalFiles((prev) =>
+                prev.filter(
+                    (_, i) => i !== index
+                )
+            );
 
         } catch (error) {
 
@@ -139,31 +197,6 @@ function UploadDigitalFiles({
                 className="form-control mb-3"
                 onChange={handleFileChange}
             />
-            {digitalProgress > 0 && digitalProgress < 100 && (
-                <div className="mt-2">
-                    <div className="progress">
-                        <div
-                            className="progress-bar progress-bar-striped progress-bar-animated"
-                            role="progressbar"
-                            style={{
-                                width: `${digitalProgress}%`
-                            }}
-                        >
-                            {digitalProgress}%
-                        </div>
-                    </div>
-                </div>
-            )}
-            {digitalProgress === 100 && (
-                <div className="progress mt-2">
-                    <div
-                        className="progress-bar bg-success"
-                        style={{ width: "100%" }}
-                    >
-                        Uploaded ✓
-                    </div>
-                </div>
-            )}
             {
                 errors?.files && (
                     <p className="text-danger mb-2">
@@ -171,38 +204,53 @@ function UploadDigitalFiles({
                     </p>
                 )
             }
-
             <div>
+                {digitalFiles.map((item, index) => (
+                    <div
+                        key={item.id}
+                        className="border rounded p-3 mb-3"
+                    >
+                        <div className="d-flex justify-content-between align-items-start">
 
-                {formData.files?.length > 0 &&
-                    formData.files.map(
-                        (file, index) => (
-                            <div
-                                key={index}
-                                className="upload-item d-flex justify-content-between align-items-center border rounded p-2 mb-2"
-                            >
+                            <div className="flex-grow-1 me-3">
 
-                                <span>
-                                    {file.name}
-                                </span>
+                                <div className="mb-2">
+                                    {item.file.name}
+                                </div>
 
-                                <button
-                                    className="btn btn-danger btn-sm"
-                                    onClick={() =>
-                                        removeFile(
-                                            index
-                                        )
-                                    }
-                                >
-                                    Remove
-                                </button>
+                                <div className="progress">
+                                    <div
+                                        className={`progress-bar ${item.status === "uploaded"
+                                            ? "bg-success"
+                                            : "progress-bar-striped progress-bar-animated"
+                                            }`}
+                                        role="progressbar"
+                                        style={{
+                                            width: `${item.progress}%`
+                                        }}
+                                    >
+                                        {item.progress}%
+                                    </div>
+                                </div>
 
                             </div>
-                        )
-                    )}
 
+                            <button
+                                className="btn btn-danger btn-sm"
+                                onClick={() =>
+                                    removeFile(index)
+                                }
+                                disabled={
+                                    item.status !== "uploaded"
+                                }
+                            >
+                                Remove
+                            </button>
+
+                        </div>
+                    </div>
+                ))}
             </div>
-
             <div className="d-flex justify-content-between mt-4">
 
                 <button
@@ -215,6 +263,7 @@ function UploadDigitalFiles({
                 <button
                     className="btn btn-primary"
                     onClick={handleNext}
+                    disabled={isUploading}
                 >
                     Next
                 </button>

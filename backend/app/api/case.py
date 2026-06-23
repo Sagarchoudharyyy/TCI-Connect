@@ -1082,51 +1082,51 @@ async def temp_upload(file: UploadFile = File(...)):
     }
 
 
-# @router.put("/cases/{case_id}/confirm-preview-files")
-# def confirm_preview_files(
-#     case_id: int,
-#     db: Session = Depends(get_db)
-# ):
-#     case = (
-#         db.query(Case)
-#         .filter(Case.id == case_id)
-#         .first()
-#     )
+@router.put("/cases/{case_id}/confirm-preview-files")
+def confirm_preview_files(
+    case_id: int,
+    db: Session = Depends(get_db)
+):
+    case = (
+        db.query(Case)
+        .filter(Case.id == case_id)
+        .first()
+    )
 
-#     if not case:
-#         raise HTTPException(
-#             status_code=404,
-#             detail="Case not found"
-#         )
+    if not case:
+        raise HTTPException(
+            status_code=404,
+            detail="Case not found"
+        )
 
-#     files = (
-#         db.query(CaseFile)
-#         .filter(
-#             CaseFile.case_id == case_id,
-#             CaseFile.file_category == "preview_file",
-#             CaseFile.is_confirmed == False
-#         )
-#         .all()
-#     )
+    files = (
+        db.query(CaseFile)
+        .filter(
+            CaseFile.case_id == case_id,
+            CaseFile.file_category == "preview_file",
+            CaseFile.is_confirmed == False
+        )
+        .all()
+    )
 
-#     if not files:
-#         raise HTTPException(
-#         status_code=404,
-#         detail="No preview files found"
-#     )
+    if not files:
+        raise HTTPException(
+        status_code=404,
+        detail="No preview files found"
+    )
 
-#     for file in files:
-#         file.is_confirmed = True
+    for file in files:
+        file.is_confirmed = True
 
-#     case.preview_status = "waiting User"
+    case.preview_status = "Waiting User"
 
-#     db.commit()
-#     db.refresh(case)
+    db.commit()
+    db.refresh(case)
 
-#     return {
-#         "message": "Preview files confirmed",
-#         "preview_status": case.preview_status
-#     }
+    return {
+        "message": "Preview files confirmed",
+        "preview_status": case.preview_status
+    }
 
 
 # @router.put("/cases/{case_id}/reject-preview")
