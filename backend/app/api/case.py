@@ -959,7 +959,8 @@ async def upload_case_file(
         file_type=file.content_type,
         file_name=file.filename,
         file_path=file_path,
-        file_category=category
+        file_category=category,
+        is_confirmed=False
     )
 
     db.add(new_file)
@@ -971,6 +972,7 @@ async def upload_case_file(
 
     return {
         "message": "File uploaded successfully",
+        "file_id": new_file.id,
         "file_name": file.filename
     }
 
@@ -1076,4 +1078,106 @@ async def temp_upload(file: UploadFile = File(...)):
     return {
         "file_name": file.filename,
         "file_path": file_path
+    }
+
+
+@router.put("/cases/{case_id}/confirm-preview-files")
+def confirm_preview_files(
+    case_id: int,
+    db: Session = Depends(get_db)
+):
+    case = (
+        db.query(Case)
+        .filter(Case.id == case_id)
+        .first()
+    )
+
+    if not case:
+        raise HTTPException(
+            status_code=404,
+            detail="Case not found"
+        )
+
+    files = (
+        db.query(CaseFile)
+        .filter(
+            CaseFile.case_id == case_id,
+            CaseFile.file_category == "preview_file",
+            CaseFile.is_confirmed == False
+        )
+        .all()
+    )
+
+    if not files:
+        raise HTTPException(
+        status_code=404,
+        detail="No preview files found"
+    )
+
+    for file in files:
+        file.is_confirmed = True
+
+    case.preview_status = "Waiting User"
+
+    db.commit()
+    db.refresh(case)
+
+    return {
+        "message": "Preview files confirmed",
+        "preview_status": case.preview_status
+    }
+
+
+@router.put("/cases/{case_id}/reject-preview")
+def reject_preview(
+    case_id: int,
+    db: Session = Depends(get_db)
+):
+    case = (
+        db.query(Case)
+        .filter(Case.id == case_id)
+        .first()
+    )
+
+    if not case:
+        raise HTTPException(
+            status_code=404,
+            detail="Case not found"
+        )
+
+    case.preview_status = "Preview Rejected"
+
+    db.commit()
+    db.refresh(case)
+
+    return {
+        "message": "Preview rejected successfully",
+        "preview_status": case.preview_status
+    }
+
+@router.put("/cases/{case_id}/approve-preview")
+def approve_preview(
+    case_id: int,
+    db: Session = Depends(get_db)
+):
+    case = (
+        db.query(Case)
+        .filter(Case.id == case_id)
+        .first()
+    )
+
+    if not case:
+        raise HTTPException(
+            status_code=404,
+            detail="Case not found"
+        )
+
+    case.preview_status = "Approved"
+
+    db.commit()
+    db.refresh(case)
+
+    return {
+        "message": "Preview approved successfully",
+        "preview_status": case.preview_status
     }
