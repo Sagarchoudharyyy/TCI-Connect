@@ -42,7 +42,6 @@ function PurchaseOrder({
 
     const handlePdfChange = async (e) => {
 
-        // Prevent uploading if a file already exists
         if (formData.pdfUpload) {
 
             alert(
