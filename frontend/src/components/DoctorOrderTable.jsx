@@ -575,7 +575,7 @@ function DoctorOrderTable({
                                                                                         onClick={() =>
                                                                                             handlePreviewStatus(
                                                                                                 item.id,
-                                                                                                "Rejected"
+                                                                                                "rejected"
                                                                                             )
                                                                                         }
                                                                                     >

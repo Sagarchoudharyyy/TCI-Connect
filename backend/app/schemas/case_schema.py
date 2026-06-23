@@ -7,6 +7,7 @@ from app.schemas.case_detail_schema import (
 )
 from typing import List
 
+from enum import Enum
 
 class CaseCreate(BaseModel):
     doctor_id: int
@@ -96,3 +97,13 @@ class CaseResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class PreviewStatus(str, Enum):
+    waiting_user = "Waiting User"
+    approved = "Approved"
+    rejected = "Preview Rejected"
+
+
+class PreviewStatusUpdate(BaseModel):
+    preview_status: PreviewStatus
