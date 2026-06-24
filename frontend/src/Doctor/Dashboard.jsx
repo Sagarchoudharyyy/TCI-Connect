@@ -8,6 +8,7 @@ import DoctorOrderTable from "../components/DoctorOrderTable";
 import "../DoctorStyle/DoctorHeader.css";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 function DoctorDashboard() {
     const [cases, setCases] = useState([]);
@@ -73,7 +74,7 @@ function DoctorDashboard() {
                                             </div>
                                         </div>
                                         <div className="col-md-6">
-                                            <a href="https://mediumseagreen-herring-541085.hostingersite.com/client/submit-case" className="text-decoration-none w-100">
+                                            <Link to="/client/new-cases" className="text-decoration-none w-100">
                                                 <div className="stat-card">
                                                     <div className="d-flex w-100">
                                                         <div className="stat-icon bg-light-blue">
@@ -86,7 +87,7 @@ function DoctorDashboard() {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </a>
+                                            </Link>
                                         </div>
                                     </div>
                                     <DoctorOrderTable

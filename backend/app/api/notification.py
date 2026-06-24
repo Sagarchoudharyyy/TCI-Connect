@@ -3,7 +3,56 @@ from sqlalchemy.orm import Session
 from app.database.database import get_db
 from app.models.notification_model import Notification
 from app.schemas.notification_schema import NotificationResponse
+from datetime import datetime, timedelta
+from app.models.case_model import Case
+
+
+def create_deadline_notifications(db):
+    today = datetime.now().date()
+
+    cases = db.query(Case).all()
+
+    for case in cases:
+        if not case.delivery_deadline:
+            continue
+
+        days_left = (
+            case.delivery_deadline - today
+        ).days
+
+        if days_left in [0, 1, 2, 3]:
+
+            if days_left == 0:
+                message = (
+                    f"Deadline is today for {case.patient_name}"
+                )
+            else:
+                message = (
+                    f"Deadline in {days_left} day(s) "
+                    f"for {case.patient_name}"
+                )
+
+            exists = (
+                db.query(Notification)
+                .filter(Notification.message == message)
+                .first()
+            )
+
+            if not exists:
+                notification = Notification(
+                    message=message,
+                    case_id=case.id,
+                    is_read=False
+                )
+
+                db.add(notification)
+
+    db.commit()
+
 router = APIRouter()
+
+
+
 @router.get(
     "/notifications",
     response_model=list[NotificationResponse]
@@ -11,16 +60,17 @@ router = APIRouter()
 def get_notifications(
     db: Session = Depends(get_db)
 ):
-    notifications = db.query(
-    Notification
-).filter(
-    Notification.is_read == False
-).order_by(
-    Notification.created_at.desc()
-).all()
-    print("Fetch Notification: ",notifications)
+    create_deadline_notifications(db)
+
+    notifications = (
+        db.query(Notification)
+        .filter(Notification.is_read == False)
+        .order_by(Notification.created_at.desc())
+        .all()
+    )
 
     return notifications
+
 
 
 @router.put("/notifications/read-all")

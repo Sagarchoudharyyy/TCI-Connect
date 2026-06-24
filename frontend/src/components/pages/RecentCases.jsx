@@ -99,6 +99,41 @@ function RecentCases() {
     };
 
 
+    const handleStatusChange =
+        async (caseId, newStatus) => {
+
+            try {
+
+                await axios.put(
+                    `http://127.0.0.1:8000/api/cases/${caseId}/status`,
+                    {
+                        status: newStatus
+                    }
+                );
+
+                setCases(prev =>
+                    prev.map(item =>
+                        item.id === caseId
+                            ? {
+                                ...item,
+                                status: newStatus
+                            }
+                            : item
+                    )
+                );
+
+            } catch (error) {
+                console.error(
+                    "Status update failed",
+                    error
+                );
+                console.log(
+                    error.response?.data
+                )
+            }
+        };
+
+
     const handleDelete = async (id) => {
 
         const confirmDelete = window.confirm(

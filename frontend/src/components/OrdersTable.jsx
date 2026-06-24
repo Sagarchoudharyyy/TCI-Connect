@@ -218,8 +218,6 @@ function OrdersTable() {
     const startIndex =
         (currentPage - 1) * entriesPerPage;
 
-
-
     return (
         <div className="table-section">
             <div className="order-header d-flex justify-content-between align-items-center mb-3">

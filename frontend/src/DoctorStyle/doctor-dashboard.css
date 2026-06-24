@@ -66,6 +66,7 @@ body {
 
 .stats_Cards .col-md-6:last-child .stat-card {
     background: #e3f1fa;
+    width: 100;
 }
 
 .stat-icon {
