@@ -44,8 +44,52 @@ function Register() {
 
     setLoading(true);
     setError("");
-    setLoading(true);
-    setError("");
+
+    if (
+      !formData.full_name.trim() ||
+      !formData.phone.trim() ||
+      !formData.email.trim() ||
+      !formData.business_name.trim() ||
+      !formData.business_type.trim() ||
+      !formData.country.trim() ||
+      !formData.address.trim() ||
+      !formData.password.trim() ||
+      !formData.confirm_password.trim()
+    ) {
+      setError("All fields are required");
+      setLoading(false);
+      return;
+    }
+
+    if (!/^[A-Za-z ]+$/.test(formData.full_name)) {
+      setError("Full name can contain only letters.");
+      setLoading(false);
+      return;
+    }
+    if (!/^\d{10}$/.test(formData.phone)) {
+      setError("Phone number must contain exactly 10 digits.");
+      setLoading(false);
+      return;
+    }
+    const emailRegex =
+      /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+    if (!emailRegex.test(formData.email)) {
+      setError("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
+
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if (!passwordRegex.test(formData.password)) {
+      setError(
+        "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number and one special character."
+      );
+      setLoading(false);
+      return;
+    }
 
     if (!captchaValue) {
       setError("Please verify that you are not a robot.");
@@ -53,21 +97,6 @@ function Register() {
       return;
     }
 
-    if (
-      !formData.full_name ||
-      !formData.phone ||
-      !formData.email ||
-      !formData.business_name ||
-      !formData.business_type ||
-      !formData.country ||
-      !formData.address ||
-      !formData.password ||
-      !formData.confirm_password
-    ) {
-      setError("All fields are required");
-      setLoading(false);
-      return;
-    }
 
     if (formData.password !== formData.confirm_password) {
       setError("Passwords do not match");
@@ -106,8 +135,8 @@ function Register() {
 
   return (
     <>
-      <header className="form-header">
-        <div className="container">
+      <header className="register-header">
+        <div className="container ">
           <div className="form-headerbxx">
             <nav className="navbar navbar-expand-lg ">
               <a className="navbar-brand" href="">
@@ -131,7 +160,7 @@ function Register() {
 
       </header>
 
-      <section className="form-section" style={{
+      <section className="register-section" style={{
         backgroundImage:
           "url('https://mediumseagreen-herring-541085.hostingersite.com/assets/images/sign-up-bgimg.png')",
         backgroundSize: "cover",
@@ -139,17 +168,17 @@ function Register() {
         backgroundRepeat: "no-repeat"
       }}>
         <div className="container">
-          <div className="formsec-main">
+          <div className="register-main">
             <div className="row">
               <div className="col-sm-12 col-md-9 col-lg-8">
-                <div className="formbxx-warrper">
+                <div className="register-warrper">
                   <div className="section-heading">
-                    <h1 className="main-heading">
+                    <h1 className="register-heading">
                       TCI Connect Sign Up
                     </h1>
                     <br />
                   </div>
-                  <div className="formsec-bxx">
+                  <div className="register-bxx">
                     {success && (
                       <div className="alert alert-success mt-3">
                         {success}
@@ -164,7 +193,7 @@ function Register() {
 
                       <div className="row">
                         <div className="col-6">
-                          <div className="form-group">
+                          <div className="register-form-group">
                             <input
                               type="text"
                               className="form-control"
@@ -177,7 +206,7 @@ function Register() {
                           </div>
                         </div>
                         <div className="col-6">
-                          <div className="form-group">
+                          <div className="register-form-group">
                             <input
                               type="tel"
                               className="form-control"
@@ -191,7 +220,7 @@ function Register() {
                         </div>
 
                         <div className="col-6">
-                          <div className="form-group">
+                          <div className="register-form-group">
                             <input
                               type="email"
                               className="form-control"
@@ -206,7 +235,7 @@ function Register() {
                         </div>
 
                         <div className="col-6">
-                          <div className="form-group">
+                          <div className="register-form-group">
                             <input
                               type="text"
                               className="form-control"
@@ -220,7 +249,7 @@ function Register() {
                         </div>
 
                         <div className="col-md-12">
-                          <div className="form-group">
+                          <div className="register-form-group">
                             <div className="select-wrapper">
                               <select
                                 className="form-select form-select-sm w-100"
@@ -241,7 +270,7 @@ function Register() {
                         </div>
 
                         <div className="col-12 col-sm-6 col-md-6">
-                          <div className="form-group">
+                          <div className="register-form-group">
                             <input
                               type="text"
                               className="form-control"
@@ -254,7 +283,7 @@ function Register() {
                         </div>
 
                         <div className="col-12 col-sm-6 col-md-6">
-                          <div className="form-group">
+                          <div className="register-form-group">
                             <input
                               type="text"
                               className="form-control"
@@ -267,10 +296,10 @@ function Register() {
                         </div>
 
                         <div className="col-12 col-sm-6 col-md-6">
-                          <div className="form-group">
+                          <div className="register-form-group">
                             <div className="select-wrapper">
                               <select
-                                className="form-select form-select-sm w-100"
+                                className="register-form-select form-select-sm w-100"
                                 name="country"
                                 value={formData.country}
                                 onChange={handleChange}
@@ -288,7 +317,7 @@ function Register() {
                         </div>
 
                         <div className="col-12 col-sm-6 col-md-6">
-                          <div className="form-group">
+                          <div className="register-form-group">
                             <input
                               type="text"
                               className="form-control"
@@ -303,8 +332,8 @@ function Register() {
                         </div>
 
                         <div className="col-12 col-sm-6 col-md-6">
-                          <div className="form-group">
-                            <div className="password-field">
+                          <div className="register-form-group">
+                            <div className="register-password-field">
                               <input
                                 type={showPassword ? "text" : "password"}
                                 className="form-control"
@@ -318,18 +347,23 @@ function Register() {
 
                               <button
                                 type="button"
-                                className="toggle-btn"
+                                className="register-toggle-btn"
                                 onClick={() => setShowPassword(!showPassword)}
                               >
-                                <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                                <i
+                                  className={`bi ${showPassword
+                                    ? "bi-eye-slash"
+                                    : "bi-eye"
+                                    }`}
+                                ></i>
                               </button>
                             </div>
                           </div>
                         </div>
 
                         <div className="col-12 col-sm-6 col-md-6">
-                          <div className="form-group">
-                            <div className="password-field">
+                          <div className="register-form-group">
+                            <div className="register-password-field">
                               <input
                                 type={showConfirmPassword ? "text" : "password"}
                                 className="form-control"
@@ -342,10 +376,19 @@ function Register() {
                               />
                               <button
                                 type="button"
-                                className="toggle-btn"
-                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                className="register-toggle-btn"
+                                onClick={() =>
+                                  setShowConfirmPassword(
+                                    !showConfirmPassword
+                                  )
+                                }
                               >
-                                <i className={`bi ${showConfirmPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                                <i
+                                  className={`bi ${showConfirmPassword
+                                    ? "bi-eye-slash"
+                                    : "bi-eye"
+                                    }`}
+                                ></i>
                               </button>
                             </div>
                           </div>
@@ -359,7 +402,7 @@ function Register() {
                             required
                           />
 
-                          <label className="form-check-label form-checkbxx">
+                          <label className="form-check-label register-check-label">
                             I consent to the processing of my personal data under GDPR.
                             <a href="#" target="_blank" rel="noreferrer">
                               {" "}
@@ -376,7 +419,7 @@ function Register() {
                         </div>
                         <div className="col-12">
                           <button
-                            className="btn-all"
+                            className="register-btn"
                             id="submitBtn"
                             type="submit"
                             disabled={loading}
@@ -387,7 +430,7 @@ function Register() {
 
                       </div>
                     </form>
-                    <p className="form-para">
+                    <p className="register-para">
                       Already have an account?
                       <Link to="/login"> Log In here</Link>
                     </p>
@@ -398,19 +441,19 @@ function Register() {
           </div>
         </div>
       </section>
-      <footer className="form-footer">
+      <footer className="register-footer">
         <div className="container">
           <div className="row justify-content-between">
 
             <div className="col-lg-4">
               <div className="form-fcard">
-                <div className="form-footer-logo">
+                <div className="register-footer-logo">
                   <Link className="navbar-brand" to="/">
                     <h1>TCI Connect</h1>
                   </Link>
                 </div>
 
-                <div className="form-content">
+                <div className="register-content">
                   <p>
                     TCI Dental Lab is a full-service dental laboratory
                     providing advanced dental products and restorations.
@@ -422,7 +465,7 @@ function Register() {
             </div>
 
             <div className="col-lg-3">
-              <div className="form-sicons">
+              <div className="register-social-icons">
                 <ul className="list-unstyled d-flex gap-3">
 
                   <li>
@@ -468,7 +511,7 @@ function Register() {
             </div>
 
             <div className="col-12">
-              <div className="formf-last d-flex justify-content-between flex-wrap">
+              <div className="registerfooter-bottom d-flex justify-content-between flex-wrap">
                 <p>
                   Copyright © 2022 TCI Dental Labs.
                   All Rights Reserved.
