@@ -15,7 +15,9 @@ function NewCases() {
     const [step, setStep] = useState(1);
     const [pdfProgress, setPdfProgress] = useState(0);
     const [uploadedPdf, setUploadedPdf] = useState(null);
+    const [isPdfUploading, setIsPdfUploading] = useState(false);
     const [digitalProgress, setDigitalProgress] = useState(0);
+    const [isDigitalUploading, setIsDigitalUploading] = useState(false);
     const [digitalFiles, setDigitalFiles] = useState([]);
 
     const initialFormData = {
@@ -132,6 +134,20 @@ function NewCases() {
     const handleNext = () => {
 
         let newErrors = {};
+
+        if (isPdfUploading) {
+            newErrors.pdfUpload =
+                "Please wait until the case document upload is complete.";
+        }
+
+        if (
+            digitalFiles.some(
+                (file) => file.status === "uploading"
+            )
+        ) {
+            newErrors.files =
+                "Please wait until all digital files finish uploading.";
+        }
 
         // Step 1
         if (step === 1) {
@@ -267,110 +283,95 @@ function NewCases() {
                 );
 
             const payload = {
+                doctor_id: user?.id || 1,
 
-                doctor_id:
-                    user?.id || 1,
+                patient_name: formData.patient_name,
 
-                patient_name:
-                    formData.patient_name,
+                patient_phone: formData.patient_phone || null,
 
-                patient_phone:
-                    formData.patient_phone || null,
+                gender: formData.gender || null,
 
-                gender:
-                    formData.gender || null,
-
-                age:
-                    formData.age
-                        ? Number(formData.age)
-                        : null,
+                age: formData.age
+                    ? Number(formData.age)
+                    : null,
 
                 appointment_date:
                     formData.next_appointment_date
                         ? new Date(
-                            formData
-                                .next_appointment_date
+                            formData.next_appointment_date
                         ).toISOString()
                         : null,
 
                 delivery_deadline:
-                    formData.delivery_deadline
-                    || null,
+                    formData.delivery_deadline || null,
 
-                preview_status:
-                    "-",
+                preview_status: "-",
 
-                status:
-                    "Submitted",
+                status: "Submitted",
 
                 details: {
-
                     case_stage:
-                        formData.case_stage
-                        || null,
+                        formData.case_stage || null,
 
                     surface_texture:
-                        formData.surface_texture
-                        || null,
+                        formData.surface_texture || null,
 
                     glazed_polish:
-                        formData.glazed_polish
-                        || null,
+                        formData.glazed_polish || null,
 
                     incisal_translucency:
-                        formData
-                            .incisal_translucency
-                        || null,
+                        formData.incisal_translucency || null,
 
                     prepared_tooth_shade:
-                        formData
-                            .prepared_tooth_shade
-                        || null,
+                        formData.prepared_tooth_shade || null,
 
                     shade_guide_color:
-                        formData
-                            .shade_guide_color
-                        || null,
+                        formData.shade_guide_color || null,
 
                     material_type:
-                        formData.material_type
-                        || [],
+                        formData.material_type || [],
 
                     crown_bridge:
-                        formData.crown_bridge
-                        || [],
+                        formData.crown_bridge || [],
 
                     additional_restorations:
-                        formData
-                            .additional_restorations
-                        || [],
+                        formData.additional_restorations || [],
 
                     implant_details:
-                        formData
-                            .implant_details
-                        || [],
+                        formData.implant_details || [],
 
                     design_preview:
-                        formData
-                            .design_preview
-                        || false,
+                        formData.design_preview || false,
 
                     additional_instructions:
-                        formData
-                            .additional_instructions
-                        || null
-                }
+                        formData.additional_instructions || null
+                },
+
+                files: [
+                    ...(uploadedPdf ? [uploadedPdf] : []),
+
+                    ...digitalFiles
+                        .filter(f => f.file_path)
+                        .map(f => ({
+                            file_name: f.file_name,
+                            file_path: f.file_path,
+                            file_type: f.file_type,
+                            file_category: f.file_category
+                        }))
+                ]
             };
 
+
             console.log(
-                "FORM DATA:",
-                formData
+                "DIGITAL FILES:",
+                JSON.stringify(digitalFiles, null, 2)
             );
 
             console.log(
                 "PAYLOAD:",
-                payload
+                JSON.stringify(payload, null, 2)
             );
+
             const response =
                 await axios.post(
                     "http://localhost:8000/api/cases",
@@ -381,78 +382,16 @@ function NewCases() {
                 "CASE CREATED:",
                 response.data
             );
-
-            if (formData.pdfUpload) {
-
-                const pdfData = new FormData();
-
-                pdfData.append(
-                    "file",
-                    formData.pdfUpload
-                );
-
-                pdfData.append(
-                    "category",
-                    "case_document"
-                );
-
-                await axios.post(
-                    `http://localhost:8000/api/cases/${response.data.id}/upload`,
-                    pdfData,
-                    {
-                        headers: {
-                            "Content-Type": "multipart/form-data"
-                        },
-                        onUploadProgress: (progressEvent) => {
-                            const percentCompleted = Math.round(
-                                (progressEvent.loaded * 100) /
-                                progressEvent.total
-                            );
-
-                            setPdfProgress(percentCompleted);
-                        }
-                    }
-                );
-            }
-
-            if (
-                formData.files &&
-                formData.files.length > 0
-            ) {
-
-                for (const file of formData.files) {
-
-                    const fileData =
-                        new FormData();
-
-                    fileData.append(
-                        "file",
-                        file
-                    );
-
-                    fileData.append(
-                        "category",
-                        "digital_file"
-                    );
-
-                    await axios.post(
-                        `http://localhost:8000/api/cases/${response.data.id}/upload`,
-                        fileData,
-                        {
-                            headers: {
-                                "Content-Type":
-                                    "multipart/form-data"
-                            }
-                        }
-                    );
-                }
-            }
             setStep(4);
 
         } catch (error) {
 
             console.log(
-                error.response?.data
+                JSON.stringify(
+                    error.response?.data,
+                    null,
+                    2
+                )
             );
 
             alert(
@@ -560,6 +499,9 @@ function NewCases() {
                                             handleNext={
                                                 handleNext
                                             }
+                                            setIsPdfUploading={setIsPdfUploading}
+                                            isPdfUploading={isPdfUploading}
+                                            uploadedPdf={uploadedPdf}
                                             handleCheckboxSelection={handleCheckboxSelection}
                                             handleImplantChange={handleImplantChange}
                                             errors={

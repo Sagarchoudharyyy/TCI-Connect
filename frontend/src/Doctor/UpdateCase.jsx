@@ -31,6 +31,8 @@ function UpdateCase() {
   const [pdfProgress, setPdfProgress] = useState(0);
   const [uploadedPdf, setUploadedPdf] = useState(null);
   const [digitalProgress, setDigitalProgress] = useState(0);
+  const [isPdfUploading, setIsPdfUploading] = useState(false);
+  const [digitalFiles, setDigitalFiles] = useState([]);
 
   const [formData, setFormData] =
     useState({
@@ -108,14 +110,31 @@ function UpdateCase() {
     const fetchCase = async () => {
 
       try {
-
         const response =
           await axios.get(
             `http://localhost:8000/api/cases/${caseId}`
           );
 
         console.log(response.data);
+        console.log("FILES FROM API:", response.data.files);
         const data = response.data;
+
+        const existingDigitalFiles =
+          data.files
+            ?.filter(
+              (file) => file.file_category === "digital_file"
+            )
+            .map((file) => ({
+              id: file.id,
+              file_name: file.file_name,
+              file_path: file.file_path,
+              file_type: file.file_type,
+              file_category: file.file_category,
+              progress: 100,
+              status: "uploaded",
+            })) || [];
+
+        setDigitalFiles(existingDigitalFiles);
 
         const materialTypes =
           Array.isArray(
@@ -268,18 +287,23 @@ function UpdateCase() {
                   "case_document"
               ) || null,
 
-            files:
-              data.files?.filter(
-                file =>
-                  file.file_category ===
-                  "digital_file"
-              ).map(file => ({
-                id: file.id,
-                name: file.file_name,
-                path: file.file_path,
-                file_category: file.file_category
-              })) || []
-          };
+            files: existingDigitalFiles
+          }
+        }
+        );
+        console.log("FORM DATA FILES:", {
+          pdfUpload:
+            data.files?.find(
+              file =>
+                file.file_category ===
+                "case_document"
+            ),
+          files:
+            data.files?.filter(
+              file =>
+                file.file_category ===
+                "digital_file"
+            )
         });
 
       }
@@ -453,7 +477,7 @@ function UpdateCase() {
           || null,
 
         preview_status:
-          "Pending",
+          "pending",
 
         status:
           "Submitted",
@@ -612,9 +636,27 @@ function UpdateCase() {
             "UPLOAD SUCCESS:",
             uploadResponse.data
           );
+
+
+          const tempFile = digitalFiles.find(
+            (f) => f.file?.name === file.name
+          );
+
+          if (
+            tempFile?.file_path &&
+            tempFile.file_path.includes("temp_uploads")
+          ) {
+            await axios.delete(
+              "http://localhost:8000/api/delete-temp-file",
+              {
+                data: {
+                  file_path: tempFile.file_path,
+                },
+              }
+            );
+          }
         }
       }
-
       setStep(4);
 
     } catch (error) {
@@ -698,13 +740,14 @@ function UpdateCase() {
                       formData={formData}
                       setFormData={setFormData}
                       handleNext={handleNext}
+                      pdfUpload={formData.pdfUpload}
                       pdfProgress={pdfProgress}
                       setPdfProgress={setPdfProgress}
                       setUploadedPdf={setUploadedPdf}
+                      setIsPdfUploading={setIsPdfUploading}
                       errors={errors}
                     />
                   )}
-
 
                   {step === 2 && (
                     <UploadDigitalFiles
@@ -712,6 +755,8 @@ function UpdateCase() {
                       setFormData={setFormData}
                       handleNext={handleNext}
                       handlePrevious={handlePrevious}
+                      digitalFiles={digitalFiles}
+                      setDigitalFiles={setDigitalFiles}
                       digitalProgress={digitalProgress}
                       setDigitalProgress={setDigitalProgress}
                       errors={errors}

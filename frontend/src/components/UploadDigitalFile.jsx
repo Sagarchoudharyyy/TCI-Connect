@@ -57,52 +57,39 @@ function UploadDigitalFiles({
             uploadFile(fileObj);
         });
     }
-    const uploadFile = async (
-        fileObj
-    ) => {
-        const uploadData =
-            new FormData();
+    const uploadFile = async (fileObj) => {
+        const uploadData = new FormData();
 
-        uploadData.append(
-            "file",
-            fileObj.file
-        );
+        uploadData.append("file", fileObj.file);
 
         try {
-            await axios.post(
+            const response = await axios.post(
                 "http://localhost:8000/api/temp-upload",
                 uploadData,
                 {
                     headers: {
-                        "Content-Type":
-                            "multipart/form-data"
+                        "Content-Type": "multipart/form-data",
                     },
-                    onUploadProgress:
-                        (event) => {
-                            const percent =
-                                Math.round(
-                                    (event.loaded *
-                                        100) /
-                                    event.total
-                                );
+                    onUploadProgress: (event) => {
+                        const percent = Math.round(
+                            (event.loaded * 100) / event.total
+                        );
 
-                            setDigitalFiles(
-                                (prev) =>
-                                    prev.map(
-                                        (f) =>
-                                            f.id ===
-                                                fileObj.id
-                                                ? {
-                                                    ...f,
-                                                    progress:
-                                                        percent
-                                                }
-                                                : f
-                                    )
-                            );
-                        }
+                        setDigitalFiles((prev) =>
+                            prev.map((f) =>
+                                f.id === fileObj.id
+                                    ? {
+                                        ...f,
+                                        progress: percent,
+                                    }
+                                    : f
+                            )
+                        );
+                    },
                 }
             );
+
+            console.log("TEMP RESPONSE:", response.data);
 
             setDigitalFiles((prev) =>
                 prev.map((f) =>
@@ -110,8 +97,11 @@ function UploadDigitalFiles({
                         ? {
                             ...f,
                             progress: 100,
-                            status:
-                                "uploaded"
+                            status: "uploaded",
+                            file_name: response.data.file_name,
+                            file_path: response.data.file_path,
+                            file_type: fileObj.file.type,
+                            file_category: "digital_file",
                         }
                         : f
                 )
@@ -120,48 +110,45 @@ function UploadDigitalFiles({
             console.log(error);
         }
     };
-
-    const removeFile = async (
-        index
-    ) => {
-
-        const file =
-            formData.files[index];
+    const removeFile = async (index) => {
+        const file = digitalFiles[index];
 
         try {
-            if (file.id) {
 
+            if (file.id && !file.file_path?.includes("temp_uploads")) {
                 await axios.delete(
                     `http://localhost:8000/api/case-files/${file.id}`
                 );
             }
-            const updatedFiles =
-                formData.files.filter(
-                    (_, i) =>
-                        i !== index
+
+
+            else if (file.file_path?.includes("temp_uploads")) {
+                await axios.delete(
+                    "http://localhost:8000/api/delete-temp-file",
+                    {
+                        data: {
+                            file_path: file.file_path,
+                        },
+                    }
                 );
-            setFormData(prev => ({
-                ...prev,
-                files:
-                    updatedFiles
-            }));
+            }
 
             setDigitalFiles((prev) =>
-                prev.filter(
+                prev.filter((_, i) => i !== index)
+            );
+
+
+            setFormData((prev) => ({
+                ...prev,
+                files: prev.files.filter(
                     (_, i) => i !== index
-                )
-            );
-
+                ),
+            }));
         } catch (error) {
-
-            console.log(error);
-
-            alert(
-                "Failed to delete file"
-            );
+            console.log("DELETE ERROR:", error);
+            alert("Failed to delete file");
         }
     };
-
     return (
         <div className="step-content active">
 
@@ -215,23 +202,22 @@ function UploadDigitalFiles({
                             <div className="flex-grow-1 me-3">
 
                                 <div className="mb-2">
-                                    {item.file.name}
+                                    {item.file?.name ?? item.file_name}
                                 </div>
 
-                                <div className="progress">
-                                    <div
-                                        className={`progress-bar ${item.status === "uploaded"
-                                            ? "bg-success"
-                                            : "progress-bar-striped progress-bar-animated"
-                                            }`}
-                                        role="progressbar"
-                                        style={{
-                                            width: `${item.progress}%`
-                                        }}
-                                    >
-                                        {item.progress}%
+                                {item.status === "uploading" && (
+                                    <div className="progress">
+                                        <div
+                                            className="progress-bar progress-bar-striped progress-bar-animated"
+                                            role="progressbar"
+                                            style={{
+                                                width: `${item.progress}%`,
+                                            }}
+                                        >
+                                            {item.progress}%
+                                        </div>
                                     </div>
-                                </div>
+                                )}
 
                             </div>
 
@@ -263,7 +249,6 @@ function UploadDigitalFiles({
                 <button
                     className="btn btn-primary"
                     onClick={handleNext}
-                    disabled={isUploading}
                 >
                     Next
                 </button>

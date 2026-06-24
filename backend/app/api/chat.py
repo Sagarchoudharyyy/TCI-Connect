@@ -42,7 +42,7 @@ def get_messages(sender_id: int, receiver_id: int, db: Session = Depends(get_db)
         |
 
         ((ChatMessage.sender_id == receiver_id) &
-         (ChatMessage.receiver_id == sender_id))
+        (ChatMessage.receiver_id == sender_id))
     ).order_by(ChatMessage.timestamp.asc()).all()
 
     return messages

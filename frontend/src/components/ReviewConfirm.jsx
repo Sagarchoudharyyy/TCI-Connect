@@ -176,9 +176,7 @@ function ReviewConfirm({
                     <strong>Case Document:</strong>
                     <br />
                     {
-                        formData.pdfUpload
-                            ? formData.pdfUpload.name
-                            : "No document uploaded"
+                        formData.pdfUpload?.file_name || "None"
                     }
                 </p>
                 <p>
@@ -193,12 +191,8 @@ function ReviewConfirm({
                                 file,
                                 index
                             ) => (
-                                <li
-                                    key={index}
-                                >
-                                    {
-                                        file.name
-                                    }
+                                <li key={index}>
+                                    {file.file_name ?? file.name}
                                 </li>
                             )
                         )}

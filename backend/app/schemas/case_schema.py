@@ -9,6 +9,18 @@ from typing import List
 
 from enum import Enum
 
+
+
+class TempFile(BaseModel):
+    file_name: str
+    file_path: str
+    file_type: str
+    file_category: str
+
+
+class DeleteTempFileRequest(BaseModel):
+    file_path: str
+
 class CaseCreate(BaseModel):
     doctor_id: int
 
@@ -33,6 +45,8 @@ class CaseCreate(BaseModel):
     status: Optional[str] = "Not Submitted"
     
     details: Optional[CaseDetailCreate] = None
+
+    files: list[TempFile] = []
 
 
 class CaseUpdate(BaseModel):
@@ -107,3 +121,5 @@ class PreviewStatus(str, Enum):
 
 class PreviewStatusUpdate(BaseModel):
     preview_status: PreviewStatus
+
+

@@ -7,96 +7,84 @@ function PurchaseOrder({
     handleNext,
     pdfUpload,
     pdfProgress,
+    uploadedPdf,
     setPdfProgress,
     setUploadedPdf,
+    setIsPdfUploading,
     handleCheckboxSelection,
     handleImplantChange,
     errors
 }) {
 
-    const removePdfFile = async () => {
-
-        try {
-
-            if (formData.pdfUpload?.id) {
-
-                await axios.delete(
-                    `http://localhost:8000/api/case-files/${formData.pdfUpload.id}`
-                );
-            }
-
-            setFormData({
-                ...formData,
-                pdfUpload: null
-            });
-
-            setPdfProgress(0);
-
-        } catch (error) {
-
-            console.log(error);
-
-            alert("Failed to delete file");
-        }
-    };
-
     const handlePdfChange = async (e) => {
-
-        if (formData.pdfUpload) {
-
-            alert(
-                "Please delete the existing case document before uploading a new one."
-            );
-
-            e.target.value = "";
-            return;
-        }
+        const file = e.target.files[0];
+        if (!file) return;
+        setIsPdfUploading(true)
+        setFormData((prev) => ({
+            ...prev,
+            pdfUpload: file,
+        }));
 
         setPdfProgress(0);
 
-        const file = e.target.files[0];
-
-        if (!file) return;
-
-        setFormData({
-            ...formData,
-            pdfUpload: file
-        });
-
-        const uploadData = new FormData();
-        uploadData.append("file", file);
-
         try {
+            if (
+                formData.pdfUpload?.file_path &&
+                formData.pdfUpload.file_path.includes("temp")
+            ) {
+                await axios.delete(
+                    "http://localhost:8000/api/delete-temp-file",
+                    {
+                        data: {
+                            file_path: uploadedPdf.file_path,
+                        },
+                    }
+                );
+            }
+
+            const uploadData = new FormData();
+            uploadData.append("file", file);
 
             const response = await axios.post(
                 "http://localhost:8000/api/temp-upload",
                 uploadData,
                 {
                     headers: {
-                        "Content-Type": "multipart/form-data"
+                        "Content-Type": "multipart/form-data",
                     },
                     onUploadProgress: (progressEvent) => {
-
                         const percent = Math.round(
                             (progressEvent.loaded * 100) /
                             progressEvent.total
                         );
-
                         setPdfProgress(percent);
-                    }
+                    },
                 }
             );
 
-            setUploadedPdf(response.data);
+            const newPdf = {
+                file_name: response.data.file_name,
+                file_path: response.data.file_path,
+                file_type: file.type,
+                file_category: "case_document",
+            };
 
+            setUploadedPdf(newPdf);
+
+            setFormData((prev) => ({
+                ...prev,
+                pdfUpload: newPdf,
+            }));
+
+            setPdfProgress(100);
         } catch (error) {
-
-            console.log(error);
-
-            alert("Failed to upload file");
+            setPdfProgress(0);
+            console.log("Upload Error:", error);
+        }
+        finally {
+            setIsPdfUploading(false);
         }
     };
-
     const handleChange = (e) => {
         const { id, value } = e.target;
 
@@ -1927,31 +1915,20 @@ function PurchaseOrder({
                                     }
                                 </div>
 
-                                <div className="progress">
-                                    <div
-                                        className={`progress-bar ${pdfProgress === 100
-                                                ? "bg-success"
-                                                : "progress-bar-striped progress-bar-animated"
-                                            }`}
-                                        role="progressbar"
-                                        style={{
-                                            width: `${pdfProgress}%`
-                                        }}
-                                    >
-                                        {pdfProgress}%
+                                {pdfProgress > 0 && pdfProgress < 100 && (
+                                    <div className="progress mt-2">
+                                        <div
+                                            className="progress-bar progress-bar-striped progress-bar-animated"
+                                            role="progressbar"
+                                            style={{
+                                                width: `${pdfProgress}%`,
+                                            }}
+                                        >
+                                            {pdfProgress}%
+                                        </div>
                                     </div>
-                                </div>
-
+                                )}
                             </div>
-
-                            <button
-                                type="button"
-                                className="btn btn-danger btn-sm"
-                                onClick={removePdfFile}
-                                disabled={pdfProgress < 100}
-                            >
-                                Remove
-                            </button>
 
                         </div>
 
@@ -1972,7 +1949,6 @@ function PurchaseOrder({
                 <button
                     className="btn btn-primary"
                     onClick={handleNext}
-                    disabled={formData.pdfUpload && pdfProgress < 100}
                 >
                     Next
                 </button>

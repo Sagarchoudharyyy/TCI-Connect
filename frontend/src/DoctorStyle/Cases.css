@@ -50,6 +50,10 @@ table.dataTable tfoot td {
   color: #1c1c1c !important;
 }
 
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
 .table tbody td {
   border: none;
   padding: 15px 10px;

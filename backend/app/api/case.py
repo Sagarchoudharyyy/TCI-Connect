@@ -3,14 +3,13 @@ from fastapi import (
         Depends,
         HTTPException,
         UploadFile,
-        File
+        File,
+        Form
 )
 from sqlalchemy.orm import Session
 from uuid import uuid4
 import os
 import shutil
-from fastapi import Form
-
 from app.database.database import get_db
 from app.models.case_model import Case
 from app.models.case_file_model import CaseFile
@@ -25,7 +24,8 @@ from app.models.implant_detail_model import ImplantDetail
 from app.schemas.case_schema import (
         CaseCreate,
         CaseResponse,
-        CaseUpdate
+        CaseUpdate,
+        DeleteTempFileRequest
     )
 router = APIRouter()
 
@@ -33,6 +33,9 @@ class StatusUpdate(BaseModel):
         status: str
 class PreviewStatusUpdate(BaseModel):
     preview_status: str
+
+
+
 @router.post(
     "/cases",
     response_model=CaseResponse
@@ -41,6 +44,7 @@ def create_case(
     case: CaseCreate,
     db: Session = Depends(get_db)
 ):
+    print("CREATE CASE API HIT")
 
     new_case = Case(
         doctor_id=case.doctor_id,
@@ -56,9 +60,9 @@ def create_case(
     )
 
     db.add(new_case)
-    db.commit()
-    db.refresh(new_case)
+    db.flush()
 
+   
 
     case_detail = CaseDetail(
         case_id=new_case.id,
@@ -113,6 +117,44 @@ def create_case(
     db.flush()
 
 
+    upload_folder = "uploads"
+    os.makedirs(upload_folder, exist_ok=True)
+
+    print("FILES RECEIVED:", case.files)
+    print("TOTAL FILES:", len(case.files))
+
+    for file in case.files:
+
+        temp_path = file.file_path
+
+        if not os.path.exists(temp_path):
+            continue
+
+        unique_filename = (
+            f"{uuid4()}_{file.file_name}"
+        )
+
+        new_path = os.path.join(
+            upload_folder,
+            unique_filename
+        )
+
+        shutil.move(
+            temp_path,
+            new_path
+        )
+
+        case_file = CaseFile(
+            case_id=new_case.id,
+            file_name=file.file_name,
+            file_type=file.file_type,
+            file_path=new_path,
+            file_category=file.file_category
+        )
+
+        db.add(case_file)
+
+
     if case.details and case.details.implant_details:
 
         for implant in case.details.implant_details:
@@ -130,9 +172,9 @@ def create_case(
             attachment_type=implant.attachment_type,
         )
 
-            db.add(implant_record)
-
+        db.add(implant_record)
     db.commit()
+    db.refresh(new_case)
     db.refresh(case_detail)
 
     doctor = db.query(User).filter(
@@ -1077,6 +1119,14 @@ async def temp_upload(file: UploadFile = File(...)):
         "file_name": file.filename,
         "file_path": file_path
     }
+
+
+@router.delete("/delete-temp-file")
+def delete_temp_file(data: DeleteTempFileRequest):
+    if data.file_path and os.path.exists(data.file_path):
+        os.remove(data.file_path)
+
+    return {"message": "Temp file deleted"}
 
 @router.put("/cases/{case_id}/confirm-preview-files")
 def confirm_preview_files(
