@@ -9,7 +9,7 @@ import {
     FaEdit
 } from "react-icons/fa";
 import "../styles/tables.css";
-import heroImage from "../assets/hero.png";
+
 function OrdersTable() {
 
     const [statusFilter, setStatusFilter] = useState("");
@@ -477,7 +477,7 @@ function OrdersTable() {
                                             < tr key={item.id} >
                                                 <td className="text-center">
                                                     <img
-                                                        src={heroImage}
+                                                        src=""
                                                         alt="profile"
                                                         width="40"
                                                     />

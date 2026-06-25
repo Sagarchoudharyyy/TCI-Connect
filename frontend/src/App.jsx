@@ -33,11 +33,20 @@ import ChangePassword from "./Doctor/ChangePassword";
 import RGPDpolicy from "./Doctor/RGPDpolicy";
 import UploadPreview from "./components/pages/UploadPreview";
 import UserDetails from "./components/pages/UserDetails";
+import HOME from "./design-part/html/HOME";
+
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+
+        <Route
+          path="/"
+          element={<HOME />}
+        />
+
+
         <Route
           path="/"
           element={<Login />}

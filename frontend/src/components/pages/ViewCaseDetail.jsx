@@ -4,7 +4,7 @@ import Header from "../Header";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../styles/ViewCaseDetail.css";
-import heroImg from "../../assets/hero.png";
+// import heroImg from "../../assets/hero.png";
 
 function ViewCaseDetail() {
 
@@ -122,7 +122,7 @@ function ViewCaseDetail() {
                                                 <div className="card-body">
                                                     <div className="row mb-3">
                                                         <div className="col-md-3 text-center mb-3 mb-md-0">
-                                                            <img src={heroImg} className="user-profile-img"></img>
+                                                            <img src="" className="user-profile-img"></img>
                                                         </div>
                                                         <div className="col-md-9">
                                                             <div className="row mb-2">

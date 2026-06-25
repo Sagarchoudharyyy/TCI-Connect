@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 import "../../styles/UserDetails.css";
-import vite from "../../assets/vite.svg";
+
 
 function UserDetails() {
 
@@ -71,7 +71,7 @@ function UserDetails() {
                                             <div className="row g-4 align-items-start">
                                                 <div className="col-lg-3 col-md-4 col-sm-12">
                                                     <div className="profile-section">
-                                                        <img src={vite} alt="" />
+                                                        <img src="" alt="" />
                                                         <h5 className="mt-3 mb-0 text-dark">
                                                             { }
                                                         </h5>

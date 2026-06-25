@@ -10,7 +10,7 @@ import {
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import heroImage from "../../assets/hero.png";
+// import heroImage from "../../assets/hero.png";
 import "../../styles/tables.css";
 import "../../styles/header.css";
 import "../../styles/sidebar.css";
@@ -434,7 +434,7 @@ function RecentCases() {
                                                                         <tr key={item.id}>
                                                                             <td>
                                                                                 <img
-                                                                                    src={heroImage}
+                                                                                    src=""
                                                                                     alt="profile"
                                                                                     width="40"
                                                                                 />
