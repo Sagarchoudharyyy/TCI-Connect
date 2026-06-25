@@ -3,13 +3,19 @@ import AboutSectionImg from "../../assets/about-section-img.png";
 import ContactOverly from "../../assets/contact-overly.png";
 import ExpertImg from "../../assets/expert-img.png";
 import ExtraOverly from "../../assets/extra-overly.png";
-import FooterLogo from "../../assets/footer-logo.png";
-import FooterOverly from "../../assets/footer-overly.png";
+// import FooterLogo from "../../assets/footer-logo.png";
+// import FooterOverly from "../../assets/footer-overly.png";
 import LeefImg from "../../assets/leef-img.png";
 import PricingImg from "../../assets/pricing-img.png";
 import SolutionImg from "../../assets/solution-img.png";
 import TciBanner from "../../assets/tci-banner.png";
 import TCILogo from "../../assets/TCI-logo.png";
+import Header from "../Design-Component/Header";
+import ContactUs from "../Design-Component/ContactUs";
+import Footer from "../Design-Component/Footer";
+import "../designcomponentstyle/header.css";
+import "../designcomponentstyle/footer.css";
+import "../designcomponentstyle/contact.css";
 
 import { useState, useEffect } from "react";
 
@@ -31,49 +37,7 @@ function HOME() {
     }, []);
     return (
         <>
-            <header
-                className={`main-header ${isScrolled ? "scrolled" : ""
-                    }`}
-            >
-                <div className="container">
-                    <nav className="navbar navbar-expand-xl justify-content-between w-100 ">
-                        <a className="navbar-brand" href="https://tcidentallab.com/">
-                            <img
-                                src={TCILogo}
-                                alt="TCI Connect"
-                                className="logo-img"
-                            />
-                        </a>
-                        <div className="main-menus">
-                            <div className="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
-                                <ul className="navbar-nav ">
-                                    <li className="nav-item"><a className="nav-link active" href="https://tcidentallab.com/">Home</a></li>
-                                    <li className="nav-item"><a className="nav-link " href="https://tcidentallab.com/about-us">About us</a></li>
-                                    <li className="nav-item"><a className="nav-link " href="https://tcidentallab.com/lab-services">Lab Services</a></li>
-                                    <li className="nav-item"><a className="nav-link " href="https://tcidentallab.com/submit-case">Submit a Case </a>
-                                    </li>
-                                    <li className="nav-item"><a className="nav-link " href="https://tcidentallab.com/clinical-support">Clinical Support</a></li>
-                                    <li className="nav-item"><a className="nav-link " href="https://tcidentallab.com/pricing">Pricing</a></li>
-                                    <li className="nav-item"><a className="nav-link " href="https://tcidentallab.com/our-solutions">Our Solutions</a></li>
-                                    <li className="nav-item"><a className="nav-link " href="https://tcidentallab.com/contact-us">Contact Us</a></li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <a href="https://tcidentallab.com/login" className="login-btn"><svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M17 19V17C17 15.9391 16.5786 14.9217 15.8284 14.1716C15.0783 13.4214 14.0609 13 13 13H5C3.93913 13 2.92172 13.4214 2.17157 14.1716C1.42143 14.9217 1 15.9391 1 17V19" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"></path>
-                            <path d="M9 8.99999C11.2091 8.99999 13 7.20913 13 5C13 2.79086 11.2091 1 9 1C6.79086 1 5 2.79086 5 5C5 7.20913 6.79086 8.99999 9 8.99999Z" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"></path>
-                        </svg>
-                        </a>
-
-                        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <span className="navbar-toggler-icon"></span>
-                            <span className="navbar-toggler-icon"></span>
-                            <span className="navbar-toggler-icon"></span>
-                        </button>
-                    </nav>
-                </div>
-            </header>
+            <Header />
             <section className="hero-banner">
                 <div className="container h-100">
                     <div className="row justify-content-center align-items-center h-100">
@@ -106,7 +70,16 @@ function HOME() {
                                     <p>We streamline workflows to simplify case submission, tracking, and communication. Our expert team combines deep knowledge with cutting-edge technology to provide custom restorations and implant solutions.</p>
                                     <p>Innovation and quality drive everything we do, ensuring we stay at the forefront of digital dentistry. Partner with us to experience smart, connected solutions tailored to your practice.</p>
                                     <div className="btn-wrap">
-                                        <a className="all-same-btn" href="https://tcidentallab.com/about-us">Learn More <span><i className="bi bi-arrow-right"></i></span></a>
+                                        {/* <a className="all-same-btn" href="https://tcidentallab.com/about-us">Learn More <span><i className="bi bi-arrow-right"></i></span></a> */}
+                                        <Link
+                                            className="all-same-btn"
+                                            to="/about-us"
+                                        >
+                                            Learn More
+                                            <span>
+                                                <i className="bi bi-arrow-right"></i>
+                                            </span>
+                                        </Link>
                                     </div>
                                     <div className="leef-img">
                                         <img src={LeefImg} alt="" />
@@ -512,274 +485,8 @@ function HOME() {
                     </div>
                 </div>
             </section>
-            <section className="contact-section">
-                <div className="container">
-                    <div className="row justify-content-center">
-                        <div className="col-lg-11">
-
-                            <div className="contact-flower">
-                                <img
-                                    src={ContactOverly}
-                                    alt="Contact"
-                                />
-                            </div>
-
-                            <div className="contact-section-meta">
-
-                                <div className="contact-location">
-                                    <iframe
-                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2412753.3185890547!2d-112.62320969845668!3d39.32101839513503!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x874d95f4a4a7a3c9%3A0xc8b7e9e7b8e3e9f6!2sUtah!5e0!3m2!1sen!2sin!4v1695225500000"
-                                        style={{ border: 0 }}
-                                        allowFullScreen
-                                        loading="lazy"
-                                        title="Google Map"
-                                    ></iframe>
-                                </div>
-
-                                <div className="contact-form">
-
-                                    {/* Message Area */}
-                                    <div id="formResponse"></div>
-
-                                    <h2 className="all-same-heading">
-                                        Contact Us
-                                    </h2>
-
-                                    <p>
-                                        We are here to support you.
-                                        Please reach out through your
-                                        preferred channel.
-                                    </p>
-
-                                    <form
-                                        id="contactForm"
-                                        method="post"
-                                    >
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            className="form-control"
-                                            id="fullName"
-                                            placeholder="Enter your full name"
-                                            required
-                                        />
-
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            className="form-control"
-                                            id="email"
-                                            placeholder="Enter your email"
-                                            required
-                                        />
-
-                                        <input
-                                            type="tel"
-                                            name="phone"
-                                            className="form-control"
-                                            id="phone"
-                                            placeholder="Enter your phone number"
-                                            required
-                                        />
-
-                                        <textarea
-                                            className="form-control"
-                                            name="message"
-                                            id="message"
-                                            rows={4}
-                                            placeholder="Type your message here"
-                                            required
-                                        ></textarea>
-
-                                        <button
-                                            type="submit"
-                                            id="contactSubmitBtn"
-                                            className="all-same-btn"
-                                        >
-                                            Submit
-                                            <span>
-                                                <i className="bi bi-arrow-right"></i>
-                                            </span>
-                                        </button>
-                                    </form>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <footer className="main-footer">
-                <div className="container">
-                    <div className="row">
-
-                        {/* Logo Section */}
-                        <div className="col-lg-4">
-                            <div className="footer-meta">
-                                <Link to="/" className="footer-logo">
-                                    <img
-                                        src={FooterLogo}
-                                        alt="TCI Dental Lab"
-                                    />
-                                </Link>
-
-                                <p>
-                                    TCI Dental Lab is a full-service dental
-                                    laboratory providing advanced dental
-                                    products and restorations. With facilities
-                                    in Beirut and Brussels, we combine
-                                    expertise with digital CAD/CAM technology.
-                                </p>
-
-                                <ul className="social-links">
-                                    <li>
-                                        <a
-                                            href="https://www.facebook.com/TCIdental"
-                                            target="_blank"
-                                            rel="noreferrer"
-                                        >
-                                            <i className="bi bi-facebook"></i>
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a
-                                            href="https://www.instagram.com/tcidental/"
-                                            target="_blank"
-                                            rel="noreferrer"
-                                        >
-                                            <i className="bi bi-instagram"></i>
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a
-                                            href="https://wa.me/96170144044"
-                                            target="_blank"
-                                            rel="noreferrer"
-                                        >
-                                            <i className="bi bi-whatsapp"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        {/* Quick Links */}
-                        <div className="col-lg-2 col-md-3">
-                            <div className="footer-meta">
-                                <h4>Quick Links</h4>
-
-                                <ul className="quick-links">
-                                    <li><Link to="/">Home</Link></li>
-                                    <li><Link to="/about-us">About Us</Link></li>
-                                    <li><Link to="/lab-services">Lab Services</Link></li>
-                                    <li><Link to="/submit-case">Submit a Case</Link></li>
-                                    <li><Link to="/clinical-support">Clinical Support</Link></li>
-                                    <li><Link to="/pricing">Pricing</Link></li>
-                                    <li><Link to="/our-solutions">Our Solutions</Link></li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        {/* Brussels */}
-                        <div className="col-lg-3 col-md-5">
-                            <div className="footer-meta">
-                                <h4>Brussels – Belgium</h4>
-
-                                <ul className="personal-information">
-                                    <li>
-                                        <p>
-                                            <a href="#">
-                                                31 Rue Du Saphir 1030 Brussels
-                                            </a>
-                                        </p>
-                                    </li>
-
-                                    <li>
-                                        <p>
-                                            <a href="tel:+3227348565">
-                                                Tel: +32 2 734 85 65
-                                            </a>
-
-                                            <br />
-
-                                            <a href="tel:+32475263026">
-                                                Mob: +32 475 263 026
-                                            </a>
-                                        </p>
-                                    </li>
-
-                                    <li>
-                                        <a href="mailto:info@tcidental.com">
-                                            info@tcidental.com
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        {/* Beirut */}
-                        <div className="col-lg-3 col-md-4">
-                            <div className="footer-meta">
-                                <h4>Beirut – Lebanon</h4>
-
-                                <ul className="personal-information">
-                                    <li>
-                                        <p>
-                                            <a href="#">
-                                                Zalka Highway – Amaret Chalhoub
-                                                Nora Building
-                                            </a>
-                                        </p>
-                                    </li>
-
-                                    <li>
-                                        <p>
-                                            <a href="tel:+9611903300">
-                                                Tel: +961 1 903 300
-                                            </a>
-
-                                            <br />
-
-                                            <a href="tel:+96170144044">
-                                                Mob: +961 70 144 044
-                                            </a>
-                                        </p>
-                                    </li>
-
-                                    <li>
-                                        <a href="mailto:sales@tcidental.com">
-                                            sales@tcidental.com
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div className="copy-right-section">
-                        <p>
-                            Copyright © 2025 TCI Dental Labs.
-                            All Rights Reserved.
-                        </p>
-
-                        <Link to="/privacy-policy">
-                            Privacy Policy
-                        </Link>
-                    </div>
-
-                    <div className="footer-overly-img">
-                        <img
-                            src={FooterOverly}
-                            alt="Footer Background"
-                        />
-                    </div>
-                </div>
-            </footer>
+            <ContactUs />
+            <Footer />
 
         </>
     )

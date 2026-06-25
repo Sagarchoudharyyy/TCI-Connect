@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+@media (min-width: 1400px) and (max-width: 1599px) {
+
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl,
+  .container-xxl {
+    max-width: 1220px;
+  }
+
+  .hero-banner {
+    height: 100vh !important;
+  }
+
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul {
+  margin: 0;
+}
+
+a {
+  display: inline-block;
+  text-decoration: none;
+}
+
+li {
+  list-style: none;
+}
+
+.main-header {
+  padding: 10px 0;
+  background: #205170;
+  position: relative;
+}
+
+.main-header {
+  position: fixed;
+  width: 100%;
+  z-index: 99;
+  background: none;
+}
+
+.main-header.scrolled {
+  position: fixed;
+  width: 100%;
+  top: 0px;
+  z-index: 999;
+  box-shadow: rgba(59, 59, 59, 0.34) 2px 0px 10px 0px;
+  transition: 0.3s;
+  animation: 0.5s ease-in-out 0s 2 normal forwards running goDown;
+  background: #205170;
+}
+
+.myClass {
+  overflow: hidden;
+}
+
+.myClass .main-header {
+  background: #205170;
+}
+
+.main-menus ul li {
+  margin: 0 10px;
+}
+
+.main-menus ul li a {
+  color: #FFFFFF;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+
+}
+
+.main-menus ul li .active {
+  color: #3D9BFF !important;
+  font-weight: 700;
+}
+
+.main-menus ul li a:hover {
+  transition: all 0.3s ease;
+  color: #3D9BFF;
+}
+
+
+.login-btn {
+  background: #3D9BFF4D;
+  border-radius: 100px;
+  border: 1px solid #D5EAFF5E;
+  height: 46px;
+  width: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}

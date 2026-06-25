@@ -34,6 +34,7 @@ import RGPDpolicy from "./Doctor/RGPDpolicy";
 import UploadPreview from "./components/pages/UploadPreview";
 import UserDetails from "./components/pages/UserDetails";
 import HOME from "./design-part/html/HOME";
+import About from "./design-part/html/About";
 
 
 function App() {
@@ -45,7 +46,7 @@ function App() {
           path="/"
           element={<HOME />}
         />
-
+        <Route path="/about-us" element={<About />} />
 
         <Route
           path="/"

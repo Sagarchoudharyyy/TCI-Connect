@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
@@ -118,7 +118,7 @@ li {
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-}
+} */
 
 
 /* ===================== hero banner start=================== */
@@ -851,7 +851,7 @@ li {
 }
 
 /* =========================== contact -section=========================== */
-
+/* 
 .contact-section {
     position: relative;
     padding: 105px 0;
@@ -918,14 +918,14 @@ li {
 .contact-form .all-same-btn {
     margin-top: 10px;
 }
-
+ */
 /* ================================== footer=========================== */
-
+/* 
 .main-footer {
     background: radial-gradient(126.33% 126.33% at 50% 50%, #0152A8 0%, #013A77 58.96%, #002042 100%);
     border-radius: 20px;
     margin: 13px;
-    padding: 105px 0 0 0;
+    padding: 75px 0 0 0;
     position: relative;
     z-index: 1;
 }
@@ -1044,7 +1044,7 @@ li {
     width: 100%;
     height: 100%;
 }
-
+ */
 
 
 /* ==================== about banner============================== */
