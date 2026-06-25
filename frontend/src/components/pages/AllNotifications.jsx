@@ -28,16 +28,42 @@ function AllNotifications() {
   };
 
   const markAsRead = async (item) => {
-
     console.log("Full item:", item);
-    try {
 
-      const response = await axios.put(
+    try {
+      await axios.put(
         `http://127.0.0.1:8000/api/notifications/${item.id}/read`
       );
 
-      navigate(`/admin/view-case/${item.case_id}`);
-      fetchNotifications();
+      await fetchNotifications();
+
+      // Doctor registration notification
+      if (
+        item.notification_type ===
+        "doctor_registration"
+      ) {
+        navigate(
+          `/admin/user-details/${item.sender_id}`
+        );
+        return;
+      }
+
+      // Chat notification
+      if (
+        item.notification_type ===
+        "chat"
+      ) {
+        navigate("/admin/chats");
+        return;
+      }
+
+      // Case notifications
+      if (item.case_id) {
+        navigate(
+          `/admin/view-case/${item.case_id}`
+        );
+        return;
+      }
     } catch (error) {
       console.log(error);
     }

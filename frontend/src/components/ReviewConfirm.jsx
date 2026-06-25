@@ -3,11 +3,13 @@ import { useState } from "react";
 
 function ReviewConfirm({
     formData,
+    digitalFiles,
     setFormData,
     handlePrevious,
     handleSubmit,
     checkboxErrors,
     buttonText
+
 }) {
     return (
         <div className="step-content">
@@ -182,27 +184,16 @@ function ReviewConfirm({
                 <p>
                     <strong>Digital Files:</strong>
                 </p>
-                {formData.files?.length >
-                    0 ? (
+                {digitalFiles?.length > 0 ? (
                     <ul>
-
-                        {formData.files.map(
-                            (
-                                file,
-                                index
-                            ) => (
-                                <li key={index}>
-                                    {file.file_name ?? file.name}
-                                </li>
-                            )
-                        )}
-
+                        {digitalFiles.map((file, index) => (
+                            <li key={index}>
+                                {file.file_name || file.file?.name}
+                            </li>
+                        ))}
                     </ul>
                 ) : (
-                    <p>
-                        No files
-                        uploaded
-                    </p>
+                    <p>No files uploaded</p>
                 )}
 
             </div>
@@ -363,7 +354,7 @@ function ReviewConfirm({
 
             </div>
 
-        </div>
+        </div >
     );
 }
 

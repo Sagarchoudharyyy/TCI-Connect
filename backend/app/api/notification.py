@@ -33,16 +33,21 @@ def create_deadline_notifications(db):
                 )
 
             exists = (
-                db.query(Notification)
-                .filter(Notification.message == message)
-                .first()
+                    db.query(Notification)
+                    .filter(
+                        Notification.message == message,
+                        Notification.receiver_id == case.doctor_id
+                    )
+                    .first()
             )
 
             if not exists:
                 notification = Notification(
                     message=message,
                     case_id=case.id,
-                    is_read=False
+                    is_read=False,
+                    receiver_id=case.doctor_id,
+                    notification_type="deadline"
                 )
 
                 db.add(notification)
@@ -53,57 +58,7 @@ router = APIRouter()
 
 
 
-@router.get(
-    "/notifications",
-    response_model=list[NotificationResponse]
-)
-def get_notifications(
-    db: Session = Depends(get_db)
-):
-    create_deadline_notifications(db)
 
-    notifications = (
-        db.query(Notification)
-        .filter(Notification.is_read == False)
-        .order_by(Notification.created_at.desc())
-        .all()
-    )
-
-    return notifications
-
-
-
-@router.put("/notifications/read-all")
-def mark_all_read(
-    db:Session=Depends(get_db)
-):
-    db.query(Notification).update({
-        Notification.is_read:True
-    }
-    )
-    db.commit()
-    return{
-        "message": "All notifications marked as read"
-    }
-
-@router.put("/notifications/{notification_id}/read")
-def mark_notification_read(
-    notification_id:int,
-    db:Session=Depends(get_db)
-):
-    notification=(
-        db.query(Notification).filter(Notification.id==notification_id).first()
-    )
-
-    if not notification:
-        return {"message":"Notification not found"}
-
-    notification.is_read=True
-    db.commit()
-    return{
-        "message": "Notifications marked as read"
-    }
-    
 @router.get("/notifications/all")
 def get_all_notifications(
     db:Session=Depends(get_db)
@@ -113,3 +68,194 @@ def get_all_notifications(
         .order_by(Notification.created_at.desc()).all()
     )        
     return notifications
+
+
+
+
+@router.get(
+    "/notifications/{user_id}",
+    response_model=list[NotificationResponse]
+)
+def get_notifications(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    create_deadline_notifications(db)
+
+    notifications = (
+        db.query(Notification)
+        .filter(
+            Notification.is_read == False,
+            Notification.receiver_id == user_id
+        )
+        .order_by(Notification.created_at.desc())
+        .all()
+    )
+
+    return notifications
+
+
+@router.put("/notifications/read-all/{user_id}")
+def mark_all_read(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    (
+        db.query(Notification)
+        .filter(
+            Notification.receiver_id == user_id
+        )
+        .update(
+            {Notification.is_read: True}
+        )
+    )
+
+    db.commit()
+
+    return {
+        "message": "All notifications marked as read"
+    }
+
+@router.put("/notifications/{notification_id}/read")
+def mark_notification_read(
+    notification_id: int,
+    db: Session = Depends(get_db)
+):
+    print("Notification ID:", notification_id)
+
+    notification = (
+        db.query(Notification)
+        .filter(Notification.id == notification_id)
+        .first()
+    )
+
+    print("Notification:", notification)
+
+    if not notification:
+        return {"message": "Notification not found"}
+
+    print("Before:", notification.is_read)
+
+    notification.is_read = True
+
+    db.add(notification)
+    db.commit()
+    db.refresh(notification)
+
+    print("After:", notification.is_read)
+
+    return {
+        "message": "Notifications marked as read"
+    }
+
+
+@router.get(
+    "/admin/notifications",
+    response_model=list[NotificationResponse]
+)
+def get_admin_notifications(
+    db: Session = Depends(get_db)
+):
+    create_deadline_notifications(db)
+
+    notifications = (
+        db.query(Notification)
+        .filter(
+            Notification.is_read == False,
+            (Notification.receiver_id==1) 
+            |
+            (Notification.receiver_id.is_(None))
+        )
+        .order_by(Notification.created_at.desc())
+        .all()
+    )
+
+    return notifications
+
+
+@router.get(
+    "/client/notifications/{user_id}",
+    response_model=list[NotificationResponse]
+)
+def get_client_notifications(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    notifications = (
+        db.query(Notification)
+        .filter(
+            Notification.is_read == False,
+            Notification.receiver_id == user_id
+        )
+        .order_by(Notification.created_at.desc())
+        .all()
+    )
+
+    return notifications
+
+
+@router.get("/notifications/all/{user_id}")
+def get_all_notifications(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    notifications = (
+        db.query(Notification)
+        .filter(
+            Notification.receiver_id == user_id
+        )
+        .order_by(Notification.created_at.desc())
+        .all()
+    )
+
+    return notifications
+
+@router.put("/notifications/chat/read/{user_id}")
+def mark_chat_notifications_read(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+    (
+        db.query(Notification)
+        .filter(
+            Notification.receiver_id == user_id,
+            Notification.notification_type == "chat",
+            Notification.is_read == False
+        )
+        .update(
+            {Notification.is_read: True},
+            synchronize_session=False
+        )
+    )
+
+    db.commit()
+
+    return {
+        "message": "Chat notifications marked as read"
+    }
+
+
+@router.put("/messages/read/{sender_id}/{receiver_id}")
+def mark_messages_read(
+    sender_id: int,
+    receiver_id: int,
+    db: Session = Depends(get_db)
+):
+    (
+        db.query(ChatMessage)
+        .filter(
+            ChatMessage.sender_id == sender_id,
+            ChatMessage.receiver_id == receiver_id,
+            ChatMessage.is_read == False
+        )
+        .update(
+            {ChatMessage.is_read: True},
+            synchronize_session=False
+        )
+    )
+
+    db.commit()
+
+    return {
+        "message": "Messages marked as read"
+    }

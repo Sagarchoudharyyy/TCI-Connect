@@ -165,12 +165,10 @@ function NewCases() {
 
         // Step 2
         if (step === 2) {
-
             if (
-                !formData.files ||
-                formData.files.length === 0
+                !digitalFiles ||
+                digitalFiles.length === 0
             ) {
-
                 newErrors.files =
                     "At least one file is required";
             }
@@ -213,8 +211,6 @@ function NewCases() {
 
         setStep(prev => prev - 1);
     };
-
-
 
     const handleSubmit = async () => {
         let newErrors =
@@ -539,6 +535,7 @@ function NewCases() {
                                             handleSubmit={
                                                 handleSubmit
                                             }
+                                            digitalFiles={digitalFiles}
                                             checkboxErrors={
                                                 checkboxErrors
                                             }

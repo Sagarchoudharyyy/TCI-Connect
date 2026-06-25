@@ -19,18 +19,14 @@ function PurchaseOrder({
     const handlePdfChange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        setIsPdfUploading(true)
-        setFormData((prev) => ({
-            ...prev,
-            pdfUpload: file,
-        }));
 
+        setIsPdfUploading(true);
         setPdfProgress(0);
 
         try {
             if (
-                formData.pdfUpload?.file_path &&
-                formData.pdfUpload.file_path.includes("temp")
+                uploadedPdf?.file_path &&
+                uploadedPdf.file_path.includes("temp")
             ) {
                 await axios.delete(
                     "http://localhost:8000/api/delete-temp-file",
@@ -79,9 +75,8 @@ function PurchaseOrder({
             setPdfProgress(100);
         } catch (error) {
             setPdfProgress(0);
-            console.log("Upload Error:", error);
-        }
-        finally {
+            console.log(error);
+        } finally {
             setIsPdfUploading(false);
         }
     };

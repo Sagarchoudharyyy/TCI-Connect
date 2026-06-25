@@ -33,8 +33,6 @@ export const getCaseFiles = () => {
   return axios.get(`${API_URL}/case_files`);
 };
 
-
-
 export const updatePreviewStatus = (
   caseId,
   preview_status

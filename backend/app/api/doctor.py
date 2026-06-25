@@ -6,6 +6,7 @@ from app.models.user_model import User
 from app.schemas.user_schema import UserRegister
 from app.core.security import hash_password
 
+
 from app.models.notification_model import Notification
 
 router = APIRouter(tags=["Doctors"])
@@ -47,7 +48,9 @@ def get_doctor_by_id(
 
 
 @router.post("/doctors")
+
 def create_doctor(user: UserRegister, db: Session = Depends(get_db)):
+    print(user.dict())
 
     new_doctor = User(
         full_name=user.full_name,
@@ -59,6 +62,7 @@ def create_doctor(user: UserRegister, db: Session = Depends(get_db)):
         license_number=user.license_number,
         vat_id=user.vat_id,
         country=user.country,
+        address=user.address,
         password=hash_password(user.password),
         role="doctor",
         status="pending"
@@ -70,7 +74,8 @@ def create_doctor(user: UserRegister, db: Session = Depends(get_db)):
 
     notification = Notification(
         message=f"New doctor registered: {new_doctor.full_name}",
-        is_read=False
+        is_read=False,
+        notification_type="doctor_registration"
     )
 
     db.add(notification)
@@ -84,7 +89,7 @@ def create_doctor(user: UserRegister, db: Session = Depends(get_db)):
         "doctor": new_doctor
     }
     
-@router.put("/doctors/{doctor_id}")
+@router.put("/doctors/{doctor_id}") 
 def update_doctor(
   doctor_id:int,
   user: UserRegister,
@@ -108,6 +113,8 @@ def update_doctor(
   doctor.vat_id = user.vat_id
   doctor.country = user.country
   doctor.password = user.password
+  doctor.business_type = user.business_type
+  doctor.address = user.address
   db.commit()
   db.refresh(doctor)
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../styles/header.css";
 import { FaBars } from "react-icons/fa";
@@ -7,11 +7,18 @@ import { FaBars } from "react-icons/fa";
 function Notification() {
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const navigate = useNavigate();
   const notificationRef =
     useRef(null);
 
   useEffect(() => {
     fetchNotifications();
+
+    const interval = setInterval(() => {
+      fetchNotifications();
+    }, 10000);
+
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -39,35 +46,40 @@ function Notification() {
       );
     };
   }, []);
+  const fetchNotifications = async () => {
+    try {
+      const user = JSON.parse(
+        localStorage.getItem("user")
+      );
+      console.log("Logged in user:", user);
+      console.log("User ID:", user.id);
 
-  const fetchNotifications =
-    async () => {
-      try {
-        const response =
-          await axios.get(
-            "http://127.0.0.1:8000/api/notifications"
-          );
 
-        console.log(
-          "Notifications API Response:",
-          response.data
-        );
+      let url = "";
 
-        setNotifications(response.data);
-      } catch (error) {
-        console.log(
-          "Notification Error:",
-          error
-        );
+      if (user?.role === "admin") {
+        url = "http://127.0.0.1:8000/api/admin/notifications";
+      } else {
+        url = `http://127.0.0.1:8000/api/client/notifications/${user.id}`;
       }
-    };
+      const response = await axios.get(url);
+      console.log("API URL:", url);
+      console.log("Notifications:", response.data);
+
+      setNotifications(response.data);
+    } catch (error) {
+      console.log(
+        "Notification Error:",
+        error
+      );
+    }
+  };
 
   const markAllRead = async () => {
     try {
       await axios.put(
-        "http://127.0.0.1:8000/api/notifications/read-all"
+        `http://127.0.0.1:8000/api/notifications/read-all/${user.id}`
       );
-
       setNotifications([]);
 
       setShowDropdown(false);
@@ -86,6 +98,55 @@ function Notification() {
     await fetchNotifications();
 
     setShowDropdown((prev) => !prev);
+  };
+  const handleNotificationClick = async (item) => {
+    const user = JSON.parse(
+      localStorage.getItem("user")
+    );
+
+    try {
+      await axios.put(
+        `http://127.0.0.1:8000/api/notifications/${item.id}/read`
+      );
+
+      // Refresh notifications after marking read
+      await fetchNotifications();
+
+      setShowDropdown(false);
+
+      console.log(item);
+      // Doctor registration notification
+      if (
+        item.notification_type ===
+        "doctor_registration"
+      ) {
+        navigate(
+          `/admin/user-details/${item.sender_id}`
+        );
+        return;
+      }
+
+      // Chat notification
+      if (
+        item.notification_type ===
+        "chat"
+      ) {
+        navigate("/chat");
+        return;
+      }
+
+      // Case notifications
+      if (
+        user.role === "admin" &&
+        item.case_id
+      ) {
+        navigate(
+          `/admin/view-case/${item.case_id}`
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div
@@ -187,9 +248,15 @@ function Notification() {
                   <div
                     key={item.id}
                     className="notif-item"
+                    style={{
+                      cursor: item.case_id
+                        ? "pointer"
+                        : "default"
+                    }}
+                    onClick={() =>
+                      handleNotificationClick(item)
+                    }
                   >
-
-
                     <div className="title p-2 border-bottom" style={{ fontWeight: "600" }}>
 
                       {!item.is_read && (

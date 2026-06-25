@@ -20,6 +20,7 @@ from fastapi.responses import FileResponse
 from sqlalchemy.orm import joinedload
 from app.models.case_detail_model import CaseDetail
 from app.models.implant_detail_model import ImplantDetail
+from app.schemas.case_schema import SaveTempFileRequest
 
 from app.schemas.case_schema import (
         CaseCreate,
@@ -183,7 +184,10 @@ def create_case(
 
     if doctor:
         notification = Notification(
-            message=f"New case submitted by Dr. {doctor.full_name}",case_id=new_case.id,is_read=False
+            message=f"New case submitted by Dr.{doctor.full_name}  (Case ID: {new_case.id})",
+            case_id=new_case.id,
+            is_read=False,
+            notification_type="new_case"
         )
 
         db.add(notification)
@@ -313,6 +317,7 @@ def create_case(
         for file in uploaded_files
     ]
 }
+
 
 @router.get(
     "/cases",
@@ -448,6 +453,7 @@ def get_cases(
 
     return result
 
+
 @router.get(
         "/cases/{case_id}",
         response_model=CaseResponse
@@ -464,15 +470,17 @@ def get_case(
         .first()
         )
 
-        print("CASE:", case.id)
-        print("DETAILS:", case.details)
-
+     
 
         if not case:
             raise HTTPException(
                 status_code=404,
                 detail="Case not found"
             )
+        
+        print("CASE:", case.id)
+        print("DETAILS:", case.details)
+
 
         return {
             "id": case.id,
@@ -847,7 +855,8 @@ def update_case_status(
         notification = Notification(
         message=f"Case #{case.id} status changed to {status_data.status}",
         case_id=case.id,
-        is_read=False
+        is_read=False,
+        notification_type="case_status"
         )
 
         db.add(notification)
@@ -860,6 +869,7 @@ def update_case_status(
             "message": "Status updated successfully",
             "status": case.status
         }
+
 
 @router.put("/cases/{case_id}/preview-status")
 def update_preview_status(
@@ -885,6 +895,7 @@ def update_preview_status(
         "message": "Preview status updated successfully",
         "preview_status": case.preview_status   
     }
+
 
 @router.get("/cases/{case_id}/history")
 def get_case_history(
@@ -927,7 +938,8 @@ def get_case_history(
             }
             for case in previous_cases
         ]
-    
+
+
 @router.delete("/cases/{case_id}")
 def delete_case(
         case_id: int,
@@ -1016,6 +1028,7 @@ async def upload_case_file(
         "file_name": file.filename
     }
 
+
 @router.get(
         "/download-file")
 def download_file(
@@ -1039,6 +1052,7 @@ def download_file(
             "application/octet-stream"
         )
 
+
 @router.get("/case_files")
 def get_case_files(
         db: Session = Depends(get_db)
@@ -1058,6 +1072,7 @@ def get_case_files(
     )
 
     return files
+
 
 @router.delete(
         "/case-files/{file_id}"
@@ -1098,6 +1113,7 @@ def delete_case_file(
             "File deleted successfully"
         }
 
+
 @router.post("/temp-upload")
 async def temp_upload(file: UploadFile = File(...)):
 
@@ -1127,6 +1143,7 @@ def delete_temp_file(data: DeleteTempFileRequest):
         os.remove(data.file_path)
 
     return {"message": "Temp file deleted"}
+
 
 @router.put("/cases/{case_id}/confirm-preview-files")
 def confirm_preview_files(
@@ -1183,3 +1200,88 @@ def confirm_preview_files(
         "preview_status": case.preview_status
     }
 
+
+@router.post("/cases/{case_id}/save-temp-file")
+def save_temp_file(
+    case_id: int,
+    data: SaveTempFileRequest,
+    db: Session = Depends(get_db)
+):
+    case = (
+        db.query(Case)
+        .filter(Case.id == case_id)
+        .first()
+    )
+
+    if not case:
+        raise HTTPException(
+            status_code=404,
+            detail="Case not found"
+        )
+
+    temp_path = data.file_path
+
+    if not os.path.exists(temp_path):
+        raise HTTPException(
+            status_code=404,
+            detail="Temp file not found"
+        )
+
+    upload_folder = "uploads"
+    os.makedirs(upload_folder, exist_ok=True)
+
+    file_name = os.path.basename(temp_path)
+
+    unique_filename = (
+        f"{uuid4()}_{file_name}"
+    )
+
+    new_path = os.path.join(
+        upload_folder,
+        unique_filename
+    )
+
+    shutil.move(
+        temp_path,
+        new_path
+    )
+
+    # Replace old case document
+    if data.category == "case_document":
+        old_file = (
+            db.query(CaseFile)
+            .filter(
+                CaseFile.case_id == case_id,
+                CaseFile.file_category == "case_document"
+            )
+            .first()
+        )
+
+        if old_file:
+
+            if os.path.exists(
+                old_file.file_path
+            ):
+                os.remove(
+                    old_file.file_path
+                )
+
+            db.delete(old_file)
+            db.commit()
+
+    new_file = CaseFile(
+        case_id=case.id,
+        file_name=file_name,
+        file_path=new_path,
+        file_type="application/octet-stream",
+        file_category=data.category
+    )
+
+    db.add(new_file)
+    db.commit()
+    db.refresh(new_file)
+
+    return {
+        "message":
+            "Temp file saved successfully"
+    }

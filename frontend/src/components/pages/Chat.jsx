@@ -45,9 +45,28 @@ const Chat = () => {
       console.log(error);
     }
   };
+
   useEffect(() => {
+    markChatNotificationsRead();
     getActiveUsers();
   }, []);
+
+  const markChatNotificationsRead = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      console.log("Marking chat notifications for:", user.id);
+
+      const res = await axios.put(
+        `http://127.0.0.1:8000/api/notifications/chat/read/${user.id}`
+      );
+
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
   const sendMessage = async () => {
 
@@ -121,7 +140,36 @@ const Chat = () => {
                         </div>
 
                         <div className="user-details">
-                          <h5>{user.name}</h5>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "10px"
+                            }}
+                          >
+                            <h5 style={{ margin: 0 }}>
+                              {user.name}
+                            </h5>
+
+                            {user.unread_count > 0 && (
+                              <span
+                                style={{
+                                  background: "#dc3545",
+                                  color: "#fff",
+                                  borderRadius: "50%",
+                                  minWidth: "22px",
+                                  height: "22px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  fontSize: "12px",
+                                  padding: "0 6px"
+                                }}
+                              >
+                                {user.unread_count}
+                              </span>
+                            )}
+                          </div>
                         </div>
 
                       </div>

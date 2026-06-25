@@ -12,22 +12,21 @@ function ChatWindow() {
   const [newMessage, setNewMessage] = useState("");
   const [user, setUser] = useState(null);
   const [showSidebar, setShowSidebar] = useState(false);
-  // Logged in user id
+
   const loggedUser =
     JSON.parse(localStorage.getItem("user"));
 
   const sender_id = loggedUser?.id;
 
-  // If no id in URL → open admin chat
+
   const receiver_id = id || 1;
 
   useEffect(() => {
-
     if (sender_id && receiver_id) {
       getMessages();
       getUser();
+      markMessagesRead();
     }
-
   }, [id, sender_id]);
 
   const getUser = async () => {
@@ -53,6 +52,15 @@ function ChatWindow() {
 
       setMessages(res.data);
 
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const markMessagesRead = async () => {
+    try {
+      await axios.put(
+        `http://127.0.0.1:8000/api/messages/read/${receiver_id}/${sender_id}`
+      );
     } catch (error) {
       console.log(error);
     }
