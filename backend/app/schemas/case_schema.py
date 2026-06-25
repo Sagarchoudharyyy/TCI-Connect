@@ -21,6 +21,14 @@ class TempFile(BaseModel):
 class DeleteTempFileRequest(BaseModel):
     file_path: str
 
+
+
+class SaveTempFileRequest(BaseModel):
+    file_path: str
+    category: str
+
+    
+
 class CaseCreate(BaseModel):
     doctor_id: int
 

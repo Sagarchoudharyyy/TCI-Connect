@@ -16,12 +16,11 @@ function UploadDigitalFiles({
     );
 
     const handleFileChange = async (e) => {
-
         const selectedFiles =
             Array.from(e.target.files);
 
         if (
-            formData.files.length +
+            digitalFiles.length +
             selectedFiles.length >
             5
         ) {
@@ -30,33 +29,26 @@ function UploadDigitalFiles({
             );
             return;
         }
-        const newFiles = selectedFiles.map(
-            (file) => ({
+
+        const newFiles =
+            selectedFiles.map((file) => ({
                 id:
                     Date.now() +
                     Math.random(),
                 file,
                 progress: 0,
                 status: "uploading"
-            })
-        );
+            }));
 
         setDigitalFiles((prev) => [
             ...prev,
             ...newFiles
         ]);
 
-        setFormData((prev) => ({
-            ...prev,
-            files: [
-                ...prev.files,
-                ...selectedFiles
-            ]
-        }));
         newFiles.forEach((fileObj) => {
             uploadFile(fileObj);
         });
-    }
+    };
     const uploadFile = async (fileObj) => {
         const uploadData = new FormData();
 

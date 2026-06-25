@@ -1,17 +1,30 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import {
+    useState,
+    useEffect,
+    useRef
+} from "react";
 import axios from "axios";
 import "../DoctorStyle/DoctorHeader.css";
 
 
+
+
 function DoctorHeader({ title = "Dashboard" }) {
     const [notifications, setNotifications] = useState([]);
+    const notificationRef = useRef(null);
     const [showDropdown, setShowDropdown] = useState(false);
+
+
 
     const fetchNotifications = async () => {
         try {
+            const user = JSON.parse(
+                localStorage.getItem("user")
+            );
+            if (!user) return;
             const response = await axios.get(
-                "http://127.0.0.1:8000/api/notifications"
+                `http://127.0.0.1:8000/api/client/notifications/${user.id}`
             );
 
             setNotifications(response.data);
@@ -23,8 +36,34 @@ function DoctorHeader({ title = "Dashboard" }) {
     useEffect(() => {
         fetchNotifications();
     }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                notificationRef.current &&
+                !notificationRef.current.contains(
+                    event.target
+                )
+            ) {
+                setShowDropdown(false);
+            }
+        };
+
+        document.addEventListener(
+            "mousedown",
+            handleClickOutside
+        );
+
+        return () => {
+            document.removeEventListener(
+                "mousedown",
+                handleClickOutside
+            );
+        };
+    }, []);
     const markAsRead = async (id) => {
         try {
+            console.log("Notification clicked:", id);
             await axios.put(
                 `http://127.0.0.1:8000/api/notifications/${id}/read`
             );
@@ -49,8 +88,9 @@ function DoctorHeader({ title = "Dashboard" }) {
             <div className="doctor-header d-flex justify-content-between align-items-center" style={{ width: "100%" }} >
                 <h2>{title}</h2>
                 <div className="header-right">
-                    <div className="notification-wrapper position-relative">
-                        {/* <div id="clientNotifToggle" style={{ cursor: "pointer" }}> */}
+                    <div
+                        ref={notificationRef}
+                        className="notification-wrapper position-relative">
                         <div
                             id="clientNotifToggle"
                             style={{

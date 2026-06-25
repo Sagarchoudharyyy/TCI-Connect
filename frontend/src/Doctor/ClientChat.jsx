@@ -13,24 +13,26 @@ function ClientChat() {
   const [newMessage, setNewMessage] = useState("");
   const [user, setUser] = useState(null);
 
-  // Logged in user id
+
   const loggedUser =
     JSON.parse(localStorage.getItem("user"));
 
   const sender_id = loggedUser?.id;
 
-  // If no id in URL → open admin chat
   const receiver_id = id || 1;
 
   useEffect(() => {
-
     if (sender_id && receiver_id) {
-      getMessages();
-      getUser();
+      const loadChat = async () => {
+        await markChatNotificationsRead();
+        await markMessagesRead();
+        await getMessages();
+        await getUser();
+      };
+
+      loadChat();
     }
-
   }, [id, sender_id]);
-
   const getUser = async () => {
     try {
 
@@ -40,6 +42,19 @@ function ClientChat() {
 
       setUser(res.data);
 
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const markChatNotificationsRead = async () => {
+    try {
+      console.log("Marking chat notifications");
+
+      await axios.put(
+        `http://127.0.0.1:8000/api/notifications/chat/read/${sender_id}`
+      );
+
+      console.log("Chat notifications marked as read");
     } catch (error) {
       console.log(error);
     }
@@ -82,20 +97,24 @@ function ClientChat() {
     }
   };
 
+
+  const markMessagesRead = async () => {
+    try {
+      console.log(
+        "Calling API:",
+        receiver_id,
+        sender_id
+      );
+      await axios.put(
+        `http://127.0.0.1:8000/api/messages/read/${receiver_id}/${sender_id}`
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    // <div className="container-fluid">
-    //   <div className="dashboard-main">
-    //     <div className="row g-0">
 
-    //       <DoctorSideBar />
-
-    //       <div
-    //         className="offset-2 col-12 col-md-9 col-lg-9
-    //         offset-lg-3 col-xl-9 col-xxl-10
-    //         offset-xl-3 offset-xxl-2 main-content"
-    //       >
-
-    //         <DoctorHeader title="Chat" />
     <div className="container-fluid p-0">
       <div className="row g-0 doctor-dashboard-main">
         <DoctorSideBar />

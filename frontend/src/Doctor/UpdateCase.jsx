@@ -342,10 +342,9 @@ function UpdateCase() {
     }
 
     if (step === 2) {
-
       if (
-        !formData.files ||
-        formData.files.length === 0
+        !digitalFiles ||
+        digitalFiles.length === 0
       ) {
 
         newErrors.files =
@@ -559,98 +558,57 @@ function UpdateCase() {
         updateResponse.data
       );
 
-      if (formData.pdfUpload instanceof File) {
-
-        const pdfData = new FormData();
-
-        pdfData.append(
-          "file",
-          formData.pdfUpload
-        );
-
-        pdfData.append(
-          "category",
-          "case_document"
-        );
-
-        const pdfResponse = await axios.post(
-          `http://localhost:8000/api/cases/${caseId}/upload`,
-          pdfData,
+      if (
+        formData.pdfUpload?.file_path &&
+        formData.pdfUpload.file_path.includes("temp_uploads")
+      ) {
+        const response = await axios.post(
+          `http://localhost:8000/api/cases/${caseId}/save-temp-file`,
           {
-            headers: {
-              "Content-Type": "multipart/form-data"
-            },
-            onUploadProgress: (progressEvent) => {
-              const percentCompleted = Math.round(
-                (progressEvent.loaded * 100) /
-                progressEvent.total
-              );
-
-              setPdfProgress(percentCompleted);
-            }
+            file_path: formData.pdfUpload.file_path,
+            category: "case_document",
           }
         );
 
         console.log(
-          "CASE DOCUMENT UPLOADED:",
-          pdfResponse.data
+          "CASE DOCUMENT SAVED:",
+          response.data
+        );
+
+        await axios.delete(
+          "http://localhost:8000/api/delete-temp-file",
+          {
+            data: {
+              file_path: formData.pdfUpload.file_path,
+            },
+          }
         );
       }
 
-      if (
-        formData.files &&
-        formData.files.length > 0
-      ) {
-
-        for (const file of formData.files) {
-
-          if (!(file instanceof File)) {
-            continue;
-          }
-
-          const fileData = new FormData();
-
-          fileData.append(
-            "file",
-            file
-          );
-
-          fileData.append(
-            "category",
-            "digital_file"
-          );
-
-          const uploadResponse =
-            await axios.post(
-              `http://localhost:8000/api/cases/${caseId}/upload`,
-              fileData,
+      if (digitalFiles.length > 0) {
+        for (const file of digitalFiles) {
+          if (
+            file.file_path &&
+            file.file_path.includes("temp_uploads")
+          ) {
+            const response = await axios.post(
+              `http://localhost:8000/api/cases/${caseId}/save-temp-file`,
               {
-                headers: {
-                  "Content-Type":
-                    "multipart/form-data"
-                }
+                file_path: file.file_path,
+                category: "digital_file",
               }
             );
 
-          console.log(
-            "UPLOAD SUCCESS:",
-            uploadResponse.data
-          );
+            console.log(
+              "TEMP FILE SAVED:",
+              response.data
+            );
 
-
-          const tempFile = digitalFiles.find(
-            (f) => f.file?.name === file.name
-          );
-
-          if (
-            tempFile?.file_path &&
-            tempFile.file_path.includes("temp_uploads")
-          ) {
             await axios.delete(
               "http://localhost:8000/api/delete-temp-file",
               {
                 data: {
-                  file_path: tempFile.file_path,
+                  file_path: file.file_path,
                 },
               }
             );
@@ -775,6 +733,7 @@ function UpdateCase() {
                       handleSubmit={
                         handleSubmit
                       }
+                      digitalFiles={digitalFiles}
                       checkboxErrors={
                         checkboxErrors
                       }

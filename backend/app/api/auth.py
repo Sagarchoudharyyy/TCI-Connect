@@ -56,6 +56,8 @@ def register(
         username=user.email,
         phone=user.phone,
         business_name=user.business_name,
+        business_type=user.business_type,
+        address=user.address,
         license_number=user.license_number,
         vat_id=user.vat_id,
         country=user.country,
@@ -67,14 +69,18 @@ def register(
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-
     notification = Notification(
-    message=f"New doctor registration request from {new_user.full_name}"
+        message=f"New doctor registration request from {new_user.full_name}",
+        is_read=False,
+        notification_type="doctor_registration",
+        sender_id=new_user.id,
+        receiver_id=1
     )
-
+    print(notification.sender_id)
 
     db.add(notification)
     db.commit()
+    db.refresh(notification)
 
     return {
     "message": "Registration successful. Waiting for admin approval"
@@ -107,6 +113,8 @@ def admin_register(
         phone=user.phone,
         business_name=user.business_name,
         license_number=user.license_number,
+        business_type=user.business_type,
+        address=user.address,
         vat_id=user.vat_id,
         country=user.country,
         password=hashed_password,
@@ -183,9 +191,11 @@ def login(
         "email": db_user.email,
         "phone": db_user.phone,
         "business_name": db_user.business_name,
-        "license_number": db_user.license_number,
+         "business_type": db_user.business_type,
+        "license_number": db_user.license_number,   
         "vat_id": db_user.vat_id,
         "country": db_user.country,
+        "address": db_user.address,
         "role": db_user.role
     }
 }

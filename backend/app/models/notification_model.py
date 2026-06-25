@@ -12,6 +12,12 @@ class Notification(Base):
   is_read=Column(Boolean,default=False)
 
   case_id=Column(Integer)
-  
+
+  notification_type = Column(String, nullable=True)  
+
+  sender_id = Column(Integer, nullable=True)
+
+  receiver_id = Column(Integer, nullable=True)
+
   created_at = Column( DateTime, server_default=func.now()
   )

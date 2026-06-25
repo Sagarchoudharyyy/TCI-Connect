@@ -11,6 +11,7 @@ class UserRegister(BaseModel):
     license_number: str
     vat_id: str
     country: str
+    address: str
     password: str
 
 
