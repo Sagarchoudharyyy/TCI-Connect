@@ -41,11 +41,13 @@ import ClinicalSupport from "./design-part/html/ClinicalSupport";
 import PricingUI from "./design-part/html/PricingUI";
 import OurSolutions from "./design-part/html/OurSolutions";
 import CONTACTUS from "./design-part/html/Contact-Us";
+import ScrollToTop from "./design-part/Design-Component/ScrollToTop";
 
 
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
 
         <Route
