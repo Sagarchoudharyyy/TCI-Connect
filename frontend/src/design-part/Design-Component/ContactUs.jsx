@@ -5,7 +5,7 @@ import ContactOverly from "../../assets/contact-overly.png";
 function ContactUs() {
   return (
     <>
-      <section className="contact-section">
+      <section className="contact-section px-5">
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-11">

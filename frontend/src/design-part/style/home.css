@@ -309,6 +309,96 @@
 
 }
 
+/* Service LAb Card */
+
+.lab-service-section-cards {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+    margin-top: 53px;
+}
+
+.lab-service-card-single {
+    background: #EDF0F6;
+    border-radius: 20px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    gap: 17px;
+    transition: all 0.3s ease;
+}
+
+.lab-service-card-single:hover {
+    background: #388FEB;
+    transition: all 0.3s ease;
+    box-shadow: rgb(0 0 0 / 34%) 2px 0px 10px 0px;
+}
+
+.lab-service-card-single:hover .lab-service-icon {
+    background: #FFFFFF;
+    transition: all 0.3s ease;
+}
+
+.lab-service-card-single:hover.lab-service-card-single h6 {
+    color: #FFFFFF;
+    transition: all 0.3s ease;
+}
+
+.lab-service-card-single:hover.lab-service-card-single p {
+    color: #FFFFFFC7;
+    transition: all 0.3s ease;
+}
+
+.lab-service-card-single:hover .learn-more {
+    color: #FFFFFF;
+    transition: all 0.3s ease;
+}
+
+.lab-service-card-single h6 {
+    color: #212121;
+    font-family: "Manrope", sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 30px;
+    letter-spacing: 0%;
+    padding-right: 2.5rem;
+}
+
+.lab-service-card-single p {
+    color: #666666;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0%;
+    text-align: start;
+}
+
+.lab-service-card-single .lab-service-icon {
+    background: #EDF0F6;
+    border-radius: 100px;
+    width: 66px;
+    height: 66px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lab-service-card-single .lablearn-more {
+    color: #388FEB;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 30px;
+    letter-spacing: 0%;
+    text-align: center;
+
+}
+
+
+
+
 /* ============================== how work section ================================ */
 
 .how-work {
