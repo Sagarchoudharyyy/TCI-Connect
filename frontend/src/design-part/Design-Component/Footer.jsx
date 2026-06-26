@@ -8,9 +8,9 @@ function Footer() {
   return (
     <>
       <footer className="main-footer">
-        <div className="container-fluid px-5">
+        <div className="container">
           <div className="row ">
-            <div className="col-lg-4">
+            <div className="col-lg-4 col-md-4">
               <div className="footer-meta">
                 <Link to="/" className="footer-logo">
                   <img
@@ -18,7 +18,6 @@ function Footer() {
                     alt="TCI Dental Lab"
                   />
                 </Link>
-
                 <p>
                   TCI Dental Lab is a full-service dental
                   laboratory providing advanced dental
@@ -60,7 +59,7 @@ function Footer() {
                 </ul>
               </div>
             </div>
-            <div className="col-lg-2 col-md-3">
+            <div className="col-lg-2 col-md-2">
               <div className="footer-meta  quick-links-meta">
                 <h4>Quick Links</h4>
 
@@ -77,7 +76,7 @@ function Footer() {
             </div>
 
             {/* Brussels */}
-            <div className="col-lg-3 col-md-5">
+            <div className="col-lg-3 col-md-3">
               <div className="footer-meta">
                 <h4>Brussels – Belgium</h4>
 
@@ -114,7 +113,7 @@ function Footer() {
             </div>
 
             {/* Beirut */}
-            <div className="col-lg-3 col-md-4">
+            <div className="col-lg-3 col-md-3">
               <div className="footer-meta">
                 <h4>Beirut – Lebanon</h4>
 
