@@ -230,30 +230,6 @@ function HOME() {
                                         width: `${progressWidth}%`,
                                     }}
                                 ></div>
-                                <div
-                                    className="step"
-                                    style={{ backgroundColor: activeStep >= 1 ? "#388FEB" : "#ccc" }}
-                                ></div>
-
-                                <div
-                                    className="step"
-                                    style={{ backgroundColor: activeStep >= 2 ? "#388FEB" : "#ccc" }}
-                                ></div>
-
-                                <div
-                                    className="step"
-                                    style={{ backgroundColor: activeStep >= 3 ? "#388FEB" : "#ccc" }}
-                                ></div>
-
-                                <div
-                                    className="step"
-                                    style={{ backgroundColor: activeStep >= 4 ? "#388FEB" : "#ccc" }}
-                                ></div>
-
-                                <div
-                                    className="step"
-                                    style={{ backgroundColor: activeStep >= 5 ? "#388FEB" : "#ccc" }}
-                                ></div>
 
                             </div>
 

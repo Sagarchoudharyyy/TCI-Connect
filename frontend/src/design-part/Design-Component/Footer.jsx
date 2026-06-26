@@ -28,33 +28,33 @@ function Footer() {
 
                 <ul className="social-links">
                   <li>
-                    <a
-                      href="https://www.facebook.com/TCIdental"
+                    <Link
+                      to="https://www.facebook.com/TCIdental"
                       target="_blank"
                       rel="noreferrer"
                     >
                       <i className="bi bi-facebook"></i>
-                    </a>
+                    </Link>
                   </li>
 
                   <li>
-                    <a
-                      href="https://www.instagram.com/tcidental/"
+                    <Link
+                      to="https://www.instagram.com/tcidental/"
                       target="_blank"
                       rel="noreferrer"
                     >
                       <i className="bi bi-instagram"></i>
-                    </a>
+                    </Link>
                   </li>
 
                   <li>
-                    <a
-                      href="https://wa.me/96170144044"
+                    <Link
+                      to="https://wa.me/96170144044"
                       target="_blank"
                       rel="noreferrer"
                     >
                       <i className="bi bi-whatsapp"></i>
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>

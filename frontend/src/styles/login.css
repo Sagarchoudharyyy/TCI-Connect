@@ -16,7 +16,7 @@
 
 body {
     overflow-x: hidden;
-    font-family: "Roboto", sans-serif;
+
 }
 
 .form-header .navbar-expand-lg {
@@ -37,7 +37,7 @@ a {
 }
 
 .form-header a.navbar-brand h1 {
-    font-family: var(--font-family);
+
     font-weight: 700;
     font-size: 30px;
     line-height: 130%;
@@ -74,7 +74,7 @@ ul {
 }
 
 .main-heading {
-    font-family: 'Roboto';
+
     font-weight: 700;
     font-size: 34px;
     line-height: 130%;
@@ -99,7 +99,6 @@ ul {
 
 .form-section .form-group input,
 .form-section .form-group select {
-    font-family: 'Roboto';
     font-weight: 400;
     font-size: 16px;
     line-height: 125%;
@@ -165,7 +164,6 @@ ul {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-family: 'Roboto';
     font-weight: 400;
     font-size: 16px;
     line-height: 125%;
@@ -192,14 +190,12 @@ ul {
 }
 
 .form-section .forgot {
-    font-family: 'Roboto';
     font-weight: 500;
     font-size: 16px;
     color: #fff;
 }
 
 .btn-all {
-    font-family: 'Roboto';
     font-weight: 600;
     font-size: 18px;
     text-align: center;
@@ -212,7 +208,6 @@ ul {
 }
 
 .form-section .formsec-bxx .form-para {
-    font-family: 'Roboto';
     font-weight: 500;
     font-size: 15px;
     line-height: normal;
@@ -258,7 +253,6 @@ a {
 }
 
 .form-footer-logo a h1 {
-    font-family: 'Roboto';
     font-weight: 700;
     font-size: 38px;
     line-height: normal;
@@ -267,7 +261,6 @@ a {
 }
 
 .form-content p {
-    font-family: 'Roboto';
     font-weight: 400;
     font-size: 16px;
     line-height: 175%;
@@ -314,7 +307,6 @@ p {
 }
 
 .formf-last p {
-    font-family: 'Roboto';
     font-weight: 400;
     font-size: 15px;
     line-height: normal;

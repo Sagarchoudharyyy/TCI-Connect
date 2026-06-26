@@ -7,7 +7,6 @@
 }
 
 .register-header a.navbar-brand h1 {
-  font-family: "Roboto", sans-serif;
   font-weight: 700;
   font-size: 30px;
   line-height: 130%;
@@ -60,7 +59,6 @@
 
 
 .register-heading {
-  font-family: "Roboto", sans-serif;
   font-weight: 700;
   font-size: 34px;
   line-height: 130%;
