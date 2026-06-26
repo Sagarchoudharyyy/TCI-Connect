@@ -24,7 +24,8 @@ class Case(Base):
         doctor_id = Column(
             Integer,
             ForeignKey("users.id", ondelete="CASCADE"),
-            nullable=False
+            nullable=False,
+            index=True
         )
 
         # Patient Information
@@ -55,7 +56,8 @@ class Case(Base):
 
         appointment_date = Column(
             DateTime,
-            nullable=True
+            nullable=True,
+             index=True
         )
 
 
@@ -67,22 +69,26 @@ class Case(Base):
 
         delivery_deadline = Column(
             Date,
-            nullable=True
+            nullable=True,
+            index=True
         )
 
         preview_status = Column(
             String(30),
-            default="-"
+            default="-",
+            index=True
         )
 
         status = Column(
             String(30),
-            default="Not Submitted"
+            default="Not Submitted",
+             index=True
         )
 
         created_at = Column(
             DateTime,
-            server_default=func.now()
+            server_default=func.now(),
+             index=True 
         )
         doctor = relationship(
             "User",

@@ -21,6 +21,7 @@ from sqlalchemy.orm import joinedload
 from app.models.case_detail_model import CaseDetail
 from app.models.implant_detail_model import ImplantDetail
 from app.schemas.case_schema import SaveTempFileRequest
+from fastapi import Query
 
 from app.schemas.case_schema import (
         CaseCreate,
@@ -324,21 +325,27 @@ def create_case(
     response_model=list[CaseResponse]
 )
 def get_cases(
+    page: int = Query(1, ge=1),
+    limit: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db)
 ):
 
-    cases = db.query(Case).all()
+    cases = (
+    db.query(Case)
+    .options(
+        joinedload(Case.details)
+            .joinedload(CaseDetail.implant_details),
+        joinedload(Case.files),
+        joinedload(Case.doctor)
+    )
+    .order_by(Case.created_at.desc())
+    .offset((page - 1) * limit)
+    .limit(limit)
+    .all()
+)
     result = []
 
     for case in cases:
-
-        case_detail = (
-            db.query(CaseDetail)
-            .filter(
-                CaseDetail.case_id == case.id
-            )
-            .first()
-        )
 
         result.append({
             "id": case.id,

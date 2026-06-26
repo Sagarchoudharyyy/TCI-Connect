@@ -35,7 +35,11 @@ class User(Base):
     
     created_at = Column(DateTime,server_default=func.now())
 
-    last_updated = Column(DateTime,server_default=func.now())
+    last_updated = Column(
+    DateTime,
+    server_default=func.now(),
+    onupdate=func.now()
+)
 
     role = Column(String, nullable=False)
 
