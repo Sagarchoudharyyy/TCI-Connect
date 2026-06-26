@@ -1,0 +1,10 @@
+.main-header {
+    position: fixed;
+    width: 100%;
+    z-index: 99;
+    background: none;
+}
+
+.contact-section {
+    padding-top: 0;
+}

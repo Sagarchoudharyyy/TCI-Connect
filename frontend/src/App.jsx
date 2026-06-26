@@ -35,6 +35,12 @@ import UploadPreview from "./components/pages/UploadPreview";
 import UserDetails from "./components/pages/UserDetails";
 import HOME from "./design-part/html/HOME";
 import About from "./design-part/html/About";
+import LabService from "./design-part/html/LabService";
+import SubmitCase from "./design-part/html/SubmitCase";
+import ClinicalSupport from "./design-part/html/ClinicalSupport";
+import PricingUI from "./design-part/html/PricingUI";
+import OurSolutions from "./design-part/html/OurSolutions";
+import CONTACTUS from "./design-part/html/Contact-Us";
 
 
 function App() {
@@ -46,6 +52,35 @@ function App() {
           path="/"
           element={<HOME />}
         />
+
+        <Route
+          path="/lab-services"
+          element={<LabService />}
+        />
+        <Route
+          path="/submit-case"
+          element={<SubmitCase />}
+        />
+        <Route
+          path="/clinical-support"
+          element={<ClinicalSupport />}
+        />
+        <Route
+          path="/pricing"
+          element={<PricingUI />}
+        />
+        <Route
+          path="/our-solutions"
+          element={< OurSolutions />}
+        />
+        <Route
+          path="/contact-us"
+          element={< CONTACTUS />}
+        />
+
+
+
+
         <Route path="/about-us" element={<About />} />
 
         <Route

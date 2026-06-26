@@ -8,11 +8,9 @@ function Footer() {
   return (
     <>
       <footer className="main-footer">
-        <div className="container">
+        <div className="container-fluid px-5">
           <div className="row ">
-
-            {/* Logo Section */}
-            <div className="col-lg-3">
+            <div className="col-lg-4">
               <div className="footer-meta">
                 <Link to="/" className="footer-logo">
                   <img
@@ -62,8 +60,6 @@ function Footer() {
                 </ul>
               </div>
             </div>
-
-            {/* Quick Links */}
             <div className="col-lg-2 col-md-3">
               <div className="footer-meta  quick-links-meta">
                 <h4>Quick Links</h4>
