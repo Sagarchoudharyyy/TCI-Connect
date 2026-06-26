@@ -44,7 +44,7 @@ function SubmitCase() {
                 </div>
             </section>
             <section class="submit-case">
-                <div class="container mb-5 pb-5">
+                <div class="container pb-5">
                     <div class="row justify-content-center">
                         <div class="col-lg-11">
                             <div class="submit-case-meta">

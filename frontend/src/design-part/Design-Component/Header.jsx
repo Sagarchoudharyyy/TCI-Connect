@@ -28,13 +28,13 @@ function Header() {
       >
         <div className="container">
           <nav className="navbar navbar-expand-xl justify-content-between w-100 ">
-            <Link className="navbar-brand" to="/">
+            <NavLink className="navbar-brand" to="/">
               <img
                 src={TCILogo}
                 alt="TCI Connect"
                 className="logo-img"
               />
-            </Link>
+            </NavLink>
 
             <div className="main-menus">
               <div
@@ -123,14 +123,14 @@ function Header() {
                   </li>
 
                   <li className="nav-item">
-                    <Link
+                    <NavLink
                       to="/contact-us"
                       className={({ isActive }) =>
                         isActive ? "nav-link active" : "nav-link"
                       }
                     >
                       Contact Us
-                    </Link>
+                    </NavLink>
                   </li>
 
                 </ul>

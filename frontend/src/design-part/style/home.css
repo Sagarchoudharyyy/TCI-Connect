@@ -531,7 +531,7 @@
 
 .pricing-section {
     position: relative;
-    padding: 105px 0 !;
+    padding: 105px 0 !important;
 }
 
 .pricing-section-meta {
@@ -612,6 +612,7 @@
 }
 
 /* ========================= solution section ============================ */
+
 .solution-section {
     background: #F3F5F7;
     border-radius: 20px;
@@ -796,132 +797,6 @@
     margin-top: 10px;
 }
 
-/* ================================== footer=========================== */
-/* 
-.main-footer {
-    background: radial-gradient(126.33% 126.33% at 50% 50%, #0152A8 0%, #013A77 58.96%, #002042 100%);
-    border-radius: 20px;
-    margin: 13px;
-    padding: 75px 0 0 0;
-    position: relative;
-    z-index: 1;
-}
-
-.footer-logo {
-    margin-bottom: 25px;
-}
-
-.footer-logo img {
-    object-fit: cover;
-    width: 100%;
-}
-
-.footer-meta p {
-    color: #FFFFFFBF;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 28px;
-    letter-spacing: 0%;
-}
-
-.social-links {
-    margin-top: 30px;
-    display: flex;
-    gap: 24px;
-}
-
-.social-links li a {
-    border: 1px solid #FFFFFF;
-    width: 34px;
-    height: 34px;
-    border-radius: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.footer-meta h4 {
-    color: #FFFFFF;
-    font-family: "Roboto", sans-serif;
-    font-weight: 500;
-    font-size: 18px;
-    line-height: 100%;
-    letter-spacing: 0.5px;
-    margin-bottom: 34px;
-
-}
-
-.footer-meta ul {
-    padding: 0;
-}
-
-.footer-meta ul li {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    margin-bottom: 18px;
-}
-
-.footer-meta ul li a {
-    color: #FFFFFFBF;
-    font-weight: 500;
-    font-size: 15px;
-    line-height: 19px;
-    letter-spacing: 0%;
-    transition: all 0.3s ease;
-}
-
-.quick-links li a:hover {
-    text-decoration: underline;
-    transition: all 0.3s ease;
-}
-
-.personal-information li a:hover {
-    text-decoration: underline;
-    transition: all 0.3s ease;
-}
-
-.copy-right-section {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    margin-top: 70px;
-    padding: 30px 0;
-    border-top: 1px solid #FFFFFF1F;
-}
-
-.copy-right-section p {
-    color: #FFFFFF99;
-    font-weight: 500;
-    font-size: 15px;
-    line-height: normal;
-    letter-spacing: 0%;
-}
-
-.copy-right-section a {
-    color: #FFFFFF99;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 100%;
-    letter-spacing: 0%;
-
-}
-
-.footer-overly-img {
-    position: absolute;
-    width: 100%;
-    height: 123px;
-    left: 0;
-    bottom: 0;
-    z-index: -1;
-}
-
-.footer-overly-img img {
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
-}
- */
 
 
 /* ==================== about banner============================== */
@@ -1080,6 +955,7 @@
 .dental-tab {
     position: relative;
     padding: 105px 0;
+    background-color: white;
 }
 
 .dental-lab-meta h2 {
@@ -1256,10 +1132,15 @@
 
 .about-service-section {
     position: relative;
+    background-color: white;
 }
 
 .about-service-section .service-section-cards {
     gap: 16px;
+}
+
+.about-service-section .service-card-single {
+    background-color: #EDF0F6;
 }
 
 .digital-dentistry-img {
