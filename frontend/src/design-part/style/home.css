@@ -443,7 +443,7 @@
     left: 0;
     transform: translateY(-50%);
     height: 2px;
-    width: 112%;
+    width: 100%;
     background: #d3d3d3;
     z-index: -1;
 }
@@ -455,7 +455,7 @@
     left: 0;
     transform: translateY(-50%);
     height: 2px;
-    width: 0%;
+    width: 10%;
     background: #007bff;
     z-index: -1;
     transition: width 1.5s ease;
@@ -469,6 +469,10 @@
     transition: background 0.8s ease;
     position: relative;
     z-index: 1;
+}
+
+.step.active {
+    background: #007bff;
 }
 
 
@@ -516,6 +520,11 @@
     margin: 0 13px;
 }
 
+.expert-section {
+    margin: 86px 13px 0px;
+}
+
+
 .extra-overly-img {
     position: absolute;
     top: 0;
@@ -530,6 +539,7 @@
     width: 100%;
     height: 100%;
 }
+
 
 .expert-section-meta {
     display: grid;
