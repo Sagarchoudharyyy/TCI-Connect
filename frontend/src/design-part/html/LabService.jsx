@@ -6,7 +6,6 @@ import labSection2 from "../../assets/lab-section-2.png";
 import labSection3 from "../../assets/lab-section-3.png";
 import labSection4 from "../../assets/lab-section-4.png";
 import labServicesBanner from "../../assets/lab-services-banner.png";
-import "../style/labservices.css";
 import ContactUs from "../Design-Component/ContactUs";
 import Footer from "../Design-Component/Footer";
 
@@ -33,8 +32,8 @@ function LabService() {
                             <div className="all-banner-meta">
                                 <div className="all-banner-content">
                                     <ul className="banner-nav">
-                                        <li><Link to="">Home</Link></li>
-                                        <li><Link to="" className="active"> Lab Services</Link></li>
+                                        <li><Link to="/">Home</Link></li>
+                                        <li><Link to="/lab-services" className="active"> Lab Services</Link></li>
                                     </ul>
                                     <h1>Lab Services</h1>
                                 </div>

@@ -1,4 +1,4 @@
-import "../style/pricing.css";
+
 import { useState, useEffect } from "react";
 import AboutSectionImg from "../../assets/about-section-img.png";
 import ContactOverly from "../../assets/contact-overly.png";
@@ -16,6 +16,7 @@ import SolutionBanner from "../../assets/solution-banner.png";
 import Header from "../Design-Component/Header";
 import ContactUs from "../Design-Component/ContactUs";
 import Footer from "../Design-Component/Footer";
+import "../../design-part/style/home.css";
 
 function OurSolutions() {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -40,8 +41,8 @@ function OurSolutions() {
                             <div className="all-banner-meta">
                                 <div className="all-banner-content">
                                     <ul className="banner-nav">
-                                        <li><a href="https://tcidentallab.com/">Home</a></li>
-                                        <li><a href="" className="active">Our Solutions</a></li>
+                                        <li><Link to="/">Home</Link></li>
+                                        <li><Link to="/our-solutions" className="active">Our Solutions</Link></li>
                                     </ul>
                                     <h1>Our Solutions</h1>
                                 </div>

@@ -126,48 +126,48 @@ function About() {
                         <div className="on-section-meta">
                             <ul>
                                 <li>
-                                    <a
-                                        href="#dental_tab_section"
+                                    <Link
+                                        to="#dental_tab_section"
                                         className={activeSection === "dental_tab_section" ? "active" : ""}
                                     >
                                         ABOUT TCI DENTAL LAB
-                                    </a>
+                                    </Link>
                                 </li>
 
                                 <li>
-                                    <a
-                                        href="#about_service_section"
+                                    <Link
+                                        to="#about_service_section"
                                         className={activeSection === "about_service_section" ? "active" : ""}
                                     >
                                         OUR PHILOSOPHY
-                                    </a>
+                                    </Link>
                                 </li>
 
                                 <li>
-                                    <a
-                                        href="#our_lab_section"
+                                    <Link
+                                        to="#our_lab_section"
                                         className={activeSection === "our_lab_section" ? "active" : ""}
                                     >
                                         OUR LABS
-                                    </a>
+                                    </Link>
                                 </li>
 
                                 <li>
-                                    <a
-                                        href="#quality_sec"
+                                    <Link
+                                        to="#quality_sec"
                                         className={activeSection === "quality_sec" ? "active" : ""}
                                     >
                                         QUALITY &amp; ASSURANCE
-                                    </a>
+                                    </Link>
                                 </li>
 
                                 <li>
-                                    <a
-                                        href="#our_brands"
+                                    <Link
+                                        to="#our_brands"
                                         className={activeSection === "our_brands" ? "active" : ""}
                                     >
                                         OUR PARTNERS
-                                    </a>
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
@@ -205,7 +205,7 @@ function About() {
                                     <h3>Our Locations</h3>
 
                                     <p>
-                                        TCI Dental has a double manufacturing structure located in
+                                        TCI Dental has Link double manufacturing structure located in
                                         Beirut, Lebanon and Brussels, Belgium.
                                     </p>
                                 </div>
@@ -279,7 +279,7 @@ function About() {
                                     <h6>Collaboration</h6>
 
                                     <p>
-                                        We offer a wide range of digital solutions, from custom crowns
+                                        We offer Link wide range of digital solutions, from custom crowns
                                         and bridges to complex implant-supported restorations. Our
                                         high-end technology and diverse materials provide flexible
                                         options that suit every treatment plan and patient expectation.
@@ -381,7 +381,7 @@ function About() {
                                     <p>
                                         We have implemented our Critical Quality Assurance Protocol,
                                         so that at each critical point in production your case is
-                                        checked by a Certified Dental Technician. From the moment
+                                        checked by Link Certified Dental Technician. From the moment
                                         your case enters the laboratory until completion, it goes
                                         through rigorous quality checks.
                                     </p>

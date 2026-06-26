@@ -1,4 +1,4 @@
-import "../style/pricing.css";
+
 import { useState, useEffect } from "react";
 import AboutSectionImg from "../../assets/about-section-img.png";
 import ContactOverly from "../../assets/contact-overly.png";
@@ -15,6 +15,8 @@ import TCILogo from "../../assets/TCI-logo.png";
 import Header from "../Design-Component/Header";
 import ContactUs from "../Design-Component/ContactUs";
 import Footer from "../Design-Component/Footer";
+import "../../design-part/style/home.css";
+import { Link } from "react-router-dom";
 
 function PricingUI() {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -39,8 +41,8 @@ function PricingUI() {
                             <div className="all-banner-meta">
                                 <div className="all-banner-content">
                                     <ul className="banner-nav">
-                                        <li><a href="https://tcidentallab.com/">Home</a></li>
-                                        <li><a href="" className="active">Pricing</a></li>
+                                        <li><Link to="/">Home</Link></li>
+                                        <li><Link to="" className="active">Pricing</Link></li>
                                     </ul>
                                     <h1>Pricing</h1>
                                 </div>
@@ -59,19 +61,19 @@ function PricingUI() {
                         <div className="col-lg-11">
                             <div className="pricing-section-meta">
                                 <div className="pricing-section-left">
-                                    <a href="https://tcidentallab.com/login" className="pricing-section-img">
+                                    <Link to="/login" className="pricing-section-img">
                                         <img src={PricingImg} alt="" />
-                                    </a>
-                                    <a href="https://tcidentallab.com/login" className="get-start-icon"><i className="bi bi-arrow-right"></i></a>
+                                    </Link>
+                                    <Link to="/login" className="get-start-icon"><i className="bi bi-arrow-right"></i></Link>
 
                                 </div>
                                 <div className="pricing-section-right">
                                     <h3>Pricing</h3>
                                     <h5>Getting Started Is Easy</h5>
                                     <p>Create your TCI Connect account and log in to submit your first case. Our pricing is
-                                        competitive and transparent. After your registration is approved, our team will send you a
+                                        competitive and transparent. After your registration is approved, our team will send you Link
                                         personalized price list giving you all the details you need to order with confidence.</p>
-                                    <p>Enjoy a smooth onboarding experience, clear communication, and fast access to everything you
+                                    <p>Enjoy Link smooth onboarding experience, clear communication, and fast access to everything you
                                         need to get started.</p>
                                 </div>
                             </div>

@@ -42,6 +42,7 @@ import PricingUI from "./design-part/html/PricingUI";
 import OurSolutions from "./design-part/html/OurSolutions";
 import CONTACTUS from "./design-part/html/Contact-Us";
 import ScrollToTop from "./design-part/Design-Component/ScrollToTop";
+import Privacy from "./design-part/html/Privacy";
 
 
 function App() {
@@ -79,6 +80,12 @@ function App() {
           path="/contact-us"
           element={< CONTACTUS />}
         />
+
+        <Route
+          path="/privacy-policy"
+          element={< Privacy />}
+        />
+
 
 
 
