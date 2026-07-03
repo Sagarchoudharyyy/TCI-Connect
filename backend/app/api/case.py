@@ -365,6 +365,16 @@ def get_cases(
             "delivery_deadline": case.delivery_deadline,
             "preview_status": case.preview_status,
             "status": case.status,
+            "files": [
+                    {
+                        "id": file.id,
+                        "file_name": file.file_name,
+                        "file_type": file.file_type,
+                        "file_path": file.file_path,
+                        "file_category": file.file_category
+                    }
+                    for file in case.files
+                ],
             "has_case_document": any(
                 f.file_category == "case_document"
                 for f in case.files
