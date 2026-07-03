@@ -44,6 +44,20 @@ a {
     color: #fff;
 }
 
+.password-eye {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 20px;
+    color: #6c757d;
+}
+
+
+.password-eye:hover {
+    color: #000;
+}
 
 ul {
     padding: 0;
@@ -61,7 +75,7 @@ ul {
     background: #0152a8;
 }
 
-.form-section {
+.login-form-section {
     height: 90vh;
     background-size: cover;
     background-position: center;
@@ -73,12 +87,13 @@ ul {
     padding: 100px 0 !important;
 }
 
-.main-heading {
+.login-main-heading {
 
-    font-weight: 700;
-    font-size: 34px;
+    font-weight: 600;
+    font-size: 30px;
     line-height: 130%;
     color: #fff;
+
 }
 
 *,
@@ -87,7 +102,7 @@ ul {
     box-sizing: border-box;
 }
 
-.form-section:after {
+.login-form-section:after {
     content: "";
     position: absolute;
     left: 0;
@@ -97,8 +112,8 @@ ul {
     background: linear-gradient(90deg, #011225 -0.64%, rgb(0 37 76 / 72%) 51.74%, rgb(0 37 76 / 55%) 100%);
 }
 
-.form-section .form-group input,
-.form-section .form-group select {
+.login-form-section .login-form-group input,
+.login-form-section .login-form-group select {
     font-weight: 400;
     font-size: 16px;
     line-height: 125%;
@@ -112,27 +127,27 @@ ul {
     box-shadow: none;
 }
 
-.form-section .form-group input::placeholder,
-.form-section .password-field input::placeholder {
+.login-form-section .login-form-group input::placeholder,
+.login-form-section .login-password-field input::placeholder {
     color: rgba(255, 255, 255, 0.95);
     opacity: 1;
 }
 
-.form-section .formsec-main {
+.login-form-section .login-formsec-main {
     position: relative;
     z-index: 9;
 }
 
-.form-section .formbxx-warrper {
+.login-form-section .login-formbxx-warrper {
     width: 75%;
 }
 
-.section-heading {
+.login-section-heading {
     position: relative;
     z-index: 1;
 }
 
-.form-section .formsec-main .main-heading {
+.login-form-section .login-formsec-main .login-main-heading {
     margin-bottom: 10px;
 }
 
@@ -148,11 +163,11 @@ ul {
     }
 }
 
-.form-section .form-group {
+.login-form-section .login-form-group {
     margin-bottom: 20px;
 }
 
-.form-section .password-field button {
+.login-form-section .login-password-field button {
     background: none;
     border: none;
     font-size: 1.2rem;
@@ -160,7 +175,7 @@ ul {
     right: 1rem;
 }
 
-.form-section .password-field {
+.login-form-section .login-password-field {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -178,7 +193,7 @@ ul {
     position: relative;
 }
 
-.form-section .password-field input {
+.login-form-section .login-password-field input {
     border: none;
     outline: none;
     flex: 1;
@@ -189,7 +204,7 @@ ul {
     border-radius: 0;
 }
 
-.form-section .forgot {
+.login-form-section .login-forgot {
     font-weight: 500;
     font-size: 16px;
     color: #fff;
@@ -207,7 +222,7 @@ ul {
     padding: 14px;
 }
 
-.form-section .formsec-bxx .form-para {
+.login-form-section .login-formsec-bxx .login-form-para {
     font-weight: 500;
     font-size: 15px;
     line-height: normal;
@@ -217,7 +232,7 @@ ul {
     margin-top: 20px;
 }
 
-.form-section .formsec-bxx .form-para a {
+.login-form-section .login-formsec-bxx .login-form-para a {
     font-weight: 700;
     text-transform: capitalize;
     color: inherit;
@@ -319,7 +334,7 @@ p {
     color: inherit;
 }
 
-.password-wrapper {
+.login-password-wrapper {
     position: relative;
 }
 

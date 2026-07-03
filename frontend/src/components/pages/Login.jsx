@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { BiShow, BiHide } from "react-icons/bi";
 import "../../styles/login.css";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 function Login() {
     const navigate = useNavigate();
@@ -146,7 +147,7 @@ function Login() {
                     </div>
                 </div>
             </header>
-            <section className="form-section" style={{
+            <section className="login-form-section" style={{
                 backgroundImage:
                     "url('https://mediumseagreen-herring-541085.hostingersite.com/assets/images/login-bgimg.png')",
                 backgroundSize: "cover",
@@ -154,22 +155,22 @@ function Login() {
                 backgroundRepeat: "no-repeat"
             }}>
                 <div className="container">
-                    <div className="formsec-main">
+                    <div className="login-formsec-main">
                         <div className="row">
                             <div className="col-sm-12 col-md-7 col-lg-6">
-                                <div className="formbxx-warrper">
-                                    <div className="section-heading">
-                                        <h1 className="main-heading">
+                                <div className="login-formbxx-warrper">
+                                    <div className="login-section-heading">
+                                        <h1 className="login-main-heading">
                                             TCI Connect Login
                                         </h1>
                                         <br />
                                     </div>
-                                    <div className="formsec-bxx">
+                                    <div className="login-formsec-bxx">
                                         <form onSubmit={handleSubmit}>
-                                            <div className="form-group mb-3">
+                                            <div className="login-form-group mb-3">
                                                 <input
                                                     type="email"
-                                                    className="form-control"
+                                                    className="login-form-control"
                                                     name="email"
                                                     placeholder="Enter your email"
                                                     required
@@ -178,8 +179,8 @@ function Login() {
                                                     onChange={(e) => setUsername(e.target.value)}
                                                 />
                                             </div>
-                                            <div className="form-group mb-3">
-                                                <div className="password-wrapper">
+                                            <div className="login-form-group mb-3">
+                                                <div className="login-password-wrapper">
                                                     <input
                                                         type={showPassword ? "text" : "password"}
                                                         placeholder="Enter your password"
@@ -187,12 +188,18 @@ function Login() {
                                                         onChange={(e) => setPassword(e.target.value)}
                                                         className={`form-control ${error ? "is-invalid" : ""}`}
                                                     />
+                                                    {showPassword ? (
+                                                        <FiEyeOff
+                                                            className="password-eye"
+                                                            onClick={() => setShowPassword(false)}
+                                                        />
+                                                    ) : (
+                                                        <FiEye
+                                                            className="password-eye"
+                                                            onClick={() => setShowPassword(true)}
+                                                        />
+                                                    )}
 
-                                                    <i
-                                                        className={`fa ${showPassword ? "fa-eye-slash" : "fa-eye"
-                                                            } password-eye`}
-                                                        onClick={() => setShowPassword(!showPassword)}
-                                                    ></i>
                                                 </div>
 
                                                 {error && (
@@ -202,9 +209,9 @@ function Login() {
                                                 )}
                                             </div>
 
-                                            <div className="form-group text-end mb-3">
+                                            <div className="login-form-group text-end mb-3">
                                                 <p>
-                                                    <a href="/forgot-password" className="forgot">
+                                                    <a href="/forgot-password" className="login-forgot">
                                                         Forgot Password?
                                                     </a>
                                                 </p>
@@ -214,7 +221,7 @@ function Login() {
                                                 {loading ? "Logging in..." : "Login"}
                                             </button>
                                         </form>
-                                        <p className="form-para">New to TCI Dental Lab?  <Link to="/register">
+                                        <p className="login-form-para">New to TCI Dental Lab?  <Link to="/register">
                                             Create your account here.
                                         </Link></p>
 

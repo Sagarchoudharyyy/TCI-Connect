@@ -51,7 +51,6 @@ function ForgotPassword() {
     }
   };
 
-  // Add forgot password API here later
 
   return (
     <>
@@ -60,7 +59,7 @@ function ForgotPassword() {
           <div className="form-headerbxx">
             <nav className="navbar navbar-expand-lg ">
               <a className="navbar-brand" href="">
-                <h1>TCI Connect</h1>
+                <h1>TCI Connet</h1>
               </a>
               <div className="formheader-right">
                 <ul>
@@ -79,7 +78,7 @@ function ForgotPassword() {
         </div>
       </header>
 
-      <section className="form-section" style={{
+      <section className="forgot-form-section" style={{
         backgroundImage:
           "url('https://mediumseagreen-herring-541085.hostingersite.com/assets/images/login-bgimg.png')",
         backgroundSize: "cover",
@@ -87,24 +86,24 @@ function ForgotPassword() {
         backgroundRepeat: "no-repeat"
       }}>
         <div className="container">
-          <div className="formsec-main">
+          <div className="forgot-formsec-main">
             <div className="row">
               <div className="col-lg-11">
-                <div className="formbxx-warrper">
-                  <div className="section-heading">
-                    <div className="main-heading">
+                <div className="forgot-formbxx-warrper">
+                  <div className="forgot-section-heading">
+                    <div className="forgot-main-heading">
                       TCI Connect
                     </div>
-                    <div className="formbxx-warrper">
-                      <div className="formsec-bxx">
-                        <h3 className="form-heading">
+                    <div className="forgot-formbxx-warrper">
+                      <div className="forgot-formsec-bxx">
+                        <h3 className="forgot-form-heading">
                           Forgot Password
                         </h3>
                         <form onSubmit={handleSubmit} id="login">
-                          <div className="form-group">
+                          <div className="forgot-form-group">
                             <input
                               type="email"
-                              className="form-control"
+                              className="forgot-form-control"
                               name="email"
                               id="Email"
                               placeholder="Enter your email"
@@ -133,10 +132,6 @@ function ForgotPassword() {
                             Reset Password
                           </button>
                         </form>
-
-
-
-
                       </div>
                     </div>
                   </div>
@@ -144,24 +139,8 @@ function ForgotPassword() {
               </div>
             </div>
           </div>
-
         </div>
-
-
-
-
-
-
-
-
       </section>
-
-
-
-
-
-
-
       <footer className="form-footer">
         <div className="container">
           <div className="row justify-content-between">
