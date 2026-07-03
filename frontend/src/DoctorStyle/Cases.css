@@ -44,21 +44,19 @@ table.dataTable tfoot td {
 .table thead th {
   border: none;
   padding: 15px 10px;
-  font-family: 'Roboto';
+
   font-weight: 550;
   font-size: 14px;
   color: #1c1c1c !important;
 }
 
-body {
-  font-family: 'Poppins', sans-serif;
-}
+
 
 .table tbody td {
   border: none;
   padding: 15px 10px;
   vertical-align: middle;
-  font-family: 'Roboto';
+
   font-weight: 400;
   font-size: 14px;
   color: #666;

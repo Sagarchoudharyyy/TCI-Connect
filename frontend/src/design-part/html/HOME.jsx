@@ -230,6 +230,7 @@ function HOME() {
                                         width: `${progressWidth}%`,
                                     }}
                                 ></div>
+
                             </div>
 
                             <div className="progress-cards">

@@ -463,7 +463,7 @@ function OrdersTable() {
                                     <col data-dt-column="9" style={{ width: "136px" }} />
                                     <col data-dt-column="10" style={{ width: "93.3194px" }} />
                                 </colgroup>
-                                <thead >
+                                <thead>
                                     <tr>
                                         <th data-dt-column="0" className="dt-orderable-none" rowSpan="1" colSpan="1">
                                             <div className="dt-column-header">
@@ -559,9 +559,10 @@ function OrdersTable() {
                                         const previewFiles =
                                             previewFilesMap[item.id] || [];
                                         return (
-                                            <tr key={item.id} >
+                                            < tr key={item.id} >
                                                 <td className="text-center">
                                                     <img
+                                                        src=""
                                                         alt="profile"
                                                         width="40"
                                                     />
@@ -573,40 +574,62 @@ function OrdersTable() {
                                                 <td>{item.doctor_phone}</td>
 
                                                 <td>{item.patient_name}</td>
-                                                <td className="text-center">
-                                                    {item.has_case_document ? (
-                                                        <>
-                                                            <FaEye
-                                                                style={{
-                                                                    cursor: "pointer",
-                                                                    color: "#0152a8",
-                                                                    marginRight: "12px"
-                                                                }}
-                                                                onClick={() =>
-                                                                    handleViewCaseDocument(item.id)
-                                                                }
-                                                            />
 
-                                                            <FaDownload
-                                                                style={{
-                                                                    cursor: "pointer",
-                                                                    color: "#0152a8"
-                                                                }}
-                                                                onClick={() =>
-                                                                    handleDownloadCaseDocument(item.id)
-                                                                }
-                                                            />
-                                                        </>
-                                                    ) : (
-                                                        "-"
-                                                    )}
+                                                <td >
+                                                    {
+                                                        item.files
+                                                            ?.filter(
+                                                                file =>
+                                                                    file.file_category === "case_document"
+                                                            )
+                                                            .map((file, index) => (
+                                                                <div key={index}>
+                                                                    <a
+                                                                        href={`http://127.0.0.1:8000/${file.file_path}`}
+                                                                        target="_blank"
+                                                                        rel="noreferrer"
+                                                                        style={{
+                                                                            color: "#0152a8",
+                                                                            textDecoration: "none",
+                                                                            marginRight: "10px"
+                                                                        }}
+                                                                    >
+                                                                        <FaEye />
+                                                                    </a>
+
+                                                                    <a
+                                                                        href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
+                                                                        style={{
+                                                                            color: "#0152a8"
+                                                                        }}
+                                                                    >
+                                                                        <FaDownload />
+                                                                    </a>
+                                                                </div>
+                                                            ))
+                                                    }
+                                                    {
+                                                        !item.files?.some(
+                                                            file =>
+                                                                file.file_category === "case_document"
+                                                        ) && <span>No File</span>
+                                                    }
                                                 </td>
-                                                <td className="text-center">
+                                                <td >
 
                                                     {
-                                                        digitalFilesMap[item.id]
-                                                            ?.map((file, index) => (
-                                                                <div key={file.id}>
+                                                        console.log(
+                                                            "DIGITAL FILES",
+                                                            item.files
+                                                        ),
+                                                        item.files
+                                                            ?.filter(
+                                                                file =>
+                                                                    file.file_category === "digital_file"
+                                                            )
+                                                            .map((file, index) => (
+                                                                <div key={index}>
+
 
                                                                     <a
                                                                         href={`http://127.0.0.1:8000/${file.file_path}`}
@@ -980,7 +1003,6 @@ function OrdersTable() {
                                     })}
                                 </tbody>
                             </table>
-
                         </div>
                         <div className="row mt-2 justify-content-between">
 

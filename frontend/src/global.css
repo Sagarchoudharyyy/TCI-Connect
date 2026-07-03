@@ -1,0 +1,11 @@
+body {
+  font-family: "Montserrat", sans-serif !important;
+}
+
+:root {
+  --bs-body-font-family: "Montserrat", sans-serif;
+}
+
+* {
+  font-family: inherit;
+}

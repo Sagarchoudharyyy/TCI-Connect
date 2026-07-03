@@ -8,13 +8,14 @@ from fastapi import (
         Depends,
         HTTPException,
         UploadFile,
-        File,
-        Form
+        File
 )
 from sqlalchemy.orm import Session, selectinload
 from uuid import uuid4
 import os
 import shutil
+from fastapi import Form
+
 from app.database.database import get_db
 from app.models.case_model import Case
 from app.models.case_file_model import CaseFile
@@ -25,15 +26,14 @@ from fastapi.responses import FileResponse
 from sqlalchemy.orm import joinedload
 from app.models.case_detail_model import CaseDetail
 from app.models.implant_detail_model import ImplantDetail
-from app.schemas.case_schema import SaveTempFileRequest
+from app.schemas.case_schema import DeleteTempFileRequest, SaveTempFileRequest
 from fastapi import Query
 from sqlalchemy import or_, String
 
 from app.schemas.case_schema import (
         CaseCreate,
         CaseResponse,
-        CaseUpdate,
-        DeleteTempFileRequest
+        CaseUpdate
     )
 router = APIRouter()
 
@@ -303,7 +303,6 @@ def create_case(
             detail=str(e)
         )
 
-
 @router.get(
     "/cases"
 )
@@ -388,7 +387,6 @@ def get_cases(
     "page": page,
     "pages": (total + limit - 1) // limit
 } 
-
 
 @router.get(
         "/cases/{case_id}")
@@ -785,10 +783,11 @@ def update_case_status(
         notification = Notification(
         message=f"Case #{case.id} status changed to {status_data.status}",
         case_id=case.id,
-        receiver_id=case.doctor_id,
-        is_read=False,
-        notification_type="case_status"
+         receiver_id=case.doctor_id,
+         notification_type="status_change",
+        is_read=False
         )
+
         db.add(notification)
 
         
@@ -799,7 +798,6 @@ def update_case_status(
             "message": "Status updated successfully",
             "status": case.status
         }
-
 
 @router.put("/cases/{case_id}/preview-status")
 def update_preview_status(
@@ -825,7 +823,6 @@ def update_preview_status(
         "message": "Preview status updated successfully",
         "preview_status": case.preview_status   
     }
-
 
 @router.get("/cases/{case_id}/history")
 def get_case_history(
@@ -869,8 +866,7 @@ def get_case_history(
             }
             for case in previous_cases
         ]
-
-
+    
 @router.delete("/cases/{case_id}")
 def delete_case(
         case_id: int,
@@ -995,7 +991,6 @@ def download_file(
             media_type=
             "application/octet-stream"
         )
-
 
 @router.get("/case_files")
 def get_case_files(
@@ -1156,8 +1151,6 @@ def confirm_preview_files(
     case_id: int,
     db: Session = Depends(get_db)
 ):
-    
-    print("CASE ID:", case_id)
     case = (
         db.query(Case)
         .filter(Case.id == case_id)
@@ -1189,8 +1182,6 @@ def confirm_preview_files(
             detail="No preview files found"
     )
 
-  
-
     case.preview_status = "Waiting User"
 
     db.commit()
@@ -1202,25 +1193,24 @@ def confirm_preview_files(
     }
 
 
-@router.post("/cases/{case_id}/save-temp-file")
-def save_temp_file(
-    case_id: int,
-    data: SaveTempFileRequest,
-    db: Session = Depends(get_db)
-):
-    case = (
-        db.query(Case)
-        .filter(Case.id == case_id)
-        .first()
-    )
+# @router.put("/cases/{case_id}/reject-preview")
+# def reject_preview(
+#     case_id: int,
+#     db: Session = Depends(get_db)
+# ):
+#     case = (
+#         db.query(Case)
+#         .filter(Case.id == case_id)
+#         .first()
+#     )
 
-    if not case:
-        raise HTTPException(
-            status_code=404,
-            detail="Case not found"
-        )
+#     if not case:
+#         raise HTTPException(
+#             status_code=404,
+#             detail="Case not found"
+#         )
 
-    temp_path = data.file_path
+#     case.preview_status = "Preview Rejected"
 
 
     if not temp_path.startswith("temp_uploads"):
@@ -1241,16 +1231,24 @@ def save_temp_file(
         exist_ok=True
     )
 
-    file_name = os.path.basename(temp_path)
+# @router.put("/cases/{case_id}/approve-preview")
+# def approve_preview(
+#     case_id: int,
+#     db: Session = Depends(get_db)
+# ):
+#     case = (
+#         db.query(Case)
+#         .filter(Case.id == case_id)
+#         .first()
+#     )
 
-    unique_filename = (
-        f"{uuid4()}_{file_name}"
-    )
+#     if not case:
+#         raise HTTPException(
+#             status_code=404,
+#             detail="Case not found"
+#         )
 
-    new_path = os.path.join(
-        upload_folder,
-        unique_filename
-    )
+#     case.preview_status = "Approved"
 
     try:
         # Move file from temp to uploads
