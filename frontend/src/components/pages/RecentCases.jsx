@@ -695,22 +695,22 @@ function RecentCases() {
                                                                                                 )}
                                                                                             </div>
 
-                                                                                            <div
-                                                                                                style={{
-                                                                                                    color: isPassed
-                                                                                                        ? "red"
-                                                                                                        : "#0152a8",
-                                                                                                    fontWeight: "600"
-                                                                                                }}
-                                                                                            >
-                                                                                                {isPassed
-                                                                                                    ? "(Deadline passed)"
-                                                                                                    : `(${daysLeft} day${daysLeft > 1
-                                                                                                        ? "s"
-                                                                                                        : ""
-                                                                                                    } left)`
-                                                                                                }
-                                                                                            </div>
+                                                                                            {(isPassed || daysLeft <= 3) && (
+                                                                                                <div
+                                                                                                    className="text-center"
+                                                                                                    style={{
+                                                                                                        color: isPassed ? "red" : "#0152a8",
+                                                                                                        fontWeight: "600"
+                                                                                                    }}
+                                                                                                >
+                                                                                                    {isPassed
+                                                                                                        ? "(Deadline passed)"
+                                                                                                        : daysLeft === 0
+                                                                                                            ? "(Deadline is today)"
+                                                                                                            : `(${daysLeft} day${daysLeft > 1 ? "s" : ""} left)`
+                                                                                                    }
+                                                                                                </div>
+                                                                                            )}
                                                                                         </>
                                                                                     );
                                                                                 })() : (

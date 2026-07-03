@@ -394,7 +394,6 @@ function OrdersTable() {
                     >
                         Apply
                     </button>
-
                     <button
                         type="button"
                         onClick={handleReset}
@@ -558,6 +557,12 @@ function OrdersTable() {
                                     {cases.map((item) => {
                                         const previewFiles =
                                             previewFilesMap[item.id] || [];
+                                        console.log(
+                                            "Case:",
+                                            item.id,
+                                            "Preview Status:",
+                                            item.preview_status
+                                        );
                                         return (
                                             < tr key={item.id} >
                                                 <td className="text-center">
@@ -571,7 +576,8 @@ function OrdersTable() {
 
                                                 <td>{item.doctor_name}</td>
 
-                                                <td>{item.doctor_phone}</td>
+                                                <td>{item.phone_number}</td>
+
 
                                                 <td>{item.patient_name}</td>
 
@@ -683,6 +689,7 @@ function OrdersTable() {
                                                     }
 
                                                 </td>
+
                                                 <td>
                                                     {item.delivery_deadline ? (() => {
 
@@ -719,36 +726,35 @@ function OrdersTable() {
                                                                     )}
                                                                 </div>
 
-                                                                <div
-                                                                    style={{
-                                                                        color: isPassed
-                                                                            ? "red"
-                                                                            : "#0152a8",
-                                                                        fontWeight: "600"
-                                                                    }}
-                                                                >
-                                                                    {isPassed
-                                                                        ? "(Deadline passed)"
-                                                                        : `(${daysLeft} day${daysLeft > 1
-                                                                            ? "s"
-                                                                            : ""
-                                                                        } left)`
-                                                                    }
-                                                                </div>
+                                                                {(isPassed || daysLeft <= 3) && (
+                                                                    <div
+                                                                        className="text-center"
+                                                                        style={{
+                                                                            color: isPassed ? "red" : "#0152a8",
+                                                                            fontWeight: "600"
+                                                                        }}
+                                                                    >
+                                                                        {isPassed
+                                                                            ? "(Deadline passed)"
+                                                                            : daysLeft === 0
+                                                                                ? "(Deadline is today)"
+                                                                                : `(${daysLeft} day${daysLeft > 1 ? "s" : ""} left)`
+                                                                        }
+                                                                    </div>
+                                                                )}
                                                             </>
                                                         );
                                                     })() : (
                                                         <span>No deadline</span>
                                                     )}
                                                 </td>
-
                                                 <td>
                                                     <div
                                                         style={{
                                                             fontWeight: "600"
                                                         }}
                                                     >
-                                                        {item.preview_status === "-" ? (
+                                                        {item.preview_status === "-" && (
                                                             <>
                                                                 <div
                                                                     style={{
@@ -758,129 +764,99 @@ function OrdersTable() {
                                                                     No Preview Requested
                                                                 </div>
 
-                                                                <div
-                                                                    style={{
-                                                                        color: "#0152a8",
-                                                                        fontWeight: "600",
-                                                                        cursor: "pointer"
-                                                                    }}
-                                                                >
-                                                                    (Upload Now)
-                                                                </div>
-
                                                                 <small
                                                                     style={{
-                                                                        color: "#6c757d"
+                                                                        color: "#6c757d",
+                                                                        fontWeight: "400"
                                                                     }}
                                                                 >
                                                                     No preview files uploaded.
                                                                 </small>
                                                             </>
-                                                        ) : item.preview_status ===
-                                                            "Waiting User" ? (
+                                                        )}
+
+                                                        {item.preview_status === "Waiting User" && (
                                                             <>
-                                                                <span
+                                                                <div
                                                                     style={{
                                                                         color: "#0152a8"
                                                                     }}
                                                                 >
                                                                     Preview Uploaded
-                                                                </span>
+                                                                </div>
 
-                                                                <br />
-
-                                                                <span
+                                                                <small
                                                                     style={{
-                                                                        color: "#0152a8"
+                                                                        color: "#0152a8",
+                                                                        fontWeight: "400"
                                                                     }}
                                                                 >
                                                                     (Waiting User)
-                                                                </span>
+                                                                </small>
                                                             </>
-                                                        ) : item.preview_status ===
-                                                            "Approved" ? (
-                                                            <>
-                                                                <span
-                                                                    style={{
-                                                                        color: "green"
-                                                                    }}
-                                                                >
-                                                                    Preview Approved
-                                                                </span>
+                                                        )}
 
-                                                                {previewFiles.length > 0 && (
-                                                                    <>
-                                                                        <br />
+                                                        {item.preview_status === "Approved" && (
+                                                            <div
+                                                                style={{
+                                                                    color: "green"
+                                                                }}
+                                                            >
+                                                                Preview Approved
+                                                            </div>
+                                                        )}
 
-                                                                        <small
-                                                                            style={{
-                                                                                color: "#6c757d"
-                                                                            }}
-                                                                        >
-                                                                            (
-                                                                            {previewFiles.length}
-                                                                            {" "}
-                                                                            file
-                                                                            {previewFiles.length > 1
-                                                                                ? "s"
-                                                                                : ""}
-                                                                            )
-                                                                        </small>
-
-                                                                        {previewFiles.map(
-                                                                            (file, index) => (
-                                                                                <div
-                                                                                    key={file.id}
-                                                                                >
-                                                                                    <a
-                                                                                        href={`http://127.0.0.1:8000/${file.file_path.replace(
-                                                                                            /\\/g,
-                                                                                            "/"
-                                                                                        )}`}
-                                                                                        target="_blank"
-                                                                                        rel="noreferrer"
-                                                                                        style={{
-                                                                                            textDecoration:
-                                                                                                "none",
-                                                                                            color:
-                                                                                                "#0152a8"
-                                                                                        }}
-                                                                                    >
-                                                                                        Preview{" "}
-                                                                                        {index + 1}
-                                                                                    </a>
-
-                                                                                    <br />
-
-                                                                                    <span
-                                                                                        style={{
-                                                                                            color:
-                                                                                                "#0152a8"
-                                                                                        }}
-                                                                                    >
-                                                                                        (
-                                                                                        {file.file_name
-                                                                                            .split(".")
-                                                                                            .pop()
-                                                                                            .toUpperCase()}
-                                                                                        )
-                                                                                    </span>
-                                                                                </div>
-                                                                            )
-                                                                        )}
-                                                                    </>
-                                                                )}
-                                                            </>
-                                                        ) : item.preview_status ===
-                                                            "Preview Rejected" ? (
-                                                            <span
+                                                        {item.preview_status === "Preview Rejected" && (
+                                                            <div
                                                                 style={{
                                                                     color: "red"
                                                                 }}
                                                             >
                                                                 Preview Rejected
-                                                            </span>
-                                                        ) : null}
+                                                            </div>
+                                                        )}
+
+                                                        {previewFiles.length > 0 && (
+                                                            <>
+                                                                <br />
+
+                                                                {previewFiles.map((file, index) => (
+                                                                    <div key={file.id}>
+                                                                        <a
+                                                                            href={`http://127.0.0.1:8000/${file.file_path.replace(
+                                                                                /\\/g,
+                                                                                "/"
+                                                                            )}`}
+                                                                            target="_blank"
+                                                                            rel="noreferrer"
+                                                                            style={{
+                                                                                color: "#0152a8",
+                                                                                textDecoration: "none",
+                                                                                fontWeight: "500"
+                                                                            }}
+                                                                        >
+                                                                            Preview {index + 1}
+                                                                        </a>
+
+                                                                        <br />
+
+                                                                        <span
+                                                                            style={{
+                                                                                color: "#0152a8",
+                                                                                fontWeight: "400"
+                                                                            }}
+                                                                        >
+                                                                            (
+                                                                            {file.file_name
+                                                                                .split(".")
+                                                                                .pop()
+                                                                                .toUpperCase()}
+                                                                            )
+                                                                        </span>
+                                                                    </div>
+                                                                ))}
+                                                            </>
+                                                        )}
                                                     </div>
                                                 </td>
                                                 <td>

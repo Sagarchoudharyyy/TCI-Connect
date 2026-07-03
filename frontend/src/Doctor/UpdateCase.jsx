@@ -39,7 +39,6 @@ function UpdateCase() {
 
       patient_name: "",
       patient_id: "",
-
       next_appointment_date: "",
       appointment_time: "",
       delivery_deadline: "",
@@ -48,7 +47,6 @@ function UpdateCase() {
       gender: "",
 
       case_stage: [],
-
       surface_texture: [],
       glazed_polish: [],
       incisal_translucency: [],
@@ -514,7 +512,7 @@ function UpdateCase() {
           || null,
 
         preview_status:
-          "pending",
+          "-",
 
         status:
           "Submitted",

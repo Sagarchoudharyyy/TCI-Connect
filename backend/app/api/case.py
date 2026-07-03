@@ -354,12 +354,22 @@ def get_cases(
 
     for case in cases:
 
+        print("CASE ID:", case.id)
+        print("CASE FILES:", case.files)
+        print(
+                "FILE CATEGORIES:",
+                [f.file_category for f in case.files]
+            )
+
         result.append({
             "id": case.id,
             "doctor_name":
                 case.doctor.full_name
                 if case.doctor else None,
             "patient_name": case.patient_name,
+            "phone_number":
+                case.doctor.phone 
+                if case.doctor else None,
             "age": case.age,
             "appointment_date": case.appointment_date,
             "delivery_deadline": case.delivery_deadline,
@@ -371,7 +381,7 @@ def get_cases(
                         "file_name": file.file_name,
                         "file_type": file.file_type,
                         "file_path": file.file_path,
-                        "file_category": file.file_category
+                        "file_category": file.file_category,
                     }
                     for file in case.files
                 ],
@@ -1199,6 +1209,63 @@ def confirm_preview_files(
     return {
         "message": "Preview files confirmed",
         "preview_status": case.preview_status
+    }
+
+
+@router.put(
+    "/cases/{case_id}/approve-preview"
+)
+def approve_preview(
+    case_id: int,
+    db: Session = Depends(get_db)
+):
+    case = (
+        db.query(Case)
+        .filter(Case.id == case_id)
+        .first()
+    )
+
+    if not case:
+        raise HTTPException(
+            status_code=404,
+            detail="Case not found"
+        )
+
+    case.preview_status = "Approved"
+
+    db.commit()
+
+    return {
+        "message":
+            "Preview approved"
+    }
+
+@router.put(
+    "/cases/{case_id}/reject-preview"
+)
+def reject_preview(
+    case_id: int,
+    db: Session = Depends(get_db)
+):
+    case = (
+        db.query(Case)
+        .filter(Case.id == case_id)
+        .first()
+    )
+
+    if not case:
+        raise HTTPException(
+            status_code=404,
+            detail="Case not found"
+        )
+
+    case.preview_status = "Preview Rejected"
+
+    db.commit()
+
+    return {
+        "message":
+            "Preview rejected"
     }
 
 
