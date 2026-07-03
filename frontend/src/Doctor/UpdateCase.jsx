@@ -47,12 +47,12 @@ function UpdateCase() {
       age: "",
       gender: "",
 
-      case_stage: "",
+      case_stage: [],
 
-      surface_texture: "",
-      glazed_polish: "",
-      incisal_translucency: "",
-      prepared_tooth_shade: "",
+      surface_texture: [],
+      glazed_polish: [],
+      incisal_translucency: [],
+      prepared_tooth_shade: [],
       shade_guide_color: "",
 
       material_type: [],
@@ -220,24 +220,48 @@ function UpdateCase() {
               data.gender || "",
 
             case_stage:
-              data.details
-                ?.case_stage || "",
-
+              Array.isArray(data.details?.case_stage)
+                ? data.details.case_stage
+                : typeof data.details?.case_stage === "string"
+                  ? data.details.case_stage
+                    .split(",")
+                    .map(item => item.trim())
+                  : [],
             surface_texture:
-              data.details
-                ?.surface_texture || "",
+              Array.isArray(data.details?.surface_texture)
+                ? data.details.surface_texture
+                : typeof data.details?.surface_texture === "string"
+                  ? data.details.surface_texture
+                    .split(",")
+                    .map(item => item.trim())
+                  : [],
 
             glazed_polish:
-              data.details
-                ?.glazed_polish || "",
+              Array.isArray(data.details?.glazed_polish)
+                ? data.details.glazed_polish
+                : typeof data.details?.glazed_polish === "string"
+                  ? data.details.glazed_polish
+                    .split(",")
+                    .map(item => item.trim())
+                  : [],
 
             incisal_translucency:
-              data.details
-                ?.incisal_translucency || "",
+              Array.isArray(data.details?.incisal_translucency)
+                ? data.details.incisal_translucency
+                : typeof data.details?.incisal_translucency === "string"
+                  ? data.details.incisal_translucency
+                    .split(",")
+                    .map(item => item.trim())
+                  : [],
 
             prepared_tooth_shade:
-              data.details
-                ?.prepared_tooth_shade || "",
+              Array.isArray(data.details?.prepared_tooth_shade)
+                ? data.details.prepared_tooth_shade
+                : typeof data.details?.prepared_tooth_shade === "string"
+                  ? data.details.prepared_tooth_shade
+                    .split(",")
+                    .map(item => item.trim())
+                  : [],
 
             shade_guide_color:
               data.details
@@ -323,6 +347,21 @@ function UpdateCase() {
       fetchCase();
     }
   }, [caseId]);
+
+
+  const handleCheckboxSelection = (
+    field,
+    value
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: prev[field].includes(value)
+        ? prev[field].filter(
+          (item) => item !== value
+        )
+        : [...prev[field], value]
+    }));
+  };
   const handleNext = () => {
 
     let newErrors = {};
@@ -703,6 +742,7 @@ function UpdateCase() {
                       pdfProgress={pdfProgress}
                       setUploadedPdf={setUploadedPdf}
                       setIsPdfUploading={setIsPdfUploading}
+                      handleCheckboxSelection={handleCheckboxSelection}
                       errors={errors}
                     />
                   )}

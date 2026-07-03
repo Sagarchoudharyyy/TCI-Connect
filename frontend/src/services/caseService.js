@@ -2,8 +2,10 @@ import axios from "axios";
 
 const API_URL = "http://127.0.0.1:8000/api";
 
-export const getCases = () => {
-  return axios.get(`${API_URL}/cases`);
+export const getCases = (params) => {
+  return axios.get(`${API_URL}/cases`, {
+    params,
+  });
 };
 
 export const getCaseById = (id) => {

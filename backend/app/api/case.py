@@ -566,7 +566,6 @@ def update_case(
 
     case_detail = case.details
     print("CASE DETAIL:", case_detail)
-
     case.patient_name = updated_case.patient_name
     case.patient_phone = updated_case.patient_phone
     case.gender = updated_case.gender
@@ -1203,25 +1202,25 @@ def confirm_preview_files(
     }
 
 
-# @router.put("/cases/{case_id}/reject-preview")
-# def reject_preview(
-#     case_id: int,
-#     db: Session = Depends(get_db)
-# ):
-#     case = (
-#         db.query(Case)
-#         .filter(Case.id == case_id)
-#         .first()
-#     )
+@router.post("/cases/{case_id}/save-temp-file")
+def save_temp_file(
+    case_id: int,
+    data: SaveTempFileRequest,
+    db: Session = Depends(get_db)
+):
+    case = (
+        db.query(Case)
+        .filter(Case.id == case_id)
+        .first()
+    )
 
-#     if not case:
-#         raise HTTPException(
-#             status_code=404,
-#             detail="Case not found"
-#         )
+    if not case:
+        raise HTTPException(
+            status_code=404,
+            detail="Case not found"
+        )
 
-#     case.preview_status = "Preview Rejected"
-
+    temp_path = data.file_path
 
     if not temp_path.startswith("temp_uploads"):
         raise HTTPException(
@@ -1240,25 +1239,16 @@ def confirm_preview_files(
         upload_folder,
         exist_ok=True
     )
+    file_name = os.path.basename(temp_path)
 
-# @router.put("/cases/{case_id}/approve-preview")
-# def approve_preview(
-#     case_id: int,
-#     db: Session = Depends(get_db)
-# ):
-#     case = (
-#         db.query(Case)
-#         .filter(Case.id == case_id)
-#         .first()
-#     )
+    unique_filename = (
+        f"{uuid4()}_{file_name}"
+    )
 
-#     if not case:
-#         raise HTTPException(
-#             status_code=404,
-#             detail="Case not found"
-#         )
-
-#     case.preview_status = "Approved"
+    new_path = os.path.join(
+        upload_folder,
+        unique_filename
+    )
 
     try:
         # Move file from temp to uploads

@@ -562,7 +562,7 @@ function OrdersTable() {
                                             < tr key={item.id} >
                                                 <td className="text-center">
                                                     <img
-                                                        src=""
+
                                                         alt="profile"
                                                         width="40"
                                                     />
@@ -1002,13 +1002,10 @@ function OrdersTable() {
                                     aria-live="polite"
                                     role="status"
                                 >
-                                    Showing{" "}
-                                    {totalCases === 0
-                                        ? 0
-                                        : startEntry + 1}
+                                    Showing {startEntry}
                                     {" "}to{" "}
                                     {Math.min(
-                                        startEntry + entriesPerPage,
+                                        startEntry + cases.length - 1,
                                         totalCases
                                     )}
                                     {" "}of{" "}
@@ -1020,8 +1017,6 @@ function OrdersTable() {
                                 <div className="dt-paging">
                                     <nav aria-label="pagination">
                                         <ul className="pagination">
-
-                                            {/* First */}
                                             <li className={`page-item ${currentPage === 1
                                                 ? "disabled"
                                                 : ""
@@ -1036,7 +1031,7 @@ function OrdersTable() {
                                                 </button>
                                             </li>
 
-                                            {/* Previous */}
+
                                             <li className={`page-item ${currentPage === 1
                                                 ? "disabled"
                                                 : ""
@@ -1053,7 +1048,6 @@ function OrdersTable() {
                                                 </button>
                                             </li>
 
-                                            {/* Page Numbers */}
                                             {[...Array(totalPages)].map(
                                                 (_, index) => (
                                                     <li
@@ -1077,8 +1071,6 @@ function OrdersTable() {
                                                     </li>
                                                 )
                                             )}
-
-                                            {/* Next */}
                                             <li className={`page-item ${currentPage === totalPages
                                                 ? "disabled"
                                                 : ""

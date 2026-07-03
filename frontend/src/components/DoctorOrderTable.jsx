@@ -469,20 +469,11 @@ function DoctorOrderTable({
                                             </thead>
                                             <tbody>
                                                 {cases.map((item) => {
-                                                    console.log(
-                                                        "Case ID:",
-                                                        item.id,
-                                                        "Preview Status:",
-                                                        item.preview_status
-                                                    );
                                                     const previewFiles =
                                                         previewFilesMap[item.id] || [];
-
                                                     return (
                                                         <tr key={item.id}>
-                                                            <td className="text-center">
-                                                                {item.id}
-                                                            </td>
+                                                            <td className="text-center">{item.id}</td>
                                                             <td className="text-center">{item.patient_name}</td>
                                                             <td className="text-center">
                                                                 {item.appointment_date
@@ -586,7 +577,8 @@ function DoctorOrderTable({
                                                                     )
                                                                 }
 
-                                                            </td>                                                            <td className="text-center">
+                                                            </td>
+                                                            <td className="text-center">
                                                                 {item.delivery_deadline ? (() => {
 
                                                                     const today = new Date();
@@ -621,22 +613,22 @@ function DoctorOrderTable({
                                                                                 )}
                                                                             </div>
 
-                                                                            <div className="text-center"
-                                                                                style={{
-                                                                                    color: isPassed
-                                                                                        ? "red"
-                                                                                        : "#0152a8",
-                                                                                    fontWeight: "600"
-                                                                                }}
-                                                                            >
-                                                                                {isPassed
-                                                                                    ? "(Deadline passed)"
-                                                                                    : `(${daysLeft} day${daysLeft > 1
-                                                                                        ? "s"
-                                                                                        : ""
-                                                                                    } left)`
-                                                                                }
-                                                                            </div>
+                                                                            {(isPassed || daysLeft <= 3) && (
+                                                                                <div
+                                                                                    className="text-center"
+                                                                                    style={{
+                                                                                        color: isPassed ? "red" : "#0152a8",
+                                                                                        fontWeight: "600"
+                                                                                    }}
+                                                                                >
+                                                                                    {isPassed
+                                                                                        ? "(Deadline passed)"
+                                                                                        : daysLeft === 0
+                                                                                            ? "(Deadline is today)"
+                                                                                            : `(${daysLeft} day${daysLeft > 1 ? "s" : ""} left)`
+                                                                                    }
+                                                                                </div>
+                                                                            )}
                                                                         </>
                                                                     );
                                                                 })() : (
