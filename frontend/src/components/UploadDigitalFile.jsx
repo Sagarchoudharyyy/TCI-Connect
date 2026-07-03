@@ -48,6 +48,7 @@ function UploadDigitalFiles({
         newFiles.forEach((fileObj) => {
             uploadFile(fileObj);
         });
+        e.target.value = "";
     };
     const uploadFile = async (fileObj) => {
         const uploadData = new FormData();
@@ -107,14 +108,16 @@ function UploadDigitalFiles({
 
         try {
 
-            if (file.id && !file.file_path?.includes("temp_uploads")) {
+            if (
+                file.file_path &&
+                !file.file_path.includes("temp_uploads")
+            ) {
                 await axios.delete(
                     `http://localhost:8000/api/case-files/${file.id}`
                 );
-            }
-
-
-            else if (file.file_path?.includes("temp_uploads")) {
+            } else if (
+                file.file_path?.includes("temp_uploads")
+            ) {
                 await axios.delete(
                     "http://localhost:8000/api/delete-temp-file",
                     {
@@ -134,7 +137,7 @@ function UploadDigitalFiles({
                 ...prev,
                 files: prev.files.filter(
                     (_, i) => i !== index
-                ),
+                ) || [],
             }));
         } catch (error) {
             console.log("DELETE ERROR:", error);

@@ -11,10 +11,24 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from app.database.database import Base
+from sqlalchemy import Index
 
 
 class Case(Base):
         __tablename__ = "cases"
+
+        __table_args__ = (
+        Index(
+            "idx_patient_phone_created_at",
+            "patient_phone",
+            "created_at"
+        ),
+        Index(
+            "idx_doctor_status",
+            "doctor_id",
+            "status"
+        ),
+    )
 
         id = Column(
             Integer,
@@ -25,10 +39,8 @@ class Case(Base):
             Integer,
             ForeignKey("users.id", ondelete="CASCADE"),
             nullable=False,
-            index=True
         )
 
-        # Patient Information
         patient_name = Column(
             String(255),
             nullable=False
@@ -36,7 +48,7 @@ class Case(Base):
 
         patient_phone = Column(
             String(20),
-            nullable=True
+            nullable=True,
         )
 
         gender = Column(

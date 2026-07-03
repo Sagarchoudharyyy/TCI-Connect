@@ -1896,7 +1896,7 @@ function PurchaseOrder({
                     onChange={handlePdfChange}
                 />
 
-                {formData.pdfUpload && (
+                {(formData.pdfUpload || uploadedPdf) && (
                     <div className="border rounded p-3 mt-3">
 
                         <div className="d-flex justify-content-between align-items-start">
@@ -1905,8 +1905,9 @@ function PurchaseOrder({
 
                                 <div className="mb-2">
                                     {
-                                        formData.pdfUpload.file_name ||
-                                        formData.pdfUpload.name
+                                        formData.pdfUpload?.file_name ||
+                                        uploadedPdf?.file_name ||
+                                        formData.pdfUpload?.name
                                     }
                                 </div>
 
@@ -1924,6 +1925,36 @@ function PurchaseOrder({
                                     </div>
                                 )}
                             </div>
+                            <button
+                                type="button"
+                                className="btn btn-danger btn-sm"
+                                onClick={async () => {
+                                    if (
+                                        formData.pdfUpload?.file_path?.includes("temp")
+                                    ) {
+                                        await axios.delete(
+                                            "http://localhost:8000/api/delete-temp-file",
+                                            {
+                                                data: {
+                                                    file_path:
+                                                        formData.pdfUpload.file_path,
+                                                },
+                                            }
+                                        );
+                                    }
+
+                                    setUploadedPdf(null);
+
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        pdfUpload: null
+                                    }));
+
+                                    setPdfProgress(0);
+                                }}
+                            >
+                                Remove
+                            </button>
 
                         </div>
 

@@ -12,104 +12,215 @@ import "../styles/tables.css";
 
 function OrdersTable() {
 
-    const [statusFilter, setStatusFilter] = useState("");
-    const [deadlineFilter, setDeadlineFilter] = useState("");
+    const [cases, setCases] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [entriesPerPage, setEntriesPerPage] = useState(10);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [cases, setCases] = useState([]);
+    const [totalPages, setTotalPages] = useState(1);
     const navigate = useNavigate();
+    const [totalCases, setTotalCases] = useState(0);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [statusFilter, setStatusFilter] = useState("");
+    const [deadlineFilter, setDeadlineFilter] = useState("");
     const [showWelcome, setShowWelcome] = useState(true);
+    const [selectedFiles, setSelectedFiles] =
+        useState([]);
 
-    useEffect(() => {
+    const [showFilesModal, setShowFilesModal] =
+        useState(false);
+    const [previewFilesMap, setPreviewFilesMap] =
+        useState({});
+    const [digitalFilesMap, setDigitalFilesMap] =
+        useState({});
 
-        fetchCases();
-
-    }, []);
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowWelcome(false);
         }, 2000);
-
         return () => clearTimeout(timer);
     }, []);
+    useEffect(() => {
+        fetchCases();
+    },
+        [
+            currentPage,
+            entriesPerPage,
+            searchTerm,
+            statusFilter,
+            deadlineFilter
+        ]);
 
-    const fetchCases = async () => {
 
+    const loadPreviewFiles = async (
+        caseId
+    ) => {
         try {
-
+            console.log(
+                "Loading preview files for:",
+                caseId
+            );
             const response =
                 await axios.get(
-                    "http://127.0.0.1:8000/api/cases"
+                    `http://127.0.0.1:8000/api/case_files/${caseId}`
+                );
+            console.log(
+                "All files:",
+                response.data
+            );
+
+
+            const files =
+                response.data.filter(
+                    file =>
+                        file.file_category ===
+                        "preview_file"
                 );
 
             console.log(
-                "Cases API:",
-                response.data
+                "Preview files:",
+                files
             );
 
-            setCases(
-                response.data
-            );
+
+            setPreviewFilesMap(prev => ({
+                ...prev,
+                [caseId]: files
+            }));
 
         } catch (error) {
-
-            console.error(
-                "Failed to fetch cases:",
-                error
-            );
+            console.log(error);
         }
     };
 
-    const filteredCases = cases.filter((item) => {
+    useEffect(() => {
+        cases.forEach(item => {
 
-        const statusMatch =
-            !statusFilter ||
-            item.status === statusFilter;
+            if (!previewFilesMap[item.id]) {
+                loadPreviewFiles(item.id);
+            }
+        });
+    }, [cases]);
+    const fetchCases = async () => {
+        try {
+            const response = await axios.get("http://127.0.0.1:8000/api/cases",
+                {
+                    params:
+                    {
+                        page: currentPage, limit: entriesPerPage,
+                        search: searchTerm || undefined,
+                        status: statusFilter || undefined,
+                        deadline: deadlineFilter || undefined
+                    }
+                });
+            setCases(response.data.items);
+            setTotalPages(response.data.pages);
+            setTotalCases(response.data.total);
+        } catch (error) {
+            console.error("Failed to fetch cases:", error);
+        }
+    };
+    const handleReset = () => {
+        setStatusFilter("");
+        setDeadlineFilter("");
+        setSearchTerm("");
+        setCurrentPage(1);
+    };
 
-        const deadlineMatch =
-            !deadlineFilter ||
-            item.delivery_deadline === deadlineFilter;
+    const handleViewCaseDocument =
+        async (caseId) => {
+            try {
+                const response =
+                    await axios.get(
+                        `http://localhost:8000/api/case_files/${caseId}`
+                    );
 
-        const searchMatch =
-            !searchTerm ||
-            item.id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.patient_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.doctor_name?.toLowerCase().includes(searchTerm.toLowerCase());
+                const caseDocument =
+                    response.data.find(
+                        file =>
+                            file.file_category ===
+                            "case_document"
+                    );
 
-        return (
-            statusMatch &&
-            deadlineMatch &&
-            searchMatch
-        );
-    });
+                if (!caseDocument) {
+                    alert(
+                        "No case document found."
+                    );
+                    return;
+                }
 
-    const totalEntries = filteredCases.length;
+                const url =
+                    `http://127.0.0.1:8000/${caseDocument.file_path.replace(
+                        /\\/g,
+                        "/"
+                    )}`;
 
-    const startEntry =
-        totalEntries === 0
-            ? 0
-            : (currentPage - 1) * entriesPerPage + 1;
+                // Open in same tab
+                window.location.href = url;
 
-    const endEntry = Math.min(
-        currentPage * entriesPerPage,
-        totalEntries
-    );
+            } catch (error) {
+                console.log(error);
+            }
+        };
+    const handleViewPreviewFile =
+        async (caseId) => {
+            try {
+                const response =
+                    await axios.get(
+                        `http://127.0.0.1:8000/api/case_files/${caseId}`
+                    );
 
-    const totalPages = Math.ceil(
-        totalEntries / entriesPerPage
-    );
+                const previewFile =
+                    response.data.find(
+                        file =>
+                            file.file_category ===
+                            "preview_file"
+                    );
 
-    const indexOfLastCase =
-        currentPage * entriesPerPage;
+                if (!previewFile) {
+                    alert(
+                        "No preview file found."
+                    );
+                    return;
+                }
 
-    const indexOfFirstCase =
-        indexOfLastCase - entriesPerPage;
+                const url =
+                    `http://127.0.0.1:8000/${previewFile.file_path.replace(
+                        /\\/g,
+                        "/"
+                    )}`;
 
-    const visibleCases = filteredCases.slice(
-        indexOfFirstCase,
-        indexOfLastCase
-    );
+                window.location.href = url;
+
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+    const loadDigitalFiles = async (
+        caseId
+    ) => {
+        try {
+            const response =
+                await axios.get(
+                    `http://127.0.0.1:8000/api/case_files/${caseId}`
+                );
+
+            const files =
+                response.data.filter(
+                    file =>
+                        file.file_category ===
+                        "digital_file"
+                );
+
+            setDigitalFilesMap(prev => ({
+                ...prev,
+                [caseId]: files
+            }));
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -117,11 +228,6 @@ function OrdersTable() {
             statusFilter,
             deadlineFilter
         });
-    };
-    const handleReset = () => {
-        setStatusFilter("");
-        console.log("reset clicked");
-        setDeadlineFilter("");
     };
 
 
@@ -136,26 +242,17 @@ function OrdersTable() {
 
 
     const handleDelete = async (id) => {
-
-        const confirmDelete = window.confirm(
-            "Are you sure you want to delete this case?"
-        );
-
-        if (!confirmDelete) return;
-
+        const confirmDelete = window.confirm("Are you sure you want to delete this case?");
+        if (!confirmDelete)
+            return;
         try {
+            await axios.delete(`http://127.0.0.1:8000/api/cases/${id}`);
 
-            await axios.delete(
-                `http://127.0.0.1:8000/api/cases/${id}`
-            );
-
+            fetchCases();
             alert("Case deleted successfully");
-            window.location.reload();
-
-        } catch (error) {
-
+        }
+        catch (error) {
             console.log(error);
-
             alert("Delete failed");
         }
     };
@@ -170,17 +267,7 @@ function OrdersTable() {
                         status: newStatus
                     }
                 );
-
-                setCases(prev =>
-                    prev.map(item =>
-                        item.id === caseId
-                            ? {
-                                ...item,
-                                status: newStatus
-                            }
-                            : item
-                    )
-                );
+                fetchCases();
 
             } catch (error) {
                 console.error(
@@ -192,31 +279,35 @@ function OrdersTable() {
                 )
             }
         };
-
-    const handleViewHistory =
-        async (caseId) => {
-
-            try {
-
-                const response =
-                    await axios.get(
-                        `http://127.0.0.1:8000/api/cases/${caseId}/history`
-                    );
-
-                console.log(
-                    "History:",
-                    response.data
+    const handleViewFiles = async (
+        caseId
+    ) => {
+        try {
+            const response =
+                await axios.get(
+                    `http://127.0.0.1:8000/api/case_files/${caseId}`
                 );
 
-            } catch (error) {
+            const digitalFiles =
+                response.data.filter(
+                    file =>
+                        file.file_category ===
+                        "digital_file"
+                );
 
-                console.error(error);
-            }
-        };
+            setSelectedFiles(
+                digitalFiles
+            );
 
+            setShowFilesModal(true);
 
-    const startIndex =
-        (currentPage - 1) * entriesPerPage;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const startEntry = totalCases === 0 ? 0 : (currentPage - 1) * entriesPerPage + 1;
+    const endEntry = Math.min(currentPage * entriesPerPage, totalCases);
 
     return (
         <div className="table-section">
@@ -234,11 +325,10 @@ function OrdersTable() {
                     Welcome Admin!
                 </div>
             )}
-            {/* Filters */}
             <form
                 onSubmit={handleSubmit}
                 className="row g-3 mb-3">
-                {/* Status */}
+
                 <div className="col-md-3 ">
                     <label className="form-label">
                         Status
@@ -465,19 +555,13 @@ function OrdersTable() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {visibleCases.map((item) => {
-                                        console.log(item);
+                                    {cases.map((item) => {
                                         const previewFiles =
-                                            item.files?.filter(
-                                                file =>
-                                                    file.file_category ===
-                                                    "preview_file"
-                                            ) || [];
+                                            previewFilesMap[item.id] || [];
                                         return (
-                                            < tr key={item.id} >
+                                            <tr key={item.id} >
                                                 <td className="text-center">
                                                     <img
-                                                        src=""
                                                         alt="profile"
                                                         width="40"
                                                     />
@@ -489,62 +573,40 @@ function OrdersTable() {
                                                 <td>{item.doctor_phone}</td>
 
                                                 <td>{item.patient_name}</td>
+                                                <td className="text-center">
+                                                    {item.has_case_document ? (
+                                                        <>
+                                                            <FaEye
+                                                                style={{
+                                                                    cursor: "pointer",
+                                                                    color: "#0152a8",
+                                                                    marginRight: "12px"
+                                                                }}
+                                                                onClick={() =>
+                                                                    handleViewCaseDocument(item.id)
+                                                                }
+                                                            />
 
-                                                <td >
-                                                    {
-                                                        item.files
-                                                            ?.filter(
-                                                                file =>
-                                                                    file.file_category === "case_document"
-                                                            )
-                                                            .map((file, index) => (
-                                                                <div key={index}>
-                                                                    <a
-                                                                        href={`http://127.0.0.1:8000/${file.file_path}`}
-                                                                        target="_blank"
-                                                                        rel="noreferrer"
-                                                                        style={{
-                                                                            color: "#0152a8",
-                                                                            textDecoration: "none",
-                                                                            marginRight: "10px"
-                                                                        }}
-                                                                    >
-                                                                        <FaEye />
-                                                                    </a>
-
-                                                                    <a
-                                                                        href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
-                                                                        style={{
-                                                                            color: "#0152a8"
-                                                                        }}
-                                                                    >
-                                                                        <FaDownload />
-                                                                    </a>
-                                                                </div>
-                                                            ))
-                                                    }
-                                                    {
-                                                        !item.files?.some(
-                                                            file =>
-                                                                file.file_category === "case_document"
-                                                        ) && <span>No File</span>
-                                                    }
+                                                            <FaDownload
+                                                                style={{
+                                                                    cursor: "pointer",
+                                                                    color: "#0152a8"
+                                                                }}
+                                                                onClick={() =>
+                                                                    handleDownloadCaseDocument(item.id)
+                                                                }
+                                                            />
+                                                        </>
+                                                    ) : (
+                                                        "-"
+                                                    )}
                                                 </td>
-                                                <td >
+                                                <td className="text-center">
 
                                                     {
-                                                        console.log(
-                                                            "DIGITAL FILES",
-                                                            item.files
-                                                        ),
-                                                        item.files
-                                                            ?.filter(
-                                                                file =>
-                                                                    file.file_category === "digital_file"
-                                                            )
-                                                            .map((file, index) => (
-                                                                <div key={index}>
-
+                                                        digitalFilesMap[item.id]
+                                                            ?.map((file, index) => (
+                                                                <div key={file.id}>
 
                                                                     <a
                                                                         href={`http://127.0.0.1:8000/${file.file_path}`}
@@ -557,28 +619,57 @@ function OrdersTable() {
                                                                         }}
                                                                     >
                                                                         Preview File {index + 1}
+                                                                        {" "}
+                                                                        (
+                                                                        {file.file_name
+                                                                            .split(".")
+                                                                            .pop()
+                                                                            .toUpperCase()}
+                                                                        )
                                                                     </a>
 
-
                                                                     <a
-                                                                        href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
+                                                                        href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(
+                                                                            file.file_path
+                                                                        )}`}
                                                                         style={{
                                                                             color: "#0152a8"
                                                                         }}
                                                                     >
                                                                         <FaDownload />
                                                                     </a>
+
                                                                 </div>
                                                             ))
                                                     }
 
                                                     {
-                                                        !item.files?.some(
-                                                            file =>
-                                                                file.file_category === "digital_file"
-                                                        ) && <span>No File</span>
+                                                        item.has_digital_files &&
+                                                        !digitalFilesMap[item.id] && (
+                                                            <button
+                                                                className="btn btn-link p-0"
+                                                                onClick={() =>
+                                                                    loadDigitalFiles(
+                                                                        item.id
+                                                                    )
+                                                                }
+                                                            >
+                                                                View Files
+                                                            </button>
+                                                        )
                                                     }
+
+                                                    {
+                                                        !item.has_digital_files &&
+                                                        (
+                                                            <span>
+                                                                No File
+                                                            </span>
+                                                        )
+                                                    }
+
                                                 </td>
+
                                                 <td>
                                                     {item.delivery_deadline ? (() => {
 
@@ -695,13 +786,78 @@ function OrdersTable() {
                                                             </>
                                                         ) : item.preview_status ===
                                                             "Approved" ? (
-                                                            <span
-                                                                style={{
-                                                                    color: "green"
-                                                                }}
-                                                            >
-                                                                Preview Approved
-                                                            </span>
+                                                            <>
+                                                                <span
+                                                                    style={{
+                                                                        color: "green"
+                                                                    }}
+                                                                >
+                                                                    Preview Approved
+                                                                </span>
+
+                                                                {previewFiles.length > 0 && (
+                                                                    <>
+                                                                        <br />
+
+                                                                        <small
+                                                                            style={{
+                                                                                color: "#6c757d"
+                                                                            }}
+                                                                        >
+                                                                            (
+                                                                            {previewFiles.length}
+                                                                            {" "}
+                                                                            file
+                                                                            {previewFiles.length > 1
+                                                                                ? "s"
+                                                                                : ""}
+                                                                            )
+                                                                        </small>
+
+                                                                        {previewFiles.map(
+                                                                            (file, index) => (
+                                                                                <div
+                                                                                    key={file.id}
+                                                                                >
+                                                                                    <a
+                                                                                        href={`http://127.0.0.1:8000/${file.file_path.replace(
+                                                                                            /\\/g,
+                                                                                            "/"
+                                                                                        )}`}
+                                                                                        target="_blank"
+                                                                                        rel="noreferrer"
+                                                                                        style={{
+                                                                                            textDecoration:
+                                                                                                "none",
+                                                                                            color:
+                                                                                                "#0152a8"
+                                                                                        }}
+                                                                                    >
+                                                                                        Preview{" "}
+                                                                                        {index + 1}
+                                                                                    </a>
+
+                                                                                    <br />
+
+                                                                                    <span
+                                                                                        style={{
+                                                                                            color:
+                                                                                                "#0152a8"
+                                                                                        }}
+                                                                                    >
+                                                                                        (
+                                                                                        {file.file_name
+                                                                                            .split(".")
+                                                                                            .pop()
+                                                                                            .toUpperCase()}
+                                                                                        )
+                                                                                    </span>
+                                                                                </div>
+                                                                            )
+                                                                        )}
+                                                                    </>
+                                                                )}
+                                                            </>
                                                         ) : item.preview_status ===
                                                             "Preview Rejected" ? (
                                                             <span
@@ -713,49 +869,7 @@ function OrdersTable() {
                                                             </span>
                                                         ) : null}
                                                     </div>
-
-                                                    {previewFiles.length > 0 && (
-                                                        <>
-                                                            <small
-                                                                style={{
-                                                                    color: "#6c757d"
-                                                                }}
-                                                            >
-                                                                ({previewFiles.length} file
-                                                                {previewFiles.length > 1
-                                                                    ? "s"
-                                                                    : ""}
-                                                                )
-                                                            </small>
-
-                                                            {previewFiles.map(
-                                                                (file, index) => (
-                                                                    <div key={file.id}>
-                                                                        <a
-                                                                            href={`http://127.0.0.1:8000/${file.file_path.replace(
-                                                                                /\\/g,
-                                                                                "/"
-                                                                            )}`}
-                                                                            target="_blank"
-                                                                            rel="noreferrer"
-                                                                        >
-                                                                            Preview {index + 1}
-                                                                            {" "}
-                                                                            (
-                                                                            {file.file_name
-                                                                                .split(".")
-                                                                                .pop()
-                                                                                .toUpperCase()}
-                                                                            )
-                                                                        </a>
-                                                                    </div>
-                                                                )
-                                                            )}
-                                                        </>
-                                                    )}
                                                 </td>
-
-
                                                 <td>
                                                     <select
                                                         value={item.status}
@@ -866,6 +980,7 @@ function OrdersTable() {
                                     })}
                                 </tbody>
                             </table>
+
                         </div>
                         <div className="row mt-2 justify-content-between">
 
@@ -876,16 +991,16 @@ function OrdersTable() {
                                     role="status"
                                 >
                                     Showing{" "}
-                                    {filteredCases.length === 0
+                                    {totalCases === 0
                                         ? 0
-                                        : startIndex + 1}
+                                        : startEntry + 1}
                                     {" "}to{" "}
                                     {Math.min(
-                                        startIndex + entriesPerPage,
-                                        filteredCases.length
+                                        startEntry + entriesPerPage,
+                                        totalCases
                                     )}
                                     {" "}of{" "}
-                                    {filteredCases.length} entries
+                                    {totalCases} entries
                                 </div>
                             </div>
 

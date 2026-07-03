@@ -83,7 +83,6 @@ function PricingUI() {
             </section>
             <ContactUs />
             <Footer />
-
         </>
     )
 }

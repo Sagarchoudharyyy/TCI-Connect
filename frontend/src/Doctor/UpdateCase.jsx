@@ -38,7 +38,6 @@ function UpdateCase() {
     useState({
 
       patient_name: "",
-      patient_phone: "",
       patient_id: "",
 
       next_appointment_date: "",
@@ -699,8 +698,9 @@ function UpdateCase() {
                       setFormData={setFormData}
                       handleNext={handleNext}
                       pdfUpload={formData.pdfUpload}
-                      pdfProgress={pdfProgress}
+                      uploadedPdf={uploadedPdf}
                       setPdfProgress={setPdfProgress}
+                      pdfProgress={pdfProgress}
                       setUploadedPdf={setUploadedPdf}
                       setIsPdfUploading={setIsPdfUploading}
                       errors={errors}

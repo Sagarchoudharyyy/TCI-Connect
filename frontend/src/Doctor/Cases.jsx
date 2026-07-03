@@ -10,52 +10,185 @@ import {
     FaEdit
 } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { getCases } from "../services/caseService";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
 function DoctorCases() {
 
     const [cases, setCases] = useState([]);
+    const [totalPages, setTotalPages] = useState(1);
     const [statusFilter, setStatusFilter] = useState("");
     const [deadlineFilter, setDeadlineFilter] = useState("");
     const [entriesPerPage, setEntriesPerPage] = useState(5);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
+    const [totalRecords, setTotalRecords] = useState(0);
+    const [debouncedSearch, setDebouncedSearch] =
+        useState("");
 
-    const fetchCases = async () => {
+    const [digitalFilesMap,
+        setDigitalFilesMap
+    ] = useState({});
+
+    const [previewFilesMap,
+        setPreviewFilesMap
+    ] = useState({});
+
+    const [caseDocumentMap,
+        setCaseDocumentMap
+    ] = useState({});
+
+    const loadCaseDocuments = async (
+        caseId
+    ) => {
         try {
-            const response = await getCases();
-            console.log("API Response:", response.data);
-            setCases(response.data);
+            const response =
+                await axios.get(
+                    `http://localhost:8000/api/case_files/${caseId}`
+                );
+
+            const files =
+                response.data.filter(
+                    file =>
+                        file.file_category ===
+                        "case_document"
+                );
+
+            setCaseDocumentMap(prev => ({
+                ...prev,
+                [caseId]: files
+            }));
+
         } catch (error) {
             console.log(error);
         }
     };
 
+    const loadDigitalFiles = async (
+        caseId
+    ) => {
+        try {
+            const response =
+                await axios.get(
+                    `http://localhost:8000/api/case_files/${caseId}`
+                );
 
-    const filteredCases = cases.filter((item) => {
+            const files =
+                response.data.filter(
+                    file =>
+                        file.file_category ===
+                        "digital_file"
+                );
 
-        const statusMatch =
-            !statusFilter ||
-            item.status === statusFilter;
+            setDigitalFilesMap(prev => ({
+                ...prev,
+                [caseId]: files
+            }));
 
-        const deadlineMatch =
-            !deadlineFilter ||
-            item.delivery_deadline === deadlineFilter;
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
-        const searchMatch =
-            !searchTerm ||
-            item.id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.patient_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.doctor_name?.toLowerCase().includes(searchTerm.toLowerCase());
+    const loadPreviewFiles = async (
+        caseId
+    ) => {
+        try {
+            const response =
+                await axios.get(
+                    `http://localhost:8000/api/case_files/${caseId}`
+                );
 
-        return (
-            statusMatch &&
-            deadlineMatch &&
-            searchMatch
-        );
-    });
+            const files =
+                response.data.filter(
+                    file =>
+                        file.file_category ===
+                        "preview_file"
+                );
+
+            setPreviewFilesMap(prev => ({
+                ...prev,
+                [caseId]: files
+            }));
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const fetchCases = async () => {
+        try {
+            const params = {
+                page: currentPage,
+                limit: entriesPerPage,
+            };
+
+            if (debouncedSearch.trim()) {
+                params.search = debouncedSearch.trim();
+            }
+
+            if (statusFilter) {
+                params.status = statusFilter;
+            }
+
+            if (deadlineFilter) {
+                params.deadline = deadlineFilter;
+            }
+
+            const response = await axios.get(
+                "http://localhost:8000/api/cases",
+                {
+                    params
+                }
+            );
+
+            console.log(response.data);
+
+            setCases(response.data.items);
+            setTotalPages(response.data.pages);
+            setTotalRecords(response.data.total);
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleViewCaseDocument =
+        async (caseId) => {
+            try {
+                const response =
+                    await axios.get(
+                        `http://localhost:8000/api/case_files/${caseId}`
+                    );
+
+                const caseDocument =
+                    response.data.find(
+                        file =>
+                            file.file_category ===
+                            "case_document"
+                    );
+
+                if (!caseDocument) {
+                    alert(
+                        "No case document found."
+                    );
+                    return;
+                }
+
+                const url =
+                    `http://127.0.0.1:8000/${caseDocument.file_path.replace(
+                        /\\/g,
+                        "/"
+                    )}`;
+
+                // Open in same tab
+                window.location.href = url;
+
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -66,8 +199,9 @@ function DoctorCases() {
     };
     const handleReset = () => {
         setStatusFilter("");
-        console.log("reset clicked");
         setDeadlineFilter("");
+        setSearchTerm("");
+        setCurrentPage(1);
     };
 
     const handleDelete = async (
@@ -87,9 +221,11 @@ function DoctorCases() {
             await axios.delete(
                 `http://localhost:8000/api/cases/${caseId}`
             );
-
-            // Refresh table instantly
-            fetchCases();
+            if (cases.length === 1 && currentPage > 1) {
+                setCurrentPage(currentPage - 1);
+            } else {
+                fetchCases();
+            }
 
         } catch (error) {
 
@@ -100,22 +236,44 @@ function DoctorCases() {
             );
         }
     };
-    const totalPages = Math.ceil(
-        filteredCases.length / entriesPerPage
-    );
-
-    const startIndex =
-        (currentPage - 1) * entriesPerPage;
-
-    const visibleCases =
-        filteredCases.slice(
-            startIndex,
-            startIndex + entriesPerPage
-        );
-
+    useEffect(() => {
+        if (currentPage !== 1) {
+            setCurrentPage(1);
+        }
+    }, [
+        debouncedSearch,
+        statusFilter,
+        deadlineFilter,
+        entriesPerPage
+    ]);
     useEffect(() => {
         fetchCases();
-    }, []);
+    }, [
+        currentPage,
+        entriesPerPage,
+        debouncedSearch,
+        statusFilter,
+        deadlineFilter
+    ]);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchTerm.trim());
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
+    console.log("CASES:", cases);
+
+    useEffect(() => {
+        cases.forEach((item) => {
+            if (
+                item.has_preview_files &&
+                !previewFilesMap[item.id]
+            ) {
+                loadPreviewFiles(item.id);
+            }
+        });
+    }, [cases]);
     return (
         <div className="container-fluid p-0">
             <div className="row g-0 doctor-dashboard-main">
@@ -141,7 +299,6 @@ function DoctorCases() {
                         <form
                             onSubmit={handleSubmit}
                             className="row g-3 mb-3">
-                            {/* Status */}
                             <div className="col-md-3 ">
                                 <label className="form-label">
                                     Status
@@ -149,9 +306,10 @@ function DoctorCases() {
 
                                 <select
                                     value={statusFilter}
-                                    onChange={(e) =>
-                                        setStatusFilter(e.target.value)
-                                    }
+                                    onChange={(e) => {
+                                        setStatusFilter(e.target.value);
+                                        setCurrentPage(1);
+                                    }}
                                     className="form-control"
                                 >
                                     <option value="">
@@ -189,9 +347,10 @@ function DoctorCases() {
                                 <input
                                     type="date"
                                     value={deadlineFilter}
-                                    onChange={(e) =>
-                                        setDeadlineFilter(e.target.value)
-                                    }
+                                    onChange={(e) => {
+                                        setDeadlineFilter(e.target.value);
+                                        setCurrentPage(1);
+                                    }}
                                     className="form-control"
                                 />
                             </div>
@@ -254,11 +413,10 @@ function DoctorCases() {
                                                 id="dt-search-0"
                                                 placeholder=""
                                                 value={searchTerm}
-                                                onChange={(e) =>
-                                                    setSearchTerm(
-                                                        e.target.value
-                                                    )
-                                                }
+                                                onChange={(e) => {
+                                                    setSearchTerm(e.target.value);
+                                                    setCurrentPage(1);
+                                                }}
                                             />
                                         </div>
                                     </div>
@@ -293,405 +451,333 @@ function DoctorCases() {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {visibleCases.map((item) => (
-                                                    <tr key={item.id}>
-                                                        <td>
-                                                            {item.id}
-                                                        </td>
-                                                        <td>{item.patient_name}</td>
-                                                        <td>
-                                                            {item.appointment_date
-                                                                ? new Date(
-                                                                    item.appointment_date
-                                                                )
-                                                                    .toLocaleString("en-GB", {
-                                                                        day: "2-digit",
-                                                                        month: "2-digit",
-                                                                        year: "numeric",
-                                                                        hour: "2-digit",
-                                                                        minute: "2-digit",
-                                                                        hour12: true
-                                                                    })
-                                                                    .replace(",", "")
-                                                                : "N/A"}
-                                                        </td>
-                                                        <td>{item.age}</td>
-                                                        {/* <td>
-                                                            {
-                                                                item.files
-                                                                    ?.filter(
-                                                                        file =>
-                                                                            file.file_category === "case_document"
-                                                                    )
-                                                                    .map((file, index) => (
-                                                                        <a
-                                                                            key={index}
-                                                                            href={`http://127.0.0.1:8000/${file.file_path}`}
-                                                                            target="_blank"
-                                                                            rel="noreferrer"
+                                                {cases.map((item) => {
+                                                    console.log(
+                                                        "Case ID:",
+                                                        item.id,
+                                                        "Preview Status:",
+                                                        item.preview_status
+                                                    );
+                                                    const previewFiles =
+                                                        previewFilesMap[item.id] || [];
+
+                                                    return (
+                                                        <tr key={item.id}>
+                                                            <td className="text-center">
+                                                                {item.id}
+                                                            </td>
+                                                            <td className="text-center">{item.patient_name}</td>
+                                                            <td className="text-center">
+                                                                {item.appointment_date
+                                                                    ? new Date(item.appointment_date)
+                                                                        .toLocaleString("en-GB", {
+                                                                            day: "2-digit",
+                                                                            month: "short",
+                                                                            year: "numeric",
+                                                                            hour: "2-digit",
+                                                                            minute: "2-digit",
+                                                                            hour12: true
+                                                                        })
+                                                                        .replace(",", "")
+                                                                    : "-"}
+                                                            </td>
+                                                            <td className="text-center">{item.age}</td>
+                                                            <td className="text-center">
+                                                                {
+                                                                    item.has_case_document ? (
+                                                                        <FaEye
                                                                             style={{
-                                                                                color: "#0152a8",
-                                                                                textDecoration: "none"
+                                                                                cursor: "pointer",
+                                                                                color: "#0152a8"
                                                                             }}
-                                                                        >
-                                                                            <FaEye />
-                                                                        </a>
-                                                                    ))
-                                                            }
-
-                                                            {
-                                                                !item.files?.some(
-                                                                    file =>
-                                                                        file.file_category === "case_document"
-                                                                ) && <span>-</span>
-                                                            }
-                                                        </td> */}
-
-
-                                                        <td>
-                                                            {
-                                                                item.files
-                                                                    ?.filter(
-                                                                        file =>
-                                                                            file.file_category === "case_document"
+                                                                            onClick={() =>
+                                                                                handleViewCaseDocument(
+                                                                                    item.id,
+                                                                                    "case_document"
+                                                                                )
+                                                                            }
+                                                                        />
+                                                                    ) : (
+                                                                        "-"
                                                                     )
-                                                                    .map((file, index) => {
+                                                                }
+                                                            </td>
+                                                            <td className="text-center">
 
-                                                                        const fileUrl =
-                                                                            `http://127.0.0.1:8000/${file.file_path.replace(/\\/g, "/")}`;
+                                                                {
+                                                                    digitalFilesMap[item.id]
+                                                                        ?.map((file, index) => (
+                                                                            <div key={file.id}>
 
-                                                                        if (
-                                                                            file.file_type?.startsWith("image/")
-                                                                        ) {
-                                                                            return (
                                                                                 <a
-                                                                                    key={index}
-                                                                                    href={fileUrl}
-                                                                                    target="_blank"
-                                                                                    rel="noreferrer"
-                                                                                >
-                                                                                    <img
-                                                                                        src={fileUrl}
-                                                                                        alt="preview"
-                                                                                        style={{
-                                                                                            width: "60px",
-                                                                                            height: "60px",
-                                                                                            objectFit: "cover",
-                                                                                            borderRadius: "4px"
-                                                                                        }}
-                                                                                    />
-                                                                                </a>
-                                                                            );
-                                                                        }
-                                                                        if (
-                                                                            file.file_type ===
-                                                                            "application/pdf"
-                                                                        ) {
-                                                                            return (
-                                                                                <a
-                                                                                    key={index}
-                                                                                    href={fileUrl}
+                                                                                    href={`http://127.0.0.1:8000/${file.file_path}`}
                                                                                     target="_blank"
                                                                                     rel="noreferrer"
                                                                                     style={{
                                                                                         textDecoration: "none",
+                                                                                        marginRight: "12px",
                                                                                         color: "#0152a8"
                                                                                     }}
                                                                                 >
-                                                                                    📄 PDF
+                                                                                    Preview File {index + 1}
+                                                                                    {" "}
+                                                                                    (
+                                                                                    {file.file_name
+                                                                                        .split(".")
+                                                                                        .pop()
+                                                                                        .toUpperCase()}
+                                                                                    )
                                                                                 </a>
-                                                                            );
-                                                                        }
-                                                                        return (
-                                                                            <a
-                                                                                key={index}
-                                                                                href={fileUrl}
-                                                                                target="_blank"
-                                                                                rel="noreferrer"
-                                                                                style={{
-                                                                                    textDecoration: "none",
-                                                                                    color: "#0047AB",   // slightly darker blue
 
-                                                                                }}
-                                                                            >
-                                                                                📦 FILE
-                                                                            </a>
-                                                                        );
-                                                                    })
-                                                            }
+                                                                                <a
+                                                                                    href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(
+                                                                                        file.file_path
+                                                                                    )}`}
+                                                                                    style={{
+                                                                                        color: "#0152a8"
+                                                                                    }}
+                                                                                >
+                                                                                    <FaDownload />
+                                                                                </a>
 
-                                                            {
-                                                                !item.files?.some(
-                                                                    file =>
-                                                                        file.file_category ===
-                                                                        "case_document"
-                                                                ) && <span>-</span>
-                                                            }
-                                                        </td>
-                                                        <td>
+                                                                            </div>
+                                                                        ))
+                                                                }
 
-                                                            {
-                                                                item.files
-                                                                    ?.filter(
-                                                                        file =>
-                                                                            file.file_category === "digital_file"
+                                                                {
+                                                                    item.has_digital_files &&
+                                                                    !digitalFilesMap[item.id] && (
+                                                                        <button
+                                                                            className="btn btn-link p-0"
+                                                                            onClick={() =>
+                                                                                loadDigitalFiles(
+                                                                                    item.id
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            View Files
+                                                                        </button>
                                                                     )
-                                                                    .map((file, index) => (
-                                                                        <div key={index}>
+                                                                }
 
+                                                                {
+                                                                    !item.has_digital_files &&
+                                                                    (
+                                                                        <span>
+                                                                            No File
+                                                                        </span>
+                                                                    )
+                                                                }
 
-                                                                            <a
-                                                                                href={`http://127.0.0.1:8000/${file.file_path}`}
-                                                                                target="_blank"
-                                                                                rel="noreferrer"
+                                                            </td>                                                            <td className="text-center">
+                                                                {item.delivery_deadline ? (() => {
+
+                                                                    const today = new Date();
+                                                                    const deadline =
+                                                                        new Date(item.delivery_deadline);
+
+                                                                    today.setHours(0, 0, 0, 0);
+                                                                    deadline.setHours(0, 0, 0, 0);
+
+                                                                    const diffTime =
+                                                                        deadline - today;
+
+                                                                    const daysLeft =
+                                                                        Math.ceil(
+                                                                            diffTime /
+                                                                            (1000 * 60 * 60 * 24)
+                                                                        );
+
+                                                                    const isPassed =
+                                                                        deadline < today;
+
+                                                                    return (
+                                                                        <>
+                                                                            <div className="text-center">
+                                                                                {deadline.toLocaleDateString(
+                                                                                    "en-GB",
+                                                                                    {
+                                                                                        day: "2-digit",
+                                                                                        month: "short",
+                                                                                        year: "numeric"
+                                                                                    }
+                                                                                )}
+                                                                            </div>
+
+                                                                            <div className="text-center"
                                                                                 style={{
-                                                                                    textDecoration: "none",
-                                                                                    marginRight: "12px",
-                                                                                    color: "#0152a8"
+                                                                                    color: isPassed
+                                                                                        ? "red"
+                                                                                        : "#0152a8",
+                                                                                    fontWeight: "600"
                                                                                 }}
                                                                             >
+                                                                                {isPassed
+                                                                                    ? "(Deadline passed)"
+                                                                                    : `(${daysLeft} day${daysLeft > 1
+                                                                                        ? "s"
+                                                                                        : ""
+                                                                                    } left)`
+                                                                                }
+                                                                            </div>
+                                                                        </>
+                                                                    );
+                                                                })() : (
+                                                                    "-"
+                                                                )}
+                                                            </td>
+                                                            <td className="text-center">
+                                                                {
+                                                                    previewFiles.map((file, index) => (
 
-                                                                                Preview File {index + 1}
+                                                                        <div
+                                                                            key={file.id}
+                                                                            className="text-center"
+                                                                        >
+                                                                            <a
+                                                                                href={`http://127.0.0.1:8000/${file.file_path.replace(/\\/g, "/")}`}
+                                                                                target="_blank"
+                                                                                rel="noreferrer"
+                                                                            >
+                                                                                Preview {index + 1}
+                                                                                {" "}
+                                                                                (
+                                                                                {file.file_name
+                                                                                    .split(".")
+                                                                                    .pop()
+                                                                                    .toUpperCase()}
+                                                                                )
                                                                             </a>
 
+                                                                            <br />
+
                                                                             <a
-                                                                                href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
-                                                                                style={{
-                                                                                    color: "#0152a8"
-                                                                                }}
+                                                                                href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(
+                                                                                    file.file_path
+                                                                                )}`}
                                                                             >
                                                                                 <FaDownload />
                                                                             </a>
                                                                         </div>
                                                                     ))
-                                                            }
-
-                                                            {
-                                                                !item.files?.some(
-                                                                    file =>
-                                                                        file.file_category === "digital_file"
-                                                                ) && <span>No File</span>
-                                                            }
-                                                        </td>
-
-                                                        {/* <td>
-                                                            {item.delivery_deadline
-                                                                ? new Date(
-                                                                    item.delivery_deadline
-                                                                ).toLocaleDateString("en-GB")
-                                                                : "N/A"}
-                                                        </td> */}
-                                                        <td>
-                                                            {item.delivery_deadline ? (() => {
-
-                                                                const today = new Date();
-                                                                const deadline = new Date(item.delivery_deadline);
-
-                                                                today.setHours(0, 0, 0, 0);
-                                                                deadline.setHours(0, 0, 0, 0);
-
-                                                                const diffTime = deadline - today;
-
-                                                                const daysLeft = Math.ceil(
-                                                                    diffTime / (1000 * 60 * 60 * 24)
-                                                                );
-
-                                                                const isPassed = deadline < today;
-
-                                                                return (
-                                                                    <>
-                                                                        <div>
-                                                                            {deadline.toLocaleDateString(
-                                                                                "en-GB",
-                                                                                {
-                                                                                    day: "2-digit",
-                                                                                    month: "short",
-                                                                                    year: "numeric"
-                                                                                }
-                                                                            )}
-                                                                        </div>
-
-                                                                        <div
-                                                                            style={{
-                                                                                color: isPassed
-                                                                                    ? "red"
-                                                                                    : "#0152a8",
-                                                                                fontWeight: "600"
-                                                                            }}
-                                                                        >
-                                                                            {isPassed
-                                                                                ? "(Deadline passed)"
-                                                                                : `(${daysLeft} day${daysLeft > 1 ? "s" : ""
-                                                                                } left)`
-                                                                            }
-                                                                        </div>
-                                                                    </>
-                                                                );
-                                                            })() : (
-                                                                "-"
-                                                            )}
-                                                        </td>
-
-                                                        <td>
-
-                                                            {item.files
-                                                                ?.filter(
-                                                                    file =>
-                                                                        file.file_category === "preview_file"
-                                                                )
-                                                                .map((file, index) => (
-
-                                                                    <div key={index}>
-
-                                                                        <a
-                                                                            href={`http://127.0.0.1:8000/${file.file_path.replace(/\\/g, "/")}`}
-                                                                            target="_blank"
-                                                                            rel="noreferrer"
-                                                                            style={{
-                                                                                textDecoration: "none",
-                                                                                color: "#0152a8"
-                                                                            }}
-                                                                        >
-                                                                            Preview {index + 1}
-                                                                        </a>
-
-                                                                        <div
-                                                                            style={{
-                                                                                color: "#0152a8",
-                                                                                fontSize: "14px"
-                                                                            }}
-                                                                        >
-                                                                            (
-                                                                            {file.file_name
-                                                                                ?.split(".")
-                                                                                .pop()
-                                                                                ?.toUpperCase()}
-                                                                            )
-                                                                        </div>
-
-                                                                        <a
-                                                                            href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
-                                                                            style={{
-                                                                                color: "#0152a8"
-                                                                            }}
-                                                                        >
-                                                                            <FaDownload />
-                                                                        </a>
-
-                                                                    </div>
-                                                                ))}
-
-
-                                                            <div className="mt-2">
-
-                                                                {item.preview_status?.toLowerCase() === "waiting user" && (
-                                                                    <>
-                                                                        <button
-                                                                            className="btn btn-sm btn-primary me-2"
-                                                                            onClick={() =>
-                                                                                handlePreviewStatus(
-                                                                                    item.id,
-                                                                                    "Approved"
-                                                                                )
-                                                                            }
-                                                                        >
-                                                                            ✓
-                                                                        </button>
-
-                                                                        <button
-                                                                            className="btn btn-sm btn-danger"
-                                                                            onClick={() =>
-                                                                                handlePreviewStatus(
-                                                                                    item.id,
-                                                                                    "Preview Rejected"
-                                                                                )
-                                                                            }
-                                                                        >
-                                                                            ✕
-                                                                        </button>
-                                                                    </>
-                                                                )}
-
-                                                                {item.preview_status?.toLowerCase() === "approved" && (
-                                                                    <span
-                                                                        style={{
-                                                                            color: "green",
-                                                                            fontWeight: "600"
-                                                                        }}
-                                                                    >
-                                                                        Approved
-                                                                    </span>
-                                                                )}
-
-                                                                {item.preview_status?.toLowerCase() === "preview rejected" && (
-                                                                    <span
-                                                                        style={{
-                                                                            color: "red",
-                                                                            fontWeight: "600"
-                                                                        }}
-                                                                    >
-                                                                        Rejected
-                                                                    </span>
-                                                                )}
-
-                                                                {item.preview_status?.toLowerCase() === "pending" && (
-                                                                    <span
-                                                                        style={{
-                                                                            color: "#0152a8",
-                                                                            fontWeight: "600"
-                                                                        }}
-                                                                    >
-                                                                        Pending
-                                                                    </span>
-                                                                )}
-
-                                                            </div>
-                                                        </td>
-
-
-                                                        {/* <td>{item.status}</td> */}
-                                                        <td>
-                                                            <span
-                                                                style={{
-                                                                    fontWeight: "600",
-                                                                    color:
-                                                                        item.status === "Submitted"
-                                                                            ? "#6c757d"
-                                                                            : item.status === "InProduction"
-                                                                                ? "#0152a8"
-                                                                                : item.status === "QualityCheck"
-                                                                                    ? "#0152a8"
-                                                                                    : item.status === "Shipped"
-                                                                                        ? "#0152a8"
-                                                                                        : item.status === "Delivered"
-                                                                                            ? "#0152a8"
-                                                                                            : "black"
-                                                                }}
-                                                            >
-                                                                {item.status}
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            <Link
-                                                                to={`/client/update-case/${item.id}`}
-                                                            >
-                                                                <FaEdit className="me-2" />
-                                                            </Link>
-
-                                                            <FaTrash
-                                                                className="text-danger"
-                                                                style={{ cursor: "pointer" }}
-                                                                onClick={() =>
-                                                                    handleDelete(
-                                                                        item.id
-                                                                    )
                                                                 }
-                                                            />
-                                                        </td>
-                                                    </tr>
-                                                )
-                                                )
-                                                }
+
+                                                                <div className="mt-2 text-center">
+
+                                                                    {
+                                                                        item.preview_status?.toLowerCase() ===
+                                                                        "waiting user" && (
+                                                                            <>
+                                                                                <button
+                                                                                    className="btn btn-sm btn-primary me-2"
+                                                                                    onClick={() =>
+                                                                                        handlePreviewStatus(
+                                                                                            item.id,
+                                                                                            "Approved"
+                                                                                        )
+                                                                                    }
+                                                                                >
+                                                                                    ✓
+                                                                                </button>
+
+                                                                                <button
+                                                                                    className="btn btn-sm btn-danger"
+                                                                                    onClick={() =>
+                                                                                        handlePreviewStatus(
+                                                                                            item.id,
+                                                                                            "Preview Rejected"
+                                                                                        )
+                                                                                    }
+                                                                                >
+                                                                                    ✕
+                                                                                </button>
+                                                                            </>
+                                                                        )
+                                                                    }
+
+                                                                    {
+                                                                        item.preview_status?.toLowerCase() ===
+                                                                        "approved" && (
+                                                                            <span
+                                                                                style={{
+                                                                                    color: "green",
+                                                                                    fontWeight: "600"
+                                                                                }}
+                                                                            >
+                                                                                Approved
+                                                                            </span>
+                                                                        )
+                                                                    }
+
+                                                                    {
+                                                                        item.preview_status?.toLowerCase() ===
+                                                                        "preview rejected" && (
+                                                                            <span
+                                                                                style={{
+                                                                                    color: "red",
+                                                                                    fontWeight: "600"
+                                                                                }}
+                                                                            >
+                                                                                Rejected
+                                                                            </span>
+                                                                        )
+                                                                    }
+
+                                                                </div>
+
+                                                                {
+                                                                    !item.has_preview_files &&
+                                                                    item.preview_status !==
+                                                                    "Waiting User" &&
+                                                                    item.preview_status !==
+                                                                    "Approved" &&
+                                                                    item.preview_status !==
+                                                                    "Preview Rejected" &&
+                                                                    "-"
+                                                                }
+
+                                                            </td>
+                                                            <td className="text-center">
+                                                                <span
+                                                                    style={{
+                                                                        fontWeight: "600",
+                                                                        color:
+                                                                            item.status === "Submitted"
+                                                                                ? "#6c757d"
+                                                                                : item.status === "InProduction"
+                                                                                    ? "#0d6efd"
+                                                                                    : item.status === "QualityCheck"
+                                                                                        ? "#fd7e14"
+                                                                                        : item.status === "Shipped"
+                                                                                            ? "#198754"
+                                                                                            : item.status === "Delivered"
+                                                                                                ? "#0dcaf0"
+                                                                                                : "black"
+                                                                    }}
+                                                                >
+                                                                    {item.status}
+                                                                </span>
+                                                            </td>
+                                                            <td className="text-center">
+                                                                <Link
+                                                                    to={`/client/update-case/${item.id}`}
+                                                                >
+                                                                    <FaEdit className="me-2" />
+                                                                </Link>
+
+                                                                <FaTrash
+                                                                    className="text-danger"
+                                                                    style={{ cursor: "pointer" }}
+                                                                    onClick={() =>
+                                                                        handleDelete(
+                                                                            item.id
+                                                                        )
+                                                                    }
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
                                             </tbody>
                                         </table>
                                     </div>
@@ -704,16 +790,20 @@ function DoctorCases() {
                                                 role="status"
                                             >
                                                 Showing{" "}
-                                                {filteredCases.length === 0
-                                                    ? 0
-                                                    : startIndex + 1}
+                                                {
+                                                    totalRecords === 0
+                                                        ? 0
+                                                        : ((currentPage - 1) * entriesPerPage) + 1
+                                                }
                                                 {" "}to{" "}
-                                                {Math.min(
-                                                    startIndex + entriesPerPage,
-                                                    filteredCases.length
-                                                )}
+                                                {
+                                                    Math.min(
+                                                        currentPage * entriesPerPage,
+                                                        totalRecords
+                                                    )
+                                                }
                                                 {" "}of{" "}
-                                                {filteredCases.length} entries
+                                                {totalRecords} entries
                                             </div>
                                         </div>
 
@@ -721,8 +811,6 @@ function DoctorCases() {
                                             <div className="dt-paging">
                                                 <nav aria-label="pagination">
                                                     <ul className="pagination">
-
-                                                        {/* First */}
                                                         <li className={`page-item ${currentPage === 1
                                                             ? "disabled"
                                                             : ""
@@ -737,8 +825,7 @@ function DoctorCases() {
                                                             </button>
                                                         </li>
 
-                                                        {/* Previous */}
-                                                        <li className={`page-item ${currentPage === 1
+                                                        <li className={`page-item ${currentPage <= 1
                                                             ? "disabled"
                                                             : ""
                                                             }`}>
@@ -753,8 +840,6 @@ function DoctorCases() {
                                                                 ‹
                                                             </button>
                                                         </li>
-
-                                                        {/* Page Numbers */}
                                                         {[...Array(totalPages)].map(
                                                             (_, index) => (
                                                                 <li
@@ -779,8 +864,8 @@ function DoctorCases() {
                                                             )
                                                         )}
 
-                                                        {/* Next */}
-                                                        <li className={`page-item ${currentPage === totalPages
+                                                        <li className={`page-item ${totalPages === 0 ||
+                                                            currentPage === totalPages
                                                             ? "disabled"
                                                             : ""
                                                             }`}>
@@ -795,9 +880,8 @@ function DoctorCases() {
                                                                 ›
                                                             </button>
                                                         </li>
-
-                                                        {/* Last */}
-                                                        <li className={`page-item ${currentPage === totalPages
+                                                        <li className={`page-item ${totalPages === 0 ||
+                                                            currentPage === totalPages
                                                             ? "disabled"
                                                             : ""
                                                             }`}>

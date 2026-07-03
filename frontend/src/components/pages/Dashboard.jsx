@@ -27,7 +27,7 @@ function Dashboard() {
                 "http://127.0.0.1:8000/api/cases"
             );
 
-            setCases(response.data);
+            setCases(response.data.items);
 
         } catch (error) {
             console.log("Dashboard Error:", error);

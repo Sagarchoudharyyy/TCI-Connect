@@ -22,7 +22,6 @@ function NewCases() {
 
     const initialFormData = {
         patient_name: "",
-        patient_phone: "",
         patient_id: "",
 
         next_appointment_date: "",
@@ -271,19 +270,14 @@ function NewCases() {
 
         try {
 
-            const user =
-                JSON.parse(
-                    localStorage.getItem(
-                        "user"
-                    )
-                );
+            const user = JSON.parse(
+                localStorage.getItem("user") || "{}"
+            );
 
             const payload = {
                 doctor_id: user?.id || 1,
 
                 patient_name: formData.patient_name,
-
-                patient_phone: formData.patient_phone || null,
 
                 gender: formData.gender || null,
 
@@ -297,6 +291,9 @@ function NewCases() {
                             formData.next_appointment_date
                         ).toISOString()
                         : null,
+
+                appointment_time:
+                    formData.appointment_time || null,
 
                 delivery_deadline:
                     formData.delivery_deadline || null,
@@ -397,13 +394,13 @@ function NewCases() {
     };
 
     const handleReset = () => {
-
-        setFormData(
-            initialFormData
-        );
-
+        setFormData(initialFormData);
         setErrors({});
-
+        setCheckboxErrors({});
+        setUploadedPdf(null);
+        setDigitalFiles([]);
+        setPdfProgress(0);
+        setDigitalProgress(0);
         setStep(1);
     };
 
@@ -438,8 +435,6 @@ function NewCases() {
                                     >
                                         Submit a Case
                                     </h1>
-
-                                    {/* Progress Bar */}
 
                                     <div className="progress-bar-container">
 

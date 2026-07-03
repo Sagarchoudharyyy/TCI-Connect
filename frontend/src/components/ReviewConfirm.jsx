@@ -135,22 +135,34 @@ function ReviewConfirm({
                 <strong>Implant Instructions:</strong>
 
                 <ul className="mb-0 row-wise">
-                    {formData.implant_details?.map((implant, index) => (
-                        <li key={index} className="mb-2">
-                            <strong>Row {index + 1}</strong>
-                            <ul className="unordered">
-                                <li><strong>Implant Type:</strong> {implant.implant_type || "N/A"}</li>
-                                <li><strong>Platform Diameter:</strong> {implant.platform_diameter || "N/A"}</li>
-                                <li><strong>Screw Retained:</strong> {implant.screw_retained || "N/A"}</li>
-                                <li><strong>Screw Retained Hybrid:</strong> {implant.screw_retained_hybrid || "N/A"}</li>
-                                <li><strong>Cement Retained - Ti Abutment:</strong> {implant.cement_retained_ti_abutment || "N/A"}</li>
-                                <li><strong>Zr Abutment:</strong> {implant.zr_abutment || "N/A"}</li>
-                                <li><strong>Implant Bar Type:</strong> {implant.implant_bar_type || "N/A"}</li>
-                                <li><strong>Attachment Type:</strong> {implant.attachment_type || "N/A"}</li>
-                            </ul>
+                    {formData.implant_details
+                        ?.filter(
+                            implant =>
+                                implant.implant_type ||
+                                implant.platform_diameter ||
+                                implant.screw_retained ||
+                                implant.screw_retained_hybrid ||
+                                implant.cement_retained_ti_abutment ||
+                                implant.zr_abutment ||
+                                implant.implant_bar_type ||
+                                implant.attachment_type
+                        )
+                        .map((implant, index) => (
+                            <li key={index} className="mb-2">
+                                <strong>Row {index + 1}</strong>
+                                <ul className="unordered">
+                                    <li><strong>Implant Type:</strong> {implant.implant_type || "N/A"}</li>
+                                    <li><strong>Platform Diameter:</strong> {implant.platform_diameter || "N/A"}</li>
+                                    <li><strong>Screw Retained:</strong> {implant.screw_retained || "N/A"}</li>
+                                    <li><strong>Screw Retained Hybrid:</strong> {implant.screw_retained_hybrid || "N/A"}</li>
+                                    <li><strong>Cement Retained - Ti Abutment:</strong> {implant.cement_retained_ti_abutment || "N/A"}</li>
+                                    <li><strong>Zr Abutment:</strong> {implant.zr_abutment || "N/A"}</li>
+                                    <li><strong>Implant Bar Type:</strong> {implant.implant_bar_type || "N/A"}</li>
+                                    <li><strong>Attachment Type:</strong> {implant.attachment_type || "N/A"}</li>
+                                </ul>
 
-                        </li>
-                    ))}
+                            </li>
+                        ))}
                 </ul>
                 <p>
                     <strong>
@@ -163,7 +175,6 @@ function ReviewConfirm({
                         || "None"
                     }
                 </p>
-
                 <p>
                     <strong>
                         Additional Instructions:
@@ -178,7 +189,9 @@ function ReviewConfirm({
                     <strong>Case Document:</strong>
                     <br />
                     {
-                        formData.pdfUpload?.file_name || "None"
+                        formData.pdfUpload?.file_name ||
+                        formData.pdfUpload?.name ||
+                        "None"
                     }
                 </p>
                 <p>

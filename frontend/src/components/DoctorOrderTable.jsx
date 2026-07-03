@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { getCases, deleteCase, updatePreviewStatus } from "../services/caseService";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 
 function DoctorOrderTable({
@@ -18,66 +19,174 @@ function DoctorOrderTable({
     showSubmitButton = true,
 
 }) {
-    console.log(status)
     const [statusFilter, setStatusFilter] = useState("");
     const [deadlineFilter, setDeadlineFilter] = useState("");
     const [entriesPerPage, setEntriesPerPage] = useState(5);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [cases, setCases] = useState([]);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalCases, setTotalCases] =
+        useState(0);
     const [successMessage,
         setSuccessMessage
     ] = useState("");
 
+    const [selectedFiles, setSelectedFiles] =
+        useState([]);
 
-    const fetchCases = async () => {
+    const [showFilesModal, setShowFilesModal] =
+        useState(false);
+
+    const [selectedCategory,
+        setSelectedCategory
+    ] = useState("");
+
+    const [digitalFilesMap,
+        setDigitalFilesMap
+    ] = useState({});
+
+    const [previewFilesMap,
+        setPreviewFilesMap
+    ] = useState({});
+
+    const loadDigitalFiles = async (
+        caseId
+    ) => {
         try {
-            const response = await getCases();
-            console.log("API Response:", response.data);
+            const response =
+                await axios.get(
+                    `http://127.0.0.1:8000/api/case_files/${caseId}`
+                );
 
-            setCases(response.data);
+            const files =
+                response.data.filter(
+                    file =>
+                        file.file_category ===
+                        "digital_file"
+                );
+
+            setDigitalFilesMap(prev => ({
+                ...prev,
+                [caseId]: files
+            }));
+
         } catch (error) {
             console.log(error);
         }
     };
 
 
-    const filteredCases = Array.isArray(cases)
-        ? cases.filter((item) => {
+    const loadPreviewFiles = async (
+        caseId
+    ) => {
+        try {
+            const response =
+                await axios.get(
+                    `http://127.0.0.1:8000/api/case_files/${caseId}`
+                );
 
-            const statusMatch =
-                !statusFilter ||
-                item.status === statusFilter;
+            const files =
+                response.data.filter(
+                    file =>
+                        file.file_category ===
+                        "preview_file"
+                );
 
-            const deadlineMatch =
-                !deadlineFilter ||
-                item.delivery_deadline === deadlineFilter;
+            setPreviewFilesMap(prev => ({
+                ...prev,
+                [caseId]: files
+            }));
 
-            const searchMatch =
-                !searchTerm ||
-                item.case_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item.patient_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                item.doctor_name?.toLowerCase().includes(searchTerm.toLowerCase());
-
-            return (
-                statusMatch &&
-                deadlineMatch &&
-                searchMatch
-            );
-        })
-        : [];
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        console.log({
-            statusFilter,
-            deadlineFilter
-        });
+        } catch (error) {
+            console.log(error);
+        }
     };
+
+    const fetchCases = async () => {
+        try {
+            const response = await getCases({
+                page: currentPage,
+                limit: entriesPerPage,
+                search: searchTerm || undefined,
+                status: statusFilter || undefined,
+                deadline: deadlineFilter || undefined
+            });
+
+            setCases(response.data.items);
+            setTotalPages(response.data.pages);
+            setTotalCases(response.data.total);
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleViewFiles = async (
+        caseId,
+        category
+    ) => {
+        try {
+            const response =
+                await axios.get(
+                    `http://localhost:8000/api/case_files/${caseId}`
+                );
+
+            const files =
+                response.data.filter(
+                    file =>
+                        file.file_category === category
+                );
+
+            setSelectedFiles(files);
+            setSelectedCategory(category);
+            setShowFilesModal(true);
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleViewCaseDocument =
+        async (caseId) => {
+            try {
+                const response =
+                    await axios.get(
+                        `http://localhost:8000/api/case_files/${caseId}`
+                    );
+
+                const caseDocument =
+                    response.data.find(
+                        file =>
+                            file.file_category ===
+                            "case_document"
+                    );
+
+                if (!caseDocument) {
+                    alert(
+                        "No case document found."
+                    );
+                    return;
+                }
+
+                const url =
+                    `http://127.0.0.1:8000/${caseDocument.file_path.replace(
+                        /\\/g,
+                        "/"
+                    )}`;
+
+                // Open in same tab
+                window.location.href = url;
+
+            } catch (error) {
+                console.log(error);
+            }
+        };
     const handleReset = () => {
         setStatusFilter("");
-        console.log("reset clicked");
         setDeadlineFilter("");
+        setSearchTerm("");
+        setCurrentPage(1);
     };
 
     const handleDelete = async (id) => {
@@ -153,22 +262,26 @@ function DoctorOrderTable({
             }, 3000);
         }
     };
-    const totalPages = Math.ceil(
-        filteredCases.length / entriesPerPage
-    );
-
-    const startIndex =
-        (currentPage - 1) * entriesPerPage;
-
-    const visibleCases =
-        filteredCases.slice(
-            startIndex,
-            startIndex + entriesPerPage
-        );
-
     useEffect(() => {
         fetchCases();
-    }, []);
+    }, [
+        currentPage,
+        entriesPerPage,
+        searchTerm,
+        statusFilter,
+        deadlineFilter
+    ]);
+
+    useEffect(() => {
+        cases.forEach((item) => {
+            if (
+                item.has_preview_files &&
+                !previewFilesMap[item.id]
+            ) {
+                loadPreviewFiles(item.id);
+            }
+        });
+    }, [cases]);
     return (
         <div className="row">
             <div className="col-12">
@@ -192,9 +305,7 @@ function DoctorOrderTable({
                         </div>
 
                         <form
-                            onSubmit={handleSubmit}
                             className="row g-3 mb-3">
-                            {/* Status */}
                             <div className="col-md-3 ">
                                 <label className="form-label">
                                     Status
@@ -202,9 +313,10 @@ function DoctorOrderTable({
 
                                 <select
                                     value={statusFilter}
-                                    onChange={(e) =>
-                                        setStatusFilter(e.target.value)
-                                    }
+                                    onChange={(e) => {
+                                        setStatusFilter(e.target.value);
+                                        setCurrentPage(1);
+                                    }}
                                     className="form-control"
                                 >
                                     <option value="">
@@ -241,9 +353,10 @@ function DoctorOrderTable({
                                 <input
                                     type="date"
                                     value={deadlineFilter}
-                                    onChange={(e) =>
-                                        setDeadlineFilter(e.target.value)
-                                    }
+                                    onChange={(e) => {
+                                        setDeadlineFilter(e.target.value);
+                                        setCurrentPage(1);
+                                    }}
                                     className="form-control"
                                 />
                             </div>
@@ -317,11 +430,10 @@ function DoctorOrderTable({
                                                 id="dt-search-0"
                                                 placeholder=""
                                                 value={searchTerm}
-                                                onChange={(e) =>
-                                                    setSearchTerm(
-                                                        e.target.value
-                                                    )
-                                                }
+                                                onChange={(e) => {
+                                                    setSearchTerm(e.target.value);
+                                                    setCurrentPage(1);
+                                                }}
                                             />
                                         </div>
                                     </div>
@@ -356,7 +468,7 @@ function DoctorOrderTable({
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {visibleCases.map((item) => {
+                                                {cases.map((item) => {
                                                     console.log(
                                                         "Case ID:",
                                                         item.id,
@@ -364,11 +476,8 @@ function DoctorOrderTable({
                                                         item.preview_status
                                                     );
                                                     const previewFiles =
-                                                        item.files?.filter(
-                                                            file =>
-                                                                file.file_category ===
-                                                                "preview_file"
-                                                        ) || [];
+                                                        previewFilesMap[item.id] || [];
+
                                                     return (
                                                         <tr key={item.id}>
                                                             <td className="text-center">
@@ -392,49 +501,30 @@ function DoctorOrderTable({
                                                             <td className="text-center">{item.age}</td>
                                                             <td className="text-center">
                                                                 {
-                                                                    item.files
-                                                                        ?.filter(
-                                                                            file =>
-                                                                                file.file_category === "case_document"
-                                                                        )
-                                                                        .map((file, index) => (
-                                                                            <a
-                                                                                key={index}
-                                                                                href={`http://127.0.0.1:8000/${file.file_path}`}
-                                                                                target="_blank"
-                                                                                rel="noreferrer"
-                                                                                style={{
-                                                                                    color: "#0152a8",
-                                                                                    textDecoration: "none"
-                                                                                }}
-                                                                            >
-                                                                                <FaEye />
-                                                                            </a>
-                                                                        ))
-                                                                }
-
-                                                                {
-                                                                    !item.files?.some(
-                                                                        file =>
-                                                                            file.file_category === "case_document"
-                                                                    ) && <span>-</span>
+                                                                    item.has_case_document ? (
+                                                                        <FaEye
+                                                                            style={{
+                                                                                cursor: "pointer",
+                                                                                color: "#0152a8"
+                                                                            }}
+                                                                            onClick={() =>
+                                                                                handleViewCaseDocument(
+                                                                                    item.id,
+                                                                                    "case_document"
+                                                                                )
+                                                                            }
+                                                                        />
+                                                                    ) : (
+                                                                        "-"
+                                                                    )
                                                                 }
                                                             </td>
                                                             <td className="text-center">
 
                                                                 {
-                                                                    console.log(
-                                                                        "DIGITAL FILES",
-                                                                        item.files
-                                                                    ),
-                                                                    item.files
-                                                                        ?.filter(
-                                                                            file =>
-                                                                                file.file_category === "digital_file"
-                                                                        )
-                                                                        .map((file, index) => (
-                                                                            <div key={index}>
-
+                                                                    digitalFilesMap[item.id]
+                                                                        ?.map((file, index) => (
+                                                                            <div key={file.id}>
 
                                                                                 <a
                                                                                     href={`http://127.0.0.1:8000/${file.file_path}`}
@@ -447,28 +537,56 @@ function DoctorOrderTable({
                                                                                     }}
                                                                                 >
                                                                                     Preview File {index + 1}
+                                                                                    {" "}
+                                                                                    (
+                                                                                    {file.file_name
+                                                                                        .split(".")
+                                                                                        .pop()
+                                                                                        .toUpperCase()}
+                                                                                    )
                                                                                 </a>
 
                                                                                 <a
-                                                                                    href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
+                                                                                    href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(
+                                                                                        file.file_path
+                                                                                    )}`}
                                                                                     style={{
                                                                                         color: "#0152a8"
                                                                                     }}
                                                                                 >
                                                                                     <FaDownload />
                                                                                 </a>
+
                                                                             </div>
                                                                         ))
                                                                 }
 
                                                                 {
-                                                                    !item.files?.some(
-                                                                        file =>
-                                                                            file.file_category === "digital_file"
-                                                                    ) && <span>No File</span>
+                                                                    item.has_digital_files &&
+                                                                    !digitalFilesMap[item.id] && (
+                                                                        <button
+                                                                            className="btn btn-link p-0"
+                                                                            onClick={() =>
+                                                                                loadDigitalFiles(
+                                                                                    item.id
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            View Files
+                                                                        </button>
+                                                                    )
                                                                 }
-                                                            </td>
-                                                            <td className="text-center">
+
+                                                                {
+                                                                    !item.has_digital_files &&
+                                                                    (
+                                                                        <span>
+                                                                            No File
+                                                                        </span>
+                                                                    )
+                                                                }
+
+                                                            </td>                                                            <td className="text-center">
                                                                 {item.delivery_deadline ? (() => {
 
                                                                     const today = new Date();
@@ -526,106 +644,114 @@ function DoctorOrderTable({
                                                                 )}
                                                             </td>
                                                             <td className="text-center">
+                                                                {
+                                                                    previewFiles.map((file, index) => (
 
-                                                                {previewFiles.length > 0 ||
+                                                                        <div
+                                                                            key={file.id}
+                                                                            className="text-center"
+                                                                        >
+                                                                            <a
+                                                                                href={`http://127.0.0.1:8000/${file.file_path.replace(/\\/g, "/")}`}
+                                                                                target="_blank"
+                                                                                rel="noreferrer"
+                                                                            >
+                                                                                Preview {index + 1}
+                                                                                {" "}
+                                                                                (
+                                                                                {file.file_name
+                                                                                    .split(".")
+                                                                                    .pop()
+                                                                                    .toUpperCase()}
+                                                                                )
+                                                                            </a>
 
-                                                                    item.preview_status === "Waiting User" ||
-                                                                    item.preview_status === "Approved" ||
-                                                                    item.preview_status === "Preview Rejected" ?
-                                                                    (
+                                                                            <br />
 
-                                                                        <>
-                                                                            {previewFiles.map((file, index) => (
+                                                                            <a
+                                                                                href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(
+                                                                                    file.file_path
+                                                                                )}`}
+                                                                            >
+                                                                                <FaDownload />
+                                                                            </a>
+                                                                        </div>
+                                                                    ))
+                                                                }
 
-                                                                                <div key={file.id} className="text-center">
+                                                                <div className="mt-2 text-center">
 
-                                                                                    <a
-                                                                                        href={`http://127.0.0.1:8000/${file.file_path.replace(/\\/g, "/")}`}
-                                                                                        target="_blank"
-                                                                                        rel="noreferrer"
-                                                                                    >
-                                                                                        Preview {index + 1}
-                                                                                        {" "}
-                                                                                        (
-                                                                                        {file.file_name
-                                                                                            .split(".")
-                                                                                            .pop()
-                                                                                            .toUpperCase()}
+                                                                    {
+                                                                        item.preview_status?.toLowerCase() ===
+                                                                        "waiting user" && (
+                                                                            <>
+                                                                                <button
+                                                                                    className="btn btn-sm btn-primary me-2"
+                                                                                    onClick={() =>
+                                                                                        handlePreviewStatus(
+                                                                                            item.id,
+                                                                                            "Approved"
                                                                                         )
-                                                                                    </a>
+                                                                                    }
+                                                                                >
+                                                                                    ✓
+                                                                                </button>
 
-                                                                                    <br />
+                                                                                <button
+                                                                                    className="btn btn-sm btn-danger"
+                                                                                    onClick={() =>
+                                                                                        handlePreviewStatus(
+                                                                                            item.id,
+                                                                                            "Preview Rejected"
+                                                                                        )
+                                                                                    }
+                                                                                >
+                                                                                    ✕
+                                                                                </button>
+                                                                            </>
+                                                                        )
+                                                                    }
 
-                                                                                    <a
-                                                                                        href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
-                                                                                    >
-                                                                                        <FaDownload />
-                                                                                    </a>
+                                                                    {
+                                                                        item.preview_status?.toLowerCase() ===
+                                                                        "approved" && (
+                                                                            <span
+                                                                                style={{
+                                                                                    color: "green",
+                                                                                    fontWeight: "600"
+                                                                                }}
+                                                                            >
+                                                                                Approved
+                                                                            </span>
+                                                                        )
+                                                                    }
 
-                                                                                </div>
+                                                                    {
+                                                                        item.preview_status?.toLowerCase() ===
+                                                                        "preview rejected" && (
+                                                                            <span
+                                                                                style={{
+                                                                                    color: "red",
+                                                                                    fontWeight: "600"
+                                                                                }}
+                                                                            >
+                                                                                Rejected
+                                                                            </span>
+                                                                        )
+                                                                    }
 
-                                                                            ))}
+                                                                </div>
 
-                                                                            <div className="mt-2 text-center">
-
-                                                                                {item.preview_status?.toLowerCase() === "waiting user" && (
-                                                                                    <>
-                                                                                        <button
-                                                                                            className="btn btn-sm btn-primary me-2"
-                                                                                            onClick={() =>
-                                                                                                handlePreviewStatus(
-                                                                                                    item.id,
-                                                                                                    "Approved"
-                                                                                                )
-                                                                                            }
-                                                                                        >
-                                                                                            ✓
-                                                                                        </button>
-
-                                                                                        <button
-                                                                                            className="btn btn-sm btn-danger"
-                                                                                            onClick={() =>
-                                                                                                handlePreviewStatus(
-                                                                                                    item.id,
-                                                                                                    "Preview Rejected"
-                                                                                                )
-                                                                                            }
-                                                                                        >
-                                                                                            ✕
-                                                                                        </button>
-                                                                                    </>
-                                                                                )}
-
-                                                                                {item.preview_status?.toLowerCase() === "approved" && (
-                                                                                    <span
-                                                                                        style={{
-                                                                                            color: "green",
-                                                                                            fontWeight: "600"
-                                                                                        }}
-                                                                                    >
-                                                                                        Approved
-                                                                                    </span>
-                                                                                )}
-
-                                                                                {item.preview_status?.toLowerCase() === "preview rejected" && (
-                                                                                    <span
-                                                                                        style={{
-                                                                                            color: "red",
-                                                                                            fontWeight: "600"
-                                                                                        }}
-                                                                                    >
-                                                                                        Rejected
-                                                                                    </span>
-                                                                                )}
-
-                                                                            </div>
-
-                                                                        </>
-
-                                                                    ) : (
-
-                                                                        "-"
-                                                                    )}
+                                                                {
+                                                                    !item.has_preview_files &&
+                                                                    item.preview_status !==
+                                                                    "Waiting User" &&
+                                                                    item.preview_status !==
+                                                                    "Approved" &&
+                                                                    item.preview_status !==
+                                                                    "Preview Rejected" &&
+                                                                    "-"
+                                                                }
 
                                                             </td>
                                                             <td className="text-center">
@@ -681,16 +807,13 @@ function DoctorOrderTable({
                                                 role="status"
                                             >
                                                 Showing{" "}
-                                                {filteredCases.length === 0
+                                                {cases.length === 0
                                                     ? 0
-                                                    : startIndex + 1}
+                                                    : (currentPage - 1) * entriesPerPage + 1}
                                                 {" "}to{" "}
-                                                {Math.min(
-                                                    startIndex + entriesPerPage,
-                                                    filteredCases.length
-                                                )}
+                                                {(currentPage - 1) * entriesPerPage + cases.length}
                                                 {" "}of{" "}
-                                                {filteredCases.length} entries
+                                                {totalCases} entries
                                             </div>
                                         </div>
 
@@ -699,7 +822,6 @@ function DoctorOrderTable({
                                                 <nav aria-label="pagination">
                                                     <ul className="pagination">
 
-                                                        {/* First */}
                                                         <li className={`page-item ${currentPage === 1
                                                             ? "disabled"
                                                             : ""
@@ -713,8 +835,6 @@ function DoctorOrderTable({
                                                                 «
                                                             </button>
                                                         </li>
-
-                                                        {/* Previous */}
                                                         <li className={`page-item ${currentPage === 1
                                                             ? "disabled"
                                                             : ""
@@ -730,8 +850,6 @@ function DoctorOrderTable({
                                                                 ‹
                                                             </button>
                                                         </li>
-
-                                                        {/* Page Numbers */}
                                                         {[...Array(totalPages)].map(
                                                             (_, index) => (
                                                                 <li
@@ -755,8 +873,6 @@ function DoctorOrderTable({
                                                                 </li>
                                                             )
                                                         )}
-
-                                                        {/* Next */}
                                                         <li className={`page-item ${currentPage === totalPages
                                                             ? "disabled"
                                                             : ""
@@ -772,8 +888,6 @@ function DoctorOrderTable({
                                                                 ›
                                                             </button>
                                                         </li>
-
-                                                        {/* Last */}
                                                         <li className={`page-item ${currentPage === totalPages
                                                             ? "disabled"
                                                             : ""
@@ -789,7 +903,6 @@ function DoctorOrderTable({
                                                                 »
                                                             </button>
                                                         </li>
-
                                                     </ul>
                                                 </nav>
                                             </div>
@@ -803,6 +916,5 @@ function DoctorOrderTable({
             </div>
         </div >
     )
-
 }
 export default DoctorOrderTable;

@@ -86,10 +86,6 @@ function App() {
           element={< Privacy />}
         />
 
-
-
-
-
         <Route path="/about-us" element={<About />} />
 
         <Route

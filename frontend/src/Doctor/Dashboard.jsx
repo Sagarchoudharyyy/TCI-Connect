@@ -22,14 +22,22 @@ function DoctorDashboard() {
             try {
 
                 const response =
-                    await axios.get("http://localhost:8000/api/cases");
+                    await axios.get(
+                        "http://localhost:8000/api/cases",
+                        {
+                            params: {
+                                page: 1,
+                                limit: 10
+                            }
+                        }
+                    );
 
-                const cases =
-                    response.data;
+                setCases(
+                    response.data.items
+                );
 
-                setCases(cases);
                 setTotalPatients(
-                    cases.length
+                    response.data.total
                 );
 
             } catch (error) {

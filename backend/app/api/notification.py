@@ -10,7 +10,15 @@ from app.models.case_model import Case
 def create_deadline_notifications(db):
     today = datetime.now().date()
 
-    cases = db.query(Case).all()
+    cases = (
+    db.query(Case)
+    .filter(
+        Case.delivery_deadline >= today,
+        Case.delivery_deadline <=
+        today + timedelta(days=3)
+    )
+    .all()
+)
 
     for case in cases:
         if not case.delivery_deadline:
@@ -57,43 +65,45 @@ def create_deadline_notifications(db):
 router = APIRouter()
 
 
-
-
 @router.get("/notifications/all")
 def get_all_notifications(
-    db:Session=Depends(get_db)
-):
-    notifications=(
-        db.query(Notification)
-        .order_by(Notification.created_at.desc()).all()
-    )        
-    return notifications
-
-
-
-
-@router.get(
-    "/notifications/{user_id}",
-    response_model=list[NotificationResponse]
-)
-def get_notifications(
-    user_id: int,
+    page: int = 1,
+    limit: int = 50,
     db: Session = Depends(get_db)
 ):
-    create_deadline_notifications(db)
-
     notifications = (
         db.query(Notification)
-        .filter(
-            Notification.is_read == False,
-            Notification.receiver_id == user_id
+        .order_by(
+            Notification.created_at.desc()
         )
-        .order_by(Notification.created_at.desc())
+        .offset((page - 1) * limit)
+        .limit(limit)
         .all()
     )
 
     return notifications
 
+@router.get("/notifications/all/{user_id}")
+def get_all_notifications(
+    user_id: int,
+    page: int = 1,
+    limit: int = 50,
+    db: Session = Depends(get_db)
+):
+    notifications = (
+        db.query(Notification)
+        .filter(
+            Notification.receiver_id == user_id
+        )
+        .order_by(
+            Notification.created_at.desc()
+        )
+        .offset((page - 1) * limit)
+        .limit(limit)
+        .all()
+    )
+
+    return notifications
 
 @router.put("/notifications/read-all/{user_id}")
 def mark_all_read(
