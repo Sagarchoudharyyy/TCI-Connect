@@ -90,6 +90,32 @@ function RecentCases() {
         });
     }, [cases]);
 
+    const handleDownloadCaseDocument = async (caseId) => {
+        try {
+            const response = await axios.get(
+                `http://127.0.0.1:8000/api/case_files/${caseId}`
+            );
+
+            const caseDocument = response.data.find(
+                file => file.file_category === "case_document"
+            );
+
+            if (!caseDocument) {
+                alert("No case document found");
+                return;
+            }
+
+            window.open(
+                `http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(
+                    caseDocument.file_path
+                )}`,
+                "_blank"
+            );
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const fetchCases = async () => {
         try {
             const response = await axios.get(
@@ -112,6 +138,41 @@ function RecentCases() {
             console.log(error);
         }
     };
+    const handleViewCaseDocument =
+        async (caseId) => {
+            try {
+                const response =
+                    await axios.get(
+                        `http://localhost:8000/api/case_files/${caseId}`
+                    );
+
+                const caseDocument =
+                    response.data.find(
+                        file =>
+                            file.file_category ===
+                            "case_document"
+                    );
+
+                if (!caseDocument) {
+                    alert(
+                        "No case document found."
+                    );
+                    return;
+                }
+
+                const url =
+                    `http://127.0.0.1:8000/${caseDocument.file_path.replace(
+                        /\\/g,
+                        "/"
+                    )}`;
+
+                // Open in same tab
+                window.location.href = url;
+
+            } catch (error) {
+                console.log(error);
+            }
+        };
 
     const loadDigitalFiles = async (
         caseId

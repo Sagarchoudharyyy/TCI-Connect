@@ -615,21 +615,12 @@ function OrdersTable() {
                                                         ) && <span>No File</span>
                                                     }
                                                 </td>
-                                                <td >
+                                                <td className="text-center">
 
                                                     {
-                                                        console.log(
-                                                            "DIGITAL FILES",
-                                                            item.files
-                                                        ),
-                                                        item.files
-                                                            ?.filter(
-                                                                file =>
-                                                                    file.file_category === "digital_file"
-                                                            )
-                                                            .map((file, index) => (
-                                                                <div key={index}>
-
+                                                        digitalFilesMap[item.id]
+                                                            ?.map((file, index) => (
+                                                                <div key={file.id}>
 
                                                                     <a
                                                                         href={`http://127.0.0.1:8000/${file.file_path}`}
@@ -692,7 +683,6 @@ function OrdersTable() {
                                                     }
 
                                                 </td>
-
                                                 <td>
                                                     {item.delivery_deadline ? (() => {
 
