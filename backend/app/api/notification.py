@@ -103,10 +103,14 @@ def mark_all_read(
     (
         db.query(Notification)
         .filter(
-            Notification.receiver_id == user_id
+            (Notification.receiver_id == user_id) |
+            (Notification.receiver_id.is_(None))
+            
+            
         )
         .update(
-            {Notification.is_read: True}
+            {Notification.is_read: True},
+             synchronize_session=False
         )
     )
 

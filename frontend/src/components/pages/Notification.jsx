@@ -75,19 +75,36 @@ function Notification() {
     }
   };
 
+  // const markAllRead = async () => {
+  //   try {
+  //     await axios.put(
+  //       `http://127.0.0.1:8000/api/notifications/read-all/${user.id}`
+  //     );
+  //     setNotifications([]);
+
+  //     setShowDropdown(false);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
   const markAllRead = async () => {
     try {
+      const user = JSON.parse(
+        localStorage.getItem("user")
+      );
+
       await axios.put(
         `http://127.0.0.1:8000/api/notifications/read-all/${user.id}`
       );
-      setNotifications([]);
+
+      await fetchNotifications();
 
       setShowDropdown(false);
+
     } catch (error) {
       console.log(error);
     }
   };
-
   const unreadCount =
     notifications.filter(
       (item) => !item.is_read
@@ -238,7 +255,7 @@ function Notification() {
             </div>
 
             <div id="notifList" style={{
-              minHeight: "360px",
+              maxHeight: "360px",
               overflowY: "auto",
 
             }}>

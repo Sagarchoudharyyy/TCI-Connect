@@ -373,7 +373,7 @@ function OrdersTable() {
                                     <col data-dt-column="9" style={{ width: "136px" }} />
                                     <col data-dt-column="10" style={{ width: "93.3194px" }} />
                                 </colgroup>
-                                <thead >
+                                <thead>
                                     <tr>
                                         <th data-dt-column="0" className="dt-orderable-none" rowSpan="1" colSpan="1">
                                             <div className="dt-column-header">
@@ -475,12 +475,12 @@ function OrdersTable() {
                                             ) || [];
                                         return (
                                             < tr key={item.id} >
-                                                <td className="text-center">
-                                                    <img
-                                                        src=""
+                                                <td>
+                                                    {/* <img
+                                                        src={heroImage}
                                                         alt="profile"
                                                         width="40"
-                                                    />
+                                                    /> */}
                                                 </td>
                                                 <td>{item.id}</td>
 
@@ -490,7 +490,7 @@ function OrdersTable() {
 
                                                 <td>{item.patient_name}</td>
 
-                                                <td >
+                                                <td>
                                                     {
                                                         item.files
                                                             ?.filter(
@@ -530,7 +530,7 @@ function OrdersTable() {
                                                         ) && <span>No File</span>
                                                     }
                                                 </td>
-                                                <td >
+                                                <td>
 
                                                     {
                                                         console.log(

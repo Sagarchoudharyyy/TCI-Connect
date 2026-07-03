@@ -805,6 +805,8 @@ def update_case_status(
         notification = Notification(
         message=f"Case #{case.id} status changed to {status_data.status}",
         case_id=case.id,
+         receiver_id=case.doctor_id,
+         notification_type="status_change",
         is_read=False
         )
 
