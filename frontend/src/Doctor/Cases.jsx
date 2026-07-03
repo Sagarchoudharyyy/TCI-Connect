@@ -694,7 +694,6 @@ function DoctorCases() {
                                                                             </>
                                                                         )
                                                                     }
-
                                                                     {
                                                                         item.preview_status?.toLowerCase() ===
                                                                         "approved" && (
