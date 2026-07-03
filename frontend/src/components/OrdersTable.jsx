@@ -24,7 +24,6 @@ function OrdersTable() {
     const [showWelcome, setShowWelcome] = useState(true);
     const [selectedFiles, setSelectedFiles] =
         useState([]);
-
     const [showFilesModal, setShowFilesModal] =
         useState(false);
     const [previewFilesMap, setPreviewFilesMap] =
@@ -114,6 +113,7 @@ function OrdersTable() {
             setCases(response.data.items);
             setTotalPages(response.data.pages);
             setTotalCases(response.data.total);
+            console.log("Fetched cases:", response.data.items);
         } catch (error) {
             console.error("Failed to fetch cases:", error);
         }
