@@ -33,6 +33,7 @@ function UpdateCase() {
   const [digitalProgress, setDigitalProgress] = useState(0);
   const [isPdfUploading, setIsPdfUploading] = useState(false);
   const [digitalFiles, setDigitalFiles] = useState([]);
+  const [showSidebar, setShowSidebar] = useState(false);
 
   const [formData, setFormData] =
     useState({
@@ -111,9 +112,6 @@ function UpdateCase() {
           await axios.get(
             `http://localhost:8000/api/cases/${caseId}`
           );
-
-        console.log(response.data);
-        console.log("FILES FROM API:", response.data.files);
         const data = response.data;
 
         const existingDigitalFiles =
@@ -312,20 +310,7 @@ function UpdateCase() {
           }
         }
         );
-        console.log("FORM DATA FILES:", {
-          pdfUpload:
-            data.files?.find(
-              file =>
-                file.file_category ===
-                "case_document"
-            ),
-          files:
-            data.files?.filter(
-              file =>
-                file.file_category ===
-                "digital_file"
-            )
-        });
+
 
       }
       catch (error) {
@@ -388,20 +373,7 @@ function UpdateCase() {
       }
     }
 
-    console.log(
-      "CURRENT STEP:",
-      step
-    );
 
-    console.log(
-      "FORM DATA:",
-      formData
-    );
-
-    console.log(
-      "ERRORS:",
-      newErrors
-    );
 
     setErrors(newErrors);
 
@@ -578,10 +550,6 @@ function UpdateCase() {
             || null
         }
       };
-      console.log(
-        "PAYLOAD:",
-        payload
-      );
 
       const updateResponse =
         await axios.put(
@@ -589,10 +557,7 @@ function UpdateCase() {
           payload
         );
 
-      console.log(
-        "CASE UPDATED:",
-        updateResponse.data
-      );
+
 
       if (
         formData.pdfUpload?.file_path &&
@@ -606,10 +571,7 @@ function UpdateCase() {
           }
         );
 
-        console.log(
-          "CASE DOCUMENT SAVED:",
-          response.data
-        );
+
 
         await axios.delete(
           "http://localhost:8000/api/delete-temp-file",
@@ -633,11 +595,6 @@ function UpdateCase() {
                 file_path: file.file_path,
                 category: "digital_file",
               }
-            );
-
-            console.log(
-              "TEMP FILE SAVED:",
-              response.data
             );
 
             await axios.delete(
@@ -671,11 +628,20 @@ function UpdateCase() {
 
       <div className="row g-0 doctor-dashboard-main">
 
-        <DoctorSideBar />
+        {showSidebar && (
+          <div
+            className="doctor-sidebar-overlay"
+            onClick={() => setShowSidebar(false)}
+          />
+        )}
+        <DoctorSideBar showSidebar={showSidebar} />
 
         <div className="col-md-9 doctor-main-content">
 
-          <DoctorHeader title="Dashboard" />
+          <DoctorHeader
+            title="Dashboard"
+            setShowSidebar={setShowSidebar}
+          />
           <div className="mc-btm-bxx-cs">
 
             <section className="step-form-section">

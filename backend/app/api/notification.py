@@ -135,20 +135,17 @@ def mark_notification_read(
     notification_id: int,
     db: Session = Depends(get_db)
 ):
-    print("Notification ID:", notification_id)
-
+   
     notification = (
         db.query(Notification)
         .filter(Notification.id == notification_id)
         .first()
     )
 
-    print("Notification:", notification)
-
+ 
     if not notification:
         return {"message": "Notification not found"}
 
-    print("Before:", notification.is_read)
 
     notification.is_read = True
 
@@ -156,8 +153,7 @@ def mark_notification_read(
     db.commit()
     db.refresh(notification)
 
-    print("After:", notification.is_read)
-
+  
     return {
         "message": "Notifications marked as read"
     }

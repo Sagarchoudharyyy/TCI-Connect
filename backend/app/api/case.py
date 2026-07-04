@@ -354,13 +354,6 @@ def get_cases(
 
     for case in cases:
 
-        print("CASE ID:", case.id)
-        print("CASE FILES:", case.files)
-        print(
-                "FILE CATEGORIES:",
-                [f.file_category for f in case.files]
-            )
-
         result.append({
             "id": case.id,
             "doctor_name":
@@ -549,8 +542,6 @@ def update_case(
     updated_case: CaseUpdate,
     db: Session = Depends(get_db)
 ):
-    print("UPDATE CASE HIT")
-    print("UPDATE CASE ID:", case_id)
 
     case = (
         db.query(Case)
@@ -566,8 +557,6 @@ def update_case(
         .first()
     )
 
-    print("CASE FOUND:", case)
-
     if not case:
         raise HTTPException(
             status_code=404,
@@ -575,7 +564,7 @@ def update_case(
         )
 
     case_detail = case.details
-    print("CASE DETAIL:", case_detail)
+  
     case.patient_name = updated_case.patient_name
     case.patient_phone = updated_case.patient_phone
     case.gender = updated_case.gender

@@ -1,179 +1,156 @@
- .dashboard-main {
-     overflow: visible;
- }
+:root {
+    --app-sidebar-width: 260px;
+    --app-header-height: 90px;
+    --app-mobile-header-height: 70px;
+}
 
- .container-fluid {
-     padding: 0;
-     height: 100vh;
- }
+/* ===========================
+   Layout
+=========================== */
 
- .main-content {
-     margin-left: 260px;
-     width: calc(100% - 260px);
-     background-color: #f8f9fa;
-     min-height: 100vh;
- }
+.dashboard-main {
+    display: flex;
+    min-height: 100vh;
+    background: #f8f9fa;
+}
 
- .main-c-inner {
-     padding: 30px 20px 30px 30px !important;
- }
+.main-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    margin-left: var(--app-sidebar-width);
+}
 
+.main-content {
+    flex: 1;
+    min-width: 0;
+    background: #f8f9fa;
+}
 
+.main-c-inner {
+    padding: 30px;
+    overflow-x: hidden;
+}
 
+/* ===========================
+   Table
+=========================== */
 
- @media (min-width: 768px) and (max-width:1299px) {
-     .custom-table {
-         width: 220% !important;
-     }
- }
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
 
+.custom-table {
+    min-width: 1400px;
+}
 
- @media (max-width: 991px) {
-     .sidebar {
-         position: relative;
-         height: auto;
-         padding: 10px;
-     }
+/* ===========================
+   Tablet
+=========================== */
 
-     .main-content {
-         margin-left: 0;
-     }
+@media (max-width:991px) {
 
-     .header {
-         align-items: center;
-     }
+    .main-wrapper {
+        margin-left: 0;
+    }
 
-     .header-right {
-         width: 100%;
-     }
+    .main-content {
+        width: 100%;
+    }
 
-     .search-box {
-         width: 100%;
-     }
+    .main-c-inner {
+        padding: 20px;
+    }
 
-     .stats-card {
-         margin-bottom: 15px;
-     }
+    .stats-card {
+        margin-bottom: 15px;
+    }
 
-     .chart-controls {
-         align-items: center;
-     }
+    .chart-controls {
+        align-items: center;
+    }
 
-     .chart-controls>* {
-         margin-bottom: 10px;
-     }
+    .chart-controls>* {
+        margin-bottom: 10px;
+    }
 
-     .lab-badge {
-         width: 80px;
-         font-size: 14px;
-         padding: 0 10px;
-     }
+    .header-inner {
+        padding: 0 15px;
+    }
 
-     .sidebar-header h4 {
-         display: none;
-     }
+    .header-right {
+        width: auto;
+    }
 
-     .sidebar .nav-link {
-         gap: 0;
-         width: 100%;
-         /* text-indent: -9999px; */
-         justify-content: start;
-         gap: 5px;
-         padding: 10px;
-         margin-bottom: 12px;
-     }
+    .lab-badge {
+        font-size: 16px;
+        padding: 0 12px;
+    }
 
-     .main-c-inner {
-         padding: 20px;
-     }
+    .custom-table tbody td {
+        padding: 10px;
+    }
+}
 
-     .header-inner {
-         padding: 0 10px;
-     }
+/* ===========================
+   Mobile
+=========================== */
 
-     .custom-table tbody td {
-         padding: 10px;
-     }
+@media (max-width:767px) {
 
-     .header h2 {
-         margin: 0 25px 0 0;
-     }
+    .main-wrapper {
+        margin-left: 0;
+    }
 
-     .sidebar .nav-link {
-         border-radius: 0;
-     }
- }
+    .main-content {
+        width: 100%;
+    }
 
- @media (max-width:767px) {
+    .main-c-inner {
+        padding: 15px;
+    }
 
-     table.table.custom-table {
-         width: 255% !important;
-     }
+    .dashboard-new-side-bar {
+        font-size: 24px;
+        margin-left: 10px;
+    }
 
-     .main-content {
-         margin-left: 0;
-         width: 100%;
-     }
+    .lab-badge {
+        font-size: 12px;
+        padding: 0 8px;
+    }
 
-     /* ======================== sohels css ========================================= */
-     .dashboard-new-side-bar {
-         font-size: 25px;
-         margin-left: 10px;
-     }
+    .header h2 {
+        font-size: 18px;
+    }
+}
 
-     .sidebar {
-         position: fixed;
-         width: 60%;
-         height: 100vh !important;
-         background-color: white;
-         left: 0;
-         top: 0;
-         transition: .3s all;
-         padding: 10px;
-         gap: 10px;
-         transform: translateX(-100%);
-         z-index: 99999;
-     }
+@media (max-width:575px) {
 
-     .sidebar.show-bar {
-         transition: .5s all;
-         transform: translateX(0);
-     }
- }
+    .main-c-inner {
+        padding: 12px;
+    }
 
- @media (max-width:575px) {
-     .sidebar {
-         padding: 0;
-     }
+    .header h2 {
+        display: none;
+    }
 
-     table.table.custom-table {
-         width: 390% !important;
-     }
+    .lab-badge {
+        font-size: 12px;
+        padding: 0 6px;
+    }
+}
 
-     .sidebar-header {
-         margin-bottom: 0;
-     }
+/* ===========================
+   Sidebar Overlay
+=========================== */
 
-     .lab-badge {
-         font-size: 13px;
-         padding: 5px;
-     }
-
-     .header h2 {
-         display: none;
-     }
- }
-
-
- @media (max-width: 767px) {
-
-     .sidebar-overlay {
-         position: fixed;
-         top: 0;
-         left: 0;
-         width: 100%;
-         height: 100%;
-         background: rgba(0, 0, 0, 0.4);
-         z-index: 998;
-     }
- }
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .4);
+    z-index: 2999;
+}

@@ -9,7 +9,7 @@ import Register from "./components/pages/Register";
 import Dashboard from "./components/pages/Dashboard";
 import Chat from "./components/pages/Chat";
 import ChatWindow from "./components/pages/ChatWindow";
-import RecentCases from "./components/pages/RecentCases";
+import RecentCases from "./components/RecentCases/RecentCases";
 import AllDoctors from "./components/pages/AllDoctors";
 import ProtectedRoute from "./components/ProtectRoute";
 import Pricing from "./components/pages/Pricing";

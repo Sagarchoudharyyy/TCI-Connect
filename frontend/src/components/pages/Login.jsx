@@ -76,8 +76,7 @@ function Login() {
                 }
             );
 
-            console.log(response.data);
-
+      
             if (!response.data.access_token) {
                 setError(
                     response.data.message ||

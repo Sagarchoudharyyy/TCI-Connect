@@ -100,7 +100,7 @@ function Register() {
         formData
       );
 
-      console.log(response.data);
+     
 
       setSuccess(
         "Registration successful! Your account is under admin review. You can login after approval."

@@ -57,7 +57,6 @@ function Pricing() {
   };
 
   useEffect(() => {
-    console.log("Pricing page loaded");
     fetchPrices();
   }, []);
 
@@ -98,7 +97,6 @@ function Pricing() {
         setMessage("");
       }, 3000);
     } catch (error) {
-      console.error("Error deleting price:", error);
       setMessage("Failed to delete price");
     }
   }
@@ -109,7 +107,6 @@ function Pricing() {
         "http://127.0.0.1:8000/api/pricing"
       );
 
-      console.log("Pricing Data:", response.data);
       setPrices(response.data);
     } catch (error) {
       console.error("Error fetching prices:", error);
@@ -126,170 +123,168 @@ function Pricing() {
     }
   };
   return (
-    <div className="container-fluid p-0">
-      <div className="dashboard-main">
-        <div className="row g-0">
-          <>
-            {showSidebar && (
-              <div
-                className="sidebar-overlay"
-                onClick={() => setShowSidebar(false)}
-              />
-            )}
+    <div className="dashboard-main">
 
-            <Sidebar
-              showSidebar={showSidebar}
-            />
-          </>
+      {showSidebar && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setShowSidebar(false)}
+        />
+      )}
 
-          <div className=" main-content">
-            <Header
-              title="Dashboard"
-              setShowSidebar={setShowSidebar}
-            />
-            <div className="main-c-inner">
-              {message && (
-                <div className="alert alert-success">
-                  {message}
-                </div>
-              )}
-              <button
-                className="btn btn-primary mb-3"
-                onClick={() => navigate("/add-price")}
-              >
-                Add Price
-              </button>
+      <Sidebar showSidebar={showSidebar} />
 
-              <div className="table-responsive">
-                <table className="custom-table">
-                  <thead className="table-light">
-                    <tr>
-                      <th>Product</th>
-                      <th>Category</th>
-                      <th>Material</th>
-                      <th>Belgium Dentist (€)</th>
-                      <th>Belgium Lab (€)</th>
-                      <th>Lebanon Dentist ($)</th>
-                      <th>Lebanon Lab ($)</th>
-                      <th width="120">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody >
-                    {prices.map((price) => (
-                      <tr key={price.id}>
-                        <td>{price.product}</td>
-                        <td>
-                          {categoryMap[price.category] || price.category}
-                        </td>
-                        <td>
-                          {materialMap[price.material] || price.material}
-                        </td>
-                        <td>€ {price.belgium_dentist_price}</td>
-                        <td>€ {price.belgium_lab_price}</td>
-                        <td>$ {price.lebanon_dentist_price}</td>
-                        <td>$ {price.lebanon_lab_price}</td>
-                        <td>
-                          <button
-                            className="btn btn-md"
-                            onClick={() =>
-                              navigate(
-                                `/update-price/${price.id}`
-                              )
-                            }
-                          >
-                            <FaEdit />
-                          </button>
-                          <button className="btn btn-md " onClick={() => handleDelete(price.id)}>
-                            <FaTrash className="text-danger" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
+      <div className="main-wrapper">
 
-                </table>
+        <Header
+          title="Dashboard"
+          setShowSidebar={setShowSidebar}
+        />
 
+        <div className="main-content">
+
+          <div className="main-c-inner">
+            {message && (
+              <div className="alert alert-success">
+                {message}
               </div>
-              <div className="card mt-4 ">
-                <div className="card-body small">
+            )}
+            <button
+              className="btn btn-primary mb-3"
+              onClick={() => navigate("/add-price")}
+            >
+              Add Price
+            </button>
 
-                  <p className="mb-2 fw-semibold">
-                    Prices & Order Information
-                  </p>
+            <div className="table-responsive">
+              <table className="pricing-table">
+                <thead className="table-light">
+                  <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Material</th>
+                    <th>Belgium Dentist (€)</th>
+                    <th>Belgium Lab (€)</th>
+                    <th>Lebanon Dentist ($)</th>
+                    <th>Lebanon Lab ($)</th>
+                    <th width="120">Action</th>
+                  </tr>
+                </thead>
+                <tbody >
+                  {prices.map((price) => (
+                    <tr key={price.id}>
+                      <td>{price.product}</td>
+                      <td>
+                        {categoryMap[price.category] || price.category}
+                      </td>
+                      <td>
+                        {materialMap[price.material] || price.material}
+                      </td>
+                      <td>€ {price.belgium_dentist_price}</td>
+                      <td>€ {price.belgium_lab_price}</td>
+                      <td>$ {price.lebanon_dentist_price}</td>
+                      <td>$ {price.lebanon_lab_price}</td>
+                      <td>
+                        <button
+                          className="btn btn-md"
+                          onClick={() =>
+                            navigate(
+                              `/update-price/${price.id}`
+                            )
+                          }
+                        >
+                          <FaEdit />
+                        </button>
+                        <button className="btn btn-md " onClick={() => handleDelete(price.id)}>
+                          <FaTrash className="text-danger" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
 
-                  <ul className="mb-3">
-                    <li>
-                      Prices are exclusive of VAT.
-                    </li>
+              </table>
 
-                    <li>
-                      Shipping is free for orders of{" "}
-                      <strong>€150 or more</strong>.
-                    </li>
+            </div>
+            <div className="card mt-4 ">
+              <div className="card-body small">
 
-                    <li>
-                      Orders below €150 are subject to a fixed shipping fee of{" "}
-                      <strong>€9</strong>.
-                    </li>
+                <p className="mb-2 fw-semibold">
+                  Prices & Order Information
+                </p>
 
-                    <li>
-                      Prices are for reference only.
-                      Orders must be submitted via the{" "}
-                      <strong>RX form</strong>.
-                    </li>
-                  </ul>
+                <ul className="mb-3">
+                  <li>
+                    Prices are exclusive of VAT.
+                  </li>
 
-                  <hr />
+                  <li>
+                    Shipping is free for orders of{" "}
+                    <strong>€150 or more</strong>.
+                  </li>
 
-                  <ul className="list-unstyled mb-3">
-                    <li>
-                      <strong>
-                        Temporaries (PMMA)
-                      </strong>
-                    </li>
+                  <li>
+                    Orders below €150 are subject to a fixed shipping fee of{" "}
+                    <strong>€9</strong>.
+                  </li>
 
-                    <li>
-                      <strong>
-                        3D Printing & Models
-                      </strong>
-                    </li>
+                  <li>
+                    Prices are for reference only.
+                    Orders must be submitted via the{" "}
+                    <strong>RX form</strong>.
+                  </li>
+                </ul>
 
-                    <li>
-                      <strong>
-                        Mill Only
-                      </strong>{" "}
-                      (No CAD design included)
-                    </li>
+                <hr />
 
-                    <li>
-                      <strong>
-                        CAD Services
-                      </strong>
-                    </li>
-
-                    <li>
-                      <strong>
-                        Abutments & Attachments
-                      </strong>
-                    </li>
-
-                    <li>
-                      <strong>
-                        Implant Restorations
-                      </strong>
-                    </li>
-                  </ul>
-
-                  <hr />
-
-                  <p className="mb-0">
+                <ul className="list-unstyled mb-3">
+                  <li>
                     <strong>
-                      Fixed Prosthetics – Crowns /
-                      Veneers / Inlay-Onlay
+                      Temporaries (PMMA)
                     </strong>
-                  </p>
+                  </li>
 
-                </div>
+                  <li>
+                    <strong>
+                      3D Printing & Models
+                    </strong>
+                  </li>
+
+                  <li>
+                    <strong>
+                      Mill Only
+                    </strong>{" "}
+                    (No CAD design included)
+                  </li>
+
+                  <li>
+                    <strong>
+                      CAD Services
+                    </strong>
+                  </li>
+
+                  <li>
+                    <strong>
+                      Abutments & Attachments
+                    </strong>
+                  </li>
+
+                  <li>
+                    <strong>
+                      Implant Restorations
+                    </strong>
+                  </li>
+                </ul>
+
+                <hr />
+
+                <p className="mb-0">
+                  <strong>
+                    Fixed Prosthetics – Crowns /
+                    Veneers / Inlay-Onlay
+                  </strong>
+                </p>
+
               </div>
             </div>
           </div>

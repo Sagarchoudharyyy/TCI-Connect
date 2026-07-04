@@ -50,7 +50,6 @@ def get_doctor_by_id(
 @router.post("/doctors")
 
 def create_doctor(user: UserRegister, db: Session = Depends(get_db)):
-    print(user.dict())
 
     new_doctor = User(
         full_name=user.full_name,
@@ -81,9 +80,7 @@ def create_doctor(user: UserRegister, db: Session = Depends(get_db)):
     db.add(notification)
     db.commit()
     db.refresh(notification)
-    print("Notification saved:", notification.id)
-    print("Message:", notification.message)
-
+  
     return {
         "message": "Doctor created successfully",
         "doctor": new_doctor

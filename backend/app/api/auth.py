@@ -76,7 +76,7 @@ def register(
         sender_id=new_user.id,
         receiver_id=1
     )
-    print(notification.sender_id)
+ 
 
     db.add(notification)
     db.commit()
@@ -95,7 +95,7 @@ def admin_register(
     existing_user = db.query(User).filter(
         User.email == user.email
     ).first()
-    print("Admin register called")
+
 
     if existing_user:
         return {
@@ -136,7 +136,7 @@ def login(
     user: UserLogin,
     db: Session = Depends(get_db)
 ):
-    print("Login started")
+  
 
     db_user = db.query(User).filter(
         or_(
@@ -145,14 +145,14 @@ def login(
         )
     ).first()
 
-    print("User found:", db_user)
+
 
     if not db_user:
         return {
             "message": "Invalid username or password"
         }
 
-    print("Checking password")
+   
 
     if not verify_password(
         user.password,
@@ -162,7 +162,7 @@ def login(
             "message": "Invalid username or password"
         }
 
-    print("Password verified")
+    
     
     if (
     db_user.role == "doctor"
@@ -181,7 +181,6 @@ def login(
         }
     )
 
-    print("Token generated")
     return {
     "access_token": access_token,
     "token_type": "bearer",
@@ -225,7 +224,6 @@ def reset_password(
     request: ResetPasswordRequest,
     db: Session = Depends(get_db)
 ):
-    print("EMAIL RECEIVED:", request.email)
 
     user = db.query(User).filter(
         User.email == request.email
@@ -237,7 +235,7 @@ def reset_password(
             "message": "Email not found"
         }
 
-    print("USER FOUND:", user.email)
+   
 
     user.password = hash_password(request.password)
 

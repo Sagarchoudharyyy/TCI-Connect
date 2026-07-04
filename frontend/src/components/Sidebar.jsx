@@ -12,15 +12,6 @@ import {
 
 function Sidebar({ showSidebar }) {
 
-    console.log("Sidebar Render");
-
-    useEffect(() => {
-        console.log("Sidebar Mounted");
-
-        return () => {
-            console.log("Sidebar Unmounted");
-        };
-    }, []);
     const location = useLocation();
     const navigate = useNavigate();
     const user =
@@ -29,14 +20,6 @@ function Sidebar({ showSidebar }) {
         );
 
     const role = user?.role;
-    console.log(
-        "User:",
-        user
-    );
-    console.log(
-        "Role:",
-        role
-    );
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -44,8 +27,6 @@ function Sidebar({ showSidebar }) {
         localStorage.removeItem("user");
 
         navigate("/login");
-
-        console.log("logout working");
     };
     return (
         <div className={`sidebar ${showSidebar ? "show-bar" : ""}`}>

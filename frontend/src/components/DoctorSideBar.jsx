@@ -5,7 +5,7 @@ import {
 } from "react-router-dom";
 import "../DoctorStyle/DoctorSideBar.css";
 
-function DoctorSideBar() {
+function DoctorSideBar({ showSidebar }) {
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -15,10 +15,9 @@ function DoctorSideBar() {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         navigate("/login");
-        console.log("logout working");
     };
     return (
-        <div className="col-md-3 doctor-sidebar">
+        <div className={`col-md-3 doctor-sidebar ${showSidebar ? "show-bar" : ""}`}>
             <div className="doctor-sidebar-header">
                 <h4 className="text-primary">TCI Online</h4>
                 <div className="dashboard-new-side-bar d-block d-md-none">

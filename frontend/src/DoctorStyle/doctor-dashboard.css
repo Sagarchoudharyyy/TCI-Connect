@@ -1,5 +1,6 @@
 .doctor-dashboard-main {
     min-height: 100vh;
+    --doctor-header-height: 90px;
 }
 
 body {
@@ -11,6 +12,13 @@ body {
 
 .doctor-main-content {
     padding: 0;
+    padding-top: var(--doctor-header-height);
+    min-width: 0;
+}
+
+.doctor-main-content-inner {
+    max-width: 100%;
+    overflow-x: clip;
 }
 
 @media (min-width: 768px) {
@@ -66,7 +74,7 @@ body {
 
 .stats_Cards .col-md-6:last-child .stat-card {
     background: #e3f1fa;
-    width: 100;
+    width: 100%;
 }
 
 .stat-icon {
@@ -82,5 +90,30 @@ body {
 @media (min-width: 1200px) {
     .fs-4 {
         font-size: 1.5rem !important;
+    }
+}
+
+@media (max-width: 991px) {
+    .doctor-dashboard-main {
+        --doctor-header-height: 70px;
+    }
+
+    .doctor-main-content {
+        width: 100%;
+        padding-top: var(--doctor-header-height);
+    }
+
+    .doctor-main-content-inner {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 575px) {
+    .doctor-main-content-inner {
+        padding: 14px;
+    }
+
+    .stat-card {
+        padding: 16px;
     }
 }

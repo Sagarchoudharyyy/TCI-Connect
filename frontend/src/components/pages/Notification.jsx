@@ -51,8 +51,6 @@ function Notification() {
       const user = JSON.parse(
         localStorage.getItem("user")
       );
-      console.log("Logged in user:", user);
-      console.log("User ID:", user.id);
 
 
       let url = "";
@@ -63,8 +61,6 @@ function Notification() {
         url = `http://127.0.0.1:8000/api/client/notifications/${user.id}`;
       }
       const response = await axios.get(url);
-      console.log("API URL:", url);
-      console.log("Notifications:", response.data);
 
       setNotifications(response.data);
     } catch (error) {
@@ -74,19 +70,6 @@ function Notification() {
       );
     }
   };
-
-  // const markAllRead = async () => {
-  //   try {
-  //     await axios.put(
-  //       `http://127.0.0.1:8000/api/notifications/read-all/${user.id}`
-  //     );
-  //     setNotifications([]);
-
-  //     setShowDropdown(false);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
   const markAllRead = async () => {
     try {
       const user = JSON.parse(
@@ -110,7 +93,7 @@ function Notification() {
       (item) => !item.is_read
     ).length;
   const handleBellClick = async () => {
-    console.log("Bell clicked");
+
 
     await fetchNotifications();
 
@@ -131,7 +114,7 @@ function Notification() {
 
       setShowDropdown(false);
 
-      console.log(item);
+
       // Doctor registration notification
       if (
         item.notification_type ===

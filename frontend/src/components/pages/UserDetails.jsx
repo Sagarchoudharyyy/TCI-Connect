@@ -15,7 +15,7 @@ function UserDetails() {
     const [doctor, setDoctors] = useState(null);
 
     const fetchDoctors = async () => {
-        console
+
         try {
 
             const response = await axios.get(

@@ -1,17 +1,29 @@
 import DoctorHeader from "../components/DoctorHeader";
 import DoctorSideBar from "../components/DoctorSideBar";
 import "../DoctorStyle/rgpdprivacy.css";
+import { useState } from "react";
 function RGPDpolicy() {
+  const [showSidebar, setShowSidebar] = useState(false);
+
   return (
     <div className="container-fluid p-0">
       <div className="row g-0 doctor-dashboard-main">
 
 
-        <DoctorSideBar />
+        {showSidebar && (
+          <div
+            className="doctor-sidebar-overlay"
+            onClick={() => setShowSidebar(false)}
+          />
+        )}
+        <DoctorSideBar showSidebar={showSidebar} />
 
 
         <div className="col-md-9 doctor-main-content">
-          <DoctorHeader title="Dashboard" />
+          <DoctorHeader
+            title="Dashboard"
+            setShowSidebar={setShowSidebar}
+          />
 
 
 

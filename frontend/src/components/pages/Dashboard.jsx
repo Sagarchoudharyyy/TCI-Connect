@@ -9,7 +9,7 @@ import "../../styles/dashboardcard.css";
 import Sidebar from "../Sidebar";
 import Header from "../Header";
 import DashboardCard from "../DashboardCard";
-import OrdersTable from "../OrdersTable";
+import OrdersTable from "../../components/OrderTable/OrdersTable";
 
 function Dashboard() {
 
@@ -36,41 +36,40 @@ function Dashboard() {
 
     return (
         <>
-            <div className="container-fluid p-0">
-                <div className="dashboard-main">
-                    <div className="row g-0">
-                        <>
-                            {showSidebar && (
-                                <div
-                                    className="sidebar-overlay"
-                                    onClick={() => setShowSidebar(false)}
-                                />
-                            )}
+            <div className="dashboard-main">
 
-                            <Sidebar
-                                showSidebar={showSidebar}
-                            />
-                        </>
+                {showSidebar && (
+                    <div
+                        className="sidebar-overlay"
+                        onClick={() => setShowSidebar(false)}
+                    />
+                )}
 
-                        <div className=" main-content">
-                            <Header
-                                title="Dashboard"
-                                setShowSidebar={setShowSidebar}
-                            />
-                            <div className="main-c-inner">
-                                <div className="row g-5">
-                                    <DashboardCard
-                                        cases={cases}
-                                    />
-                                </div>
+                <Sidebar showSidebar={showSidebar} />
 
-                                <OrdersTable
-                                    cases={cases}
-                                />
+                <div className="main-wrapper">
+
+                    <Header
+                        title="Dashboard"
+                        setShowSidebar={setShowSidebar}
+                    />
+
+                    <div className="main-content">
+
+                        <div className="main-c-inner">
+
+                            <div className="row g-0">
+                                <DashboardCard cases={cases} />
                             </div>
+
+                            <OrdersTable cases={cases} />
+
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
         </>
     );

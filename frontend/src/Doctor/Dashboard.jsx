@@ -3,7 +3,7 @@ import DoctorHeader from "../components/DoctorHeader";
 import "../DoctorStyle/doctor-dashboard.css";
 import { FaFileAlt } from "react-icons/fa";
 import "../styles/tables.css";
-import OrdersTable from "../components/OrdersTable";
+import OrdersTable from "../components/OrderTable/OrdersTable";
 import DoctorOrderTable from "../components/DoctorOrderTable";
 import "../DoctorStyle/DoctorHeader.css";
 import axios from "axios";
@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 
 function DoctorDashboard() {
     const [cases, setCases] = useState([]);
+    const [showSidebar, setShowSidebar] = useState(false);
     const [totalPatients,
         setTotalPatients
     ] = useState(0);
@@ -54,12 +55,21 @@ function DoctorDashboard() {
     return (
         <div className="container-fluid p-0">
             <div className="row g-0 doctor-dashboard-main">
-                <DoctorSideBar />
+                {showSidebar && (
+                    <div
+                        className="doctor-sidebar-overlay"
+                        onClick={() => setShowSidebar(false)}
+                    />
+                )}
+                <DoctorSideBar showSidebar={showSidebar} />
                 <div className="col-md-9 doctor-main-content">
                     <div className="doctor-main-content-inner">
                         <div className="row g-5 h-100">
                             <div className="col-lg-12">
-                                <DoctorHeader title="Dashboard" />
+                                <DoctorHeader
+                                    title="Dashboard"
+                                    setShowSidebar={setShowSidebar}
+                                />
                                 <div className="mm-cards mt-4 p-4">
                                     <div className="row stats_Cards">
                                         <div className="col-md-6">

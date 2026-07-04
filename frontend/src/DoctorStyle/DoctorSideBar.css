@@ -2,13 +2,24 @@
     background-color: #ffffff;
     padding: 40px 30px !important;
     border-right: 1px solid #e8e8e8;
-    z-index: 9;
+    z-index: 2100;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 25%;
+    height: 100vh;
+    overflow-y: auto;
 }
 
 @media (min-width: 768px) {
     .col-md-3 {
         flex: 0 0 auto;
         width: 25%;
+    }
+
+    .doctor-main-content.col-md-9 {
+        margin-left: 25%;
+        width: 75%;
     }
 }
 
@@ -88,4 +99,51 @@
 .logout-btn:focus {
     box-shadow: none;
     outline: none;
+}
+
+.doctor-sidebar-overlay {
+    display: none;
+}
+
+@media (max-width: 991px) {
+    .doctor-sidebar-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 2900;
+    }
+
+    .doctor-sidebar {
+        width: 280px;
+        max-width: 86vw;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 3000;
+    }
+
+    .doctor-sidebar.show-bar {
+        transform: translateX(0);
+    }
+}
+
+@media (max-width: 575px) {
+    .doctor-sidebar {
+        padding: 20px !important;
+    }
+
+    .doctor-sidebar-header {
+        margin-bottom: 24px;
+    }
+
+    .doctor-sidebar-header h4 {
+        font-size: 22px;
+    }
+
+    .doctor-sidebar .nav-link {
+        border-radius: 12px;
+        font-size: 14px;
+        margin-bottom: 12px;
+        padding: 12px;
+    }
 }

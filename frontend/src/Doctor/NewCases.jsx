@@ -19,6 +19,7 @@ function NewCases() {
     const [digitalProgress, setDigitalProgress] = useState(0);
     const [isDigitalUploading, setIsDigitalUploading] = useState(false);
     const [digitalFiles, setDigitalFiles] = useState([]);
+    const [showSidebar, setShowSidebar] = useState(false);
 
     const initialFormData = {
         patient_name: "",
@@ -172,17 +173,7 @@ function NewCases() {
                     "At least one file is required";
             }
         }
-        console.log("CURRENT STEP:", step);
 
-        console.log(
-            "FORM DATA:",
-            formData
-        );
-
-        console.log(
-            "ERRORS:",
-            newErrors
-        );
 
         setErrors(newErrors);
 
@@ -194,13 +185,6 @@ function NewCases() {
         }
 
         setStep(prev => {
-
-            console.log(
-                "STEP CHANGED:",
-                prev,
-                "->",
-                prev + 1
-            );
 
             return prev + 1;
         });
@@ -355,15 +339,7 @@ function NewCases() {
             };
 
 
-            console.log(
-                "DIGITAL FILES:",
-                JSON.stringify(digitalFiles, null, 2)
-            );
 
-            console.log(
-                "PAYLOAD:",
-                JSON.stringify(payload, null, 2)
-            );
 
             const response =
                 await axios.post(
@@ -371,10 +347,7 @@ function NewCases() {
                     payload
                 );
 
-            console.log(
-                "CASE CREATED:",
-                response.data
-            );
+
             setStep(4);
 
         } catch (error) {
@@ -410,12 +383,19 @@ function NewCases() {
 
             <div className="row g-0 doctor-dashboard-main">
 
-                <DoctorSideBar />
+                {showSidebar && (
+                    <div
+                        className="doctor-sidebar-overlay"
+                        onClick={() => setShowSidebar(false)}
+                    />
+                )}
+                <DoctorSideBar showSidebar={showSidebar} />
 
                 <div className="col-md-9 doctor-main-content">
 
                     <DoctorHeader
                         title="Dashboard"
+                        setShowSidebar={setShowSidebar}
                     />
 
                     <div className="mc-btm-bxx">

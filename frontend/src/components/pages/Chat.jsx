@@ -61,7 +61,7 @@ const Chat = () => {
         `http://127.0.0.1:8000/api/notifications/chat/read/${user.id}`
       );
 
-      console.log(res.data);
+
     } catch (error) {
       console.log(error);
     }
@@ -95,94 +95,93 @@ const Chat = () => {
   };
 
   return (
-    <div className="container-fluid p-0">
-      <div className="dashboard-main">
-        <div className="row g-0">
-          <>
-            {showSidebar && (
-              <div
-                className="sidebar-overlay"
-                onClick={() => setShowSidebar(false)}
-              />
-            )}
+    <div className="dashboard-main">
 
-            <Sidebar
-              showSidebar={showSidebar}
-            />
-          </>
+      {showSidebar && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setShowSidebar(false)}
+        />
+      )}
 
-          <div className=" main-content">
-            <Header
-              title="Dashboard"
-              setShowSidebar={setShowSidebar}
-            />
-            <div className="main-c-inner">
-              <div className="chat-container">
-                <div className="chat-wrapper">
-                  <h2>Active Users</h2>
-                  <hr />
+      <Sidebar showSidebar={showSidebar} />
 
-                  {users.map((user) => (
+      <div className="main-wrapper">
 
-                    <div
-                      key={user.id}
-                      className="user-row"
-                      onClick={() => navigate(`/chat/${user.id}`)}
-                    >
+        <Header
+          title="Dashboard"
+          setShowSidebar={setShowSidebar}
+        />
 
-                      <div className="user-left">
+        <div className="main-content">
 
-                        <div className="user-image">
-                          <img
-                            src="/src/assets/react.svg"
-                            alt="user"
-                          />
-                        </div>
+          <div className="main-c-inner">
 
-                        <div className="user-details">
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "10px"
-                            }}
-                          >
-                            <h5 style={{ margin: 0 }}>
-                              {user.name}
-                            </h5>
+            <div className="chat-container">
+              <div className="chat-wrapper">
+                <h2>Active Users</h2>
+                <hr />
 
-                            {user.unread_count > 0 && (
-                              <span
-                                style={{
-                                  background: "#dc3545",
-                                  color: "#fff",
-                                  borderRadius: "50%",
-                                  minWidth: "22px",
-                                  height: "22px",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  fontSize: "12px",
-                                  padding: "0 6px"
-                                }}
-                              >
-                                {user.unread_count}
-                              </span>
-                            )}
-                          </div>
-                        </div>
+                {users.map((user) => (
 
+                  <div
+                    key={user.id}
+                    className="user-row"
+                    onClick={() => navigate(`/chat/${user.id}`)}
+                  >
+
+                    <div className="user-left">
+
+                      <div className="user-image">
+                        <img
+                          src="/src/assets/react.svg"
+                          alt="user"
+                        />
                       </div>
 
-                      <div className="user-time">
-                        {new Date(
-                          user.timestamp
-                        ).toLocaleString()}
+                      <div className="user-details">
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "10px"
+                          }}
+                        >
+                          <h5 style={{ margin: 0 }}>
+                            {user.name}
+                          </h5>
+
+                          {user.unread_count > 0 && (
+                            <span
+                              style={{
+                                background: "#dc3545",
+                                color: "#fff",
+                                borderRadius: "50%",
+                                minWidth: "22px",
+                                height: "22px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                fontSize: "12px",
+                                padding: "0 6px"
+                              }}
+                            >
+                              {user.unread_count}
+                            </span>
+                          )}
+                        </div>
                       </div>
 
                     </div>
-                  ))}
-                </div>
+
+                    <div className="user-time">
+                      {new Date(
+                        user.timestamp
+                      ).toLocaleString()}
+                    </div>
+
+                  </div>
+                ))}
               </div>
             </div>
           </div>

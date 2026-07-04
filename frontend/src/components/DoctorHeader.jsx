@@ -6,11 +6,12 @@ import {
 } from "react";
 import axios from "axios";
 import "../DoctorStyle/DoctorHeader.css";
+import { FaBars } from "react-icons/fa";
 
 
 
 
-function DoctorHeader({ title = "Dashboard" }) {
+function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
     const [notifications, setNotifications] = useState([]);
     const notificationRef = useRef(null);
     const [showDropdown, setShowDropdown] = useState(false);
@@ -63,7 +64,7 @@ function DoctorHeader({ title = "Dashboard" }) {
     }, []);
     const markAsRead = async (id) => {
         try {
-            console.log("Notification clicked:", id);
+           
             await axios.put(
                 `http://127.0.0.1:8000/api/notifications/${id}/read`
             );
@@ -86,7 +87,17 @@ function DoctorHeader({ title = "Dashboard" }) {
     return (
         <div className="mc-ibxx">
             <div className="doctor-header d-flex justify-content-between align-items-center" style={{ width: "100%" }} >
-                <h2>{title}</h2>
+                <div className="d-flex align-items-center min-w-0">
+                    {setShowSidebar && (
+                        <div
+                            className="doctor-mobile-menu me-3"
+                            onClick={() => setShowSidebar((prev) => !prev)}
+                        >
+                            <FaBars size={22} />
+                        </div>
+                    )}
+                    <h2>{title}</h2>
+                </div>
                 <div className="header-right">
                     <div
                         ref={notificationRef}

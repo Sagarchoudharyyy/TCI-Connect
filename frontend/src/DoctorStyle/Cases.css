@@ -33,6 +33,7 @@
   padding: 10px 30px;
 }
 
+/* 
 table.dataTable thead th,
 table.dataTable thead td,
 table.dataTable tfoot th,
@@ -50,8 +51,6 @@ table.dataTable tfoot td {
   color: #1c1c1c !important;
 }
 
-
-
 .table tbody td {
   border: none;
   padding: 15px 10px;
@@ -62,7 +61,6 @@ table.dataTable tfoot td {
   color: #666;
 }
 
-/* Table body alternate row colors */
 .table tbody tr:nth-child(odd) td {
   background-color: #f2f2f2 !important;
 }
@@ -71,12 +69,12 @@ table.dataTable tfoot td {
   background-color: #ffffff !important;
 }
 
-/* Remove border */
+
 .table tbody tr {
   border: none !important;
 }
 
-/* Table body cell spacing */
+
 .table tbody td {
   padding: 18px 12px !important;
   vertical-align: middle !important;
@@ -85,11 +83,11 @@ table.dataTable tfoot td {
   font-size: 14px;
 }
 
-/* Header */
+
 .table thead th {
   background: #fff !important;
   border: none !important;
   padding: 16px 12px !important;
   font-weight: 600;
   color: #1c1c1c !important;
-}
+} */

@@ -1,4 +1,4 @@
-.chat-container {
+/* .chat-container {
     max-width: 900px;
     margin: 40px auto;
     background: #fff;
@@ -27,4 +27,114 @@
     font-size: 14px;
     color: #777;
     white-space: nowrap;
+} */
+
+.chat-container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    padding: 20px 25px;
+}
+
+.user-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 14px 10px;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.user-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-width: 0;
+}
+
+.user-time {
+    font-size: 14px;
+    color: #777;
+    white-space: nowrap;
+}
+
+/* ===========================
+   Large Tablet
+=========================== */
+
+@media (max-width: 991px) {
+
+    .chat-container {
+        max-width: 100%;
+        margin: 20px;
+        padding: 18px;
+    }
+
+    .user-row {
+        padding: 12px;
+    }
+
+    .user-left {
+        gap: 12px;
+    }
+
+    .user-time {
+        font-size: 13px;
+    }
+}
+
+/* ===========================
+   Mobile
+=========================== */
+
+@media (max-width: 767px) {
+
+    .chat-container {
+        margin: 15px;
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    .user-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .user-left {
+        width: 100%;
+    }
+
+    .user-time {
+        align-self: flex-end;
+        font-size: 12px;
+    }
+}
+
+/* ===========================
+   Small Mobile
+=========================== */
+
+@media (max-width: 575px) {
+
+    .chat-container {
+        margin: 10px;
+        padding: 12px;
+    }
+
+    .user-row {
+        padding: 10px;
+    }
+
+    .user-left {
+        gap: 10px;
+    }
+
+    .user-time {
+        font-size: 11px;
+    }
 }

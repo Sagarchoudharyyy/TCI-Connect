@@ -90,127 +90,125 @@ function ChatWindow() {
   };
 
   return (
-    <div className="container-fluid p-0">
-      <div className="dashboard-main">
-        <div className="row g-0">
-          <>
-            {showSidebar && (
-              <div
-                className="sidebar-overlay"
-                onClick={() => setShowSidebar(false)}
-              />
-            )}
+    <div className="dashboard-main">
 
-            <Sidebar
-              showSidebar={showSidebar}
-            />
-          </>
+      {showSidebar && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setShowSidebar(false)}
+        />
+      )}
 
-          <div className=" main-content">
-            <Header
-              title="Dashboard"
-              setShowSidebar={setShowSidebar}
-            />
-            <div className="main-c-inner">
-              <div className="chat-wrapper">
+      <Sidebar showSidebar={showSidebar} />
 
-                <div className="chat-title chat-header">
+      <div className="main-wrapper">
 
-                  <div className="chat-user">
+        <Header
+          title="Dashboard"
+          setShowSidebar={setShowSidebar}
+        />
 
-                    <div className="chat-avatar">
-                      <img
-                        src="/src/assets/react.svg"
-                        alt={user?.full_name || "User"}
-                      />
+        <div className="main-content">
+
+          <div className="main-c-inner">
+            <div className="chat-wrapper">
+
+              <div className="chat-title chat-header">
+
+                <div className="chat-user">
+
+                  <div className="chat-avatar">
+                    <img
+                      src="/src/assets/react.svg"
+                      alt={user?.full_name || "User"}
+                    />
+                  </div>
+
+                  <div className="chat-user-info">
+                    <div className="chat-name">
+                      {user?.full_name || "Loading..."}
                     </div>
-
-                    <div className="chat-user-info">
-                      <div className="chat-name">
-                        {user?.full_name || "Loading..."}
-                      </div>
-                    </div>
-
                   </div>
 
                 </div>
 
-                <div id="chat-box">
+              </div>
 
-                  {messages.map((msg) => (
+              <div id="chat-box">
 
-                    <div
-                      key={msg.id}
-                      className={
-                        msg.sender_id === sender_id
-                          ? "msg me"
-                          : "msg them"
-                      }
-                    >
+                {messages.map((msg) => (
 
-                      {msg.message}
-
-                      <span className="meta">
-
-                        {new Date(
-                          msg.timestamp
-                        ).toLocaleString()}
-
-                        {msg.sender_id === sender_id && (
-                          <span className="status-tick">
-
-                            {msg.is_read
-                              ? " • Seen"
-                              : " • Sent"}
-
-                          </span>
-                        )}
-
-                      </span>
-
-                    </div>
-
-                  ))}
-
-                </div>
-
-                <div
-                  id="typing-indicator"
-                  aria-hidden="true"
-                  style={{ display: "none" }}
-                />
-
-                <div className="input-row">
-
-                  <input
-                    type="text"
-                    id="msg"
-                    placeholder="Type a message..."
-                    autoComplete="off"
-                    value={newMessage}
-                    onChange={(e) =>
-                      setNewMessage(e.target.value)
+                  <div
+                    key={msg.id}
+                    className={
+                      msg.sender_id === sender_id
+                        ? "msg me"
+                        : "msg them"
                     }
-                    onKeyDown={(e) =>
-                      e.key === "Enter" &&
-                      handleSend()
-                    }
-                  />
-
-                  <button
-                    id="sendBtn"
-                    type="button"
-                    onClick={handleSend}
                   >
-                    Send
-                  </button>
 
-                </div>
+                    {msg.message}
+
+                    <span className="meta">
+
+                      {new Date(
+                        msg.timestamp
+                      ).toLocaleString()}
+
+                      {msg.sender_id === sender_id && (
+                        <span className="status-tick">
+
+                          {msg.is_read
+                            ? " • Seen"
+                            : " • Sent"}
+
+                        </span>
+                      )}
+
+                    </span>
+
+                  </div>
+
+                ))}
 
               </div>
-            </div>
 
+              <div
+                id="typing-indicator"
+                aria-hidden="true"
+                style={{ display: "none" }}
+              />
+
+              <div className="input-row">
+
+                <input
+                  type="text"
+                  id="msg"
+                  placeholder="Type a message..."
+                  autoComplete="off"
+                  value={newMessage}
+                  onChange={(e) =>
+                    setNewMessage(e.target.value)
+                  }
+                  onKeyDown={(e) =>
+                    e.key === "Enter" &&
+                    handleSend()
+                  }
+                />
+
+                <button
+                  id="sendBtn"
+                  type="button"
+                  onClick={handleSend}
+                >
+                  Send
+                </button>
+
+              </div>
+
+            </div>
           </div>
+
         </div>
       </div>
     </div>

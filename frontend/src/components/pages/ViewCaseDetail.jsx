@@ -13,6 +13,7 @@ function ViewCaseDetail() {
     const { id } = useParams();
     const [caselist, setCaseList] = useState(null);
     const [files, setFiles] = useState([]);
+    const [showSidebar, setShowSidebar] = useState(false);
 
     useEffect(() => {
         getCaseDetails();
@@ -28,7 +29,6 @@ function ViewCaseDetail() {
             const response = await axios.get(
                 `http://127.0.0.1:8000/api/case_files/${id}`
             );
-            console.log("CASE File", response.data);
             setFiles(response.data);
 
         }
@@ -62,18 +62,12 @@ function ViewCaseDetail() {
 
     const fetchDoctorData = async (id) => {
         try {
-            console.log(
-                "Doctor Id:",
-                id
-            );
+            
 
             const response = await axios.get(
                 `http://127.0.0.1:8000/api/doctors/${id}`
             );
-            console.log(
-                "Full Doctor API:",
-                response.data
-            );
+           
             setdoctordata(
                 response.data
             );
@@ -102,12 +96,21 @@ function ViewCaseDetail() {
     return (
         <div className="container-fluid">
             <div className=" row g-0 dashboard-main">
-                <Sidebar />
+                {showSidebar && (
+                    <div
+                        className="sidebar-overlay"
+                        onClick={() => setShowSidebar(false)}
+                    />
+                )}
+                <Sidebar showSidebar={showSidebar} />
                 <div className="col-md-9 main-content">
                     <div className="main-content-inner">
                         <div className="row g-5 h-100">
                             <div className="col-lg-12">
-                                <Header title="Dashboard" />
+                                <Header
+                                    title="Dashboard"
+                                    setShowSidebar={setShowSidebar}
+                                />
 
 
                                 <div className="main-c-inner">

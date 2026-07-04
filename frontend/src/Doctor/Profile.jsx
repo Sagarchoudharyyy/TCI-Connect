@@ -14,6 +14,7 @@ function Profile() {
 
     const [showPassword, setShowPassword] =
         useState(false);
+    const [showSidebar, setShowSidebar] = useState(false);
 
     const user = JSON.parse(localStorage.getItem("user"));
     const handleSubmit = (e) => {
@@ -108,10 +109,19 @@ function Profile() {
     return (
         <div className="container-fluid p-0">
             <div className="row g-0 doctor-dashboard-main">
-                <DoctorSideBar />
+                {showSidebar && (
+                    <div
+                        className="doctor-sidebar-overlay"
+                        onClick={() => setShowSidebar(false)}
+                    />
+                )}
+                <DoctorSideBar showSidebar={showSidebar} />
                 <div className="col-md-9 doctor-main-content">
 
-                    <DoctorHeader title="Dashboard" />
+                    <DoctorHeader
+                        title="Dashboard"
+                        setShowSidebar={setShowSidebar}
+                    />
                     <div className="mc-btm-bxx">
                         <div className="pagetitle">
                             <h1>Profile</h1>

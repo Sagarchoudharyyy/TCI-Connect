@@ -22,6 +22,7 @@ import {
 
 function DoctorPricing() {
     const [pricing, setPricing] = useState([]);
+    const [showSidebar, setShowSidebar] = useState(false);
 
     useEffect(() => {
         getPricing();
@@ -34,8 +35,7 @@ function DoctorPricing() {
                 "http://127.0.0.1:8000/api/pricing"
             );
 
-            console.log("Pricing API:", res.data);
-
+           
             setPricing(res.data);
 
         } catch (error) {
@@ -48,9 +48,18 @@ function DoctorPricing() {
         <>
             <div className="container-fluid p-0">
                 <div className="row g-0 doctor-dashboard-main">
-                    <DoctorSideBar />
+                    {showSidebar && (
+                        <div
+                            className="doctor-sidebar-overlay"
+                            onClick={() => setShowSidebar(false)}
+                        />
+                    )}
+                    <DoctorSideBar showSidebar={showSidebar} />
                     <div className="col-md-9 doctor-main-content">
-                        <DoctorHeader title="Dashboard" />
+                        <DoctorHeader
+                            title="Dashboard"
+                            setShowSidebar={setShowSidebar}
+                        />
                         <div className="mc-btm-bxx">
                             <h2>Your Pricing</h2>
                             <table className="table table-bordered">

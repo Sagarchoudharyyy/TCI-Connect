@@ -12,6 +12,7 @@ function ClientChat() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [user, setUser] = useState(null);
+  const [showSidebar, setShowSidebar] = useState(false);
 
 
   const loggedUser =
@@ -48,13 +49,13 @@ function ClientChat() {
   };
   const markChatNotificationsRead = async () => {
     try {
-      console.log("Marking chat notifications");
+
 
       await axios.put(
         `http://127.0.0.1:8000/api/notifications/chat/read/${sender_id}`
       );
 
-      console.log("Chat notifications marked as read");
+
     } catch (error) {
       console.log(error);
     }
@@ -100,11 +101,7 @@ function ClientChat() {
 
   const markMessagesRead = async () => {
     try {
-      console.log(
-        "Calling API:",
-        receiver_id,
-        sender_id
-      );
+
       await axios.put(
         `http://127.0.0.1:8000/api/messages/read/${receiver_id}/${sender_id}`
       );
@@ -117,9 +114,18 @@ function ClientChat() {
 
     <div className="container-fluid p-0">
       <div className="row g-0 doctor-dashboard-main">
-        <DoctorSideBar />
+        {showSidebar && (
+          <div
+            className="doctor-sidebar-overlay"
+            onClick={() => setShowSidebar(false)}
+          />
+        )}
+        <DoctorSideBar showSidebar={showSidebar} />
         <div className="col-md-9 doctor-main-content">
-          <DoctorHeader title="Dashboard" />
+          <DoctorHeader
+            title="Dashboard"
+            setShowSidebar={setShowSidebar}
+          />
           <div className="main-c-inner">
             <div className="chat-wrapper">
 

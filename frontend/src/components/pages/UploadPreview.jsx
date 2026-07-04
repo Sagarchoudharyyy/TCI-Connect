@@ -12,6 +12,7 @@ function UploadPreview() {
     const [caseData, setCaseData] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMsg, setSuccessMsg] = useState("");
+    const [showSidebar, setShowSidebar] = useState(false);
 
     const handlePreviewUpload = async (e) => {
         const files = Array.from(e.target.files);
@@ -119,7 +120,6 @@ function UploadPreview() {
         }
 
         catch (error) {
-            console.error(error);
             alert(
                 "Failed to remove file."
             );
@@ -197,13 +197,22 @@ function UploadPreview() {
             <div className="dashboard-main">
                 <div className="row g-0">
 
-                    <Sidebar />
+                    {showSidebar && (
+                        <div
+                            className="sidebar-overlay"
+                            onClick={() => setShowSidebar(false)}
+                        />
+                    )}
+                    <Sidebar showSidebar={showSidebar} />
 
                     <div className="offset-2 col-12 col-md-9 col-lg-9 
                     offset-lg-3 col-xl-9 col-xxl-10 offset-xl-3 offset-xxl-2 
                     main-content">
 
-                        <Header title="Dashboard" />
+                        <Header
+                            title="Dashboard"
+                            setShowSidebar={setShowSidebar}
+                        />
 
                         <div className="main-c-inner">
                             <div className="container mt-4">

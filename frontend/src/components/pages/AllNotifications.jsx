@@ -19,7 +19,7 @@ function AllNotifications() {
       const response = await axios.get(
         "http://127.0.0.1:8000/api/notifications/all"
       );
-      console.log(response.data);
+
       setNotifications(response.data);
 
     } catch (error) {
@@ -28,7 +28,7 @@ function AllNotifications() {
   };
 
   const markAsRead = async (item) => {
-    console.log("Full item:", item);
+
 
     try {
       await axios.put(

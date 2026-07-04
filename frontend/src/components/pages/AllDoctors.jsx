@@ -45,9 +45,7 @@ function AllDoctors() {
             `http://127.0.0.1:8000/api/toggle-doctor-status/${doctorId}`
           );
 
-        console.log(
-          response.data
-        );
+
 
         fetchDoctors();
 
@@ -108,236 +106,233 @@ function AllDoctors() {
   );
 
   return (
-    <div className="container-fluid p-0">
-      <div className="dashboard-main">
-        <div className="row g-0">
-          <>
-            {showSidebar && (
-              <div
-                className="sidebar-overlay"
-                onClick={() => setShowSidebar(false)}
-              />
-            )}
+    <div className="dashboard-main">
 
-            <Sidebar
-              showSidebar={showSidebar}
-            />
-          </>
+      {showSidebar && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setShowSidebar(false)}
+        />
+      )}
 
-          <div className=" main-content">
-            <Header
-              title="Dashboard"
-              setShowSidebar={setShowSidebar}
-            />
-            <div className="main-c-inner">
-              <div className="table-responsive">
-                <div className="row mt-2 justify-content-between">
-                  <div className="d-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">
-                    <div className="d-flex align-items-center gap-2">
-                      <select
-                        value={entriesPerPage}
-                        style={{ width: "90px" }}
-                        onChange={(e) =>
-                          setEntriesPerPage(Number(e.target.value))
-                        }
-                        className="form-select form-select-sm"
-                      >
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                      </select>
-                      <span>entries per page</span>
-                    </div>
-                  </div>
-                  <div className="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto">
-                    <div className="d-flex align-items-center gap-2">
-                      <label htmlFor="dt-search-0">Search:</label>
-                      <input
-                        type="search"
-                        className="form-control form-control-sm"
-                        id="dt-search-0"
-                        placeholder=""
-                        value={searchTerm}
-                        onChange={(e) =>
-                          setSearchTerm(
-                            e.target.value
-                          )
-                        }
-                      />
-                    </div>
+      <Sidebar showSidebar={showSidebar} />
+
+      <div className="main-wrapper">
+
+        <Header
+          title="Dashboard"
+          setShowSidebar={setShowSidebar}
+        />
+
+        <div className="main-content">
+
+          <div className="main-c-inner">
+            <div className="table-responsive">
+              <div className="row mt-2 justify-content-between">
+                <div className="d-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">
+                  <div className="d-flex align-items-center gap-2">
+                    <select
+                      value={entriesPerPage}
+                      style={{ width: "90px" }}
+                      onChange={(e) =>
+                        setEntriesPerPage(Number(e.target.value))
+                      }
+                      className="form-select form-select-sm"
+                    >
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="20">20</option>
+                    </select>
+                    <span>entries per page</span>
                   </div>
                 </div>
-                {/* Table */}
+                <div className="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto">
+                  <div className="d-flex align-items-center gap-2">
+                    <label htmlFor="dt-search-0">Search:</label>
+                    <input
+                      type="search"
+                      className="form-control form-control-sm"
+                      id="dt-search-0"
+                      placeholder=""
+                      value={searchTerm}
+                      onChange={(e) =>
+                        setSearchTerm(
+                          e.target.value
+                        )
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+              {/* Table */}
 
-                <table className="table table-striped custom-table">
+              <table className="table table-striped custom-table">
 
-                  <thead>
+                <thead>
 
-                    <tr>
-                      <th>Full Name</th>
-                      <th>Email</th>
-                      <th>Phone</th>
-                      <th>Business Name</th>
-                      <th>Status</th>
-                      <th>Action</th>
-                    </tr>
+                  <tr>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Business Name</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
 
-                  </thead>
+                </thead>
 
-                  <tbody>
+                <tbody>
 
-                    {visibleDoctors.length > 0 ? (
+                  {visibleDoctors.length > 0 ? (
 
-                      visibleDoctors.map((doctor) => (
+                    visibleDoctors.map((doctor) => (
 
-                        <tr key={doctor.id}>
+                      <tr key={doctor.id}>
 
-                          <td>
-                            {doctor.full_name}
-                          </td>
+                        <td>
+                          {doctor.full_name}
+                        </td>
 
-                          <td>
-                            {doctor.email}
-                          </td>
+                        <td>
+                          {doctor.email}
+                        </td>
 
-                          <td>
-                            {doctor.phone}
-                          </td>
+                        <td>
+                          {doctor.phone}
+                        </td>
 
-                          <td>
-                            {doctor.business_name}
-                          </td>
+                        <td>
+                          {doctor.business_name}
+                        </td>
 
-                          <td>
+                        <td>
 
-                            <span
+                          <span
+                            onClick={() =>
+                              toggleDoctorStatus(
+                                doctor.id
+                              )
+                            }
+                            style={{
+                              color:
+                                doctor.status ===
+                                  "approved"
+                                  ? "green"
+                                  : "orange",
+                              fontWeight: "bold",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {doctor.status ===
+                              "approved"
+                              ? "Approved"
+                              : "Pending"}
+                          </span>
+
+                        </td>
+
+                        <td>
+
+                          <div className="d-flex gap-3">
+                            <button
+                              className="btn btn-link p-0 me-3"
                               onClick={() =>
-                                toggleDoctorStatus(
-                                  doctor.id
-                                )
+                                navigate(`/admin/user-details/${doctor.id}`)
                               }
-                              style={{
-                                color:
-                                  doctor.status ===
-                                    "approved"
-                                    ? "green"
-                                    : "orange",
-                                fontWeight: "bold",
-                                cursor: "pointer",
-                              }}
                             >
-                              {doctor.status ===
-                                "approved"
-                                ? "Approved"
-                                : "Pending"}
-                            </span>
-
-                          </td>
-
-                          <td>
-
-                            <div className="d-flex gap-3">
-                              <button
-                                className="btn btn-link p-0 me-3"
-                                onClick={() =>
-                                  navigate(`/admin/user-details/${doctor.id}`)
-                                }
-                              >
-                                <FaEye
-                                  style={{
-                                    color: "#0152a8",
-                                    cursor: "pointer"
-                                  }}
-                                />
-                              </button>
-
-                              <FaTrash
-                                onClick={() => deleteDoctor(doctor.id)}
+                              <FaEye
                                 style={{
-                                  color: "red",
-                                  cursor: "pointer",
+                                  color: "#0152a8",
+                                  cursor: "pointer"
                                 }}
                               />
+                            </button>
 
-                            </div>
+                            <FaTrash
+                              onClick={() => deleteDoctor(doctor.id)}
+                              style={{
+                                color: "red",
+                                cursor: "pointer",
+                              }}
+                            />
 
-                          </td>
+                          </div>
 
-                        </tr>
-
-                      ))
-
-                    ) : (
-
-                      <tr>
-
-                        <td
-                          colSpan="6"
-                          className="text-center"
-                        >
-                          No Doctors Found
                         </td>
 
                       </tr>
 
-                    )}
+                    ))
 
-                  </tbody>
+                  ) : (
 
-                </table>
+                    <tr>
 
-                {/* Footer */}
+                      <td
+                        colSpan="6"
+                        className="text-center"
+                      >
+                        No Doctors Found
+                      </td>
 
-                <div className="d-flex justify-content-between align-items-center flex-wrap mt-3">
+                    </tr>
 
-                  <div
-                    className="dt-info"
-                    aria-live="polite"
-                    id="data-table_info"
-                    role="status"
-                  >
-                    Showing {startEntry} to {endEntry} of {totalEntries} entries
-                  </div>
+                  )}
 
-                  <nav>
+                </tbody>
 
-                    <ul className="pagination mb-0">
+              </table>
 
-                      <li className="page-item disabled">
-                        <button className="page-link">
-                          «
-                        </button>
-                      </li>
+              {/* Footer */}
 
-                      <li className="page-item disabled">
-                        <button className="page-link">
-                          ‹
-                        </button>
-                      </li>
+              <div className="d-flex justify-content-between align-items-center flex-wrap mt-3">
 
-                      <li className="page-item active">
-                        <button className="page-link">
-                          1
-                        </button>
-                      </li>
-
-                      <li className="page-item disabled">
-                        <button className="page-link">
-                          ›
-                        </button>
-                      </li>
-
-                      <li className="page-item disabled">
-                        <button className="page-link">
-                          »
-                        </button>
-                      </li>
-
-                    </ul>
-
-                  </nav>
-
+                <div
+                  className="dt-info"
+                  aria-live="polite"
+                  id="data-table_info"
+                  role="status"
+                >
+                  Showing {startEntry} to {endEntry} of {totalEntries} entries
                 </div>
+
+                <nav>
+
+                  <ul className="pagination mb-0">
+
+                    <li className="page-item disabled">
+                      <button className="page-link">
+                        «
+                      </button>
+                    </li>
+
+                    <li className="page-item disabled">
+                      <button className="page-link">
+                        ‹
+                      </button>
+                    </li>
+
+                    <li className="page-item active">
+                      <button className="page-link">
+                        1
+                      </button>
+                    </li>
+
+                    <li className="page-item disabled">
+                      <button className="page-link">
+                        ›
+                      </button>
+                    </li>
+
+                    <li className="page-item disabled">
+                      <button className="page-link">
+                        »
+                      </button>
+                    </li>
+
+                  </ul>
+
+                </nav>
 
               </div>
 

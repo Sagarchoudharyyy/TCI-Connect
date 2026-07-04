@@ -23,6 +23,7 @@ function DoctorCases() {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [totalRecords, setTotalRecords] = useState(0);
+    const [showSidebar, setShowSidebar] = useState(false);
     const [debouncedSearch, setDebouncedSearch] =
         useState("");
 
@@ -142,8 +143,6 @@ function DoctorCases() {
                 }
             );
 
-            console.log(response.data);
-
             setCases(response.data.items);
             setTotalPages(response.data.pages);
             setTotalRecords(response.data.total);
@@ -191,11 +190,6 @@ function DoctorCases() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        console.log({
-            statusFilter,
-            deadlineFilter
-        });
     };
     const handleReset = () => {
         setStatusFilter("");
@@ -262,7 +256,6 @@ function DoctorCases() {
 
         return () => clearTimeout(timer);
     }, [searchTerm]);
-    console.log("CASES:", cases);
 
     useEffect(() => {
         cases.forEach((item) => {
@@ -277,9 +270,18 @@ function DoctorCases() {
     return (
         <div className="container-fluid p-0">
             <div className="row g-0 doctor-dashboard-main">
-                <DoctorSideBar />
+                {showSidebar && (
+                    <div
+                        className="doctor-sidebar-overlay"
+                        onClick={() => setShowSidebar(false)}
+                    />
+                )}
+                <DoctorSideBar showSidebar={showSidebar} />
                 <div className="col-md-9 doctor-main-content">
-                    <DoctorHeader title="Dashboard" />
+                    <DoctorHeader
+                        title="Dashboard"
+                        setShowSidebar={setShowSidebar}
+                    />
                     <div className="mc-btm-bxx">
                         <div className="case-heading">
                             <div className="section-heading">

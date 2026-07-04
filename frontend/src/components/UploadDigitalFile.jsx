@@ -82,8 +82,6 @@ function UploadDigitalFiles({
                 }
             );
 
-            console.log("TEMP RESPONSE:", response.data);
-
             setDigitalFiles((prev) =>
                 prev.map((f) =>
                     f.id === fileObj.id
@@ -140,7 +138,6 @@ function UploadDigitalFiles({
                 ) || [],
             }));
         } catch (error) {
-            console.log("DELETE ERROR:", error);
             alert("Failed to delete file");
         }
     };

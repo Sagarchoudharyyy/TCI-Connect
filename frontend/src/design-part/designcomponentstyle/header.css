@@ -49,14 +49,12 @@ li {
 .main-header {
   padding: 10px 0;
   background: #205170;
-  position: relative;
-}
-
-.main-header {
   position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   z-index: 99;
-  background: none;
+  background: #205170;
 }
 
 .main-header.scrolled {
@@ -114,4 +112,80 @@ li {
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+}
+
+.navbar {
+  min-height: 56px;
+}
+
+.navbar-brand,
+.logo-img {
+  flex-shrink: 0;
+}
+
+.logo-img {
+  max-height: 58px;
+  width: auto;
+}
+
+.navbar-toggler {
+  border: 0;
+  box-shadow: none !important;
+  padding: 6px;
+}
+
+.navbar-toggler-icon {
+  display: block;
+  width: 24px;
+  height: 2px;
+  margin: 5px 0;
+  background: #fff;
+  border-radius: 999px;
+}
+
+@media (max-width: 1199px) {
+  .main-header .container {
+    max-width: 100%;
+    padding-inline: 16px;
+  }
+
+  .main-menus {
+    order: 4;
+    width: 100%;
+  }
+
+  .navbar-collapse {
+    margin-top: 12px;
+    padding: 14px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    background: #205170;
+  }
+
+  .navbar-nav {
+    gap: 4px;
+  }
+
+  .main-menus ul li {
+    margin: 0;
+  }
+
+  .main-menus ul li a {
+    width: 100%;
+    padding: 12px 0;
+  }
+}
+
+@media (max-width: 575px) {
+  .main-header {
+    padding: 8px 0;
+  }
+
+  .logo-img {
+    max-height: 48px;
+  }
+
+  .login-btn {
+    height: 40px;
+    width: 40px;
+  }
 }
