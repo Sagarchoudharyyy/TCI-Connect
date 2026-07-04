@@ -64,7 +64,7 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
     }, []);
     const markAsRead = async (id) => {
         try {
-           
+
             await axios.put(
                 `http://127.0.0.1:8000/api/notifications/${id}/read`
             );
@@ -86,7 +86,7 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
     );
     return (
         <div className="mc-ibxx">
-            <div className="doctor-header d-flex justify-content-between align-items-center" style={{ width: "100%" }} >
+            <div className="doctor-header" >
                 <div className="d-flex align-items-center min-w-0">
                     {setShowSidebar && (
                         <div

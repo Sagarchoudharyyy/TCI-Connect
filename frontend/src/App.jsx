@@ -16,7 +16,7 @@ import Pricing from "./components/pages/Pricing";
 import AllNotifications from "./components/pages/AllNotifications";
 import UpdatePrice from "./components/pages/UpdatePrice";
 import Category from "./components/pages/Category";
-import DoctorDashboard from "./Doctor/Dashboard";
+import DoctorDashboard from "./Doctor/DoctorDashboard";
 import DoctorCases from "./Doctor/Cases";
 import Cases from "./Doctor/Cases";
 import UpdateCase from "./Doctor/UpdateCase";

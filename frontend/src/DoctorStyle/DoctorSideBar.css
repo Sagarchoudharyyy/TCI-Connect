@@ -1,26 +1,24 @@
-.doctor-sidebar {
-    background-color: #ffffff;
-    padding: 40px 30px !important;
-    border-right: 1px solid #e8e8e8;
-    z-index: 2100;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 25%;
-    height: 100vh;
-    overflow-y: auto;
+:root {
+    --sidebar-width: 260px;
 }
 
-@media (min-width: 768px) {
-    .col-md-3 {
-        flex: 0 0 auto;
-        width: 25%;
-    }
+.doctor-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
 
-    .doctor-main-content.col-md-9 {
-        margin-left: 25%;
-        width: 75%;
-    }
+    background: #fff;
+    border-right: 1px solid #e8e8e8;
+
+    padding: 40px 24px;
+
+    overflow-y: auto;
+
+    z-index: 3000;
+
+    transition: .3s;
 }
 
 .doctor-sidebar-header {
@@ -31,7 +29,6 @@
 
 .doctor-sidebar-header h4 {
     margin: 0;
-
     font-weight: 700;
     font-size: 30px;
     line-height: 130%;
