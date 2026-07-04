@@ -94,45 +94,44 @@ function ForgotPassword() {
                     <div className="forgot-main-heading">
                       TCI Connect
                     </div>
-                    <div className="forgot-formbxx-warrper">
-                      <div className="forgot-formsec-bxx">
-                        <h3 className="forgot-form-heading">
-                          Forgot Password
-                        </h3>
-                        <form onSubmit={handleSubmit} id="login">
-                          <div className="forgot-form-group">
-                            <input
-                              type="email"
-                              className="forgot-form-control"
-                              name="email"
-                              id="Email"
-                              placeholder="Enter your email"
-                              required
-                              autoComplete="off"
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                            />
-                          </div>
-                          {error && (
-                            <p className="text-danger mt-2">
-                              {error}
-                            </p>
-                          )}
+                    {/* <div className="forgot-formbxx-warrper"> */}
+                    <div className="forgot-formsec-bxx">
+                      <h3 className="forgot-form-heading">
+                        Forgot Password
+                      </h3>
+                      <form onSubmit={handleSubmit} id="login">
+                        <div className="forgot-form-group">
+                          <input
+                            type="email"
+                            className="forgot-form-control"
+                            name="email"
+                            id="Email"
+                            placeholder="Enter your email"
+                            required
+                            autoComplete="off"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                          />
+                        </div>
+                        {error && (
+                          <p className="text-danger mt-2">
+                            {error}
+                          </p>
+                        )}
 
-                          {success && (
-                            <p className="text-success mt-2">
-                              {success}
-                            </p>
-                          )}
-                          <button
-                            className="btn-all"
-                            id="submitBtn"
-                            type="submit"
-                          >
-                            Reset Password
-                          </button>
-                        </form>
-                      </div>
+                        {success && (
+                          <p className="text-success mt-2">
+                            {success}
+                          </p>
+                        )}
+                        <button
+                          className="btn-all"
+                          id="submitBtn"
+                          type="submit"
+                        >
+                          Reset Password
+                        </button>
+                      </form>
                     </div>
                   </div>
                 </div>
@@ -140,6 +139,7 @@ function ForgotPassword() {
             </div>
           </div>
         </div>
+        {/* </div> */}
       </section>
       <footer className="form-footer">
         <div className="container">
