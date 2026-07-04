@@ -193,122 +193,120 @@ function UploadPreview() {
         }
     };
     return (
-        <div className="container-fluid">
-            <div className="dashboard-main">
-                <div className="row g-0">
+        <div className="dashboard-main">
 
-                    {showSidebar && (
-                        <div
-                            className="sidebar-overlay"
-                            onClick={() => setShowSidebar(false)}
-                        />
-                    )}
-                    <Sidebar showSidebar={showSidebar} />
+            {showSidebar && (
+                <div
+                    className="sidebar-overlay"
+                    onClick={() => setShowSidebar(false)}
+                />
+            )}
 
-                    <div className="offset-2 col-12 col-md-9 col-lg-9 
-                    offset-lg-3 col-xl-9 col-xxl-10 offset-xl-3 offset-xxl-2 
-                    main-content">
+            <Sidebar showSidebar={showSidebar} />
 
-                        <Header
-                            title="Dashboard"
-                            setShowSidebar={setShowSidebar}
-                        />
+            <div className="main-wrapper">
 
-                        <div className="main-c-inner">
-                            <div className="container mt-4">
-                                <div className="card">
-                                    <div className="card-header bg-primary text-white">
-                                        <h4 className="mb-0">Upload Design Preview – Case #{caseData?.id}</h4>
-                                        <small>Patient:{caseData?.patient_name}</small>
+                <Header
+                    title="Dashboard"
+                    setShowSidebar={setShowSidebar}
+                />
+
+                <div className="main-content">
+
+                    <div className="main-c-inner">
+                        <div className="container mt-4">
+                            <div className="card">
+                                <div className="card-header bg-primary text-white">
+                                    <h4 className="mb-0">Upload Design Preview – Case #{caseData?.id}</h4>
+                                    <small>Patient:{caseData?.patient_name}</small>
+                                </div>
+                                <div className="card-body">
+                                    <p className="text-muted mb-4">
+                                        "Files are merged on server immediately — but only kept if you click "Submit Preview Files"
+                                        <br />
+                                        <strong>Removed or canceled files are deleted from disk</strong>
+                                    </p>
+                                    <div className="mb-3">
+                                        <input
+                                            type="file"
+                                            id="previewUpload"
+                                            multiple
+                                            disabled={isSubmitting}
+                                            accept=".stl,.obj,.zip,.jpg,.jpeg,.png,.ply"
+                                            className="form-control"
+                                            onChange={handlePreviewUpload}
+                                        />
                                     </div>
-                                    <div className="card-body">
-                                        <p className="text-muted mb-4">
-                                            "Files are merged on server immediately — but only kept if you click "Submit Preview Files"
-                                            <br />
-                                            <strong>Removed or canceled files are deleted from disk</strong>
-                                        </p>
-                                        <div className="mb-3">
-                                            <input
-                                                type="file"
-                                                id="previewUpload"
-                                                multiple
-                                                disabled={isSubmitting}
-                                                accept=".stl,.obj,.zip,.jpg,.jpeg,.png,.ply"
-                                                className="form-control"
-                                                onChange={handlePreviewUpload}
-                                            />
-                                        </div>
-                                        <div className="mb-4">
-                                            {previewFiles.map((item) => (
-                                                <div
-                                                    key={item.file.name}
-                                                    className="d-flex align-items-center gap-3 mb-3 p-2 border rounded"
+                                    <div className="mb-4">
+                                        {previewFiles.map((item) => (
+                                            <div
+                                                key={item.file.name}
+                                                className="d-flex align-items-center gap-3 mb-3 p-2 border rounded"
+                                            >
+                                                <span style={{ width: "350px" }}>
+                                                    {item.file.name}
+                                                </span>
+
+                                                <span
+                                                    className={`badge ${item.status === "uploaded"
+                                                        ? "bg-success"
+                                                        : "bg-secondary"
+                                                        }`}
                                                 >
-                                                    <span style={{ width: "350px" }}>
-                                                        {item.file.name}
-                                                    </span>
+                                                    {item.status}
+                                                </span>
 
-                                                    <span
-                                                        className={`badge ${item.status === "uploaded"
-                                                            ? "bg-success"
-                                                            : "bg-secondary"
-                                                            }`}
+                                                <div className="progress flex-grow-1">
+                                                    <div
+                                                        className="progress-bar"
+                                                        role="progressbar"
+                                                        style={{
+                                                            width: `${item.progress}%`,
+                                                        }}
                                                     >
-                                                        {item.status}
-                                                    </span>
-
-                                                    <div className="progress flex-grow-1">
-                                                        <div
-                                                            className="progress-bar"
-                                                            role="progressbar"
-                                                            style={{
-                                                                width: `${item.progress}%`,
-                                                            }}
-                                                        >
-                                                            {item.progress}%
-                                                        </div>
+                                                        {item.progress}%
                                                     </div>
-
-                                                    <button
-                                                        className="btn btn-danger btn-sm"
-                                                        onClick={() =>
-                                                            removeFile(item.id)
-                                                        }
-                                                        disabled={
-                                                            item.status !== "uploaded"
-                                                        }
-                                                    >
-                                                        Remove
-                                                    </button>
                                                 </div>
-                                            ))}
-                                        </div>
-                                        <div className="validation-msg" id="errorPreviewFiles"></div>
-                                        <div className="text-success small mb-3">
-                                            {successMsg}
-                                        </div>
-                                        <div className="d-flex justify-content-between mt-4">
-                                            <button
-                                                className="btn btn-secondary px-4"
-                                                onClick={handleCancel}
-                                            >
-                                                Cancel
-                                            </button>
-                                            <button
-                                                className="btn btn-primary px-5"
-                                                id="submitPreviewBtn"
-                                                onClick={submitPreviewFiles}
-                                                disabled={
-                                                    previewFiles.length === 0 ||
-                                                    isSubmitting ||
-                                                    previewFiles.some(
-                                                        (file) => file.status !== "uploaded"
-                                                    )
-                                                }
-                                            >
-                                                Submit Preview Files
-                                            </button>
-                                        </div>
+
+                                                <button
+                                                    className="btn btn-danger btn-sm"
+                                                    onClick={() =>
+                                                        removeFile(item.id)
+                                                    }
+                                                    disabled={
+                                                        item.status !== "uploaded"
+                                                    }
+                                                >
+                                                    Remove
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="validation-msg" id="errorPreviewFiles"></div>
+                                    <div className="text-success small mb-3">
+                                        {successMsg}
+                                    </div>
+                                    <div className="d-flex justify-content-between mt-4">
+                                        <button
+                                            className="btn btn-secondary px-4"
+                                            onClick={handleCancel}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            className="btn btn-primary px-5"
+                                            id="submitPreviewBtn"
+                                            onClick={submitPreviewFiles}
+                                            disabled={
+                                                previewFiles.length === 0 ||
+                                                isSubmitting ||
+                                                previewFiles.some(
+                                                    (file) => file.status !== "uploaded"
+                                                )
+                                            }
+                                        >
+                                            Submit Preview Files
+                                        </button>
                                     </div>
                                 </div>
                             </div>

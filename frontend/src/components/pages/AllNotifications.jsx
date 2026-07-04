@@ -70,104 +70,102 @@ function AllNotifications() {
   };
 
   return (
-    <div className="container-fluid p-0">
-      <div className="dashboard-main">
-        <div className="row g-0">
-          <>
-            {showSidebar && (
-              <div
-                className="sidebar-overlay"
-                onClick={() => setShowSidebar(false)}
-              />
-            )}
+    <div className="dashboard-main">
 
-            <Sidebar
-              showSidebar={showSidebar}
-            />
-          </>
+      {showSidebar && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setShowSidebar(false)}
+        />
+      )}
 
-          <div className=" main-content">
-            <Header
-              title="Dashboard"
-              setShowSidebar={setShowSidebar}
-            />
+      <Sidebar showSidebar={showSidebar} />
 
-            <div className="main-c-inner">
-              <div className="container my-4">
-                <h4>All Notifications</h4>
+      <div className="main-wrapper">
 
-                <div className="mt-4">
-                  {notifications.map((item) => (
-                    <div
-                      key={item.id}
-                      className="border-bottom p-3"
-                      onClick={() => markAsRead(item)}
+        <Header
+          title="Dashboard"
+          setShowSidebar={setShowSidebar}
+        />
 
-                      style={{
-                        backgroundColor:
-                          item.is_read
-                            ? "#fff"
-                            : "#e8f4ff",
-                        maxWidth: "100%",
-                        cursor: "pointer",
-                        transition: "0.2s"
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = "#e8f4ff";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = item.is_read
+        <div className="main-content">
+
+          <div className="main-c-inner">
+
+            <div className="container my-4">
+              <h4>All Notifications</h4>
+
+              <div className="mt-4">
+                {notifications.map((item) => (
+                  <div
+                    key={item.id}
+                    className="border-bottom p-3"
+                    onClick={() => markAsRead(item)}
+
+                    style={{
+                      backgroundColor:
+                        item.is_read
                           ? "#fff"
-                          : "#e8f4ff";
-                      }}
-                    >
-                      <div>
-                        {!item.is_read && (
-                          <span
-                            style={{
-                              backgroundColor: "#0d6efd",
-                              color: "#fff",
-                              fontSize: "11px",
-                              padding: "4px 10px",
-                              borderRadius: "20px",
-                              display: "inline-block",
-                              marginBottom: "10px"
-                            }}
-                          >
-                            NEW
-                          </span>
-                        )}
-
-                        <div
+                          : "#e8f4ff",
+                      maxWidth: "100%",
+                      cursor: "pointer",
+                      transition: "0.2s"
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#e8f4ff";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = item.is_read
+                        ? "#fff"
+                        : "#e8f4ff";
+                    }}
+                  >
+                    <div>
+                      {!item.is_read && (
+                        <span
                           style={{
-                            fontWeight: "600"
+                            backgroundColor: "#0d6efd",
+                            color: "#fff",
+                            fontSize: "11px",
+                            padding: "4px 10px",
+                            borderRadius: "20px",
+                            display: "inline-block",
+                            marginBottom: "10px"
                           }}
                         >
-                          {item.message}
-                        </div>
-                      </div>
+                          NEW
+                        </span>
+                      )}
 
                       <div
                         style={{
-                          fontSize: "13px",
-                          color: "#777",
-                          marginTop: "5px"
+                          fontWeight: "600"
                         }}
                       >
-                        {new Date(
-                          item.created_at
-                        ).toLocaleString()}
+                        {item.message}
                       </div>
                     </div>
 
-                  ))}
-                </div>
+                    <div
+                      style={{
+                        fontSize: "13px",
+                        color: "#777",
+                        marginTop: "5px"
+                      }}
+                    >
+                      {new Date(
+                        item.created_at
+                      ).toLocaleString()}
+                    </div>
+                  </div>
+
+                ))}
               </div>
             </div>
           </div>
         </div>
-      </div >
-    </div>
+      </div>
+    </div >
   );
 }
 
