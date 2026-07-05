@@ -7,13 +7,14 @@ import {
 
 function OrderTableRow({
     item,
-    previewFiles,
-    digitalFiles,
+    previewFilesMap,
+    digitalFilesMap,
     loadDigitalFiles,
     handleStatusChange,
     handleDelete,
     navigate
 }) {
+    const previewFiles = previewFilesMap || [];
     return (
         <tr>
             <td className="text-center">
@@ -27,7 +28,7 @@ function OrderTableRow({
 
             <td>{item.doctor_name}</td>
 
-            <td>{item.doctor_phone}</td>
+            <td>{item.phone_number}</td>
 
             <td>{item.patient_name}</td>
 
@@ -74,7 +75,7 @@ function OrderTableRow({
             <td className="text-center">
 
                 {
-                    digitalFiles?.map((file, index) => (
+                    digitalFilesMap?.map((file, index) => (
                         <div key={file.id}>
 
                             <a
@@ -114,7 +115,7 @@ function OrderTableRow({
 
                 {
                     item.has_digital_files &&
-                    digitalFiles.length === 0 && (
+                    digitalFilesMap.length === 0 && (
                         <button
                             className="btn btn-link p-0"
                             onClick={() =>

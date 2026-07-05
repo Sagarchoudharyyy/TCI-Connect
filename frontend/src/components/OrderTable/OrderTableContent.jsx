@@ -121,10 +121,10 @@ function OrderTableContent({
                         <OrderTableRow
                             key={item.id}
                             item={item}
-                            previewFiles={
+                            previewFilesMap={
                                 previewFilesMap[item.id] || []
                             }
-                            digitalFiles={
+                            digitalFilesMap={
                                 digitalFilesMap[item.id] || []
                             }
                             loadDigitalFiles={loadDigitalFiles}

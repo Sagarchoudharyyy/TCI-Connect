@@ -122,8 +122,8 @@ function RecentCasesTable({
                         <RecentCasesRow
                             key={item.id}
                             item={item}
-                            previewFiles={previewFilesMap[item.id] || []}
-                            digitalFiles={digitalFilesMap[item.id] || []}
+                            previewFilesMap={previewFilesMap[item.id] || []}
+                            digitalFilesMap={digitalFilesMap[item.id] || []}
                             loadDigitalFiles={loadDigitalFiles}
                             handleViewCaseDocument={handleViewCaseDocument}
                             handleDownloadCaseDocument={handleDownloadCaseDocument}

@@ -7,8 +7,8 @@ import {
 
 function RecentCasesRow({
     item,
-    previewFiles,
-    digitalFiles,
+    previewFilesMap,
+    digitalFilesMap,
     loadDigitalFiles,
     handleViewCaseDocument,
     handleDownloadCaseDocument,
@@ -16,6 +16,10 @@ function RecentCasesRow({
     handleDelete,
     navigate,
 }) {
+    const previewFiles =
+        item.files?.filter(
+            file => file.file_category === "preview_file"
+        ) || [];
     return (
         <tr>
             <td className="text-center">
@@ -28,7 +32,7 @@ function RecentCasesRow({
 
             <td>{item.doctor_name}</td>
 
-            <td>{item.doctor_phone}</td>
+            <td>{item.phone_number}</td>
 
             <td>{item.patient_name}</td>
             <td className="text-center">
@@ -62,7 +66,7 @@ function RecentCasesRow({
             <td className="text-center">
 
                 {
-                    digitalFiles[item.id]?.map((file, index) => (
+                    digitalFilesMap?.map((file, index) => (
                         <div key={file.id}>
 
                             <a
@@ -102,7 +106,7 @@ function RecentCasesRow({
 
                 {
                     item.has_digital_files &&
-                    digitalFiles.length === 0 && (
+                    digitalFilesMap.length === 0 && (
                         <button
                             className="btn btn-link p-0"
                             onClick={() =>

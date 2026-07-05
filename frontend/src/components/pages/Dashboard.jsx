@@ -58,7 +58,7 @@ function Dashboard() {
 
                         <div className="main-c-inner">
 
-                            <div className="row g-0">
+                            <div className="row g-3">
                                 <DashboardCard cases={cases} />
                             </div>
 
