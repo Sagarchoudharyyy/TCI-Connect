@@ -1,4 +1,4 @@
-function DoctorCaseTableHeader({
+function DoctorCaseTopBar({
   entriesPerPage,
   setEntriesPerPage,
   searchTerm,
@@ -60,4 +60,4 @@ function DoctorCaseTableHeader({
   );
 }
 
-export default DoctorCaseTableHeader;
+export default DoctorCaseTopBar;

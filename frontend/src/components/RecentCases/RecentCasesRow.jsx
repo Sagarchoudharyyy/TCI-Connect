@@ -28,13 +28,13 @@ function RecentCasesRow({
                     width="40"
                 />
             </td>
-            <td>{item.id}</td>
+            <td className="text-center">{item.id}</td>
 
-            <td>{item.doctor_name}</td>
+            <td className="text-center">{item.doctor_name}</td>
 
-            <td>{item.phone_number}</td>
+            <td className="text-center">{item.phone_number}</td>
 
-            <td>{item.patient_name}</td>
+            <td className="text-center">{item.patient_name}</td>
             <td className="text-center">
                 {item.has_case_document ? (
                     <>
@@ -131,7 +131,7 @@ function RecentCasesRow({
 
             </td>
 
-            <td>
+            <td className="text-center">
                 {item.delivery_deadline ? (() => {
 
                     const today = new Date();
@@ -191,7 +191,7 @@ function RecentCasesRow({
             </td>
 
             <td>
-                <div
+                <div className="text-center"
                     style={{
                         fontWeight: "600"
                     }}
@@ -331,7 +331,7 @@ function RecentCasesRow({
                     ) : null}
                 </div>
             </td>
-            <td>
+            <td className="text-center">
                 <select
                     value={item.status}
                     onChange={(e) =>
@@ -386,7 +386,7 @@ function RecentCasesRow({
                 </span>
             </td>
 
-            <td className="action-icons">
+            <td className="action-icons text-center">
 
                 <button
                     className="btn btn-link p-0 me-3"

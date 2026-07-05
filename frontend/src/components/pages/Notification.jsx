@@ -131,7 +131,7 @@ function Notification() {
         item.notification_type ===
         "chat"
       ) {
-        navigate("/chat");
+        navigate("/admin/chats");
         return;
       }
 
