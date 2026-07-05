@@ -24,7 +24,7 @@ function DashboardCard({ cases }) {
 
     return (
         <>
-            <div className="col-md-12 col-lg-6 ">
+            <div className="col-md-12 col-lg-6 col-md-6">
                 <div className="stats-card total-doctor">
                     <div className="stats-icon">
                         <svg
@@ -48,7 +48,7 @@ function DashboardCard({ cases }) {
                 </div>
             </div>
 
-            <div className="col-md-12 col-lg-6 cardd-header">
+            <div className="col-md-12 col-lg-6 col-md-6 cardd-header">
                 <div className="stats-card recent-orders">
                     <div className="stats-icon">
                         <svg
