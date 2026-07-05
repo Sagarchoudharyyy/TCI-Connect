@@ -15,6 +15,7 @@ function DoctorTableBody({
   loadDigitalFiles,
   handleViewCaseDocument,
   previewFilesMap,
+  handlePreviewStatus,
   digitalFilesMap
 }) {
   return (
