@@ -64,11 +64,21 @@
     white-space: nowrap;
 }
 
+/* .doctor-mobile-menu {
+    display: none;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-size: 24px;
+} */
 .doctor-mobile-menu {
     display: none;
     cursor: pointer;
     flex-shrink: 0;
     font-size: 24px;
+    width: 42px;
+    height: 42px;
+    align-items: center;
+    justify-content: center;
 }
 
 @media (max-width: 991px) {
@@ -111,6 +121,12 @@
     }
 }
 
+/* Add this  */
+.doctor-header .dropdown-toggle img {
+    width: 34px;
+    height: 34px;
+}
+
 @media (max-width: 575px) {
     .doctor-header h2 {
         display: none;
@@ -118,5 +134,14 @@
 
     .doctor-header .dropdown-toggle span {
         display: none;
+    }
+
+    /* Added */
+    .header-right {
+        gap: 8px;
+    }
+
+    .doctor-header {
+        padding: 0 10px;
     }
 }

@@ -3,7 +3,7 @@ import DoctorHeader from "../components/DoctorHeader";
 import "../DoctorStyle/doctor-dashboard.css";
 import "../styles/tables.css";
 
-import DoctorOrderTable from "../components/DoctorOrderTable";
+import DoctorOrderTable from "./DoctorOrderTable/DoctorOrderTable";
 import "../DoctorStyle/DoctorHeader.css";
 import axios from "axios";
 import { useState, useEffect } from "react";
@@ -53,6 +53,7 @@ function DoctorDashboard() {
 
     }, []);
     return (
+
         <div className="doctor-dashboard-main">
 
             {showSidebar && (
@@ -76,18 +77,21 @@ function DoctorDashboard() {
                     <DoctorDashboardCards
                         totalPatients={totalPatients}
                     />
+                    <div className="doctor-table-container">
 
-                    <DoctorOrderTable
-                        cases={cases}
-                        title="Latest Patient"
-                        showSubmitButton={false}
-                    />
 
+                        <DoctorOrderTable
+                            cases={cases}
+                            title="Latest Patient"
+                            showSubmitButton={false}
+                        />
+                    </div>
                 </div>
 
             </div>
 
         </div>
+
     );
 }
 export default DoctorDashboard;

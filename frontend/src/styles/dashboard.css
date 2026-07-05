@@ -44,14 +44,15 @@
 }
 
 .custom-table {
-    min-width: 1400px;
+    width: 100%;
+    min-width: 1100px;
 }
 
 /* ===========================
    Tablet
 =========================== */
 
-@media (max-width:991px) {
+@media (max-width: 991px) {
 
     .main-wrapper {
         margin-left: 0;
@@ -65,31 +66,6 @@
         padding: 20px;
     }
 
-    .stats-card {
-        margin-bottom: 15px;
-    }
-
-    .chart-controls {
-        align-items: center;
-    }
-
-    .chart-controls>* {
-        margin-bottom: 10px;
-    }
-
-    .header-inner {
-        padding: 0 15px;
-    }
-
-    .header-right {
-        width: auto;
-    }
-
-    .lab-badge {
-        font-size: 16px;
-        padding: 0 12px;
-    }
-
     .custom-table tbody td {
         padding: 10px;
     }
@@ -99,7 +75,7 @@
    Mobile
 =========================== */
 
-@media (max-width:767px) {
+@media (max-width: 767px) {
 
     .main-wrapper {
         margin-left: 0;
@@ -112,35 +88,12 @@
     .main-c-inner {
         padding: 15px;
     }
-
-    .dashboard-new-side-bar {
-        font-size: 24px;
-        margin-left: 10px;
-    }
-
-    .lab-badge {
-        font-size: 12px;
-        padding: 0 8px;
-    }
-
-    .header h2 {
-        font-size: 18px;
-    }
 }
 
-@media (max-width:575px) {
+@media (max-width: 575px) {
 
     .main-c-inner {
         padding: 12px;
-    }
-
-    .header h2 {
-        display: none;
-    }
-
-    .lab-badge {
-        font-size: 12px;
-        padding: 0 6px;
     }
 }
 
@@ -151,6 +104,6 @@
 .sidebar-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, .4);
+    background: rgba(0, 0, 0, 0.4);
     z-index: 2999;
 }

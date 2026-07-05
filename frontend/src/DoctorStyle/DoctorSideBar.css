@@ -6,6 +6,8 @@
     position: fixed;
     left: 0;
     top: 0;
+    /* addded bottom */
+    bottom: 0;
     width: var(--sidebar-width);
     height: 100vh;
 
@@ -15,9 +17,9 @@
     padding: 40px 24px;
 
     overflow-y: auto;
-
+    overflow-x: hidden;
     z-index: 3000;
-
+    scroll-behavior: smooth;
     transition: .3s;
 }
 

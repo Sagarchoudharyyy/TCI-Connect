@@ -1,0 +1,220 @@
+/* ==========================================
+   Doctor Dashboard Cards
+========================================== */
+
+.doctor-dashboard-cards {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 24px;
+  margin-bottom: 32px;
+}
+
+.doctor-dashboard-cards>div {
+  display: flex;
+}
+
+/* ==========================================
+   Card
+========================================== */
+
+.doctor-dashboard-card {
+  width: 100%;
+  min-height: 110px;
+  display: flex;
+  align-items: center;
+  padding: 24px;
+  border-radius: 18px;
+  border: 1px solid #edf1f5;
+  background-color: #E3F2EF;
+  box-shadow: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+/* Card Colors */
+
+.doctor-total-patient-card {
+  background-color: #E3F2EF !important;
+}
+
+.doctor-submit-case-card {
+  background: #E3F1FA;
+}
+
+/* Hover */
+
+.doctor-dashboard-card:hover {
+  transform: translateY(-4px);
+}
+
+/* ==========================================
+   Icon
+========================================== */
+
+.doctor-dashboard-card-icon {
+  width: 54px;
+  height: 54px;
+
+  border-radius: 50%;
+  background: #ffffff;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   Content
+========================================== */
+
+.doctor-dashboard-card-content {
+  margin-left: 18px;
+}
+
+.doctor-dashboard-card-content small {
+  display: block;
+
+  margin-bottom: 4px;
+
+  font-size: 15px;
+  font-weight: 500;
+
+  color: #676767;
+}
+
+.doctor-dashboard-card-content h3 {
+  margin: 0;
+
+  font-size: 34px;
+  font-weight: 700;
+
+  color: #1D1D1D;
+
+  line-height: 1.2;
+}
+
+.doctor-dashboard-card-content h5 {
+  margin: 0 0 4px;
+
+  font-size: 20px;
+  font-weight: 600;
+
+  color: #1D1D1D;
+}
+
+/* ==========================================
+   Tablet
+========================================== */
+
+@media (max-width: 991px) {
+
+  .doctor-dashboard-card {
+    min-height: 100px;
+    padding: 20px;
+  }
+
+  .doctor-dashboard-card-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .doctor-dashboard-card-content h3 {
+    font-size: 28px;
+  }
+
+  .doctor-dashboard-card-content h5 {
+    font-size: 18px;
+  }
+
+  .doctor-dashboard-card-content small {
+    font-size: 14px;
+  }
+
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+
+  .doctor-dashboard-cards {
+    margin-top: 24px;
+  }
+
+}
+
+/* ==========================================
+   Mobile
+========================================== */
+
+@media (max-width: 767px) {
+
+  .doctor-dashboard-cards {
+    row-gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .doctor-dashboard-cards>div {
+    width: 100%;
+  }
+
+  .doctor-dashboard-card {
+    min-height: auto;
+    padding: 18px;
+  }
+
+  .doctor-dashboard-card-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .doctor-dashboard-card-content {
+    margin-left: 14px;
+  }
+
+  .doctor-dashboard-card-content h3 {
+    font-size: 24px;
+  }
+
+  .doctor-dashboard-card-content h5 {
+    font-size: 18px;
+  }
+
+  .doctor-dashboard-card-content small {
+    font-size: 13px;
+  }
+
+}
+
+/* ==========================================
+   Small Mobile
+========================================== */
+
+@media (max-width: 575px) {
+
+  .doctor-dashboard-card {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .doctor-dashboard-card-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .doctor-dashboard-card-content {
+    margin-left: 12px;
+  }
+
+  .doctor-dashboard-card-content h3 {
+    font-size: 22px;
+  }
+
+  .doctor-dashboard-card-content h5 {
+    font-size: 17px;
+  }
+
+  .doctor-dashboard-card-content small {
+    font-size: 12px;
+  }
+
+}
