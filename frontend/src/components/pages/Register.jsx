@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import "../../styles/register.css";
 import ReCAPTCHA from "react-google-recaptcha";
-
+import registerBg from "../../assets/sign-up-bgimg.png";
 function Register() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -100,7 +100,7 @@ function Register() {
         formData
       );
 
-     
+
 
       setSuccess(
         "Registration successful! Your account is under admin review. You can login after approval."
@@ -151,8 +151,7 @@ function Register() {
       </header>
 
       <section className="register-section" style={{
-        backgroundImage:
-          "url('https://mediumseagreen-herring-541085.hostingersite.com/assets/images/sign-up-bgimg.png')",
+        backgroundImage: `url(${registerBg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat"

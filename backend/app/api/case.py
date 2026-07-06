@@ -303,6 +303,7 @@ def create_case(
             detail=str(e)
         )
 
+
 @router.get(
     "/cases"
 )
