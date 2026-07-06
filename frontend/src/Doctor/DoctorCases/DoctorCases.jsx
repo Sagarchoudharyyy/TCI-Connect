@@ -23,6 +23,7 @@ function DoctorCases() {
     const [showSidebar, setShowSidebar] = useState(false);
     const [debouncedSearch, setDebouncedSearch] =
         useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
     const [digitalFilesMap,
         setDigitalFilesMap
@@ -193,6 +194,15 @@ function DoctorCases() {
         setDeadlineFilter("");
         setSearchTerm("");
         setCurrentPage(1);
+    };
+
+    const updatePreviewStatus = async (caseId, status) => {
+        return await axios.put(
+            `http://localhost:8000/api/cases/${caseId}/preview-status`,
+            {
+                preview_status: status,
+            }
+        );
     };
 
     const handlePreviewStatus = async (
