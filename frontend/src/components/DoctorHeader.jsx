@@ -8,15 +8,10 @@ import axios from "axios";
 import "../DoctorStyle/DoctorHeader.css";
 import { FaBars } from "react-icons/fa";
 
-
-
-
 function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
     const [notifications, setNotifications] = useState([]);
     const notificationRef = useRef(null);
     const [showDropdown, setShowDropdown] = useState(false);
-
-
 
     const fetchNotifications = async () => {
         try {
@@ -206,7 +201,7 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
                             data-bs-toggle="dropdown"
                             aria-expanded="false"
                             onClick={(e) => e.preventDefault()}
-
+ 
                         >
                             <img
                                 src="https://mediumseagreen-herring-541085.hostingersite.com/uploads/profile/1763620087_489949f1a5c1780dbb22.jpg"
