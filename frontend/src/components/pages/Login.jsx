@@ -5,6 +5,7 @@ import axios from "axios";
 import { BiShow, BiHide } from "react-icons/bi";
 import "../../styles/login.css";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import loginBg from "../../assets/login-bgimg.png";
 
 function Login() {
     const navigate = useNavigate();
@@ -76,7 +77,7 @@ function Login() {
                 }
             );
 
-      
+
             if (!response.data.access_token) {
                 setError(
                     response.data.message ||
@@ -147,8 +148,7 @@ function Login() {
                 </div>
             </header>
             <section className="login-form-section" style={{
-                backgroundImage:
-                    "url('https://mediumseagreen-herring-541085.hostingersite.com/assets/images/login-bgimg.png')",
+                backgroundImage: `url(${loginBg})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat"
