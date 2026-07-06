@@ -2,10 +2,11 @@ import DoctorSideBar from "../components/DoctorSideBar";
 import DoctorHeader from "../components/DoctorHeader";
 import { FaPencilAlt } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "../DoctorStyle/Setting.css"
 import { FaEdit } from "react-icons/fa";
+import axios from "axios";
 function Profile() {
 
 
@@ -15,70 +16,59 @@ function Profile() {
     const [showPassword, setShowPassword] =
         useState(false);
     const [showSidebar, setShowSidebar] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [profilePreview, setProfilePreview] = useState(
+        null
+    );
+    const [user, setUser] = useState(null);
 
-    const user = JSON.parse(localStorage.getItem("user"));
-    const handleSubmit = (e) => {
+    useEffect(() => {
+        fetchProfile();
+    }, []);
+    const handleSubmit = async (e) => {
+
         e.preventDefault();
-
-        const fullName =
-            document.getElementById("username").value.trim();
-
-        const phone =
-            document.getElementById("phone").value.trim();
-
-        const businessName =
-            document.getElementById("businessName").value.trim();
-
-        const licenseNumber =
-            document.getElementById("licenseNumber").value.trim();
-
-        const vatId =
-            document.getElementById("vatId").value.trim();
-
-        const country =
-            document.getElementById("country").value;
-
-        const address =
-            document.getElementById("address").value.trim();
-
-        // Full Name
-        if (!fullName) {
+        if (!user) {
+            alert("Profile is still loading");
+            return;
+        }
+        if (!user.full_name) {
             alert("Full Name is required");
             return;
         }
 
         // Phone
-        if (!/^\d{10}$/.test(phone)) {
+        if (!/^\d{10}$/.test(user.phone)) {
             alert("Phone number must be 10 digits");
             return;
         }
 
         // Business Name
-        if (!businessName) {
+        if (!user.business_name) {
             alert("Business Name is required");
             return;
         }
 
         // License Number
-        if (!licenseNumber) {
+        if (!user.license_number) {
             alert("License Number is required");
             return;
         }
 
         // VAT ID
-        if (!vatId) {
+        if (!user.vat_id) {
             alert("VAT ID is required");
             return;
         }
 
         // Country
-        if (!country) {
+        if (!user.country) {
             alert("Please select a country");
             return;
         }
 
         // Address
-        if (!address) {
+        if (!user.address) {
             alert("Address is required");
             return;
         }
@@ -104,8 +94,80 @@ function Profile() {
             }
         }
 
-        alert("Validation Passed");
+        const token = localStorage.getItem("token");
+
+        try {
+            const response = await axios.put(
+                "http://127.0.0.1:8000/api/update-profile",
+                user,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            if (selectedFile) {
+
+                const formData = new FormData();
+
+                formData.append("file", selectedFile);
+
+                await axios.post(
+                    "http://127.0.0.1:8000/api/upload-profile-image",
+                    formData,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "multipart/form-data"
+                        }
+                    }
+                );
+            }
+
+            await fetchProfile();
+
+            alert("Profile Updated Successfully");
+
+        } catch (error) {
+            console.log(error);
+            alert("Profile Update Failed");
+        }
     };
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+
+        if (file) {
+            setSelectedFile(file);
+            setProfilePreview(URL.createObjectURL(file));
+        }
+    };
+
+    const fetchProfile = async () => {
+        try {
+            const token = localStorage.getItem("token");
+
+            const response = await axios.get(
+                "http://127.0.0.1:8000/api/profile",
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            setUser(response.data.user);
+
+            localStorage.setItem(
+                "user",
+                JSON.stringify(response.data.user)
+            );
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <div className="container-fluid p-0">
             <div className="row g-0 doctor-dashboard-main">
@@ -131,9 +193,7 @@ function Profile() {
                                 <div className="col-lg-6">
                                     <div className="card">
                                         <div className="card-body">
-                                            {/* <form action="https://mediumseagreen-herring-541085.hostingersite.com/client/update-profile"
-                                                method="post"
-                                                encType="multipart/form-data"> */}
+
                                             <form onSubmit={handleSubmit}>
                                                 <div className="row mb-3">
                                                     <label
@@ -145,11 +205,23 @@ function Profile() {
 
                                                     <div className="col-sm-9">
                                                         <div className="position-relative" style={{ width: "150px", height: "150px" }}>
-                                                            <img id="profilePreview" src="https://mediumseagreen-herring-541085.hostingersite.com/uploads/profile/1763620087_489949f1a5c1780dbb22.jpg" alt="Profile Image" className="rounded-circle border" style={{
-                                                                width: "100%",
-                                                                height: "100%",
-                                                                objectFit: "cover"
-                                                            }} />
+                                                            <img
+                                                                id="profilePreview"
+                                                                src={
+                                                                    profilePreview
+                                                                        ? profilePreview
+                                                                        : user?.profile_image
+                                                                            ? `http://127.0.0.1:8000/${user.profile_image}`
+                                                                            : "/default-profile.png"
+                                                                }
+                                                                alt="Profile Image"
+                                                                className="rounded-circle border"
+                                                                style={{
+                                                                    width: "100%",
+                                                                    height: "100%",
+                                                                    objectFit: "cover"
+                                                                }}
+                                                            />
                                                             <label
                                                                 htmlFor="profileFileInput"
                                                                 className="position-absolute"
@@ -181,6 +253,7 @@ function Profile() {
                                                                 id="profileFileInput"
                                                                 className="d-none"
                                                                 accept="image/*"
+                                                                onChange={handleImageChange}
                                                             />
 
                                                         </div>
@@ -199,7 +272,13 @@ function Profile() {
                                                             type="text"
                                                             id="username"
                                                             name="username"
-                                                            defaultValue={user?.full_name}
+                                                            value={user?.full_name || ""}
+                                                            onChange={(e) =>
+                                                                setUser({
+                                                                    ...user,
+                                                                    full_name: e.target.value
+                                                                })
+                                                            }
                                                             className="form-control"
                                                         />
                                                     </div>
@@ -237,16 +316,7 @@ function Profile() {
                                                                     }}
                                                                 />
                                                             </div>
-                                                            {/* <div
-                                                                className="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center"
-                                                                style={{
-                                                                    width: "30px",
-                                                                    height: "30px",
-                                                                    border: "2px solid #dee2e6"
-                                                                }}
-                                                            >
-                                                                <MdEdit size={16} color="#fff" />
-                                                            </div> */}
+
                                                         </span>
                                                     </div>
                                                 </div>
@@ -324,7 +394,13 @@ function Profile() {
                                                 <div className="row mb-3">
                                                     <label htmlFor="inputText" className="col-sm-3 col-form-label">Phone</label>
                                                     <div className="col-sm-9">
-                                                        <input type="number" id="phone" name="phone" className="form-control" defaultValue={user?.phone} />
+                                                        <input type="number" id="phone" name="phone" className="form-control" value={user?.phone || ""}
+                                                            onChange={(e) =>
+                                                                setUser({
+                                                                    ...user,
+                                                                    phone: e.target.value
+                                                                })
+                                                            } />
                                                     </div>
                                                 </div>
                                                 <div className="row mb-3">
@@ -341,7 +417,15 @@ function Profile() {
                                                             id="businessName"
                                                             name="business_name"
                                                             className="form-control"
-                                                            defaultValue={user?.business_name} />
+                                                            value={user?.business_name || ""}
+                                                            onChange={(e) =>
+                                                                setUser({
+                                                                    ...user,
+                                                                    business_name: e.target.value
+                                                                })
+                                                            }
+
+                                                        />
                                                     </div>
                                                 </div>
                                                 <div className="row mb-3">
@@ -358,7 +442,14 @@ function Profile() {
                                                             id="licenseNumber"
                                                             name="license_number"
                                                             className="form-control"
-                                                            defaultValue={user?.license_number} />
+                                                            value={user?.license_number || ""}
+                                                            onChange={(e) =>
+                                                                setUser({
+                                                                    ...user,
+                                                                    license_number: e.target.value
+                                                                })
+                                                            }
+                                                        />
                                                     </div>
                                                 </div>
                                                 <div className="row mb-3">
@@ -375,7 +466,13 @@ function Profile() {
                                                             id="vatId"
                                                             name="vat_id"
                                                             className="form-control"
-                                                            defaultValue={user?.vat_id} />
+                                                            value={user?.vat_id || ""}
+                                                            onChange={(e) =>
+                                                                setUser({
+                                                                    ...user,
+                                                                    vat_id: e.target.value
+                                                                })
+                                                            } />
                                                     </div>
                                                 </div><div className="row mb-3">
                                                     <label
@@ -390,7 +487,13 @@ function Profile() {
                                                             id="country"
                                                             name="country"
                                                             className="form-select"
-                                                            defaultValue={user?.country}
+                                                            value={user?.country || ""}
+                                                            onChange={(e) =>
+                                                                setUser({
+                                                                    ...user,
+                                                                    country: e.target.value
+                                                                })
+                                                            }
                                                         >
                                                             <option value="">
                                                                 Select Country
@@ -423,7 +526,14 @@ function Profile() {
                                                             id="address"
                                                             name="address"
                                                             className="form-control"
-                                                            defaultValue={user?.address} />
+                                                            value={user?.address || ""}
+                                                            onChange={(e) =>
+                                                                setUser({
+                                                                    ...user,
+                                                                    address: e.target.value
+                                                                })
+                                                            }
+                                                        />
                                                     </div>
                                                 </div><div className="row mb-3">
                                                     <div className="col-sm-10">

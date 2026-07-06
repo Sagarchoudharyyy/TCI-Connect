@@ -5,13 +5,15 @@ const ProtectedRoute = ({
     allowedRoles
 }) => {
 
-    const token =
-        localStorage.getItem("token");
+    const token = localStorage.getItem("token");
+
+    const userString = localStorage.getItem("user");
 
     const user =
-        JSON.parse(
-            localStorage.getItem("user") || "null"
-        );
+        userString &&
+            userString !== "undefined"
+            ? JSON.parse(userString)
+            : null;
 
     if (!token || !user) {
         return (
@@ -26,9 +28,6 @@ const ProtectedRoute = ({
         allowedRoles &&
         !allowedRoles.includes(user.role)
     ) {
-        console.log("USER:", user);
-        console.log("ROLE:", user?.role);
-        console.log("ALLOWED:", allowedRoles);
         return (
             <Navigate
                 to="/login"

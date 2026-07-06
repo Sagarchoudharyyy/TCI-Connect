@@ -8,21 +8,39 @@ import axios from "axios";
 import "../DoctorStyle/DoctorHeader.css";
 import { FaBars } from "react-icons/fa";
 
-
-
-
 function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
     const [notifications, setNotifications] = useState([]);
     const notificationRef = useRef(null);
     const [showDropdown, setShowDropdown] = useState(false);
+    const [user, setUser] = useState(null);
+    const fetchProfile = async () => {
+        try {
+            const token = localStorage.getItem("token");
 
+            const response = await axios.get(
+                "http://127.0.0.1:8000/api/profile",
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
+            setUser(response.data.user);
+
+            localStorage.setItem(
+                "user",
+                JSON.stringify(response.data.user)
+            );
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const fetchNotifications = async () => {
         try {
-            const user = JSON.parse(
-                localStorage.getItem("user")
-            );
+
             if (!user) return;
             const response = await axios.get(
                 `http://127.0.0.1:8000/api/client/notifications/${user.id}`
@@ -36,6 +54,7 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
 
     useEffect(() => {
         fetchNotifications();
+        fetchProfile();
     }, []);
 
     useEffect(() => {
@@ -81,9 +100,6 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
         (item) => !item.is_read
     ).length;
 
-    const user = JSON.parse(
-        localStorage.getItem("user")
-    );
     return (
         <div className="mc-ibxx">
             <div className="doctor-header" >
@@ -209,7 +225,11 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
 
                         >
                             <img
-                                src="https://mediumseagreen-herring-541085.hostingersite.com/uploads/profile/1763620087_489949f1a5c1780dbb22.jpg"
+                                src={
+                                    user?.profile_image
+                                        ? `http://127.0.0.1:8000/${user.profile_image}`
+                                        : "/default-profile.png"
+                                }
                                 alt="Profile"
                                 className="rounded-circle me-2"
                                 width="40"

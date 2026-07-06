@@ -42,3 +42,14 @@ class DoctorResponse(BaseModel):
 
     class Config:
         from_attributes = True
+        
+
+class UpdateProfileRequest(BaseModel):
+    full_name: str
+    phone: str
+    business_name: str
+    business_type: str
+    license_number: str
+    vat_id: str
+    country: str
+    address: str        

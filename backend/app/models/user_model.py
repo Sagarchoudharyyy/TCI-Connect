@@ -33,6 +33,8 @@ class User(Base):
 
     business_type = Column(String)
     
+    profile_image = Column(String, nullable=True)
+    
     created_at = Column(DateTime,server_default=func.now())
 
     last_updated = Column(
