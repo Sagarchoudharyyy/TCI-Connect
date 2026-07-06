@@ -321,7 +321,8 @@ def upload_profile_image(
     os.makedirs("uploads/profile", exist_ok=True)
 
     filename = f"user_{user.id}_{file.filename}"
-    file_path = os.path.join("uploads/profile", filename)
+    file_path = os.path.join("uploads", "profile", filename)
+    file_path = file_path.replace("\\", "/")
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)

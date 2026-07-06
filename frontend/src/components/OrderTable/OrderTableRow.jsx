@@ -19,7 +19,11 @@ function OrderTableRow({
         <tr>
             <td className="text-center">
                 <img
-
+                    src={
+                        item.profile_image
+                            ? `http://127.0.0.1:8000/${item.profile_image.replace(/\\/g, "/")}`
+                            : "/images/default-profile.png"
+                    }
                     alt="profile"
                     width="40"
                 />

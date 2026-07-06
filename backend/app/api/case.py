@@ -356,6 +356,9 @@ def get_cases(
 
         result.append({
             "id": case.id,
+            "profile_image":
+                case.doctor.profile_image
+                if case.doctor else None,
             "doctor_name":
                 case.doctor.full_name
                 if case.doctor else None,
@@ -429,6 +432,9 @@ def get_case(
         return {
             "id": case.id,
             "doctor_id": case.doctor_id,
+            "profile_image":
+                case.doctor.profile_image
+                if case.doctor else None,
             "doctor_name": case.doctor.full_name,
             "patient_name": case.patient_name,
             "patient_phone": case.patient_phone,
