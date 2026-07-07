@@ -35,7 +35,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 
-
 function About() {
     const [activeSection, setActiveSection] = useState("dental_tab_section")
     const partners = [
@@ -88,14 +87,13 @@ function About() {
     }, []);
     return (
         <>
+            <Header />
             <div className="bg-white">
-                <Header />
                 <section className="all-banner">
                     <div className="container h-100">
                         <div className="row justify-content-center align-items-center h-100">
                             <div className="col-lg-11">
                                 <div className="all-banner-meta">
-
                                     <div className="all-banner-content">
                                         <ul className="banner-nav">
                                             <li>
@@ -126,48 +124,48 @@ function About() {
                         <div className="on-section-meta">
                             <ul>
                                 <li>
-                                    <Link
+                                    <a
                                         to="#dental_tab_section"
                                         className={activeSection === "dental_tab_section" ? "active" : ""}
                                     >
                                         ABOUT TCI DENTAL LAB
-                                    </Link>
+                                    </a>
                                 </li>
 
                                 <li>
-                                    <Link
+                                    <a
                                         to="#about_service_section"
                                         className={activeSection === "about_service_section" ? "active" : ""}
                                     >
                                         OUR PHILOSOPHY
-                                    </Link>
+                                    </a>
                                 </li>
 
                                 <li>
-                                    <Link
+                                    <a
                                         to="#our_lab_section"
                                         className={activeSection === "our_lab_section" ? "active" : ""}
                                     >
                                         OUR LABS
-                                    </Link>
+                                    </a>
                                 </li>
 
                                 <li>
-                                    <Link
+                                    <a
                                         to="#quality_sec"
                                         className={activeSection === "quality_sec" ? "active" : ""}
                                     >
                                         QUALITY &amp; ASSURANCE
-                                    </Link>
+                                    </a>
                                 </li>
 
                                 <li>
-                                    <Link
+                                    <a
                                         to="#our_brands"
                                         className={activeSection === "our_brands" ? "active" : ""}
                                     >
                                         OUR PARTNERS
-                                    </Link>
+                                    </a>
                                 </li>
                             </ul>
                         </div>

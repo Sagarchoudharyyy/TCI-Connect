@@ -1,11 +1,12 @@
 import "../designcomponentstyle/contact.css";
+import "../style/home.css";
 
 import ContactOverly from "../../assets/contact-overly.png";
 
 function ContactUs() {
   return (
     <>
-      <section className="contact-section px-5">
+      <section className="contact-section">
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-11">
