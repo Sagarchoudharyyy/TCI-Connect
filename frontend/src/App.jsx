@@ -46,7 +46,7 @@ import Privacy from "./design-part/html/Privacy";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/new-tciconnect/frontend">
       <ScrollToTop />
       <Routes>
 
@@ -85,18 +85,18 @@ function App() {
           element={< Privacy />}
         />
 
-        <Route path="/about-us" element={<About />} />
-
         <Route
-          path="/"
-          element={<Login />}
-        />
+          path="/about-us"
+          element={<About />} />
 
         <Route
           path="/login"
           element={<Login />}
         />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route
+          path="/forgot-password"
+          element={<ForgotPassword />}
+        />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/change-password" element={<ChangePassword />} />
         <Route
