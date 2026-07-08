@@ -115,8 +115,7 @@ function ViewCaseDetail() {
                 <div className="main-content">
 
                     <div className="main-c-inner">
-
-
+                        
                         <section className="view-case-section">
                             <div className="container">
                                 <h1 className="text-center mb-4" style={{ color: "#0152a8" }}>View Case Details</h1>
