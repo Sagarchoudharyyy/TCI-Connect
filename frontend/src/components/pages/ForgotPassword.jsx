@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import axios from "axios";
+import api from "../../services/api";
 import { BiShow, BiHide } from "react-icons/bi";
 import "../../styles/forgotpassword.css";
 
@@ -14,8 +14,8 @@ function ForgotPassword() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/forgot-password",
+      const response = await api.post(
+        "/forgot-password",
         {
           email: email,
         }

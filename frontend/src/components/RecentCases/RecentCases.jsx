@@ -20,6 +20,7 @@ import RecentCasesFilter from "./RecentCasesFilter";
 import RecentCasesTopBar from "./RecentCasesTopBar";
 import RecentCasesTable from "./RecentCasesTable";
 import RecentCasesPagination from "./RecentCasesPagination";
+
 function RecentCases() {
     const [statusFilter, setStatusFilter] = useState("");
     const [deadlineFilter, setDeadlineFilter] = useState("");

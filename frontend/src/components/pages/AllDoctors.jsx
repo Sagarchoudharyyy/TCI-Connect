@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import Sidebar from "../Sidebar";
@@ -25,9 +25,7 @@ function AllDoctors() {
   const fetchDoctors = async () => {
     try {
 
-      const response = await axios.get(
-        "http://127.0.0.1:8000/api/doctors"
-      );
+      const response = await api.get("/doctors");
 
       setDoctors(response.data);
 
@@ -40,12 +38,9 @@ function AllDoctors() {
 
       try {
 
-        const response =
-          await axios.put(
-            `http://127.0.0.1:8000/api/toggle-doctor-status/${doctorId}`
-          );
-
-
+        const response = await api.put(
+          `/toggle-doctor-status/${doctorId}`
+        );
 
         fetchDoctors();
 
@@ -67,10 +62,9 @@ function AllDoctors() {
 
     try {
 
-      await axios.delete(
-        `http://127.0.0.1:8000/api/doctors/${doctorId}`
+      await api.delete(
+        `/doctors/${doctorId}`
       );
-
       alert("Doctor deleted successfully");
 
       fetchDoctors();

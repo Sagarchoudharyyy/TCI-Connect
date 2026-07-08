@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../services/api";
 import {
     FaEye,
     FaUpload,
@@ -55,21 +55,15 @@ function OrdersTable() {
     ) => {
         try {
 
-            const response =
-                await axios.get(
-                    `http://127.0.0.1:8000/api/case_files/${caseId}`
-                );
-
-
-
+            const response = await api.get(
+                `/case_files/${caseId}`
+            );
             const files =
                 response.data.filter(
                     file =>
                         file.file_category ===
                         "preview_file"
                 );
-
-
 
             setPreviewFilesMap(prev => ({
                 ...prev,
@@ -91,16 +85,18 @@ function OrdersTable() {
     }, [cases]);
     const fetchCases = async () => {
         try {
-            const response = await axios.get("http://127.0.0.1:8000/api/cases",
+            const response = await api.get(
+                "/cases",
                 {
-                    params:
-                    {
-                        page: currentPage, limit: entriesPerPage,
+                    params: {
+                        page: currentPage,
+                        limit: entriesPerPage,
                         search: searchTerm || undefined,
                         status: statusFilter || undefined,
-                        deadline: deadlineFilter || undefined
-                    }
-                });
+                        deadline: deadlineFilter || undefined,
+                    },
+                }
+            );
             setCases(response.data.items);
             setTotalPages(response.data.pages);
             setTotalCases(response.data.total);
@@ -118,10 +114,9 @@ function OrdersTable() {
     const handleViewCaseDocument =
         async (caseId) => {
             try {
-                const response =
-                    await axios.get(
-                        `http://localhost:8000/api/case_files/${caseId}`
-                    );
+                const response = await api.get(
+                    `/case_files/${caseId}`
+                );
 
                 const caseDocument =
                     response.data.find(
@@ -138,12 +133,11 @@ function OrdersTable() {
                 }
 
                 const url =
-                    `http://127.0.0.1:8000/${caseDocument.file_path.replace(
+                    `${import.meta.env.VITE_FILE_URL}/${caseDocument.file_path.replace(
                         /\\/g,
                         "/"
                     )}`;
 
-                // Open in same tab
                 window.location.href = url;
 
             } catch (error) {
@@ -153,10 +147,9 @@ function OrdersTable() {
     const handleViewPreviewFile =
         async (caseId) => {
             try {
-                const response =
-                    await axios.get(
-                        `http://127.0.0.1:8000/api/case_files/${caseId}`
-                    );
+                const response = await api.get(
+                    `/case_files/${caseId}`
+                );
 
                 const previewFile =
                     response.data.find(
@@ -173,7 +166,7 @@ function OrdersTable() {
                 }
 
                 const url =
-                    `http://127.0.0.1:8000/${previewFile.file_path.replace(
+                    `${import.meta.env.VITE_FILE_URL}/${previewFile.file_path.replace(
                         /\\/g,
                         "/"
                     )}`;
@@ -189,11 +182,9 @@ function OrdersTable() {
         caseId
     ) => {
         try {
-            const response =
-                await axios.get(
-                    `http://127.0.0.1:8000/api/case_files/${caseId}`
-                );
-
+            const response = await api.get(
+                `/case_files/${caseId}`
+            );
             const files =
                 response.data.filter(
                     file =>
@@ -231,7 +222,7 @@ function OrdersTable() {
         if (!confirmDelete)
             return;
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/cases/${id}`);
+            await api.delete(`/cases/${id}`);
 
             fetchCases();
             alert("Case deleted successfully");
@@ -245,8 +236,8 @@ function OrdersTable() {
 
             try {
 
-                await axios.put(
-                    `http://127.0.0.1:8000/api/cases/${caseId}/status`,
+                await api.put(
+                    `/cases/${caseId}/status`,
                     {
                         status: newStatus
                     }
@@ -264,10 +255,9 @@ function OrdersTable() {
         caseId
     ) => {
         try {
-            const response =
-                await axios.get(
-                    `http://127.0.0.1:8000/api/case_files/${caseId}`
-                );
+            const response = await api.get(
+                `/case_files/${caseId}`
+            );
 
             const digitalFiles =
                 response.data.filter(

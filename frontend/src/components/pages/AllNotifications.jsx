@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import Sidebar from "../Sidebar";
 import Header from "../Header";
 
@@ -16,10 +16,9 @@ function AllNotifications() {
 
   const fetchNotifications = async () => {
     try {
-      const response = await axios.get(
-        "http://127.0.0.1:8000/api/notifications/all"
+      const response = await api.get(
+        "/notifications/all"
       );
-
       setNotifications(response.data);
 
     } catch (error) {
@@ -31,8 +30,8 @@ function AllNotifications() {
 
 
     try {
-      await axios.put(
-        `http://127.0.0.1:8000/api/notifications/${item.id}/read`
+      await api.put(
+        `/notifications/${item.id}/read`
       );
 
       await fetchNotifications();

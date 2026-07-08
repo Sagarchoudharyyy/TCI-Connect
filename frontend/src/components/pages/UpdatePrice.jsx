@@ -6,7 +6,7 @@ import Header from "../Header";
 import Sidebar from "../Sidebar";
 import { useLocation } from "react-router-dom";
 
-import axios from "axios";
+import api from "../../services/api";
 
 import {
     useParams,
@@ -45,18 +45,11 @@ function UpdatePrice() {
         e.preventDefault();
         try {
             if (id) {
-                await axios.put(
-                    `http://127.0.0.1:8000/api/pricing/${id}`,
-                    formData
-                );
+                await api.put(`/pricing/${id}`, formData);
 
             }
             else {
-                await axios.post(
-                    "http://127.0.0.1:8000/api/pricing",
-                    formData
-                );
-
+                await api.post("/pricing", formData);
             }
 
             navigate("/admin/pricing", {
@@ -76,10 +69,8 @@ function UpdatePrice() {
     useEffect(() => {
 
         if (id) {
-            axios
-                .get(
-                    `http://127.0.0.1:8000/api/pricing/${id}`
-                )
+            api
+                .get(`/pricing/${id}`)
                 .then((res) => {
                     setFormData(res.data);
                 })

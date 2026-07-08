@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import axios from "axios"; import "../../styles/resetpassword.css";
+import api from "../../services/api";
+import "../../styles/resetpassword.css";
 
 function ResetPassword() {
   const [password, setPassword] = useState("");
@@ -28,13 +29,10 @@ function ResetPassword() {
 
     setError("");
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/reset-password",
-        {
-          email: userEmail,
-          password: password,
-        }
-      );
+      const response = await api.post("/reset-password", {
+        email: userEmail,
+        password: password,
+      });
 
       if (response.data.success) {
         alert("Password updated successfully");

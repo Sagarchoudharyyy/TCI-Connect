@@ -1,10 +1,10 @@
-import axios from "axios";
+import api from "../../services/api";
 import Sidebar from "../Sidebar";
 import Header from "../Header";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../styles/ViewCaseDetail.css";
-// import heroImg from "../../assets/hero.png";
+
 
 function ViewCaseDetail() {
 
@@ -26,11 +26,8 @@ function ViewCaseDetail() {
     const getCaseFiles = async () => {
         try {
 
-            const response = await axios.get(
-                `http://127.0.0.1:8000/api/case_files/${id}`
-            );
+            const response = await api.get(`/case_files/${id}`);
             setFiles(response.data);
-
         }
         catch (error) {
             console.error(
@@ -41,11 +38,9 @@ function ViewCaseDetail() {
     };
     const getCaseDetails = async () => {
         try {
-            const response = await axios.get(
-                `http://127.0.0.1:8000/api/cases/${id}`
-            )
-            setCasedata(response.data);
 
+            const response = await api.get(`/cases/${id}`);
+            setCasedata(response.data);
             if (
                 response.data.doctor_id
             ) {
@@ -64,9 +59,7 @@ function ViewCaseDetail() {
         try {
 
 
-            const response = await axios.get(
-                `http://127.0.0.1:8000/api/doctors/${id}`
-            );
+            const response = await api.get(`/doctors/${id}`);
 
             setdoctordata(
                 response.data
@@ -115,7 +108,7 @@ function ViewCaseDetail() {
                 <div className="main-content">
 
                     <div className="main-c-inner">
-                        
+
                         <section className="view-case-section">
                             <div className="container">
                                 <h1 className="text-center mb-4" style={{ color: "#0152a8" }}>View Case Details</h1>
@@ -360,7 +353,6 @@ function ViewCaseDetail() {
                                         </div>
                                     </div>
                                 </div>
-
                                 <div className="card">
                                     <div className="card-header fw-bold">Uploaded Files</div>
                                     <div className="card-body">
@@ -380,7 +372,7 @@ function ViewCaseDetail() {
                                                 <div className="file-buttons d-flex flex-wrap gap-2 mt-2 mt-sm-0">
 
                                                     <a
-                                                        href={`http://127.0.0.1:8000/${file.file_path.replace(/\\/g, "/")}`}
+                                                        href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(/\\/g, "/")}`}
                                                         target="_blank"
                                                         rel="noreferrer"
                                                         className="btn btn-sm btn-primary"
@@ -391,7 +383,7 @@ function ViewCaseDetail() {
                                                     </a>
 
                                                     <a
-                                                        href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
+                                                        href={`${import.meta.env.VITE_API_URL}/download-file?file_path=${encodeURIComponent(file.file_path)}`}
                                                         download
                                                         className="btn btn-sm btn-success"
                                                     >
@@ -421,7 +413,7 @@ function ViewCaseDetail() {
                                                 <div className="file-buttons d-flex flex-wrap gap-2 mt-2 mt-sm-0">
 
                                                     <a
-                                                        href={`http://127.0.0.1:8000/${file.file_path.replace(/\\/g, "/")}`}
+                                                        href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(/\\/g, "/")}`}
                                                         target="_blank"
                                                         rel="noreferrer"
                                                         className="btn btn-sm btn-primary"
@@ -430,9 +422,8 @@ function ViewCaseDetail() {
                                                         {" "}
                                                         Preview
                                                     </a>
-
                                                     <a
-                                                        href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
+                                                        href={`${import.meta.env.VITE_API_URL}/download-file?file_path=${encodeURIComponent(file.file_path)}`}
                                                         className="btn btn-sm btn-success"
                                                     >
                                                         <i className="bi bi-download"></i>
@@ -454,8 +445,6 @@ function ViewCaseDetail() {
                 </div>
             </div>
         </div>
-
-
     )
 }
 export default ViewCaseDetail;

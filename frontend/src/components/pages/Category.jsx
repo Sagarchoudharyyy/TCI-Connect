@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
 import { FaEdit, FaTrash } from "react-icons/fa";
@@ -21,14 +21,11 @@ function Category() {
     };
 
     const getCategories = () => {
-        axios
-            .get("http://127.0.0.1:8000/api/category")
-            .then((res) => {
-                setCategories(res.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        api.get("/category").then((res) => {
+            setCategories(res.data);
+        }).catch((err) => {
+            console.log(err);
+        });
     };
 
     useEffect(() => {
@@ -40,16 +37,16 @@ function Category() {
 
         try {
             if (editId) {
-                await axios.put(
-                    `http://127.0.0.1:8000/api/category/${editId}`,
+                await api.put(
+                    `/category/${editId}`,
                     formData
                 );
 
                 setMessage("Category updated successfully");
             }
             else {
-                await axios.post(
-                    "http://127.0.0.1:8000/api/category",
+                await api.post(
+                    "/category",
                     formData
                 );
                 setMessage("Category added successfully")
@@ -84,8 +81,8 @@ function Category() {
         }
 
         try {
-            await axios.delete(
-                `http://127.0.0.1:8000/api/category/${id}`
+            await api.delete(
+                `/category/${id}`
             );
 
             setMessage("Category deleted successfully");

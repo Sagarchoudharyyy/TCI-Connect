@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import axios from "axios";
+import api from "../../services/api";
 import "../../styles/register.css";
 import ReCAPTCHA from "react-google-recaptcha";
 import registerBg from "../../assets/sign-up-bgimg.png";
@@ -95,12 +95,10 @@ function Register() {
     }
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/register",
+      const response = await api.post(
+        "/register",
         formData
       );
-
-
 
       setSuccess(
         "Registration successful! Your account is under admin review. You can login after approval."
@@ -402,7 +400,7 @@ function Register() {
 
                         <div className="mb-3">
                           <ReCAPTCHA
-                            sitekey="6LfechMtAAAAAIUbD9IBsAa2LKje12fmL9bb_3Z0"
+                            sitekey="6LclWRMtAAAAAJ_p0w3FjPDGBherptSxcGoFx7Yg"
                             onChange={(value) => setCaptchaValue(value)}
                           />
                         </div>

@@ -5,7 +5,7 @@ import "../styles/tables.css";
 
 import DoctorOrderTable from "./DoctorOrderTable/DoctorOrderTable";
 import "../DoctorStyle/DoctorHeader.css";
-import axios from "axios";
+import api from "../services/api";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import DoctorDashboardCards from "./DoctorDashboardCard";
@@ -22,16 +22,12 @@ function DoctorDashboard() {
 
             try {
 
-                const response =
-                    await axios.get(
-                        "http://localhost:8000/api/cases",
-                        {
-                            params: {
-                                page: 1,
-                                limit: 10
-                            }
-                        }
-                    );
+                const response = await api.get("/cases", {
+                    params: {
+                        page: 1,
+                        limit: 10,
+                    },
+                });
 
                 setCases(
                     response.data.items

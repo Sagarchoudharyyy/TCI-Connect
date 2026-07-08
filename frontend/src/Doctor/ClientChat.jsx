@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 
 import { useParams } from "react-router-dom";
 
@@ -37,9 +37,7 @@ function ClientChat() {
   const getUser = async () => {
     try {
 
-      const res = await axios.get(
-        `http://127.0.0.1:8000/api/user/${receiver_id}`
-      );
+      const res = await api.get(`/user/${receiver_id}`);
 
       setUser(res.data);
 
@@ -51,9 +49,7 @@ function ClientChat() {
     try {
 
 
-      await axios.put(
-        `http://127.0.0.1:8000/api/notifications/chat/read/${sender_id}`
-      );
+      await api.put(`/notifications/chat/read/${sender_id}`);
 
 
     } catch (error) {
@@ -64,10 +60,7 @@ function ClientChat() {
   const getMessages = async () => {
     try {
 
-      const res = await axios.get(
-        `http://127.0.0.1:8000/api/messages/${sender_id}/${receiver_id}`
-      );
-
+      const res = await api.get(`/messages/${sender_id}/${receiver_id}`);
       setMessages(res.data);
 
     } catch (error) {
@@ -81,14 +74,11 @@ function ClientChat() {
 
     try {
 
-      await axios.post(
-        "http://127.0.0.1:8000/api/send-message",
-        {
-          sender_id,
-          receiver_id: Number(receiver_id),
-          message: newMessage,
-        }
-      );
+      await api.post("/send-message", {
+        sender_id,
+        receiver_id: Number(receiver_id),
+        message: newMessage,
+      });
 
       getMessages();
       setNewMessage("");
@@ -102,9 +92,7 @@ function ClientChat() {
   const markMessagesRead = async () => {
     try {
 
-      await axios.put(
-        `http://127.0.0.1:8000/api/messages/read/${receiver_id}/${sender_id}`
-      );
+      await api.put(`/messages/read/${receiver_id}/${sender_id}`);
     } catch (error) {
       console.log(error);
     }

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import axios from "axios"; import "../styles/changepassword.css";
+import api from "../services/api";
+import "../styles/changepassword.css";
 
 function ChangePassword() {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -32,8 +33,8 @@ function ChangePassword() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/change-password",
+      const response = await api.post(
+        "/change-password",
         {
           current_password: currentPassword,
           new_password: newPassword,
@@ -44,7 +45,6 @@ function ChangePassword() {
           },
         }
       );
-
 
 
       if (response.data.success) {

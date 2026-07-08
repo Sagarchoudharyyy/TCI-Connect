@@ -9,8 +9,6 @@ function DoctorSideBar({ showSidebar }) {
 
     const location = useLocation();
     const navigate = useNavigate();
-
-
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");

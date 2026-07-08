@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-
+import api from "../../services/api";
 import "../../styles/dashboard.css";
 import "../../styles/sidebar.css";
 import "../../styles/header.css";
@@ -23,10 +22,9 @@ function Dashboard() {
     const fetchDashboardData = async () => {
         try {
 
-            const response = await axios.get(
-                "http://127.0.0.1:8000/api/cases"
+            const response = await api.get(
+                "/cases"
             );
-
             setCases(response.data.items);
 
         } catch (error) {

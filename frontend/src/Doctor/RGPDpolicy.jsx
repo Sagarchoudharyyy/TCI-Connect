@@ -211,11 +211,6 @@ function RGPDpolicy() {
             </p>
 
           </div>
-
-
-
-
-
         </div>
       </div>
     </div>

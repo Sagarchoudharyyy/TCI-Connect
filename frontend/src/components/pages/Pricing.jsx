@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -87,7 +87,7 @@ function Pricing() {
       return;
     }
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/pricing/${id}`);
+      await api.delete(`/pricing/${id}`);
       setMessage("Price deleted successfully");
       setTimeout(() => {
         setMessage("")
@@ -103,10 +103,7 @@ function Pricing() {
 
   const fetchPrices = async () => {
     try {
-      const response = await axios.get(
-        "http://127.0.0.1:8000/api/pricing"
-      );
-
+      const response = await api.get("/pricing");
       setPrices(response.data);
     } catch (error) {
       console.error("Error fetching prices:", error);
@@ -114,7 +111,7 @@ function Pricing() {
   };
   const getPricingData = async () => {
     try {
-      axios.get("http://127.0.0.1:8000/api/pricing").then((response) => {
+      api.get("/pricing").then((response) => {
         setPricingData(response.data);
       });
     }

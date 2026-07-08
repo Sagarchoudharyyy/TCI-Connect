@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../services/api";
 import { useState } from "react";
 
 function UploadDigitalFiles({
@@ -56,8 +56,8 @@ function UploadDigitalFiles({
         uploadData.append("file", fileObj.file);
 
         try {
-            const response = await axios.post(
-                "http://localhost:8000/api/temp-upload",
+            const response = await api.post(
+                "/temp-upload",
                 uploadData,
                 {
                     headers: {
@@ -110,20 +110,15 @@ function UploadDigitalFiles({
                 file.file_path &&
                 !file.file_path.includes("temp_uploads")
             ) {
-                await axios.delete(
-                    `http://localhost:8000/api/case-files/${file.id}`
-                );
+                await api.delete(`/case-files/${file.id}`);
             } else if (
                 file.file_path?.includes("temp_uploads")
             ) {
-                await axios.delete(
-                    "http://localhost:8000/api/delete-temp-file",
-                    {
-                        data: {
-                            file_path: file.file_path,
-                        },
-                    }
-                );
+                await api.delete("/delete-temp-file", {
+                    data: {
+                        file_path: file.file_path,
+                    },
+                });
             }
 
             setDigitalFiles((prev) =>

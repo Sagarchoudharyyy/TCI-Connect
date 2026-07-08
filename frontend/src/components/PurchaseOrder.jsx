@@ -1,5 +1,5 @@
 import "../DoctorStyle/NewCases.css";
-import axios from "axios";
+import api from "../services/api";
 
 function PurchaseOrder({
     formData,
@@ -28,21 +28,18 @@ function PurchaseOrder({
                 uploadedPdf?.file_path &&
                 uploadedPdf.file_path.includes("temp")
             ) {
-                await axios.delete(
-                    "http://localhost:8000/api/delete-temp-file",
-                    {
-                        data: {
-                            file_path: uploadedPdf.file_path,
-                        },
-                    }
-                );
+                await api.delete("/delete-temp-file", {
+                    data: {
+                        file_path: uploadedPdf.file_path,
+                    },
+                });
             }
 
             const uploadData = new FormData();
             uploadData.append("file", file);
 
-            const response = await axios.post(
-                "http://localhost:8000/api/temp-upload",
+            const response = await api.post(
+                "/temp-upload",
                 uploadData,
                 {
                     headers: {
@@ -50,8 +47,7 @@ function PurchaseOrder({
                     },
                     onUploadProgress: (progressEvent) => {
                         const percent = Math.round(
-                            (progressEvent.loaded * 100) /
-                            progressEvent.total
+                            (progressEvent.loaded * 100) / progressEvent.total
                         );
                         setPdfProgress(percent);
                     },
@@ -923,7 +919,6 @@ function PurchaseOrder({
                                     }))
                                 }
                             />
-
                             <label
                                 className="form-check-label"
                                 htmlFor="pmma"
@@ -1932,15 +1927,11 @@ function PurchaseOrder({
                                     if (
                                         formData.pdfUpload?.file_path?.includes("temp")
                                     ) {
-                                        await axios.delete(
-                                            "http://localhost:8000/api/delete-temp-file",
-                                            {
-                                                data: {
-                                                    file_path:
-                                                        formData.pdfUpload.file_path,
-                                                },
-                                            }
-                                        );
+                                        await api.delete("/delete-temp-file", {
+                                            data: {
+                                                file_path: formData.pdfUpload.file_path,
+                                            },
+                                        });
                                     }
 
                                     setUploadedPdf(null);

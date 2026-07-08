@@ -26,7 +26,7 @@ function RecentCasesRow({
                 <img
                     src={
                         item.profile_image
-                            ? `http://127.0.0.1:8000/${item.profile_image.replace(/\\/g, "/")}`
+                            ? `${import.meta.env.VITE_FILE_URL}/${item.profile_image.replace(/\\/g, "/")}`
                             : "/images/default-profile.png"
                     }
                     alt="profile"
@@ -75,7 +75,7 @@ function RecentCasesRow({
                         <div key={file.id}>
 
                             <a
-                                href={`http://127.0.0.1:8000/${file.file_path}`}
+                                href={`${import.meta.env.VITE_FILE_URL}/${file.file_path}`}
                                 target="_blank"
                                 rel="noreferrer"
                                 style={{
@@ -95,7 +95,7 @@ function RecentCasesRow({
                             </a>
 
                             <a
-                                href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(
+                                href={`${import.meta.env.VITE_API_URL}/download-file?file_path=${encodeURIComponent(
                                     file.file_path
                                 )}`}
                                 style={{
@@ -108,7 +108,6 @@ function RecentCasesRow({
                         </div>
                     ))
                 }
-
                 {
                     item.has_digital_files &&
                     digitalFilesMap.length === 0 && (
@@ -286,7 +285,7 @@ function RecentCasesRow({
                                                 key={file.id}
                                             >
                                                 <a
-                                                    href={`http://127.0.0.1:8000/${file.file_path.replace(
+                                                    href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(
                                                         /\\/g,
                                                         "/"
                                                     )}`}
@@ -444,5 +443,4 @@ function RecentCasesRow({
         </tr>
     );
 }
-
 export default RecentCasesRow;
