@@ -8,7 +8,7 @@ import DoctorCasePagination from "./DoctorCasePagination";
 import DoctorCaseTable from "./DoctorCaseTable";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../services/api";
 
 function DoctorCases() {
 
@@ -41,10 +41,7 @@ function DoctorCases() {
         caseId
     ) => {
         try {
-            const response =
-                await axios.get(
-                    `http://localhost:8000/api/case_files/${caseId}`
-                );
+            const response = await api.get(`/case_files/${caseId}`);
 
             const files =
                 response.data.filter(
@@ -67,11 +64,7 @@ function DoctorCases() {
         caseId
     ) => {
         try {
-            const response =
-                await axios.get(
-                    `http://localhost:8000/api/case_files/${caseId}`
-                );
-
+            const response = await api.get(`/case_files/${caseId}`);
             const files =
                 response.data.filter(
                     file =>
@@ -93,11 +86,7 @@ function DoctorCases() {
         caseId
     ) => {
         try {
-            const response =
-                await axios.get(
-                    `http://localhost:8000/api/case_files/${caseId}`
-                );
-
+            const response = await api.get(`/case_files/${caseId}`);
             const files =
                 response.data.filter(
                     file =>
@@ -134,12 +123,9 @@ function DoctorCases() {
                 params.deadline = deadlineFilter;
             }
 
-            const response = await axios.get(
-                "http://localhost:8000/api/cases",
-                {
-                    params
-                }
-            );
+            const response = await api.get("/cases", {
+                params,
+            });
 
             setCases(response.data.items);
             setTotalPages(response.data.pages);
@@ -153,11 +139,7 @@ function DoctorCases() {
     const handleViewCaseDocument =
         async (caseId) => {
             try {
-                const response =
-                    await axios.get(
-                        `http://localhost:8000/api/case_files/${caseId}`
-                    );
-
+                const response = await api.get(`/case_files/${caseId}`);
                 const caseDocument =
                     response.data.find(
                         file =>
@@ -172,11 +154,10 @@ function DoctorCases() {
                     return;
                 }
 
-                const url =
-                    `http://127.0.0.1:8000/${caseDocument.file_path.replace(
-                        /\\/g,
-                        "/"
-                    )}`;
+                const url = `${import.meta.env.VITE_FILE_URL}/${caseDocument.file_path.replace(
+                    /\\/g,
+                    "/"
+                )}`;
 
                 // Open in same tab
                 window.location.href = url;
@@ -197,8 +178,8 @@ function DoctorCases() {
     };
 
     const updatePreviewStatus = async (caseId, status) => {
-        return await axios.put(
-            `http://localhost:8000/api/cases/${caseId}/preview-status`,
+        return await api.put(
+            `/cases/${caseId}/preview-status`,
             {
                 preview_status: status,
             }
@@ -254,9 +235,7 @@ function DoctorCases() {
 
         try {
 
-            await axios.delete(
-                `http://localhost:8000/api/cases/${caseId}`
-            );
+            await api.delete(`/cases/${caseId}`);
             if (cases.length === 1 && currentPage > 1) {
                 setCurrentPage(currentPage - 1);
             } else {

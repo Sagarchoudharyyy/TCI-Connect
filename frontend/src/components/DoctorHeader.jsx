@@ -4,7 +4,7 @@ import {
     useEffect,
     useRef
 } from "react";
-import axios from "axios";
+import api from "../services/api";
 import "../DoctorStyle/DoctorHeader.css";
 import { FaBars } from "react-icons/fa";
 
@@ -17,14 +17,11 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
         try {
             const token = localStorage.getItem("token");
 
-            const response = await axios.get(
-                "http://127.0.0.1:8000/api/profile",
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const response = await api.get("/profile", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
 
             setUser(response.data.user);
 
@@ -42,9 +39,7 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
         try {
 
             if (!user) return;
-            const response = await axios.get(
-                `http://127.0.0.1:8000/api/client/notifications/${user.id}`
-            );
+            const response = await api.get(`/client/notifications/${user.id}`);
 
             setNotifications(response.data);
         } catch (error) {
@@ -84,9 +79,7 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
     const markAsRead = async (id) => {
         try {
 
-            await axios.put(
-                `http://127.0.0.1:8000/api/notifications/${id}/read`
-            );
+            await api.put(`/notifications/${id}/read`);
 
             setNotifications((prev) =>
                 prev.filter((item) => item.id !== id)
@@ -227,7 +220,7 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
                             <img
                                 src={
                                     user?.profile_image
-                                        ? `http://127.0.0.1:8000/${user.profile_image}`
+                                        ? `${import.meta.env.VITE_FILE_URL}/${user.profile_image.replace(/\\/g, "/")}`
                                         : "/default-profile.png"
                                 }
                                 alt="Profile"
@@ -293,8 +286,6 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
                 </div>
             </div>
         </div>
-
-
     );
 }
 

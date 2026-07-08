@@ -1,5 +1,5 @@
 
-import axios from "axios";
+import api from "../../services/api";
 import Sidebar from "../Sidebar";
 import Header from "../Header";
 import "../../styles/chat.css";
@@ -23,8 +23,8 @@ const Chat = () => {
 
     try {
 
-      const res = await axios.get(
-        `http://127.0.0.1:8000/api/messages/${sender_id}/${user.id}`
+      const res = await api.get(
+        `/messages/${sender_id}/${user.id}`
       );
 
       setMessages(res.data);
@@ -35,9 +35,9 @@ const Chat = () => {
   };
   const getActiveUsers = async () => {
     try {
-      const res = await axios.get(
-        "http://127.0.0.1:8000/api/active-users"
-      )
+      const res = await api.get(
+        "/active-users"
+      );
       setUsers(res.data);
 
     }
@@ -57,10 +57,9 @@ const Chat = () => {
 
       console.log("Marking chat notifications for:", user.id);
 
-      const res = await axios.put(
-        `http://127.0.0.1:8000/api/notifications/chat/read/${user.id}`
+      const res = await api.put(
+        `/notifications/chat/read/${user.id}`
       );
-
 
     } catch (error) {
       console.log(error);
@@ -74,9 +73,8 @@ const Chat = () => {
       return;
 
     try {
-
-      await axios.post(
-        "http://127.0.0.1:8000/api/send-message",
+      await api.post(
+        "/send-message",
         {
           sender_id,
           receiver_id: selectedUser.id,

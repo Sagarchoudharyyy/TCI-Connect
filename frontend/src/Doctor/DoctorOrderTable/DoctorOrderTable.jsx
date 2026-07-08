@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { getCases, deleteCase, updatePreviewStatus } from "../../services/caseService";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../services/api";
 import DoctorTableFilter from "./DoctorTableFilter";
 import DoctorTableHeader from "./DoctorTableHeader";
 import DoctorTableBody from "./DoctorTableBody";
@@ -56,10 +56,7 @@ function DoctorOrderTable({
         caseId
     ) => {
         try {
-            const response =
-                await axios.get(
-                    `http://127.0.0.1:8000/api/case_files/${caseId}`
-                );
+            const response = await api.get(`/case_files/${caseId}`);
 
             const files =
                 response.data.filter(
@@ -83,10 +80,7 @@ function DoctorOrderTable({
         caseId
     ) => {
         try {
-            const response =
-                await axios.get(
-                    `http://127.0.0.1:8000/api/case_files/${caseId}`
-                );
+            const response = await api.get(`/case_files/${caseId}`);
 
             const files =
                 response.data.filter(
@@ -129,11 +123,7 @@ function DoctorOrderTable({
         category
     ) => {
         try {
-            const response =
-                await axios.get(
-                    `http://localhost:8000/api/case_files/${caseId}`
-                );
-
+            const response = await api.get(`/case_files/${caseId}`);
             const files =
                 response.data.filter(
                     file =>
@@ -152,10 +142,7 @@ function DoctorOrderTable({
     const handleViewCaseDocument =
         async (caseId) => {
             try {
-                const response =
-                    await axios.get(
-                        `http://localhost:8000/api/case_files/${caseId}`
-                    );
+                const response = await api.get(`/case_files/${caseId}`);
 
                 const caseDocument =
                     response.data.find(
@@ -171,11 +158,10 @@ function DoctorOrderTable({
                     return;
                 }
 
-                const url =
-                    `http://127.0.0.1:8000/${caseDocument.file_path.replace(
-                        /\\/g,
-                        "/"
-                    )}`;
+                const url = `${import.meta.env.VITE_FILE_URL}/${caseDocument.file_path.replace(
+                    /\\/g,
+                    "/"
+                )}`;
 
                 // Open in same tab
                 window.location.href = url;

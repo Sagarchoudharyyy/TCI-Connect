@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../services/api";
 import "../../styles/header.css";
 import { FaBars } from "react-icons/fa";
 
@@ -52,16 +52,14 @@ function Notification() {
         localStorage.getItem("user")
       );
 
-
       let url = "";
 
       if (user?.role === "admin") {
-        url = "http://127.0.0.1:8000/api/admin/notifications";
+        url = "/admin/notifications";
       } else {
-        url = `http://127.0.0.1:8000/api/client/notifications/${user.id}`;
+        url = `/client/notifications/${user.id}`;
       }
-      const response = await axios.get(url);
-
+      const response = await api.get(url);
       setNotifications(response.data);
     } catch (error) {
       console.log(
@@ -76,9 +74,7 @@ function Notification() {
         localStorage.getItem("user")
       );
 
-      await axios.put(
-        `http://127.0.0.1:8000/api/notifications/read-all/${user.id}`
-      );
+      await api.put(`/notifications/read-all/${user.id}`);
 
       await fetchNotifications();
 
@@ -105,9 +101,7 @@ function Notification() {
     );
 
     try {
-      await axios.put(
-        `http://127.0.0.1:8000/api/notifications/${item.id}/read`
-      );
+      await api.put(`/notifications/${item.id}/read`);
 
       // Refresh notifications after marking read
       await fetchNotifications();

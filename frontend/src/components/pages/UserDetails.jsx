@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import "../../styles/UserDetails.css";
 
 
@@ -18,9 +18,7 @@ function UserDetails() {
 
         try {
 
-            const response = await axios.get(
-                `http://127.0.0.1:8000/api/doctors/${id}`
-            );
+            const response = await api.get(`/doctors/${id}`);
 
             setDoctors(response.data);
 

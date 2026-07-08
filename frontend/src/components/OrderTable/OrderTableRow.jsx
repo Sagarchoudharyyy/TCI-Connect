@@ -21,7 +21,7 @@ function OrderTableRow({
                 <img
                     src={
                         item.profile_image
-                            ? `http://127.0.0.1:8000/${item.profile_image.replace(/\\/g, "/")}`
+                            ? `${import.meta.env.VITE_FILE_URL}/${item.profile_image.replace(/\\/g, "/")}`
                             : "/images/default-profile.png"
                     }
                     alt="profile"
@@ -46,7 +46,7 @@ function OrderTableRow({
                         .map((file, index) => (
                             <div key={index}>
                                 <a
-                                    href={`http://127.0.0.1:8000/${file.file_path}`}
+                                    href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(/\\/g, "/")}`}
                                     target="_blank"
                                     rel="noreferrer"
                                     style={{
@@ -59,7 +59,7 @@ function OrderTableRow({
                                 </a>
 
                                 <a
-                                    href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(file.file_path)}`}
+                                    href={`${import.meta.env.VITE_API_URL}/download-file?file_path=${encodeURIComponent(file.file_path)}`}
                                     style={{
                                         color: "#0152a8"
                                     }}
@@ -83,7 +83,7 @@ function OrderTableRow({
                         <div key={file.id}>
 
                             <a
-                                href={`http://127.0.0.1:8000/${file.file_path}`}
+                                href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(/\\/g, "/")}`}
                                 target="_blank"
                                 rel="noreferrer"
                                 style={{
@@ -103,7 +103,7 @@ function OrderTableRow({
                             </a>
 
                             <a
-                                href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(
+                                href={`${import.meta.env.VITE_API_URL}/download-file?file_path=${encodeURIComponent(
                                     file.file_path
                                 )}`}
                                 style={{
@@ -293,7 +293,7 @@ function OrderTableRow({
                                                 key={file.id}
                                             >
                                                 <a
-                                                    href={`http://127.0.0.1:8000/${file.file_path.replace(
+                                                    href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(
                                                         /\\/g,
                                                         "/"
                                                     )}`}

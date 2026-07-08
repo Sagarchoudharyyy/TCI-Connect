@@ -23,7 +23,8 @@ from app.api.notification import router as notification_router
 app = FastAPI(
     title="TCI Connect API",
     description="Dental Lab Management System",
-    version="1.0.0"
+    version="1.0.0",
+    
 )
 app.add_middleware(
     CORSMiddleware,

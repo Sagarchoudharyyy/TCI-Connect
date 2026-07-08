@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
@@ -29,15 +29,13 @@ function Material() {
         }));
     };
 
-    const getMaterial = () => {
-        axios
-            .get("http://127.0.0.1:8000/api/material")
-            .then((res) => {
-                setMaterials(res.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+    const getMaterial = async () => {
+        try {
+            const response = await api.get("/material");
+            setMaterials(response.data);
+        } catch (err) {
+            console.error(err);
+        }
     };
     useEffect(() => {
         getMaterial();
@@ -49,17 +47,11 @@ function Material() {
         try {
 
             if (editId) {
-                await axios.put(
-                    `http://127.0.0.1:8000/api/material/${editId}`,
-                    formData
-                );
+                await api.put(`/material/${editId}`, formData);
 
                 setMessage("Material updated successfully");
             } else {
-                await axios.post(
-                    "http://127.0.0.1:8000/api/material",
-                    formData
-                );
+                await api.post("/material", formData);
 
                 setMessage("Material added successfully");
             }
@@ -94,9 +86,7 @@ function Material() {
             return;
         }
         try {
-            await axios.delete(
-                `http://127.0.0.1:8000/api/material/${id}`
-            );
+            await api.delete(`/material/${id}`);
             setMessage("Material deleted successfully");
             getMaterial();
             setTimeout(() => {

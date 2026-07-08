@@ -70,7 +70,7 @@ function DoctorTableBody({
                     <div key={file.id}>
 
                       <a
-                        href={`http://127.0.0.1:8000/${file.file_path}`}
+                        href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(/\\/g, "/")}`}
                         target="_blank"
                         rel="noreferrer"
                         style={{
@@ -90,7 +90,7 @@ function DoctorTableBody({
                       </a>
 
                       <a
-                        href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(
+                        href={`${import.meta.env.VITE_API_URL}/download-file?file_path=${encodeURIComponent(
                           file.file_path
                         )}`}
                         style={{
@@ -196,7 +196,7 @@ function DoctorTableBody({
                     className="text-center"
                   >
                     <a
-                      href={`http://127.0.0.1:8000/${file.file_path.replace(/\\/g, "/")}`}
+                      href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(/\\/g, "/")}`}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -213,7 +213,7 @@ function DoctorTableBody({
                     <br />
 
                     <a
-                      href={`http://127.0.0.1:8000/api/download-file?file_path=${encodeURIComponent(
+                      href={`${import.meta.env.VITE_API_URL}/download-file?file_path=${encodeURIComponent(
                         file.file_path
                       )}`}
                     >

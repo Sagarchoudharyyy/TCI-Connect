@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 import DoctorHeader from "../components/DoctorHeader";
 import DoctorSideBar from "../components/DoctorSideBar";
 import "../DoctorStyle/doctorpricingtable.css";
@@ -31,11 +31,8 @@ function DoctorPricing() {
     const getPricing = async () => {
         try {
 
-            const res = await axios.get(
-                "http://127.0.0.1:8000/api/pricing"
-            );
+            const res = await api.get("/pricing");
 
-           
             setPricing(res.data);
 
         } catch (error) {

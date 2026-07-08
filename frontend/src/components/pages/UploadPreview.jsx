@@ -3,7 +3,7 @@ import Header from "../Header";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../../services/api";
 function UploadPreview() {
 
     const navigate = useNavigate();
@@ -51,23 +51,18 @@ function UploadPreview() {
             );
 
             try {
-                const response = await axios.post(
-                    `http://127.0.0.1:8000/api/cases/${id}/upload`,
+                const response = await api.post(
+                    `/cases/${id}/upload`,
                     formData,
                     {
                         headers: {
-                            "Content-Type":
-                                "multipart/form-data",
+                            "Content-Type": "multipart/form-data",
                         },
-                        onUploadProgress: (
-                            progressEvent
-                        ) => {
-                            if (!progressEvent.total)
-                                return;
+                        onUploadProgress: (progressEvent) => {
+                            if (!progressEvent.total) return;
 
                             const percent = Math.round(
-                                (progressEvent.loaded * 100) /
-                                progressEvent.total
+                                (progressEvent.loaded * 100) / progressEvent.total
                             );
 
                             setPreviewFiles((prev) =>
@@ -84,7 +79,6 @@ function UploadPreview() {
                         },
                     }
                 );
-
                 setPreviewFiles((prev) =>
                     prev.map((f) =>
                         f.file.name === file.name
@@ -107,10 +101,7 @@ function UploadPreview() {
 
     const removeFile = async (fileId) => {
         try {
-            await axios.delete(
-                `http://127.0.0.1:8000/api/case-files/${fileId}`
-            );
-
+            await api.delete(`/case-files/${fileId}`);
             setPreviewFiles((prev) =>
                 prev.filter(
                     (item) =>
@@ -118,7 +109,6 @@ function UploadPreview() {
                 )
             );
         }
-
         catch (error) {
             alert(
                 "Failed to remove file."
@@ -133,10 +123,7 @@ function UploadPreview() {
     const getCaseDetails = async () => {
         try {
 
-            const response = await axios.get(
-                `http://127.0.0.1:8000/api/cases/${id}`
-            );
-
+            const response = await api.get(`/cases/${id}`);
             setCaseData(response.data);
 
         }
@@ -148,10 +135,7 @@ function UploadPreview() {
         try {
             setIsSubmitting(true);
 
-            await axios.put(
-                `http://127.0.0.1:8000/api/cases/${id}/confirm-preview-files`
-            );
-
+            await api.put(`/cases/${id}/confirm-preview-files`);
             setSuccessMsg(
                 "Preview files submitted successfully!"
             );
@@ -176,9 +160,7 @@ function UploadPreview() {
 
             await Promise.all(
                 filesToDelete.map((file) =>
-                    axios.delete(
-                        `http://127.0.0.1:8000/api/case-files/${file.id}`
-                    )
+                    api.delete(`/case-files/${file.id}`)
                 )
             );
             setPreviewFiles([]);

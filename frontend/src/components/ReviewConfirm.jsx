@@ -107,7 +107,6 @@ function ReviewConfirm({
                         || "None"
                     }
                 </p>
-
                 <p>
                     <strong>
                         Material Type:

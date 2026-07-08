@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 
 import DoctorSideBar from "../components/DoctorSideBar";
 import DoctorHeader from "../components/DoctorHeader";
@@ -340,12 +340,7 @@ function NewCases() {
 
 
 
-
-            const response =
-                await axios.post(
-                    "http://localhost:8000/api/cases",
-                    payload
-                );
+            const response = await api.post("/cases", payload);
 
 
             setStep(4);

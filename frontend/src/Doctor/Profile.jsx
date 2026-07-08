@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "../DoctorStyle/Setting.css"
 import { FaEdit } from "react-icons/fa";
-import axios from "axios";
+import api from "../services/api";
 function Profile() {
 
 
@@ -97,13 +97,13 @@ function Profile() {
         const token = localStorage.getItem("token");
 
         try {
-            const response = await axios.put(
-                "http://127.0.0.1:8000/api/update-profile",
+            const response = await api.put(
+                "/update-profile",
                 user,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+                        Authorization: `Bearer ${token}`,
+                    },
                 }
             );
 
@@ -113,14 +113,14 @@ function Profile() {
 
                 formData.append("file", selectedFile);
 
-                await axios.post(
-                    "http://127.0.0.1:8000/api/upload-profile-image",
+                await api.post(
+                    "/upload-profile-image",
                     formData,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
-                            "Content-Type": "multipart/form-data"
-                        }
+                            "Content-Type": "multipart/form-data",
+                        },
                     }
                 );
             }
@@ -147,8 +147,8 @@ function Profile() {
         try {
             const token = localStorage.getItem("token");
 
-            const response = await axios.get(
-                "http://127.0.0.1:8000/api/profile",
+            const response = await api.get(
+                "/profile",
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -211,7 +211,7 @@ function Profile() {
                                                                     profilePreview
                                                                         ? profilePreview
                                                                         : user?.profile_image
-                                                                            ? `http://127.0.0.1:8000/${user.profile_image}`
+                                                                            ? `${import.meta.env.VITE_FILE_URL}/${user.profile_image.replace(/\\/g, "/")}`
                                                                             : "/default-profile.png"
                                                                 }
                                                                 alt="Profile Image"

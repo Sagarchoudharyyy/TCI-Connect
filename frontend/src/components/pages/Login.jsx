@@ -1,21 +1,19 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import axios from "axios";
 import { BiShow, BiHide } from "react-icons/bi";
 import "../../styles/login.css";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import loginBg from "../../assets/login-bgimg.png";
+import api from "../../services/api";
 
 function Login() {
     const navigate = useNavigate();
-
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -69,13 +67,10 @@ function Login() {
         setLoading(true);
 
         try {
-            const response = await axios.post(
-                "http://127.0.0.1:8000/api/login",
-                {
-                    username: trimmedUsername,
-                    password: trimmedPassword,
-                }
-            );
+            const response = await api.post("/login", {
+                username: trimmedUsername,
+                password: trimmedPassword,
+            });
 
 
             if (!response.data.access_token) {

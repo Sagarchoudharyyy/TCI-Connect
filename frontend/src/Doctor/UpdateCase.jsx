@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 
 import "../DoctorStyle/UpdateCase.css";
 import DoctorSideBar from "../components/DoctorSideBar";
@@ -108,10 +108,7 @@ function UpdateCase() {
     const fetchCase = async () => {
 
       try {
-        const response =
-          await axios.get(
-            `http://localhost:8000/api/cases/${caseId}`
-          );
+        const response = await api.get(`/cases/${caseId}`);
         const data = response.data;
 
         const existingDigitalFiles =
@@ -551,36 +548,29 @@ function UpdateCase() {
         }
       };
 
-      const updateResponse =
-        await axios.put(
-          `http://localhost:8000/api/cases/${caseId}`,
-          payload
-        );
-
+      const updateResponse = await api.put(
+        `/cases/${caseId}`,
+        payload
+      );
 
 
       if (
         formData.pdfUpload?.file_path &&
         formData.pdfUpload.file_path.includes("temp_uploads")
       ) {
-        const response = await axios.post(
-          `http://localhost:8000/api/cases/${caseId}/save-temp-file`,
+        const response = await api.post(
+          `/cases/${caseId}/save-temp-file`,
           {
             file_path: formData.pdfUpload.file_path,
             category: "case_document",
           }
         );
 
-
-
-        await axios.delete(
-          "http://localhost:8000/api/delete-temp-file",
-          {
-            data: {
-              file_path: formData.pdfUpload.file_path,
-            },
-          }
-        );
+        await api.delete("/delete-temp-file", {
+          data: {
+            file_path: formData.pdfUpload.file_path,
+          },
+        });
       }
 
       if (digitalFiles.length > 0) {
@@ -589,22 +579,18 @@ function UpdateCase() {
             file.file_path &&
             file.file_path.includes("temp_uploads")
           ) {
-            const response = await axios.post(
-              `http://localhost:8000/api/cases/${caseId}/save-temp-file`,
+            const response = await api.post(
+              `/cases/${caseId}/save-temp-file`,
               {
                 file_path: file.file_path,
                 category: "digital_file",
               }
             );
-
-            await axios.delete(
-              "http://localhost:8000/api/delete-temp-file",
-              {
-                data: {
-                  file_path: file.file_path,
-                },
-              }
-            );
+            await api.delete("/delete-temp-file", {
+              data: {
+                file_path: file.file_path,
+              },
+            });
           }
         }
       }
