@@ -46,26 +46,22 @@ li {
   list-style: none;
 }
 
+
 .main-header {
   padding: 10px 0;
-  background: #205170;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 99;
-  background: #205170;
+
+  background: transparent;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .main-header.scrolled {
-  position: fixed;
-  width: 100%;
-  top: 0px;
-  z-index: 999;
-  box-shadow: rgba(59, 59, 59, 0.34) 2px 0px 10px 0px;
-  transition: 0.3s;
-  animation: 0.5s ease-in-out 0s 2 normal forwards running goDown;
   background: #205170;
+  box-shadow: rgba(59, 59, 59, 0.34) 2px 0px 10px 0px;
 }
 
 .myClass {
@@ -73,36 +69,33 @@ li {
 }
 
 .myClass .main-header {
-  background: #205170;
+  background: transparent;
 }
 
-.main-menus ul li {
-  margin: 0 10px;
+.tci-main-menus .tci-nav-item {
+  margin: 8px;
 }
 
-.main-menus ul li a {
+.tci-main-menus .tci-nav-link {
   color: #FFFFFF;
-
   font-weight: 500;
   font-size: 14px;
   line-height: 100%;
   letter-spacing: 0.5px;
   transition: all 0.3s ease;
-
 }
 
-.main-menus ul li .active {
+.tci-main-menus .tci-nav-link.active {
   color: #3D9BFF !important;
   font-weight: 700;
 }
 
-.main-menus ul li a:hover {
+.tci-main-menus .tci-nav-link:hover {
   transition: all 0.3s ease;
   color: #3D9BFF;
 }
 
-
-.login-btn {
+.tci-login-btn {
   background: #3D9BFF4D;
   border-radius: 100px;
   border: 1px solid #D5EAFF5E;
@@ -143,33 +136,28 @@ li {
   border-radius: 999px;
 }
 
+
 @media (max-width: 1199px) {
   .main-header .container {
     max-width: 100%;
     padding-inline: 16px;
   }
 
-  .main-menus {
-    order: 4;
-    width: 100%;
+  .tci-main-menus {
+    flex: 1;
+    display: flex;
+    justify-content: center;
   }
 
-  .navbar-collapse {
-    margin-top: 12px;
-    padding: 14px 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.18);
-    background: #205170;
+  .tci-navbar-collapse {
+    flex: 1;
   }
 
-  .navbar-nav {
-    gap: 4px;
-  }
-
-  .main-menus ul li {
+  .tci-main-menus .tci-nav-item {
     margin: 0;
   }
 
-  .main-menus ul li a {
+  .tci-main-menus .tci-nav-link {
     width: 100%;
     padding: 12px 0;
   }
@@ -184,7 +172,7 @@ li {
     max-height: 48px;
   }
 
-  .login-btn {
+  .tci-login-btn {
     height: 40px;
     width: 40px;
   }
