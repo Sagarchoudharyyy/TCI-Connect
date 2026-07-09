@@ -95,7 +95,7 @@ function ChatWindow() {
   console.log(
     "Final URL:",
     user?.profile_image
-      ? `${import.meta.env.VITE_FILE_URL}/uploads/profile/${encodeURIComponent(user.profile_image)}`
+      ? `${import.meta.env.VITE_FILE_URL}/${encodeURI(user.profile_image)}`
       : "No image"
   );
   return (
@@ -136,7 +136,7 @@ function ChatWindow() {
                       alt="user"
                       onLoad={() => console.log("Image Loaded")}
                       onError={(e) => {
-                        console.log("Image Failed:", e.target.src);
+                        console.log("Actual IMG src:", e.currentTarget.src);
                       }}
                     />
                   </div>
