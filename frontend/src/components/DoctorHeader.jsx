@@ -220,7 +220,7 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
                             <img
                                 src={
                                     user?.profile_image
-                                        ? `${import.meta.env.VITE_FILE_URL}/uploads/profile/${user.profile_image}`
+                                        ? `${import.meta.env.VITE_FILE_URL}/${encodeURI(user.profile_image)}`
                                         : "/default-profile.png"
                                 }
                                 alt="Profile"
@@ -228,7 +228,6 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
                                 width="40"
                                 height="40"
                             />
-
                             <span className="fw-bold text-primary">
                                 {user?.full_name}
                             </span>
