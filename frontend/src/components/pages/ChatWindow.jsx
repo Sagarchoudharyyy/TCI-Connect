@@ -18,9 +18,10 @@ function ChatWindow() {
 
   const sender_id = loggedUser?.id;
 
-
-  const receiver_id = id || 1;
-
+  const receiver_id =
+    loggedUser?.role === "admin"
+      ? Number(id)
+      : 1;
   useEffect(() => {
     if (sender_id && receiver_id) {
       getMessages();
@@ -117,7 +118,11 @@ function ChatWindow() {
 
                   <div className="chat-avatar">
                     <img
-                      src="/src/assets/react.svg"
+                      src={
+                        user?.profile_image
+                          ? `${import.meta.env.VITE_FILE_URL}/uploads/profile/${user.profile_image}`
+                          : "/default-profile.png"
+                      }
                       alt={user?.full_name || "User"}
                     />
                   </div>

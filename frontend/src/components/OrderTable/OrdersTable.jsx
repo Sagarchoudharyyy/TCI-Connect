@@ -133,7 +133,7 @@ function OrdersTable() {
                 }
 
                 const url =
-                    `${import.meta.env.VITE_FILE_URL}/${caseDocument.file_path.replace(
+                    `${import.meta.env.VITE_FILE_URL}/uploads/${caseDocument.file_path.replace(
                         /\\/g,
                         "/"
                     )}`;
@@ -166,7 +166,7 @@ function OrdersTable() {
                 }
 
                 const url =
-                    `${import.meta.env.VITE_FILE_URL}/${previewFile.file_path.replace(
+                    `${import.meta.env.VITE_FILE_URL}/uploads/${previewFile.file_path.replace(
                         /\\/g,
                         "/"
                     )}`;
