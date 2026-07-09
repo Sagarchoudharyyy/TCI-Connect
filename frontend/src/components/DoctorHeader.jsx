@@ -93,6 +93,15 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
         (item) => !item.is_read
     ).length;
 
+
+    console.log("Doctor Header:", user?.profile_image);
+
+    if (user?.profile_image) {
+        console.log(
+            `${import.meta.env.VITE_FILE_URL}/${encodeURI(user.profile_image)}`
+        );
+    }
+
     return (
         <div className="mc-ibxx">
             <div className="doctor-header" >
