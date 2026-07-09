@@ -43,6 +43,7 @@ function ChatWindow() {
     }
   };
 
+
   const getMessages = async () => {
     try {
       const res = await api.get(
@@ -120,10 +121,13 @@ function ChatWindow() {
                     <img
                       src={
                         user?.profile_image
-                          ? `${import.meta.env.VITE_FILE_URL}/uploads/profile/${user.profile_image}`
+                          ? `${import.meta.env.VITE_FILE_URL}/uploads/profile/${encodeURIComponent(user.profile_image)}`
                           : "/default-profile.png"
                       }
-                      alt={user?.full_name || "User"}
+                      alt="user"
+                      onError={(e) => {
+                        console.log("Image failed:", e.target.src);
+                      }}
                     />
                   </div>
 
