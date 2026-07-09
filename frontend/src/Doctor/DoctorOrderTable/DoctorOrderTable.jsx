@@ -101,6 +101,7 @@ function DoctorOrderTable({
 
     const fetchCases = async () => {
         try {
+
             const response = await getCases({
                 page: currentPage,
                 limit: entriesPerPage,

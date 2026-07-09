@@ -24,7 +24,6 @@ app = FastAPI(
     title="TCI Connect API",
     description="Dental Lab Management System",
     version="1.0.0",
-    
 )
 app.add_middleware(
     CORSMiddleware,

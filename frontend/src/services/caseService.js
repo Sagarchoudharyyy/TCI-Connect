@@ -1,48 +1,37 @@
-import axios from "axios";
-
-const API_URL = "http://127.0.0.1:8000/api";
+import api from "./api";
 
 export const getCases = (params) => {
-  return axios.get(`${API_URL}/cases`, {
+  return api.get("/cases", {
     params,
   });
 };
 
 export const getCaseById = (id) => {
-  return axios.get(`${API_URL}/cases/${id}`);
+  return api.get(`/cases/${id}`);
 };
 
 export const createCase = (data) => {
-  return axios.post(`${API_URL}/cases`, data);
+  return api.post("/cases", data);
 };
 
 export const updateCase = (id, data) => {
-  return axios.put(`${API_URL}/cases/${id}`, data);
+  return api.put(`/cases/${id}`, data);
 };
 
 export const deleteCase = (id) => {
-  return axios.delete(`${API_URL}/cases/${id}`);
+  return api.delete(`/cases/${id}`);
 };
 
 export const uploadCaseFile = (caseId, formData) => {
-  return axios.post(
-    `${API_URL}/cases/${caseId}/upload`,
-    formData
-  );
+  return api.post(`/cases/${caseId}/upload`, formData);
 };
 
 export const getCaseFiles = () => {
-  return axios.get(`${API_URL}/case_files`);
+  return api.get("/case_files");
 };
 
-export const updatePreviewStatus = (
-  caseId,
-  preview_status
-) => {
-  return axios.put(
-    `${API_URL}/cases/${caseId}/preview-status`,
-    {
-      preview_status
-    }
-  );
+export const updatePreviewStatus = (caseId, preview_status) => {
+  return api.put(`/cases/${caseId}/preview-status`, {
+    preview_status,
+  });
 };

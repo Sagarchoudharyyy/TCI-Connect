@@ -144,20 +144,33 @@ def login(
     db: Session = Depends(get_db)
 ):
   
-
+    print("Username from request:", user.username)
+    
     db_user = db.query(User).filter(
         or_(
             User.email == user.username,
             User.phone == user.username
         )
     ).first()
+    print("DB User:", db_user)
 
 
 
     if not db_user:
+        print("User not found")
         return {
             "message": "Invalid username or password"
         }
+        
+    print("Stored Hash:", db_user.password)
+    
+    result = verify_password(
+    user.password,
+    db_user.password
+    )
+
+    print("Password Verified:", result)
+
 
    
 
@@ -168,9 +181,8 @@ def login(
         return {
             "message": "Invalid username or password"
         }
+    
 
-    
-    
     if (
     db_user.role == "doctor"
     and db_user.status != "approved"
