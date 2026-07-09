@@ -153,7 +153,7 @@ function DoctorCases() {
                     );
                     return;
                 }
-                const url = `${import.meta.env.VITE_FILE_URL}/uploads/${caseDocument.file_path.replace(/\\/g, "/")}`;
+                const url = `${import.meta.env.VITE_FILE_URL}/${caseDocument.file_path.replace(/\\/g, "/")}`;
 
                 window.location.href = url;
 

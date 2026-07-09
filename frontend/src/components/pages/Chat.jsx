@@ -82,7 +82,6 @@ const Chat = () => {
         }
       );
 
-      // Refresh messages after send
       getMessages(selectedUser);
 
       setMessage("");
@@ -133,15 +132,12 @@ const Chat = () => {
                       <div className="user-image">
                         <img
                           src={
-                            user?.profile_image
-                              ? `${import.meta.env.VITE_FILE_URL}/uploads/profile/${encodeURIComponent(user.profile_image)}`
-                              : "/default-profile.png"
+                            item.profile_image
+                              ? `${import.meta.env.VITE_FILE_URL}/uploads/profile/${encodeURIComponent(item.profile_image)}`
+                              : "/images/default-profile.png"
                           }
-                          alt="user"
-                          onLoad={() => console.log("Image Loaded")}
-                          onError={(e) => {
-                            console.log("Actual IMG src:", e.currentTarget.src);
-                          }}
+                          alt="profile"
+                          width="40"
                         />
                       </div>
 

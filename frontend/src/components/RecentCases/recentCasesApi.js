@@ -54,7 +54,6 @@ export const viewCaseDocument = async (caseId) => {
     if (!caseDocument) {
         throw new Error("No case document found");
     }
-
     window.location.href = `${FILE_URL}/${caseDocument.file_path.replace(/\\/g, "/")}`;
 };
 

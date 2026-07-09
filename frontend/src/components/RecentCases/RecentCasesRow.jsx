@@ -26,7 +26,7 @@ function RecentCasesRow({
                 <img
                     src={
                         item.profile_image
-                            ? `${import.meta.env.VITE_FILE_URL}/uploads/profile/${encodeURIComponent(item.profile_image)}`
+                            ? `${import.meta.env.VITE_FILE_URL}/profile/${encodeURIComponent(item.profile_image)}`
                             : "/images/default-profile.png"
                     }
                     alt="profile"
@@ -75,7 +75,7 @@ function RecentCasesRow({
                         <div key={file.id}>
 
                             <a
-                                href={`${import.meta.env.VITE_FILE_URL}/uploads/${file.file_path}`}
+                                href={`${import.meta.env.VITE_FILE_URL}/${file.file_path}`}
                                 target="_blank"
                                 rel="noreferrer"
                                 style={{
@@ -285,7 +285,7 @@ function RecentCasesRow({
                                                 key={file.id}
                                             >
                                                 <a
-                                                    href={`${import.meta.env.VITE_FILE_URL}/uploads/${file.file_path.replace(
+                                                    href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(
                                                         /\\/g,
                                                         "/"
                                                     )}`}
