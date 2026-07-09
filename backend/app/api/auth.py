@@ -300,7 +300,6 @@ def reset_password(
         "success": True,
         "message": "Password updated successfully"
     }
-    
 @router.post("/upload-profile-image")
 def upload_profile_image(
     file: UploadFile = File(...),
@@ -327,16 +326,21 @@ def upload_profile_image(
             "message": "User not found"
         }
 
-    os.makedirs("uploads/profile", exist_ok=True)
+
+    upload_dir = os.path.join("uploads", "profile")
+    os.makedirs(upload_dir, exist_ok=True)
+
 
     filename = f"user_{user.id}_{file.filename}"
-    file_path = os.path.join("uploads", "profile", filename)
-    file_path = file_path.replace("\\", "/")
+
+
+    file_path = os.path.join(upload_dir, filename)
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    user.profile_image = file_path
+   
+    user.profile_image = filename
 
     db.commit()
     db.refresh(user)
@@ -346,8 +350,6 @@ def upload_profile_image(
         "message": "Profile image uploaded successfully",
         "profile_image": user.profile_image
     }
-    
-
 @router.post("/change-password")
 def change_password(
     request: ChangePasswordRequest,
