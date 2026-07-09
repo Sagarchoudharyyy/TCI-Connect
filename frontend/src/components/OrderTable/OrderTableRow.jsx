@@ -21,7 +21,7 @@ function OrderTableRow({
                 <img
                     src={
                         item.profile_image
-                            ? `${import.meta.env.VITE_FILE_URL}/uploads/profile/${encodeURIComponent(item.profile_image)}`
+                            ? `${import.meta.env.VITE_FILE_URL}/${encodeURI(item.profile_image)}`
                             : "/images/default-profile.png"
                     }
                     alt="profile"
