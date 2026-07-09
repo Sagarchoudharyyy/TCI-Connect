@@ -94,7 +94,6 @@ function ForgotPassword() {
                     <div className="forgot-main-heading">
                       TCI Connect
                     </div>
-                    {/* <div className="forgot-formbxx-warrper"> */}
                     <div className="forgot-formsec-bxx">
                       <h3 className="forgot-form-heading">
                         Forgot Password
@@ -139,7 +138,6 @@ function ForgotPassword() {
             </div>
           </div>
         </div>
-        {/* </div> */}
       </section>
       <footer className="form-footer">
         <div className="container">
