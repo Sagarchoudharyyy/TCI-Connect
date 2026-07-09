@@ -224,12 +224,11 @@ function AllDoctors() {
                           </span>
 
                         </td>
-
                         <td>
-
                           <div className="d-flex gap-3">
                             <button
-                              className="btn btn-link p-0 me-3"
+                              type="button"
+                              className="btn btn-link p-0"
                               onClick={() =>
                                 navigate(`/admin/user-details/${doctor.id}`)
                               }
@@ -237,21 +236,24 @@ function AllDoctors() {
                               <FaEye
                                 style={{
                                   color: "#0152a8",
-                                  cursor: "pointer"
+                                  cursor: "pointer",
                                 }}
                               />
+                            </button>
 
+                            <button
+                              type="button"
+                              className="btn btn-link p-0"
+                              onClick={() => deleteDoctor(doctor.id)}
+                            >
                               <FaTrash
-                                onClick={() => deleteDoctor(doctor.id)}
                                 style={{
                                   color: "red",
                                   cursor: "pointer",
                                 }}
                               />
                             </button>
-
                           </div>
-
                         </td>
 
                       </tr>
