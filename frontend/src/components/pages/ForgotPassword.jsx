@@ -224,8 +224,6 @@ function ForgotPassword() {
           </div>
         </div>
       </footer >
-
-
     </>
 
   );
