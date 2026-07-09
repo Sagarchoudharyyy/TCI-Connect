@@ -171,9 +171,6 @@ def login(
 
     print("Password Verified:", result)
 
-
-   
-
     if not verify_password(
         user.password,
         db_user.password
