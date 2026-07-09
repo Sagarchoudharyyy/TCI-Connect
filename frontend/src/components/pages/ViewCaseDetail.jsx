@@ -118,7 +118,15 @@ function ViewCaseDetail() {
                                     <div className="card-body">
                                         <div className="row mb-3">
                                             <div className="col-md-3 text-center mb-3 mb-md-0">
-                                                <img src="" className="user-profile-img"></img>
+                                                <img
+                                                    src={
+                                                        item?.profile_image
+                                                            ? `${import.meta.env.VITE_FILE_URL}/profile/${encodeURIComponent(item.profile_image)}`
+                                                            : "/default-profile.png"
+                                                    }
+                                                    alt={item?.doctor_name || "Doctor"}
+                                                    className="user-profile-img"
+                                                />
                                             </div>
                                             <div className="col-md-9">
                                                 <div className="row mb-2">
@@ -413,7 +421,7 @@ function ViewCaseDetail() {
                                                 <div className="file-buttons d-flex flex-wrap gap-2 mt-2 mt-sm-0">
 
                                                     <a
-                                                        href={`${import.meta.env.VITE_FILE_URL}/uploads/${file.file_path.replace(/\\/g, "/")}`}
+                                                        href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(/\\/g, "/")}`}
                                                         target="_blank"
                                                         rel="noreferrer"
                                                         className="btn btn-sm btn-primary"

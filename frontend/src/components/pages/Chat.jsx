@@ -132,8 +132,8 @@ const Chat = () => {
                       <div className="user-image">
                         <img
                           src={
-                            item.profile_image
-                              ? `${import.meta.env.VITE_FILE_URL}/uploads/profile/${encodeURIComponent(item.profile_image)}`
+                            user.profile_image
+                              ? `${import.meta.env.VITE_FILE_URL}/uploads/profile/${encodeURIComponent(user.profile_image)}`
                               : "/images/default-profile.png"
                           }
                           alt="profile"
