@@ -69,7 +69,15 @@ function UserDetails() {
                                         <div className="row g-4 align-items-start">
                                             <div className="col-lg-3 col-md-4 col-sm-12">
                                                 <div className="profile-section">
-                                                    <img src="" alt="" />
+                                                    <img
+                                                        src={
+                                                            doctor.profile_image
+                                                                ? `${import.meta.env.VITE_FILE_URL}/${encodeURI(doctor.profile_image)}`
+                                                                : "/images/default-profile.png"
+                                                        }
+                                                        alt={doctor?.doctor_name || "Doctor"}
+                                                        className="user-profile-img"
+                                                    />
                                                     <h5 className="mt-3 mb-0 text-dark">
                                                         { }
                                                     </h5>

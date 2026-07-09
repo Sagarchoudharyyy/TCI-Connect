@@ -120,11 +120,11 @@ function ViewCaseDetail() {
                                             <div className="col-md-3 text-center mb-3 mb-md-0">
                                                 <img
                                                     src={
-                                                        item?.profile_image
-                                                            ? `${import.meta.env.VITE_FILE_URL}/profile/${encodeURIComponent(item.profile_image)}`
-                                                            : "/default-profile.png"
+                                                        doctordata.profile_image
+                                                            ? `${import.meta.env.VITE_FILE_URL}/${encodeURI(doctordata.profile_image)}`
+                                                            : "/images/default-profile.png"
                                                     }
-                                                    alt={item?.doctor_name || "Doctor"}
+                                                    alt={doctordata?.doctor_name || "Doctor"}
                                                     className="user-profile-img"
                                                 />
                                             </div>
