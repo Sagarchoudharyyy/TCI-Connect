@@ -240,15 +240,15 @@ function AllDoctors() {
                                   cursor: "pointer"
                                 }}
                               />
-                            </button>
 
-                            <FaTrash
-                              onClick={() => deleteDoctor(doctor.id)}
-                              style={{
-                                color: "red",
-                                cursor: "pointer",
-                              }}
-                            />
+                              <FaTrash
+                                onClick={() => deleteDoctor(doctor.id)}
+                                style={{
+                                  color: "red",
+                                  cursor: "pointer",
+                                }}
+                              />
+                            </button>
 
                           </div>
 
