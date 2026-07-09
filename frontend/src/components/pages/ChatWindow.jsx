@@ -89,6 +89,15 @@ function ChatWindow() {
     }
   };
 
+  console.log("User:", user);
+  console.log("Profile Image:", user?.profile_image);
+  console.log("VITE_FILE_URL:", import.meta.env.VITE_FILE_URL);
+  console.log(
+    "Final URL:",
+    user?.profile_image
+      ? `${import.meta.env.VITE_FILE_URL}/uploads/profile/${encodeURIComponent(user.profile_image)}`
+      : "No image"
+  );
   return (
     <div className="dashboard-main">
 
@@ -125,8 +134,9 @@ function ChatWindow() {
                           : "/default-profile.png"
                       }
                       alt="user"
+                      onLoad={() => console.log("Image Loaded")}
                       onError={(e) => {
-                        console.log("Image failed:", e.target.src);
+                        console.log("Image Failed:", e.target.src);
                       }}
                     />
                   </div>
