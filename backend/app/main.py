@@ -20,6 +20,7 @@ from app.api.material_route import router as material_router
 
 from app.api.notification import router as notification_router
 
+
 app = FastAPI(
     title="TCI Connect API",
     description="Dental Lab Management System",
@@ -32,6 +33,7 @@ app.add_middleware(
     "http://127.0.0.1:5173",
     "http://localhost:5174",
     "http://127.0.0.1:5174",
+    "https://tcidentallab.com",
 ],
     allow_credentials=True,
     allow_methods=["*"],
