@@ -380,7 +380,7 @@ function ViewCaseDetail() {
                                                 <div className="file-buttons d-flex flex-wrap gap-2 mt-2 mt-sm-0">
 
                                                     <a
-                                                        href={`${import.meta.env.VITE_FILE_URL}/uploads/${file.file_path.replace(/\\/g, "/")}`}
+                                                        href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(/\\/g, "/")}`}
                                                         target="_blank"
                                                         rel="noreferrer"
                                                         className="btn btn-sm btn-primary"
