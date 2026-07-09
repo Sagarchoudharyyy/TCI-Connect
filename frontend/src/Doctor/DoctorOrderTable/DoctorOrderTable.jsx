@@ -110,6 +110,8 @@ function DoctorOrderTable({
                 deadline: deadlineFilter || undefined
             });
 
+            console.log("API Response:", response);
+            console.log("Items:", response.data.items);
             setCases(response.data.items);
             setTotalPages(response.data.pages);
             setTotalCases(response.data.total);
