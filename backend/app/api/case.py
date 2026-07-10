@@ -328,11 +328,6 @@ def get_cases(
         if not payload:
             raise HTTPException(status_code=401, detail="Invalid token")
         
-        
-        print("Payload:", payload)
-        print("User ID:", payload.get("user_id"))
-        print("Role:", payload.get("role"))
-
         user_id = payload.get("user_id")
         role = payload.get("role")
         query = (
@@ -365,6 +360,8 @@ def get_cases(
                     )
                 )
             )
+        
+        total=query.count()
 
         cases = (
             query
@@ -373,7 +370,6 @@ def get_cases(
             .limit(limit)
             .all()
             )
-        print("Cases:", cases)
         result = []
 
         for case in cases:
@@ -423,9 +419,9 @@ def get_cases(
 
         return {
         "items": result,
-        # "total": total,
+        "total": total,
         "page": page,
-        # "pages": (total + limit - 1) // limit
+        "pages": (total + limit - 1) // limit
     } 
     except Exception as e:
         traceback.print_exc()
