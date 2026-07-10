@@ -1,5 +1,6 @@
 from datetime import date
 from re import search
+import traceback
 from unittest import result
 import aiofiles
 
@@ -320,114 +321,116 @@ def get_cases(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
 ):
+    try:
+        payload = decode_access_token(token)
     
-    payload = decode_access_token(token)
-    print("Payload:", payload)
-    print("User ID:", payload.get("user_id"))
-    print("Role:", payload.get("role"))
-   
 
-    if not payload:
-        raise HTTPException(status_code=401, detail="Invalid token")
+        if not payload:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        
+        print("Payload:", payload)
+        print("User ID:", payload.get("user_id"))
+        print("Role:", payload.get("role"))
 
-    user_id = payload.get("user_id")
-    role = payload.get("role")
-    query = (
-    db.query(Case)
-        .options(
-            selectinload(Case.files),
-            joinedload(Case.doctor)
+        user_id = payload.get("user_id")
+        role = payload.get("role")
+        query = (
+        db.query(Case)
+            .options(
+                selectinload(Case.files),
+                joinedload(Case.doctor)
+            )
         )
-    )
-    if role == "doctor":
-        query = query.filter(Case.doctor_id == user_id)
-    
-    if status:
-        query = query.filter(
-        Case.status == status
-    )
+        if role == "doctor":
+            query = query.filter(Case.doctor_id == user_id)
+        
+        if status:
+            query = query.filter(
+            Case.status == status
+        )
 
-    if deadline:
-        query = query.filter(
-        Case.delivery_deadline == deadline
-    )
+        if deadline:
+            query = query.filter(
+            Case.delivery_deadline == deadline
+        )
 
-    if search:
-        query = query.filter(
-            or_(
-                Case.patient_name.ilike(f"%{search}%"),
-                Case.id.cast(String).ilike(f"%{search}%"),
-                Case.doctor.has(
-                    User.full_name.ilike(f"%{search}%")
+        if search:
+            query = query.filter(
+                or_(
+                    Case.patient_name.ilike(f"%{search}%"),
+                    Case.id.cast(String).ilike(f"%{search}%"),
+                    Case.doctor.has(
+                        User.full_name.ilike(f"%{search}%")
+                    )
                 )
             )
-        )
-        return {
-            "payload": payload,
-            "user_id": user_id,
-            "role": role
-        }
 
-    cases = (
-        query
-        .order_by(Case.created_at.desc())
-        .offset((page - 1) * limit)
-        .limit(limit)
-        .all()
-        )
-    result = []
-
-    for case in cases:
-
-        result.append({
-            "id": case.id,
-            "profile_image":
-                case.doctor.profile_image
-                if case.doctor else None,
-            "doctor_name":
-                case.doctor.full_name
-                if case.doctor else None,
-            "patient_name": case.patient_name,
-            "phone_number":
-                case.doctor.phone 
-                if case.doctor else None,
-            "age": case.age,
-            "appointment_date": case.appointment_date,
-            "delivery_deadline": case.delivery_deadline,
-            "preview_status": case.preview_status,
-            "status": case.status,
-            "files": [
-                    {
-                        "id": file.id,
-                        "file_name": file.file_name,
-                        "file_type": file.file_type,
-                        "file_path": file.file_path,
-                        "file_category": file.file_category,
-                    }
-                    for file in case.files
-                ],
-            "has_case_document": any(
-                f.file_category == "case_document"
-                for f in case.files
-            ),
-
-            "has_digital_files": any(
-                f.file_category == "digital_file"
-                for f in case.files
-            ),
-
-            "has_preview_files": any(
-                f.file_category == "preview_file"
-                for f in case.files
+        cases = (
+            query
+            .order_by(Case.created_at.desc())
+            .offset((page - 1) * limit)
+            .limit(limit)
+            .all()
             )
-        })
+        print("Cases:", cases)
+        result = []
 
-    return {
-    "items": result,
-    "total": total,
-    "page": page,
-    "pages": (total + limit - 1) // limit
-} 
+        for case in cases:
+
+            result.append({
+                "id": case.id,
+                "profile_image":
+                    case.doctor.profile_image
+                    if case.doctor else None,
+                "doctor_name":
+                    case.doctor.full_name
+                    if case.doctor else None,
+                "patient_name": case.patient_name,
+                "phone_number":
+                    case.doctor.phone 
+                    if case.doctor else None,
+                "age": case.age,
+                "appointment_date": case.appointment_date,
+                "delivery_deadline": case.delivery_deadline,
+                "preview_status": case.preview_status,
+                "status": case.status,
+                "files": [
+                        {
+                            "id": file.id,
+                            "file_name": file.file_name,
+                            "file_type": file.file_type,
+                            "file_path": file.file_path,
+                            "file_category": file.file_category,
+                        }
+                        for file in case.files
+                    ],
+                "has_case_document": any(
+                    f.file_category == "case_document"
+                    for f in case.files
+                ),
+
+                "has_digital_files": any(
+                    f.file_category == "digital_file"
+                    for f in case.files
+                ),
+
+                "has_preview_files": any(
+                    f.file_category == "preview_file"
+                    for f in case.files
+                )
+            })
+
+        return {
+        "items": result,
+        # "total": total,
+        "page": page,
+        # "pages": (total + limit - 1) // limit
+    } 
+    except Exception as e:
+        traceback.print_exc()
+        print("ERROR:", e)
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 
