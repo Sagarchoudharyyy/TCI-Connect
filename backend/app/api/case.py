@@ -21,6 +21,8 @@ from app.models.case_model import Case
 from app.models.case_file_model import CaseFile
 from app.models.user_model import User
 from app.models.notification_model import Notification
+from fastapi.security import OAuth2PasswordBearer
+from app.core.security import decode_access_token
 from pydantic import BaseModel
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import joinedload
@@ -36,6 +38,8 @@ from app.schemas.case_schema import (
         CaseUpdate
     )
 router = APIRouter()
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/token")
 
 class StatusUpdate(BaseModel):
         status: str
@@ -313,15 +317,27 @@ def get_cases(
     search: str | None = None,
     status: str | None = None,
     deadline: date | None = None,
+    token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
 ):
+    
+    payload = decode_access_token(token)
+
+    if not payload:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    user_id = payload.get("user_id")
+    role = payload.get("role")
     query = (
     db.query(Case)
-    .options(
-        selectinload(Case.files),
-        joinedload(Case.doctor)
+        .options(
+            selectinload(Case.files),
+            joinedload(Case.doctor)
+        )
     )
-)
+    if role == "doctor":
+        query = query.filter(Case.doctor_id == user_id)
+    
     if status:
         query = query.filter(
         Case.status == status
@@ -405,14 +421,28 @@ def get_cases(
     "pages": (total + limit - 1) // limit
 } 
 
+
+
 @router.get(
         "/cases/{case_id}")
 def get_case(
-        case_id: int,
-        db: Session = Depends(get_db)
-    ):
+    case_id: int,
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db)
+):
+    
+    payload = decode_access_token(token)
 
-        case = (
+    if not payload:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid token"
+        )
+
+    user_id = payload.get("user_id")
+    role = payload.get("role")
+
+    case = (
         db.query(Case)
         .options(
             joinedload(Case.doctor),
@@ -424,13 +454,19 @@ def get_case(
         .first()
     )
 
-        if not case:
+    if not case:
             raise HTTPException(
                 status_code=404,
                 detail="Case not found"
             )
+            
+    if role == "doctor" and case.doctor_id != user_id:
+        raise HTTPException(
+            status_code=403,
+            detail="You are not authorized to access this case."
+        )
 
-        return {
+    return {
             "id": case.id,
             "doctor_id": case.doctor_id,
             "profile_image":
@@ -538,6 +574,8 @@ def get_case(
                     if case.details else None,
             }
         }
+
+
 
 
 @router.put(
