@@ -362,7 +362,11 @@ def get_cases(
                 )
             )
         )
-    total = query.count()
+        return {
+            "payload": payload,
+            "user_id": user_id,
+            "role": role
+        }
 
     cases = (
         query
