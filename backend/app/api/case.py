@@ -322,6 +322,10 @@ def get_cases(
 ):
     
     payload = decode_access_token(token)
+    print("Payload:", payload)
+    print("User ID:", payload.get("user_id"))
+    print("Role:", payload.get("role"))
+   
 
     if not payload:
         raise HTTPException(status_code=401, detail="Invalid token")
@@ -432,6 +436,8 @@ def get_case(
 ):
     
     payload = decode_access_token(token)
+    print("Payload:", payload)
+    
 
     if not payload:
         raise HTTPException(
@@ -441,6 +447,9 @@ def get_case(
 
     user_id = payload.get("user_id")
     role = payload.get("role")
+    
+    print("User ID:", payload.get("user_id"))
+    print("Role:", payload.get("role"))
 
     case = (
         db.query(Case)
