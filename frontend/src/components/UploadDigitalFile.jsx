@@ -102,9 +102,12 @@ function UploadDigitalFiles({
     //     }
     // };
 
-
     const uploadFile = async (fileObj) => {
         const file = fileObj.file;
+
+        // ==========================================
+        // CONFIGURATION
+        // ==========================================
 
         const CHUNK_SIZE = 8 * 1024 * 1024; // 8 MB
         const MAX_PARALLEL = 3;
@@ -113,16 +116,22 @@ function UploadDigitalFiles({
             file.size / CHUNK_SIZE
         );
 
-        // Track uploaded bytes for every chunk
+        // Store uploaded bytes for every chunk
         const chunkProgress = new Array(
             totalChunks
         ).fill(0);
 
+        // ==========================================
+        // UPDATE OVERALL PROGRESS
+        // ==========================================
+
         const updateOverallProgress = () => {
-            const uploadedBytes = chunkProgress.reduce(
-                (total, value) => total + value,
-                0
-            );
+            const uploadedBytes =
+                chunkProgress.reduce(
+                    (total, value) =>
+                        total + value,
+                    0
+                );
 
             const percent = Math.min(
                 100,
@@ -149,7 +158,24 @@ function UploadDigitalFiles({
             // STEP 1: INITIALIZE UPLOAD
             // ==========================================
 
-            const initData = new FormData();
+            console.log(
+                "Starting upload:",
+                file.name
+            );
+
+            console.log(
+                "File size:",
+                file.size,
+                "bytes"
+            );
+
+            console.log(
+                "Total chunks:",
+                totalChunks
+            );
+
+            const initData =
+                new FormData();
 
             initData.append(
                 "file_name",
@@ -161,17 +187,28 @@ function UploadDigitalFiles({
                 file.size.toString()
             );
 
-            const initResponse = await api.post(
-                "/upload/init",
-                initData
+            const initResponse =
+                await api.post(
+                    "/upload/init",
+                    initData
+                );
+
+            console.log(
+                "Upload initialized:",
+                initResponse.data
             );
 
             const uploadId =
                 initResponse.data.upload_id;
 
+            if (!uploadId) {
+                throw new Error(
+                    "Upload ID was not returned by server"
+                );
+            }
 
             // ==========================================
-            // STEP 2: UPLOAD CHUNKS
+            // STEP 2: UPLOAD ONE CHUNK
             // ==========================================
 
             const uploadChunk = async (
@@ -179,19 +216,27 @@ function UploadDigitalFiles({
             ) => {
 
                 const start =
-                    chunkNumber * CHUNK_SIZE;
+                    chunkNumber *
+                    CHUNK_SIZE;
 
-                const end = Math.min(
-                    start + CHUNK_SIZE,
-                    file.size
+                const end =
+                    Math.min(
+                        start + CHUNK_SIZE,
+                        file.size
+                    );
+
+                const chunk =
+                    file.slice(
+                        start,
+                        end
+                    );
+
+                console.log(
+                    `Uploading chunk ${chunkNumber + 1}/${totalChunks}`
                 );
 
-                const chunk = file.slice(
-                    start,
-                    end
-                );
-
-                const chunkData = new FormData();
+                const chunkData =
+                    new FormData();
 
                 chunkData.append(
                     "upload_id",
@@ -213,13 +258,21 @@ function UploadDigitalFiles({
                     "/upload/chunk",
                     chunkData,
                     {
-                        onUploadProgress: (event) => {
+                        onUploadProgress: (
+                            event
+                        ) => {
 
-                            if (!event.total) {
+                            if (
+                                !event.total
+                            ) {
                                 return;
                             }
 
-                            chunkProgress[chunkNumber] =
+                            // Current uploaded
+                            // bytes for this chunk
+                            chunkProgress[
+                                chunkNumber
+                            ] =
                                 event.loaded;
 
                             updateOverallProgress();
@@ -227,17 +280,24 @@ function UploadDigitalFiles({
                     }
                 );
 
-                // Make sure this chunk is counted
-                // completely after successful request
-                chunkProgress[chunkNumber] =
-                    chunk.size;
+                // ==========================================
+                // CHUNK COMPLETED
+                // ==========================================
+
+                chunkProgress[
+                    chunkNumber
+                ] = chunk.size;
 
                 updateOverallProgress();
+
+                console.log(
+                    `Chunk ${chunkNumber + 1}/${totalChunks} completed`
+                );
             };
 
-
             // ==========================================
-            // STEP 3: 3 CHUNKS AT A TIME
+            // STEP 3:
+            // UPLOAD 3 CHUNKS AT A TIME
             // ==========================================
 
             for (
@@ -250,24 +310,34 @@ function UploadDigitalFiles({
 
                 for (
                     let j = i;
-                    j < Math.min(
+                    j <
+                    Math.min(
                         i + MAX_PARALLEL,
                         totalChunks
                     );
                     j++
                 ) {
+
                     batch.push(
                         uploadChunk(j)
                     );
                 }
 
-                await Promise.all(batch);
+                // Wait until the
+                // current 3 chunks finish
+                await Promise.all(
+                    batch
+                );
             }
 
+            // ==========================================
+            // STEP 4:
+            // COMPLETE UPLOAD
+            // ==========================================
 
-            // ==========================================
-            // STEP 4: COMPLETE UPLOAD
-            // ==========================================
+            console.log(
+                "All chunks uploaded."
+            );
 
             const completeData =
                 new FormData();
@@ -293,9 +363,14 @@ function UploadDigitalFiles({
                     completeData
                 );
 
+            console.log(
+                "Upload completed:",
+                completeResponse.data
+            );
 
             // ==========================================
-            // STEP 5: UPDATE UI
+            // STEP 5:
+            // UPDATE UI
             // ==========================================
 
             setDigitalFiles((prev) =>
@@ -303,14 +378,21 @@ function UploadDigitalFiles({
                     f.id === fileObj.id
                         ? {
                             ...f,
+
                             progress: 100,
-                            status: "uploaded",
+
+                            status:
+                                "uploaded",
 
                             file_name:
-                                completeResponse.data.file_name,
+                                completeResponse
+                                    .data
+                                    .file_name,
 
                             file_path:
-                                completeResponse.data.file_path,
+                                completeResponse
+                                    .data
+                                    .file_path,
 
                             file_type:
                                 file.type,
@@ -329,6 +411,22 @@ function UploadDigitalFiles({
                 error
             );
 
+            // Show backend response
+            // if available
+            if (
+                error.response
+            ) {
+                console.error(
+                    "Status:",
+                    error.response.status
+                );
+
+                console.error(
+                    "Response:",
+                    error.response.data
+                );
+            }
+
             setDigitalFiles((prev) =>
                 prev.map((f) =>
                     f.id === fileObj.id
@@ -341,6 +439,7 @@ function UploadDigitalFiles({
             );
         }
     };
+
 
     const removeFile = async (index) => {
         const file = digitalFiles[index];
