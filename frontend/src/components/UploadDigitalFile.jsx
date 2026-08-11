@@ -110,7 +110,7 @@ function UploadDigitalFiles({
         // ==========================================
 
         const CHUNK_SIZE = 8 * 1024 * 1024; // 8 MB
-        const MAX_PARALLEL = 3;
+        const MAX_PARALLEL = 6;
 
         const totalChunks = Math.ceil(
             file.size / CHUNK_SIZE
