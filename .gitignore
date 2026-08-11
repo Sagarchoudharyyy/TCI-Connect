@@ -7,3 +7,5 @@ node_modules/
 frontend/node_modules/
 backend/uploads/
 backend/temp_uploads/*
+backend.zip
+*.zip
