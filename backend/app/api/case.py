@@ -1193,7 +1193,6 @@ async def temp_upload(
         )
 
 
-
 @router.post("/upload/init")
 async def init_upload(
     file_name: str = Form(...),
@@ -1217,6 +1216,53 @@ async def init_upload(
         "total_size": total_size
     }
 
+
+# @router.post("/upload/chunk")
+# async def upload_chunk(
+#     upload_id: str = Form(...),
+#     chunk_number: int = Form(...),
+#     file: UploadFile = File(...)
+# ):
+#     upload_dir = os.path.join(
+#         "temp_uploads",
+#         upload_id
+#     )
+
+#     if not os.path.exists(upload_dir):
+#         raise HTTPException(
+#             status_code=404,
+#             detail="Upload session not found"
+#         )
+
+#     chunk_path = os.path.join(
+#         upload_dir,
+#         f"chunk_{chunk_number}"
+#     )
+
+#     try:
+#         async with aiofiles.open(
+#             chunk_path,
+#             "wb"
+#         ) as out_file:
+
+#             while chunk := await file.read(
+#                 8 * 1024 * 1024
+#             ):
+#                 await out_file.write(chunk)
+
+#         return {
+#             "message": "Chunk uploaded",
+#             "chunk_number": chunk_number
+#         }
+
+#     except Exception:
+#         if os.path.exists(chunk_path):
+#             os.remove(chunk_path)
+
+#         raise HTTPException(
+#             status_code=500,
+#             detail="Failed to upload chunk"
+#         )
 
 @router.post("/upload/chunk")
 async def upload_chunk(
@@ -1246,25 +1292,30 @@ async def upload_chunk(
             "wb"
         ) as out_file:
 
-            while chunk := await file.read(
-                8 * 1024 * 1024
-            ):
-                await out_file.write(chunk)
+            while True:
+                data = await file.read(1024 * 1024)
+
+                if not data:
+                    break
+
+                await out_file.write(data)
 
         return {
             "message": "Chunk uploaded",
             "chunk_number": chunk_number
         }
 
-    except Exception:
+    except Exception as e:
+
         if os.path.exists(chunk_path):
             os.remove(chunk_path)
+
+        print(f"Chunk upload error: {e}")
 
         raise HTTPException(
             status_code=500,
             detail="Failed to upload chunk"
         )
-
 
 @router.post("/upload/complete")
 async def complete_upload(
