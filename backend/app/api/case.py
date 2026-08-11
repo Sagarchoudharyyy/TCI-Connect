@@ -998,9 +998,11 @@ async def upload_case_file(
             "wb"
         ) as out_file:
 
+            CHUNK_SIZE = 8 * 1024 * 1024 
+
             while chunk := await file.read(
-                1024 * 1024
-            ):  # 1 MB chunks
+               CHUNK_SIZE
+            ):  # 8 MB chunks
 
                 await out_file.write(
                     chunk
@@ -1167,8 +1169,10 @@ async def temp_upload(
             "wb"
         ) as out_file:
 
+            CHUNK_SIZE = 8 * 1024 * 1024 
+
             while chunk := await file.read(
-                1024 * 1024
+             CHUNK_SIZE
             ):
                 await out_file.write(
                     chunk
@@ -1186,6 +1190,150 @@ async def temp_upload(
         raise HTTPException(
             status_code=500,
             detail="Failed to upload file"
+        )
+
+
+
+@router.post("/upload/init")
+async def init_upload(
+    file_name: str = Form(...),
+    total_size: int = Form(...)
+):
+    upload_id = str(uuid4())
+
+    upload_dir = os.path.join(
+        "temp_uploads",
+        upload_id
+    )
+
+    os.makedirs(
+        upload_dir,
+        exist_ok=True
+    )
+
+    return {
+        "upload_id": upload_id,
+        "file_name": file_name,
+        "total_size": total_size
+    }
+
+
+@router.post("/upload/chunk")
+async def upload_chunk(
+    upload_id: str = Form(...),
+    chunk_number: int = Form(...),
+    file: UploadFile = File(...)
+):
+    upload_dir = os.path.join(
+        "temp_uploads",
+        upload_id
+    )
+
+    if not os.path.exists(upload_dir):
+        raise HTTPException(
+            status_code=404,
+            detail="Upload session not found"
+        )
+
+    chunk_path = os.path.join(
+        upload_dir,
+        f"chunk_{chunk_number}"
+    )
+
+    try:
+        async with aiofiles.open(
+            chunk_path,
+            "wb"
+        ) as out_file:
+
+            while chunk := await file.read(
+                8 * 1024 * 1024
+            ):
+                await out_file.write(chunk)
+
+        return {
+            "message": "Chunk uploaded",
+            "chunk_number": chunk_number
+        }
+
+    except Exception:
+        if os.path.exists(chunk_path):
+            os.remove(chunk_path)
+
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to upload chunk"
+        )
+
+
+@router.post("/upload/complete")
+async def complete_upload(
+    upload_id: str = Form(...),
+    file_name: str = Form(...),
+    total_chunks: int = Form(...)
+):
+    upload_dir = os.path.join(
+        "temp_uploads",
+        upload_id
+    )
+
+    if not os.path.exists(upload_dir):
+        raise HTTPException(
+            status_code=404,
+            detail="Upload session not found"
+        )
+
+    final_name = f"{uuid4()}_{file_name}"
+
+    final_path = os.path.join(
+        "temp_uploads",
+        final_name
+    )
+
+    try:
+        async with aiofiles.open(
+            final_path,
+            "wb"
+        ) as final_file:
+
+            for chunk_number in range(total_chunks):
+
+                chunk_path = os.path.join(
+                    upload_dir,
+                    f"chunk_{chunk_number}"
+                )
+
+                if not os.path.exists(chunk_path):
+                    raise HTTPException(
+                        status_code=400,
+                        detail=f"Missing chunk {chunk_number}"
+                    )
+
+                async with aiofiles.open(
+                    chunk_path,
+                    "rb"
+                ) as chunk_file:
+
+                    while chunk := await chunk_file.read(
+                        8 * 1024 * 1024
+                    ):
+                        await final_file.write(chunk)
+
+        shutil.rmtree(upload_dir)
+
+        return {
+            "message": "Upload completed",
+            "file_name": file_name,
+            "file_path": final_path
+        }
+
+    except Exception:
+        if os.path.exists(final_path):
+            os.remove(final_path)
+
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to combine upload"
         )
 
 @router.delete("/delete-temp-file")
