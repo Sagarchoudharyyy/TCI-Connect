@@ -50,6 +50,15 @@ const Chat = () => {
     markChatNotificationsRead();
     getActiveUsers();
   }, []);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getActiveUsers();
+    }, 2000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   const markChatNotificationsRead = async () => {
     try {

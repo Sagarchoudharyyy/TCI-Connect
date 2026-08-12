@@ -46,7 +46,7 @@ import Privacy from "./design-part/html/Privacy";
 
 function App() {
   return (
-    <BrowserRouter basename="/new-tciconnect/frontend">
+    <BrowserRouter basename="/new-tciconnect">
       <ScrollToTop />
       <Routes>
 
