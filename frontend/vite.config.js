@@ -3,7 +3,7 @@ import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import babel from "@rolldown/plugin-babel";
 
 export default defineConfig({
-  base: "/new-tciconnect/frontend/",
+  base: "/new-tciconnect/",
 
   plugins: [
     react(),

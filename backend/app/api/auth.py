@@ -274,6 +274,9 @@ def forgot_password(
         "success": True,
         "message": "Email exists"
     }
+
+
+
 @router.post("/reset-password")
 def reset_password(
     request: ResetPasswordRequest,
@@ -290,8 +293,6 @@ def reset_password(
             "message": "Email not found"
         }
 
-   
-
     user.password = hash_password(request.password)
 
     db.commit()
@@ -300,6 +301,8 @@ def reset_password(
         "success": True,
         "message": "Password updated successfully"
     }
+
+
 @router.post("/upload-profile-image")
 def upload_profile_image(
     file: UploadFile = File(...),
