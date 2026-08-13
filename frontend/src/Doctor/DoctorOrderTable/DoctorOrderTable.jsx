@@ -141,36 +141,41 @@ function DoctorOrderTable({
             console.log(error);
         }
     };
+    const handleViewCaseDocument = async (caseId) => {
+        try {
+            const response = await api.get(`/case_files/${caseId}`);
 
-    const handleViewCaseDocument =
-        async (caseId) => {
-            try {
-                const response = await api.get(`/case_files/${caseId}`);
+            const caseDocument = response.data.find(
+                file => file.file_category === "case_document"
+            );
 
-                const caseDocument =
-                    response.data.find(
-                        file =>
-                            file.file_category ===
-                            "case_document"
-                    );
-
-                if (!caseDocument) {
-                    alert(
-                        "No case document found."
-                    );
-                    return;
-                }
-
-                const url = `${import.meta.env.VITE_FILE_URL}/${caseDocument.file_path
-                    .replace(/\\/g, "/")
-                    .replace(/^uploads\//, "")}`;
-                // Open in same tab
-                window.location.href = url;
-
-            } catch (error) {
-                console.log(error);
+            if (!caseDocument) {
+                alert("No case document found.");
+                return;
             }
-        };
+
+            const cleanPath = caseDocument.file_path
+                .replace(/\\/g, "/")
+                .replace(/^uploads\//, "");
+
+            const encodedPath = cleanPath
+                .split("/")
+                .map((part) => encodeURIComponent(part))
+                .join("/");
+
+            const url = `${import.meta.env.VITE_FILE_URL}/${encodedPath}`;
+
+            console.log("Case document path:", caseDocument.file_path);
+            console.log("Case document URL:", url);
+
+            window.location.href = url;
+
+        } catch (error) {
+            console.log("Case document error:", error);
+        }
+    };
+
+
     const handleReset = () => {
         setStatusFilter("");
         setDeadlineFilter("");
