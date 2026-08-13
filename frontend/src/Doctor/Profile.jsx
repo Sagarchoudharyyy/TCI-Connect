@@ -211,7 +211,7 @@ function Profile() {
                                                                     profilePreview
                                                                         ? profilePreview
                                                                         : user?.profile_image
-                                                                            ? `${import.meta.env.VITE_FILE_URL}/profile/${encodeURI(user.profile_image)}`
+                                                                            ? `${import.meta.env.VITE_FILE_URL}/profile/${encodeURI(user.profile_image)}?t=${Date.now()}`
                                                                             : "/default-profile.png"
                                                                 }
                                                                 alt="Profile Image"
