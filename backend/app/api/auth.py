@@ -353,6 +353,9 @@ def upload_profile_image(
         "message": "Profile image uploaded successfully",
         "profile_image": user.profile_image
     }
+    
+    
+    
 @router.post("/change-password")
 def change_password(
     request: ChangePasswordRequest,

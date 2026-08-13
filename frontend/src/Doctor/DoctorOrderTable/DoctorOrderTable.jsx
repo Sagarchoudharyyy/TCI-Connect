@@ -161,10 +161,9 @@ function DoctorOrderTable({
                     return;
                 }
 
-                const url = `${import.meta.env.VITE_FILE_URL}/${caseDocument.file_path.replace(
-                    /\\/g,
-                    "/"
-                )}`;
+                const url = `${import.meta.env.VITE_FILE_URL}/${caseDocument.file_path
+                    .replace(/\\/g, "/")
+                    .replace(/^uploads\//, "")}`;
                 // Open in same tab
                 window.location.href = url;
 

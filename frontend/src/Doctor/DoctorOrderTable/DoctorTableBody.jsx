@@ -70,7 +70,9 @@ function DoctorTableBody({
                     <div key={file.id}>
 
                       <a
-                        href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(/\\/g, "/")}`}
+                        href={`${import.meta.env.VITE_FILE_URL}/${file.file_path
+                          .replace(/\\/g, "/")
+                          .replace(/^uploads\//, "")}`}
                         target="_blank"
                         rel="noreferrer"
                         style={{
@@ -196,7 +198,9 @@ function DoctorTableBody({
                     className="text-center"
                   >
                     <a
-                      href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(/\\/g, "/")}`}
+                      href={`${import.meta.env.VITE_FILE_URL}/${file.file_path
+                        .replace(/\\/g, "/")
+                        .replace(/^uploads\//, "")}`}
                       target="_blank"
                       rel="noreferrer"
                     >
