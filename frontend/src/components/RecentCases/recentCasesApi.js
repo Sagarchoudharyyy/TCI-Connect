@@ -54,7 +54,17 @@ export const viewCaseDocument = async (caseId) => {
     if (!caseDocument) {
         throw new Error("No case document found");
     }
-    window.location.href = `${FILE_URL}/${caseDocument.file_path.replace(/\\/g, "/")}`;
+
+    const cleanPath = caseDocument.file_path
+        .replace(/\\/g, "/")
+        .replace(/^uploads\//, "");
+
+    const encodedPath = cleanPath
+        .split("/")
+        .map((part) => encodeURIComponent(part))
+        .join("/");
+
+    window.location.href = `${FILE_URL}/${encodedPath}`;
 };
 
 export const updateCaseStatus = async (caseId, status) => {

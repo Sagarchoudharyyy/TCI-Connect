@@ -20,13 +20,27 @@ function RecentCasesRow({
         item.files?.filter(
             file => file.file_category === "preview_file"
         ) || [];
+
+
+    const getFileUrl = (filePath) => {
+        const cleanPath = filePath
+            .replace(/\\/g, "/")
+            .replace(/^uploads\//, "");
+
+        const encodedPath = cleanPath
+            .split("/")
+            .map((part) => encodeURIComponent(part))
+            .join("/");
+
+        return `${import.meta.env.VITE_FILE_URL}/${encodedPath}`;
+    };
     return (
         <tr>
             <td className="text-center">
                 <img
                     src={
                         item.profile_image
-                            ? `${import.meta.env.VITE_FILE_URL}/${encodeURI(item.profile_image)}`
+                            ? `${import.meta.env.VITE_FILE_URL}/profile/${encodeURI(item.profile_image)}`
                             : "/images/default-profile.png"
                     }
                     alt="profile"
@@ -75,7 +89,7 @@ function RecentCasesRow({
                         <div key={file.id}>
 
                             <a
-                                href={`${import.meta.env.VITE_FILE_URL}/${file.file_path}`}
+                                href={getFileUrl(file.file_path)}
                                 target="_blank"
                                 rel="noreferrer"
                                 style={{
@@ -285,10 +299,7 @@ function RecentCasesRow({
                                                 key={file.id}
                                             >
                                                 <a
-                                                    href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(
-                                                        /\\/g,
-                                                        "/"
-                                                    )}`}
+                                                    href={getFileUrl(file.file_path)}
                                                     target="_blank"
                                                     rel="noreferrer"
                                                     style={{

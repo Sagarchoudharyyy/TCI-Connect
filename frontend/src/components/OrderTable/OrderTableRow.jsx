@@ -15,6 +15,19 @@ function OrderTableRow({
     navigate
 }) {
     const previewFiles = previewFilesMap || [];
+
+    const getFileUrl = (filePath) => {
+        const cleanPath = filePath
+            .replace(/\\/g, "/")
+            .replace(/^uploads\//, "");
+
+        const encodedPath = cleanPath
+            .split("/")
+            .map((part) => encodeURIComponent(part))
+            .join("/");
+
+        return `${import.meta.env.VITE_FILE_URL}/${encodedPath}`;
+    };
     return (
         <tr>
             <td className="text-center">
@@ -46,7 +59,7 @@ function OrderTableRow({
                         .map((file, index) => (
                             <div key={index}>
                                 <a
-                                    href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(/\\/g, "/")}`}
+                                    href={getFileUrl(file.file_path)}
                                     target="_blank"
                                     rel="noreferrer"
                                     style={{
@@ -83,7 +96,7 @@ function OrderTableRow({
                         <div key={file.id}>
 
                             <a
-                                href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(/\\/g, "/")}`}
+                                href={getFileUrl(file.file_path)}
                                 target="_blank"
                                 rel="noreferrer"
                                 style={{
@@ -293,10 +306,7 @@ function OrderTableRow({
                                                 key={file.id}
                                             >
                                                 <a
-                                                    href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(
-                                                        /\\/g,
-                                                        "/"
-                                                    )}`}
+                                                    href={getFileUrl(file.file_path)}
                                                     target="_blank"
                                                     rel="noreferrer"
                                                     style={{
