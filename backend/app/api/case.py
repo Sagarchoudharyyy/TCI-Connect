@@ -435,9 +435,9 @@ def get_cases(
         )
 
 
-    @router.get(
+@router.get(
             "/cases/{case_id}")
-    def get_case(
+def get_case(
         case_id: int,
         token: str = Depends(oauth2_scheme),
         db: Session = Depends(get_db)
