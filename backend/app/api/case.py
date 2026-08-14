@@ -423,170 +423,174 @@ def get_cases(
         "page": page,
         "pages": (total + limit - 1) // limit
     } 
+    except HTTPException:
+        raise
+
     except Exception as e:
         traceback.print_exc()
         print("ERROR:", e)
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-
-@router.get(
-        "/cases/{case_id}")
-def get_case(
-    case_id: int,
-    token: str = Depends(oauth2_scheme),
-    db: Session = Depends(get_db)
-):
-    
-    payload = decode_access_token(token)
-    print("Payload:", payload)
-    
-
-    if not payload:
         raise HTTPException(
-            status_code=401,
-            detail="Invalid token"
+            status_code=500,
+            detail="Internal server error"
         )
 
-    user_id = payload.get("user_id")
-    role = payload.get("role")
-    
-    print("User ID:", payload.get("user_id"))
-    print("Role:", payload.get("role"))
 
-    case = (
-        db.query(Case)
-        .options(
-            joinedload(Case.doctor),
-            selectinload(Case.files),
-            joinedload(Case.details)
-                .selectinload(CaseDetail.implant_details)
-        )
-        .filter(Case.id == case_id)
-        .first()
-    )
+    @router.get(
+            "/cases/{case_id}")
+    def get_case(
+        case_id: int,
+        token: str = Depends(oauth2_scheme),
+        db: Session = Depends(get_db)
+    ):
+        
+        payload = decode_access_token(token)
+        print("Payload:", payload)
+        
 
-    if not case:
+        if not payload:
             raise HTTPException(
-                status_code=404,
-                detail="Case not found"
+                status_code=401,
+                detail="Invalid token"
             )
-            
-    if role == "doctor" and case.doctor_id != user_id:
-        raise HTTPException(
-            status_code=403,
-            detail="You are not authorized to access this case."
+
+        user_id = payload.get("user_id")
+        role = payload.get("role")
+        
+        print("User ID:", payload.get("user_id"))
+        print("Role:", payload.get("role"))
+
+        case = (
+            db.query(Case)
+            .options(
+                joinedload(Case.doctor),
+                selectinload(Case.files),
+                joinedload(Case.details)
+                    .selectinload(CaseDetail.implant_details)
+            )
+            .filter(Case.id == case_id)
+            .first()
         )
 
-    return {
-            "id": case.id,
-            "doctor_id": case.doctor_id,
-            "profile_image":
-                case.doctor.profile_image
-                if case.doctor else None,
-            "doctor_name": case.doctor.full_name,
-            "patient_name": case.patient_name,
-            "patient_phone": case.patient_phone,
-            "gender": case.gender,
-            "age": case.age,
-            "appointment_date": case.appointment_date,
-            "appointment_time":case.appointment_time,
-            "delivery_deadline": case.delivery_deadline,
-            "preview_status": case.preview_status,
-            "status": case.status,
-            "created_at": case.created_at,
-            "files": [
-                {
-                    "id": file.id,
-                    "file_name": file.file_name,
-                    "file_path": file.file_path,
-                    "file_type": file.file_type,
-                    "file_category": file.file_category
-                }
+        if not case:
+                raise HTTPException(
+                    status_code=404,
+                    detail="Case not found"
+                )
+                
+        if role == "doctor" and case.doctor_id != user_id:
+            raise HTTPException(
+                status_code=403,
+                detail="You are not authorized to access this case."
+            )
 
-            
-                for file in case.files
-            ],
-            "details": {
-                "case_stage":
-                    case.details.case_stage.split(",")
-                    if case.details and case.details.case_stage
-                    else [],
-
-                "surface_texture":
-                    case.details.surface_texture.split(",")
-                    if case.details
-                    and case.details.surface_texture
-                    else [],
-
-                "glazed_polish":
-                    case.details.glazed_polish.split(",")
-                    if case.details
-                    and case.details.glazed_polish
-                    else [],
-
-
-                "incisal_translucency":
-                    case.details.incisal_translucency.split(",")
-                    if case.details
-                    and case.details.incisal_translucency
-                    else [],
-
-
-                 "prepared_tooth_shade":
-                    case.details.prepared_tooth_shade.split(",")
-                    if case.details
-                    and case.details.prepared_tooth_shade
-                    else [],
+        return {
+                "id": case.id,
+                "doctor_id": case.doctor_id,
+                "profile_image":
+                    case.doctor.profile_image
+                    if case.doctor else None,
+                "doctor_name": case.doctor.full_name,
+                "patient_name": case.patient_name,
+                "patient_phone": case.patient_phone,
+                "gender": case.gender,
+                "age": case.age,
+                "appointment_date": case.appointment_date,
+                "appointment_time":case.appointment_time,
+                "delivery_deadline": case.delivery_deadline,
+                "preview_status": case.preview_status,
+                "status": case.status,
+                "created_at": case.created_at,
+                "files": [
+                    {
+                        "id": file.id,
+                        "file_name": file.file_name,
+                        "file_path": file.file_path,
+                        "file_type": file.file_type,
+                        "file_category": file.file_category
+                    }
 
                 
-                "shade_guide_color":
-                    case.details.shade_guide_color
-                    if case.details else None,
+                    for file in case.files
+                ],
+                "details": {
+                    "case_stage":
+                        case.details.case_stage.split(",")
+                        if case.details and case.details.case_stage
+                        else [],
+
+                    "surface_texture":
+                        case.details.surface_texture.split(",")
+                        if case.details
+                        and case.details.surface_texture
+                        else [],
+
+                    "glazed_polish":
+                        case.details.glazed_polish.split(",")
+                        if case.details
+                        and case.details.glazed_polish
+                        else [],
+
+
+                    "incisal_translucency":
+                        case.details.incisal_translucency.split(",")
+                        if case.details
+                        and case.details.incisal_translucency
+                        else [],
+
+
+                    "prepared_tooth_shade":
+                        case.details.prepared_tooth_shade.split(",")
+                        if case.details
+                        and case.details.prepared_tooth_shade
+                        else [],
+
+                    
+                    "shade_guide_color":
+                        case.details.shade_guide_color
+                        if case.details else None,
 
 
 
-               "material_type":
-                    case.details.material_type.split(",")
-                    if case.details
-                    and case.details.material_type
-                    else [],
+                "material_type":
+                        case.details.material_type.split(",")
+                        if case.details
+                        and case.details.material_type
+                        else [],
 
 
 
-                "crown_bridge":
-                    case.details.crown_bridge.split(",")
-                    if case.details
-                    and case.details.crown_bridge
-                    else [],
+                    "crown_bridge":
+                        case.details.crown_bridge.split(",")
+                        if case.details
+                        and case.details.crown_bridge
+                        else [],
 
-                "implant_details": [
-                        {
-                            "implant_type": implant.implant_type,
-                            "platform_diameter": implant.platform_diameter,
-                            "screw_retained": implant.screw_retained,
-                            "screw_retained_hybrid": implant.screw_retained_hybrid,
-                            "cement_retained_ti_abutment": implant.cement_retained_ti_abutment,
-                            "zr_abutment": implant.zr_abutment,
-                            "implant_bar_type": implant.implant_bar_type,
-                            "attachment_type": implant.attachment_type,
-                        }
-                    for implant in case.details.implant_details
-                ]
-            if case.details else [],
+                    "implant_details": [
+                            {
+                                "implant_type": implant.implant_type,
+                                "platform_diameter": implant.platform_diameter,
+                                "screw_retained": implant.screw_retained,
+                                "screw_retained_hybrid": implant.screw_retained_hybrid,
+                                "cement_retained_ti_abutment": implant.cement_retained_ti_abutment,
+                                "zr_abutment": implant.zr_abutment,
+                                "implant_bar_type": implant.implant_bar_type,
+                                "attachment_type": implant.attachment_type,
+                            }
+                        for implant in case.details.implant_details
+                    ]
+                if case.details else [],
 
-                "additional_restorations":
-                    case.details.additional_restorations.split(",")
-                    if case.details
-                    and case.details.additional_restorations
-                    else [],
+                    "additional_restorations":
+                        case.details.additional_restorations.split(",")
+                        if case.details
+                        and case.details.additional_restorations
+                        else [],
 
-                "additional_instructions":
-                    case.details.additional_instructions
-                    if case.details else None,
+                    "additional_instructions":
+                        case.details.additional_instructions
+                        if case.details else None,
+                }
             }
-        }
-
 
 
 
@@ -958,6 +962,84 @@ def delete_case(
         }
 
 
+# @router.post("/cases/{case_id}/upload")
+# async def upload_case_file(
+#     case_id: int,
+#     category: str = Form(...),
+#     file: UploadFile = File(...),
+#     db: Session = Depends(get_db)
+# ):
+#     case = (
+#         db.query(Case)
+#         .filter(Case.id == case_id)
+#         .first()
+#     )
+
+#     if not case:
+#         raise HTTPException(
+#             status_code=404,
+#             detail="Case not found"
+#         )
+
+#     upload_folder = "uploads"
+#     os.makedirs(
+#         upload_folder,
+#         exist_ok=True
+#     )
+
+#     unique_filename = (
+#         f"{uuid4()}_{file.filename}"
+#     )
+
+#     file_path = os.path.join(
+#         upload_folder,
+#         unique_filename
+#     )
+
+#     try:
+#         async with aiofiles.open(
+#             file_path,
+#             "wb"
+#         ) as out_file:
+
+#             CHUNK_SIZE = 8 * 1024 * 1024 
+
+#             while chunk := await file.read(
+#                CHUNK_SIZE
+#             ):  # 8 MB chunks
+
+#                 await out_file.write(
+#                     chunk
+#                 )
+
+#         new_file = CaseFile(
+#             case_id=case.id,
+#             file_type=file.content_type,
+#             file_name=file.filename,
+#             file_path=file_path,
+#             file_category=category
+#         )
+
+#         db.add(new_file)
+#         db.commit()
+#         db.refresh(new_file)
+
+#         return {
+#             "message": "File uploaded successfully",
+#             "file_id": new_file.id,
+#             "file_name": new_file.file_name
+#         }
+
+#     except Exception:
+#         if os.path.exists(file_path):
+#             os.remove(file_path)
+
+#         raise HTTPException(
+#             status_code=500,
+#             detail="Failed to upload file"
+#         )
+    
+    
 @router.post("/cases/{case_id}/upload")
 async def upload_case_file(
     case_id: int,
@@ -977,7 +1059,37 @@ async def upload_case_file(
             detail="Case not found"
         )
 
+    # Validate category
+    allowed_categories = {
+        "case_document",
+        "digital_file",
+        "preview_file"
+    }
+
+    if category not in allowed_categories:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid file category"
+        )
+
+    # Case document must be PDF
+    if category == "case_document":
+        filename = file.filename or ""
+
+        if not filename.lower().endswith(".pdf"):
+            raise HTTPException(
+                status_code=400,
+                detail="Case document must be a PDF file"
+            )
+
+        if file.content_type != "application/pdf":
+            raise HTTPException(
+                status_code=400,
+                detail="Case document must have PDF content type"
+            )
+
     upload_folder = "uploads"
+
     os.makedirs(
         upload_folder,
         exist_ok=True
@@ -998,15 +1110,12 @@ async def upload_case_file(
             "wb"
         ) as out_file:
 
-            CHUNK_SIZE = 8 * 1024 * 1024 
+            CHUNK_SIZE = 8 * 1024 * 1024
 
             while chunk := await file.read(
-               CHUNK_SIZE
-            ):  # 8 MB chunks
-
-                await out_file.write(
-                    chunk
-                )
+                CHUNK_SIZE
+            ):
+                await out_file.write(chunk)
 
         new_file = CaseFile(
             case_id=case.id,
@@ -1034,8 +1143,9 @@ async def upload_case_file(
             status_code=500,
             detail="Failed to upload file"
         )
-    
-    
+
+
+
 @router.get(
         "/download-file")
 def download_file(
@@ -1058,6 +1168,7 @@ def download_file(
             media_type=
             "application/octet-stream"
         )
+
 
 @router.get("/case_files")
 def get_case_files(
