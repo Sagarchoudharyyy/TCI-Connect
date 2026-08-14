@@ -229,7 +229,7 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
                             <img
                                 src={
                                     user?.profile_image
-                                        ? `${import.meta.env.VITE_FILE_URL}/${encodeURI(user.profile_image)}`
+                                        ? `${import.meta.env.VITE_FILE_URL}/profile/${encodeURI(user.profile_image)}`
                                         : "/default-profile.png"
                                 }
                                 alt="Profile"

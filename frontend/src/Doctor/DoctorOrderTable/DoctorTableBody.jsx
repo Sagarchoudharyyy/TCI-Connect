@@ -18,6 +18,19 @@ function DoctorTableBody({
   handlePreviewStatus,
   digitalFilesMap
 }) {
+
+  const getFileUrl = (filePath) => {
+    const cleanPath = filePath
+      .replace(/\\/g, "/")
+      .replace(/^uploads\//, "");
+
+    const encodedPath = cleanPath
+      .split("/")
+      .map((part) => encodeURIComponent(part))
+      .join("/");
+
+    return `${import.meta.env.VITE_FILE_URL}/${encodedPath}`;
+  };
   return (
     <tbody>
       {cases.map((item) => {
@@ -70,7 +83,7 @@ function DoctorTableBody({
                     <div key={file.id}>
 
                       <a
-                        href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(/\\/g, "/")}`}
+                        href={getFileUrl(file.file_path)}
                         target="_blank"
                         rel="noreferrer"
                         style={{
@@ -196,7 +209,7 @@ function DoctorTableBody({
                     className="text-center"
                   >
                     <a
-                      href={`${import.meta.env.VITE_FILE_URL}/${file.file_path.replace(/\\/g, "/")}`}
+                      href={getFileUrl(file.file_path)}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -342,5 +355,4 @@ function DoctorTableBody({
     </tbody>
   );
 }
-
 export default DoctorTableBody;
