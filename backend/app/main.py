@@ -62,11 +62,11 @@ app.include_router(
 )
 
 app.mount(
-    "/uploads",
+    "/tci-uploads",
     StaticFiles(
         directory="uploads"
     ),
-    name="uploads"
+    name="tci-uploads"
 )
 
 @app.get("/")
