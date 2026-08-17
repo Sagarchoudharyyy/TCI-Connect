@@ -48,9 +48,14 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
     };
 
     useEffect(() => {
-        fetchNotifications();
         fetchProfile();
     }, []);
+
+    useEffect(() => {
+        if (user?.id) {
+            fetchNotifications();
+        }
+    }, [user]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
