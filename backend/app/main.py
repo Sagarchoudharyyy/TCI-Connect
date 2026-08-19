@@ -19,6 +19,7 @@ from app.models.material_model import Material
 from app.api.material_route import router as material_router
 
 from app.api.notification import router as notification_router
+from app.api.mobile_download import router as mobile_download_router
 
 
 app = FastAPI(
@@ -48,6 +49,10 @@ app.include_router(pricing_router, prefix="/api")
 app.include_router(category_router, prefix="/api")
 app.include_router(material_router, prefix="/api")
 app.include_router(notification_router, prefix="/api")
+app.include_router(
+    mobile_download_router,
+    prefix="/api",
+)
 
 app.include_router(
     doctor_router,
