@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Header
+
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from fastapi.security import (
@@ -23,6 +23,13 @@ from app.core.security import (
     create_access_token,
     decode_access_token
 )
+from fastapi import (
+    APIRouter,
+    Depends,
+    Header,
+    HTTPException,
+    status,
+)
 
 from app.schemas.user_schema import (
     UserRegister,
@@ -36,6 +43,76 @@ router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="/api/token"
 )
+
+def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db)
+):
+    # -----------------------------------------
+    # 1. Decode JWT
+    # -----------------------------------------
+    payload = decode_access_token(token)
+
+    if not payload:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired token",
+            headers={
+                "WWW-Authenticate": "Bearer"
+            },
+        )
+
+    # -----------------------------------------
+    # 2. Check whether token is blacklisted
+    # -----------------------------------------
+    blacklisted_token = (
+        db.query(Blacklist)
+        .filter(Blacklist.token == token)
+        .first()
+    )
+
+    if blacklisted_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token has been logged out",
+            headers={
+                "WWW-Authenticate": "Bearer"
+            },
+        )
+
+    # -----------------------------------------
+    # 3. Get user_id from JWT
+    # -----------------------------------------
+    user_id = payload.get("user_id")
+
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token payload",
+            headers={
+                "WWW-Authenticate": "Bearer"
+            },
+        )
+
+    # -----------------------------------------
+    # 4. Find user
+    # -----------------------------------------
+    user = (
+        db.query(User)
+        .filter(User.id == user_id)
+        .first()
+    )
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found",
+            headers={
+                "WWW-Authenticate": "Bearer"
+            },
+        )
+
+    return user
 
 
 @router.post("/register")
