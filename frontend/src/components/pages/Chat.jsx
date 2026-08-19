@@ -142,7 +142,7 @@ const Chat = () => {
                         <img
                           src={
                             user.profile_image
-                              ? `${import.meta.env.VITE_FILE_URL}/uploads/profile/${encodeURIComponent(user.profile_image)}`
+                              ? `${import.meta.env.VITE_FILE_URL}/tci-uploads/profile/${encodeURIComponent(user.profile_image)}`
                               : "/images/default-profile.png"
                           }
                           alt="profile"
