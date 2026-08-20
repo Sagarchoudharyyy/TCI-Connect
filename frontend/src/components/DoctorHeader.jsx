@@ -7,7 +7,7 @@ import {
 import api from "../services/api";
 import "../DoctorStyle/DoctorHeader.css";
 import { FaBars } from "react-icons/fa";
-import { getProfileImageUrl } from "../services/fileservice";
+import { getProfileImageUrl } from "../sservices/fileservice";
 
 function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
     const [notifications, setNotifications] = useState([]);
