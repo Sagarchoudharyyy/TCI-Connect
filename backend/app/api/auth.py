@@ -21,7 +21,9 @@ from app.core.security import (
     hash_password,
     verify_password,
     create_access_token,
-    decode_access_token
+    decode_access_token,
+    create_refresh_token,
+    decode_refresh_token
 )
 from fastapi import (
     APIRouter,
@@ -37,6 +39,10 @@ from app.schemas.user_schema import (
     ChangePasswordRequest,
     UpdateProfileRequest
 )
+from pydantic import BaseModel
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
 
 router = APIRouter()
 
@@ -274,8 +280,17 @@ def login(
         }
     )
 
+    refresh_token = create_refresh_token(
+    data={
+        "user_id": db_user.id,
+        "email": db_user.email,
+        "role": db_user.role
+    }
+)
+
     return {
     "access_token": access_token,
+    "refresh_token": refresh_token,
     "token_type": "bearer",
     "user": {
         "id": db_user.id,
@@ -288,7 +303,8 @@ def login(
         "vat_id": db_user.vat_id,
         "country": db_user.country,
         "address": db_user.address,
-        "role": db_user.role
+        "role": db_user.role,
+        "profile_image": db_user.profile_image,
     }
 }
     
@@ -601,4 +617,64 @@ def logout(
 
     return {
         "message": "Logged out successfully"
+    }
+
+
+
+@router.post("/refresh-token")
+def refresh_token(
+    request: RefreshTokenRequest,
+    db: Session = Depends(get_db)
+):
+
+    payload = decode_refresh_token(
+        request.refresh_token
+    )
+
+    if not payload:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or expired refresh token"
+        )
+
+    user_id = payload.get("user_id")
+
+    if not user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid refresh token"
+        )
+
+    user = (
+        db.query(User)
+        .filter(User.id == user_id)
+        .first()
+    )
+
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="User not found"
+        )
+
+    if (
+        user.role == "doctor"
+        and user.status != "approved"
+    ):
+        raise HTTPException(
+            status_code=403,
+            detail="Your account is not approved"
+        )
+
+    new_access_token = create_access_token(
+        data={
+            "user_id": user.id,
+            "email": user.email,
+            "role": user.role
+        }
+    )
+
+    return {
+        "access_token": new_access_token,
+        "token_type": "bearer"
     }
