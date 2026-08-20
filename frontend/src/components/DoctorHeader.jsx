@@ -7,6 +7,7 @@ import {
 import api from "../services/api";
 import "../DoctorStyle/DoctorHeader.css";
 import { FaBars } from "react-icons/fa";
+import { getProfileImageUrl } from "../services/fileService";
 
 function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
     const [notifications, setNotifications] = useState([]);
@@ -232,11 +233,7 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
 
                         >
                             <img
-                                src={
-                                    user?.profile_image
-                                        ? `${import.meta.env.VITE_FILE_URL}/${encodeURI(user.profile_image)}`
-                                        : "/default-profile.png"
-                                }
+                                src={getProfileImageUrl(user?.profile_image)}
                                 alt="Profile"
                                 className="rounded-circle me-2"
                                 width="40"

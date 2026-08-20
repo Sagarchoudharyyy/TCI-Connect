@@ -7,6 +7,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "../DoctorStyle/Setting.css"
 import { FaEdit } from "react-icons/fa";
 import api from "../services/api";
+import { getProfileImageUrl } from "../services/fileservie";
 function Profile() {
 
 
@@ -206,14 +207,7 @@ function Profile() {
                                                     <div className="col-sm-9">
                                                         <div className="position-relative" style={{ width: "150px", height: "150px" }}>
                                                             <img
-                                                                id="profilePreview"
-                                                                src={
-                                                                    profilePreview
-                                                                        ? profilePreview
-                                                                        : user?.profile_image
-                                                                            ? `${import.meta.env.VITE_FILE_URL}/${encodeURI(user.profile_image)}?t=${Date.now()}`
-                                                                            : "/default-profile.png"
-                                                                }
+                                                                src={getProfileImageUrl(user?.profile_image)}
                                                                 alt="Profile Image"
                                                                 className="rounded-circle border"
                                                                 style={{
