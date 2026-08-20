@@ -7,7 +7,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "../DoctorStyle/Setting.css"
 import { FaEdit } from "react-icons/fa";
 import api from "../services/api";
-import { getProfileImageUrl } from "../services/fileservie";
+import { getProfileImageUrl } from "../services/fileservice";
 function Profile() {
 
 
