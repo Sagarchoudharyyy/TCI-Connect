@@ -31,6 +31,7 @@ from app.models.case_detail_model import CaseDetail
 from app.models.implant_detail_model import ImplantDetail
 from app.schemas.case_schema import DeleteTempFileRequest, SaveTempFileRequest
 from fastapi import Query
+from app.websocket.manager import manager
 from sqlalchemy import or_, String
 
 from app.schemas.case_schema import (
@@ -1111,7 +1112,7 @@ def doctor_edit_case(
 
 
 @router.put("/cases/{case_id}/status")
-def update_case_status(
+async def update_case_status(
         case_id: int,
         status_data: StatusUpdate,
         db: Session = Depends(get_db)
@@ -1144,6 +1145,15 @@ def update_case_status(
         
         db.commit()
         db.refresh(case)
+
+        await manager.send_to_user(
+        case.doctor_id,
+            {
+                "type": "case_status_updated",
+                "case_id": case.id,
+                "status": case.status
+            }
+        )
 
         return {
             "message": "Status updated successfully",
