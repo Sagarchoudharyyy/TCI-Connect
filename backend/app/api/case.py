@@ -635,6 +635,7 @@ def update_case(
     case.delivery_deadline = updated_case.delivery_deadline
     case.preview_status = updated_case.preview_status
     case.status = updated_case.status
+    case.is_edited = True
 
     if updated_case.details:
 
@@ -745,6 +746,7 @@ def update_case(
         "delivery_deadline": case.delivery_deadline,
         "preview_status": case.preview_status,
         "status": case.status,
+        "is_edited":case.is_edited,
         "created_at": case.created_at,
 
         "details": {

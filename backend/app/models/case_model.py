@@ -5,7 +5,8 @@ from sqlalchemy import (
         Date,
         DateTime,
         ForeignKey,
-        Text
+        Text,
+        Boolean
     )
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -95,6 +96,14 @@ class Case(Base):
             String(30),
             default="Not Submitted",
              index=True
+        )
+
+
+        is_edited = Column(
+            Boolean,
+            default=False,
+            nullable=False,
+            index=True
         )
 
         created_at = Column(

@@ -110,6 +110,8 @@ class CaseResponse(BaseModel):
 
     status: str
 
+    is_edited: bool = False
+
     created_at: Optional[datetime] = None
 
     files: list = []
