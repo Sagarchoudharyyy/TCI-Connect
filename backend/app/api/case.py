@@ -391,6 +391,7 @@ def get_cases(
                 "delivery_deadline": case.delivery_deadline,
                 "preview_status": case.preview_status,
                 "status": case.status,
+                "is_edited":case.is_edited,
                 "files": [
                         {
                             "id": file.id,
@@ -499,6 +500,7 @@ def get_case(
                 "delivery_deadline": case.delivery_deadline,
                 "preview_status": case.preview_status,
                 "status": case.status,
+                "is_edited":case.is_edited,
                 "created_at": case.created_at,
                 "files": [
                     {
