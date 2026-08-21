@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from app.database.database import SessionLocal
 from app.models.chat_model import ChatMessage
@@ -57,19 +57,37 @@ def send_message(
             "message": "Message sent successfully",
             "data": new_message
         }
-
 @router.get("/messages/{sender_id}/{receiver_id}")
-def get_messages(sender_id: int, receiver_id: int, db: Session = Depends(get_db)):
+def get_messages(
+    sender_id: int,
+    receiver_id: int,
+    limit: int = Query(30, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+    db: Session = Depends(get_db)
+):
 
-    messages = db.query(ChatMessage).filter(
-        ((ChatMessage.sender_id == sender_id) &
-         (ChatMessage.receiver_id == receiver_id))
-         
-        |
+    messages = (
+        db.query(ChatMessage)
+        .filter(
+            (
+                (ChatMessage.sender_id == sender_id) &
+                (ChatMessage.receiver_id == receiver_id)
+            )
+            |
+            (
+                (ChatMessage.sender_id == receiver_id) &
+                (ChatMessage.receiver_id == sender_id)
+            )
+        )
+        .order_by(ChatMessage.timestamp.desc())
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
 
-        ((ChatMessage.sender_id == receiver_id) &
-        (ChatMessage.receiver_id == sender_id))
-    ).order_by(ChatMessage.timestamp.asc()).all()
+    # Database gives newest → oldest.
+    # Frontend should receive oldest → newest.
+    messages.reverse()
 
     return messages
 
