@@ -17,6 +17,8 @@ from app.models.category_model import Category
 from app.api.category_route import router as category_router
 from app.models.material_model import Material
 from app.api.material_route import router as material_router
+from app.websocket.chat import router as websocket_router
+from app.models.chat_model import ChatMessage
 
 from app.api.notification import router as notification_router
 from app.api.mobile_download import router as mobile_download_router
@@ -54,6 +56,7 @@ app.include_router(
     prefix="/api",
 )
 
+app.include_router(websocket_router)
 app.include_router(
     doctor_router,
     prefix="/api",
