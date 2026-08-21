@@ -16,7 +16,6 @@ def get_db():
         db.close()
 
 @router.post("/send-message")
-
 def send_message(
     chat: ChatCreate, 
     db: Session = Depends(get_db)
@@ -57,6 +56,8 @@ def send_message(
             "message": "Message sent successfully",
             "data": new_message
         }
+
+
 @router.get("/messages/{sender_id}/{receiver_id}")
 def get_messages(
     sender_id: int,
@@ -85,8 +86,7 @@ def get_messages(
         .all()
     )
 
-    # Database gives newest → oldest.
-    # Frontend should receive oldest → newest.
+    # Convert newest → oldest into oldest → newest
     messages.reverse()
 
     return messages
