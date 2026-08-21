@@ -1146,13 +1146,13 @@ async def update_case_status(
         db.commit()
         db.refresh(case)
 
-        await manager.send_to_user(
-        case.doctor_id,
-            {
-                "type": "case_status_updated",
-                "case_id": case.id,
-                "status": case.status
-            }
+        await manager.send_case_update(
+            case.doctor_id,
+                {
+                    "type": "case_status_updated",
+                    "case_id": case.id,
+                    "status": case.status
+                }
         )
 
         return {

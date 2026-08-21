@@ -19,9 +19,9 @@ from app.models.material_model import Material
 from app.api.material_route import router as material_router
 from app.websocket.chat import router as websocket_router
 from app.models.chat_model import ChatMessage
-
 from app.api.notification import router as notification_router
 from app.api.mobile_download import router as mobile_download_router
+from app.websocket.case import router as case_websocket_router
 
 
 app = FastAPI(
@@ -57,6 +57,7 @@ app.include_router(
 )
 
 app.include_router(websocket_router)
+app.include_router(case_websocket_router)
 app.include_router(
     doctor_router,
     prefix="/api",
