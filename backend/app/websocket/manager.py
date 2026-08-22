@@ -1,139 +1,124 @@
-from fastapi import (
-    APIRouter,
-    WebSocket,
-    WebSocketDisconnect
-)
-
-from .manager import manager
-
-router = APIRouter()
+from fastapi import WebSocket
 
 
-# =====================================================
-# DOCTOR CASE WEBSOCKET
-# =====================================================
+class ConnectionManager:
 
-@router.websocket("/ws/cases/{user_id}")
-async def websocket_cases(
-    websocket: WebSocket,
-    user_id: int
-):
+    def __init__(self):
 
-    await manager.connect_case(
-        user_id,
-        websocket
-    )
+        # Chat WebSockets
+        self.active_connections: dict[int, WebSocket] = {}
 
-    print(
-        f"CASE WEBSOCKET CONNECTED: User {user_id}"
-    )
+        # Case WebSockets
+        self.case_connections: dict[int, WebSocket] = {}
 
-    try:
+    # =====================================================
+    # CHAT
+    # =====================================================
 
-        while True:
+    async def connect(
+        self,
+        user_id: int,
+        websocket: WebSocket
+    ):
+        await websocket.accept()
 
-            await websocket.receive_text()
-
-    except WebSocketDisconnect:
-
-        manager.disconnect_case(
-            user_id,
-            websocket
-        )
+        self.active_connections[user_id] = websocket
 
         print(
-            f"CASE WEBSOCKET DISCONNECTED: User {user_id}"
+            f"Chat WebSocket connected: User {user_id}"
         )
 
-    except Exception as error:
+    def disconnect(
+        self,
+        user_id: int
+    ):
+        if user_id in self.active_connections:
+            del self.active_connections[user_id]
 
         print(
-            f"CASE WEBSOCKET ERROR "
-            f"User {user_id}:",
-            error
+            f"Chat WebSocket disconnected: User {user_id}"
         )
 
-        manager.disconnect_case(
-            user_id,
-            websocket
+    async def send_to_user(
+        self,
+        user_id: int,
+        data: dict
+    ):
+
+        websocket = self.active_connections.get(user_id)
+
+        if websocket:
+            try:
+                await websocket.send_json(data)
+
+            except Exception as error:
+                print(
+                    f"Chat WebSocket send failed for User {user_id}:",
+                    error
+                )
+
+                self.disconnect(user_id)
+
+    # =====================================================
+    # CASE WEBSOCKET
+    # =====================================================
+
+    async def connect_case(
+        self,
+        user_id: int,
+        websocket: WebSocket
+    ):
+        await websocket.accept()
+
+        self.case_connections[user_id] = websocket
+
+        print(
+            f"Case WebSocket connected: User {user_id}"
         )
 
+    def disconnect_case(
+        self,
+        user_id: int
+    ):
+        if user_id in self.case_connections:
+            del self.case_connections[user_id]
 
-# =====================================================
-# ADMIN CASE WEBSOCKET
-# =====================================================
-
-@router.websocket("/ws/admin/cases")
-async def websocket_admin_cases(
-    websocket: WebSocket
-):
-
-    admin_id = 1
-
-    await manager.connect_case(
-        admin_id,
-        websocket
-    )
-
-    print(
-        "===================================="
-    )
-
-    print(
-        "ADMIN CASE WEBSOCKET CONNECTED"
-    )
-
-    print(
-        "ADMIN ID:",
-        admin_id
-    )
-
-    print(
-        "CONNECTED CASE USERS:",
-        list(
-            manager.case_connections.keys()
+        print(
+            f"Case WebSocket disconnected: User {user_id}"
         )
-    )
 
-    print(
-        "ADMIN CONNECTION COUNT:",
-        len(
-            manager.case_connections.get(
-                admin_id,
-                []
+    async def send_case_update(
+        self,
+        user_id: int,
+        data: dict
+    ):
+
+        websocket = self.case_connections.get(user_id)
+
+        if websocket:
+
+            try:
+                await websocket.send_json(data)
+
+                print(
+                    f"CASE UPDATE SENT TO USER {user_id}:",
+                    data
+                )
+
+            except Exception as error:
+
+                print(
+                    f"Case WebSocket send failed for User {user_id}:",
+                    error
+                )
+
+                self.disconnect_case(user_id)
+
+        else:
+
+            print(
+                f"NO CASE WEBSOCKET CONNECTED FOR USER {user_id}"
             )
-        )
-    )
 
-    print(
-        "===================================="
-    )
 
-    try:
-
-        while True:
-
-            await websocket.receive_text()
-
-    except WebSocketDisconnect:
-
-        manager.disconnect_case(
-            admin_id,
-            websocket
-        )
-
-        print(
-            "ADMIN CASE WEBSOCKET DISCONNECTED"
-        )
-
-    except Exception as error:
-
-        print(
-            "ADMIN CASE WEBSOCKET ERROR:",
-            error
-        )
-
-        manager.disconnect_case(
-            admin_id,
-            websocket
-        )
+manager = ConnectionManager()
