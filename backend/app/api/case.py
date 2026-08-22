@@ -1372,6 +1372,27 @@ async def upload_case_file(
         db.refresh(new_file)
         db.refresh(case)
 
+
+        # =====================================================
+# REAL-TIME PREVIEW UPDATE TO DOCTOR
+# =====================================================
+
+        if category == "preview_file":
+
+            await manager.send_case_update(
+                case.doctor_id,
+                {
+                    "type": "preview_uploaded",
+                    "case_id": case.id,
+                    "preview_status": case.preview_status,
+                    "file_id": new_file.id,
+                    "file_name": new_file.file_name,
+                    "file_path": new_file.file_path,
+                    "file_type": new_file.file_type,
+                    "file_category": new_file.file_category,
+                }
+            )
+
         return {
             "message": "File uploaded successfully",
             "file_id": new_file.id,
@@ -1384,7 +1405,7 @@ async def upload_case_file(
     except Exception:
 
         db.rollback()
-        
+
         if os.path.exists(file_path):
             os.remove(file_path)
 
