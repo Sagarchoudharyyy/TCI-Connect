@@ -1359,16 +1359,32 @@ async def upload_case_file(
         )
 
         db.add(new_file)
+
+# =====================================================
+# PREVIEW UPLOADED BY ADMIN
+# =====================================================
+
+        if category == "preview_file":
+            case.preview_status = "Waiting User"
+
         db.commit()
+
         db.refresh(new_file)
+        db.refresh(case)
 
         return {
             "message": "File uploaded successfully",
             "file_id": new_file.id,
-            "file_name": new_file.file_name
+            "file_name": new_file.file_name,
+            "file_category": new_file.file_category,
+            "preview_status": case.preview_status
         }
+       
 
     except Exception:
+
+        db.rollback()
+        
         if os.path.exists(file_path):
             os.remove(file_path)
 
