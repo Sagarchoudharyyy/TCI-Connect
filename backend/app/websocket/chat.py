@@ -6,12 +6,11 @@ from app.models.chat_model import ChatMessage
 from app.models.user_model import User
 from app.models.notification_model import Notification
 
-from .manager import ConnectionManager
+from .manager import manager
 
 
 router = APIRouter()
 
-manager = ConnectionManager()
 
 
 @router.websocket("/ws/chat/{user_id}")

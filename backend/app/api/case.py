@@ -53,7 +53,7 @@ class PreviewStatusUpdate(BaseModel):
     "/cases",
     response_model=CaseResponse
 )
-def create_case(
+async def create_case(
     case: CaseCreate,
     db: Session = Depends(get_db)
 ):
@@ -208,6 +208,24 @@ def create_case(
 
         db.refresh(new_case)
         db.refresh(case_detail)
+
+        admin = (
+            db.query(User)
+            .filter(User.role == "admin")
+            .first()
+        )
+
+        if admin:
+            await manager.send_case_update(
+                admin.id,
+                {
+                    "type": "new_case",
+                    "case_id": new_case.id,
+                    "doctor_id": new_case.doctor_id,
+                    "status": new_case.status,
+                    "preview_status": new_case.preview_status,
+                }
+            )
 
         return {
             "id": new_case.id,
