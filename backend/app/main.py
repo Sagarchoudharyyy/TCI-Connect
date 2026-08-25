@@ -22,6 +22,7 @@ from app.models.chat_model import ChatMessage
 from app.api.notification import router as notification_router
 from app.api.mobile_download import router as mobile_download_router
 from app.websocket.case import router as case_websocket_router
+from app.websocket.pricing import router as pricing_websocket_router
 
 
 app = FastAPI(
@@ -58,6 +59,7 @@ app.include_router(
 
 app.include_router(websocket_router)
 app.include_router(case_websocket_router)
+app.include_router(pricing_websocket_router)
 app.include_router(
     doctor_router,
     prefix="/api",
