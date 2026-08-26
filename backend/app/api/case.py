@@ -284,6 +284,12 @@ async def create_case(
             )
             .first()
         )
+        
+        print(
+        "ADMIN FOUND:",
+        admin.id if admin else None,
+        admin.full_name if admin else None
+    )
 
                                                                
                                    
@@ -460,9 +466,19 @@ async def create_case(
 
         if admin:
 
+            print(
+                "SENDING NEW CASE TO ADMIN:",
+                admin.id
+            )
+
             await manager.send_case_update(
                 admin.id,
                 new_case_payload
+            )
+        else:
+
+            print(
+                "NO ADMIN FOUND"
             )
 
                                                                
