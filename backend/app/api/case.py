@@ -321,14 +321,19 @@ async def create_case(
                 new_case.age,
 
             "appointment_date":
-                new_case.appointment_date,
+                new_case.appointment_date.isoformat()
+                if new_case.appointment_date
+                else None,
 
             "appointment_time":
-                new_case.appointment_time,
+                new_case.appointment_time.isoformat()
+                if new_case.appointment_time
+                else None,
 
             "delivery_deadline":
-                new_case.delivery_deadline,
-
+                new_case.delivery_deadline.isoformat()
+                if new_case.delivery_deadline
+                else None,
             "preview_status":
                 new_case.preview_status,
 
@@ -339,7 +344,9 @@ async def create_case(
                 new_case.is_edited,
 
             "created_at":
-                new_case.created_at,
+                new_case.created_at.isoformat()
+                if new_case.created_at
+                else None,
 
                                                                
                    
