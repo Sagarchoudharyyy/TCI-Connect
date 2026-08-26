@@ -5,10 +5,6 @@ from .manager import manager
 router = APIRouter()
 
 
-# =====================================================
-# DOCTOR CASE WEBSOCKET
-# =====================================================
-
 @router.websocket("/ws/cases/{user_id}")
 async def websocket_cases(
     websocket: WebSocket,
@@ -28,7 +24,10 @@ async def websocket_cases(
             await websocket.receive_text()
 
     except WebSocketDisconnect:
-        manager.disconnect_case(user_id)
+        manager.disconnect_case(
+            user_id,
+            websocket
+        )
 
         print(
             f"CASE WEBSOCKET DISCONNECTED: User {user_id}"
@@ -40,18 +39,16 @@ async def websocket_cases(
             error
         )
 
-        manager.disconnect_case(user_id)
+        manager.disconnect_case(
+            user_id,
+            websocket
+        )
 
-
-# =====================================================
-# ADMIN CASE WEBSOCKET
-# =====================================================
 
 @router.websocket("/ws/admin/cases")
 async def websocket_admin_cases(
     websocket: WebSocket
 ):
-    # Your admin user ID
     admin_id = 1
 
     await manager.connect_case(
@@ -62,17 +59,33 @@ async def websocket_admin_cases(
     print(
         "===================================="
     )
+
     print(
         "ADMIN CASE WEBSOCKET CONNECTED"
     )
+
     print(
         "ADMIN ID:",
         admin_id
     )
+
     print(
         "CONNECTED CASE USERS:",
-        list(manager.case_connections.keys())
+        list(
+            manager.case_connections.keys()
+        )
     )
+
+    print(
+        "ADMIN CASE CONNECTION COUNT:",
+        len(
+            manager.case_connections.get(
+                admin_id,
+                []
+            )
+        )
+    )
+
     print(
         "===================================="
     )
@@ -82,7 +95,10 @@ async def websocket_admin_cases(
             await websocket.receive_text()
 
     except WebSocketDisconnect:
-        manager.disconnect_case(admin_id)
+        manager.disconnect_case(
+            admin_id,
+            websocket
+        )
 
         print(
             "ADMIN CASE WEBSOCKET DISCONNECTED"
@@ -94,4 +110,7 @@ async def websocket_admin_cases(
             error
         )
 
-        manager.disconnect_case(admin_id)
+        manager.disconnect_case(
+            admin_id,
+            websocket
+        )

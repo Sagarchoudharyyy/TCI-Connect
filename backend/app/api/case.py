@@ -57,10 +57,7 @@ async def create_case(
     case: CaseCreate,
     db: Session = Depends(get_db)
 ):
-    try:
-                                                               
-                     
-                                                               
+    try:                                                
 
         new_case = Case(
             doctor_id=case.doctor_id,
@@ -78,9 +75,7 @@ async def create_case(
         db.add(new_case)
         db.flush()
 
-                                                               
-                      
-                                                               
+                                                    
 
         case_detail = CaseDetail(
             case_id=new_case.id,
@@ -140,8 +135,6 @@ async def create_case(
         db.flush()
 
                                                                
-                            
-                                                               
 
         upload_folder = "uploads"
 
@@ -181,9 +174,6 @@ async def create_case(
 
             db.add(case_file)
 
-                                                               
-                         
-                                                               
 
         if (
             case.details
@@ -208,10 +198,7 @@ async def create_case(
 
                 db.add(implant_record)
 
-                                                               
-                    
-                                                               
-
+                                                            
         doctor = (
             db.query(User)
             .filter(
@@ -220,9 +207,6 @@ async def create_case(
             .first()
         )
 
-                                                               
-                             
-                                                               
 
         if doctor:
 
@@ -239,15 +223,8 @@ async def create_case(
 
             db.add(notification)
 
-                                                               
-                         
-                                                               
 
         db.commit()
-
-                                                               
-                                        
-                                                               
 
         new_case = (
             db.query(Case)
@@ -273,10 +250,6 @@ async def create_case(
 
         case_detail = new_case.details
 
-                                                               
-                   
-                                                               
-
         admin = (
             db.query(User)
             .filter(
@@ -291,10 +264,7 @@ async def create_case(
         admin.full_name if admin else None
     )
 
-                                                               
-                                   
-                                                               
-
+ 
         new_case_payload = {
             "type": "new_case",
 
@@ -346,11 +316,7 @@ async def create_case(
             "created_at":
                 new_case.created_at.isoformat()
                 if new_case.created_at
-                else None,
-
-                                                               
-                   
-                                                               
+                else None,                                               
 
             "files": [
                 {
