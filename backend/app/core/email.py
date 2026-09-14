@@ -3,41 +3,73 @@ import smtplib
 from email.message import EmailMessage
 
 
-SMTP_EMAIL = os.getenv("SMTP_EMAIL")
-SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
-SMTP_SERVER = os.getenv("SMTP_SERVER", "smtp.gmail.com")
-SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
+def send_email(
+    to_email: str,
+    subject: str,
+    body: str,
+    html_body: str | None = None,
+) -> bool:
 
+    smtp_email = os.getenv("SMTP_EMAIL")
+    smtp_password = os.getenv("SMTP_PASSWORD")
+    smtp_server = os.getenv(
+        "SMTP_SERVER",
+        "smtp.gmail.com"
+    )
+    smtp_port = int(
+        os.getenv("SMTP_PORT", "587")
+    )
 
-def send_email(to_email: str, subject: str, body: str):
-
-    if not SMTP_EMAIL or not SMTP_PASSWORD:
+    if not smtp_email or not smtp_password:
         print("SMTP email configuration is missing")
+        return False
+
+    if not to_email:
+        print("Recipient email is missing")
         return False
 
     try:
         message = EmailMessage()
 
-        message["From"] = SMTP_EMAIL
+        message["From"] = smtp_email
         message["To"] = to_email
         message["Subject"] = subject
 
+        # Plain-text fallback
         message.set_content(body)
 
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+        # HTML version
+        if html_body:
+            message.add_alternative(
+                html_body,
+                subtype="html"
+            )
+
+        with smtplib.SMTP(
+            smtp_server,
+            smtp_port,
+            timeout=30
+        ) as server:
+
             server.starttls()
 
             server.login(
-                SMTP_EMAIL,
-                SMTP_PASSWORD
+                smtp_email,
+                smtp_password
             )
 
             server.send_message(message)
 
-        print(f"Email sent successfully to {to_email}")
+        print(
+            f"Email sent successfully to {to_email}"
+        )
 
         return True
 
     except Exception as e:
-        print(f"Email sending failed: {e}")
+
+        print(
+            f"Email sending failed to {to_email}: {e}"
+        )
+
         return False
