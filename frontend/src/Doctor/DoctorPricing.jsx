@@ -31,7 +31,7 @@ function DoctorPricing() {
     const getPricing = async () => {
         try {
 
-            const res = await api.get("/pricing");
+            const res = await api.get("/pricing/my-pricing");
 
             setPricing(res.data);
 
@@ -75,7 +75,9 @@ function DoctorPricing() {
                                                 <td>{item.product}</td>
                                                 <td>{item.category}</td>
                                                 <td>{item.material}</td>
-                                                <td>{Number(item.belgium_dentist_price).toFixed(2)} $</td>
+                                                <td>
+                                                    {Number(item.price).toFixed(2)} {item.currency}
+                                                </td>
                                             </tr>
                                         ))
                                     ) : (

@@ -9,6 +9,8 @@ from app.models.pricing_model import Pricing
 from app.schemas.pricing_schema import PricingCreate
 
 from app.websocket.manager import manager
+from app.api.auth import get_current_user
+from app.models.user_model import User
 
 
 router = APIRouter(tags=["Pricing"])
@@ -88,7 +90,44 @@ def get_all_prices(
 
     return db.query(Pricing).all()
 
+@router.get("/pricing/my-pricing")
+def get_my_pricing(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    country = (current_user.country or "").strip().lower()
+    business_type = (current_user.business_type or "").strip().lower()
 
+    result = []
+
+    for price in db.query(Pricing).all():
+
+        if country == "belgium":
+            currency = "€"
+
+            if business_type == "dentist":
+                selected_price = price.belgium_dentist_price
+            else:
+                selected_price = price.belgium_lab_price
+
+        else:
+            currency = "$"
+
+            if business_type == "dentist":
+                selected_price = price.lebanon_dentist_price
+            else:
+                selected_price = price.lebanon_lab_price
+
+        result.append({
+            "id": price.id,
+            "product": price.product,
+            "category": price.category,
+            "material": price.material,
+            "price": selected_price,
+            "currency": currency
+        })
+
+    return result
 @router.get("/pricing/{price_id}")
 def get_price(
 
