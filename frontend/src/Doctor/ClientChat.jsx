@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../services/api";
 
 import { useParams } from "react-router-dom";
-
+import ProfileAvatar from "../components/ProfileAvatar";
 import DoctorSideBar from "../components/DoctorSideBar";
 import DoctorHeader from "../components/DoctorHeader";
 import "../DoctorStyle/ChatClient.css"
@@ -122,9 +122,9 @@ function ClientChat() {
                 <div className="chat-user">
 
                   <div className="chat-avatar">
-                    <img
-                      src="/src/assets/react.svg"
-                      alt={user?.full_name || "User"}
+                    <ProfileAvatar
+                      profileImage={user?.profile_image}
+                      size={45}
                     />
                   </div>
 
