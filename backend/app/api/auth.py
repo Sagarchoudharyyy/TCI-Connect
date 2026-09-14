@@ -686,7 +686,7 @@ def refresh_token(
 def test_email():
 
     result = send_email(
-        to_email="YOUR_EMAIL@gmail.com",
+        to_email="sagarchoudhary7262@gmail.com",
         subject="TCI Connect Email Test",
         body="""
 Hello,
