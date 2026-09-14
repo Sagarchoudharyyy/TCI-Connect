@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import api from "../../services/api";
 import Sidebar from "../Sidebar";
 import Header from "../Header";
@@ -12,7 +12,7 @@ function ChatWindow() {
   const [newMessage, setNewMessage] = useState("");
   const [user, setUser] = useState(null);
   const [showSidebar, setShowSidebar] = useState(false);
-
+  const chatBoxRef = useRef(null);
   const loggedUser =
     JSON.parse(localStorage.getItem("user"));
 
@@ -29,7 +29,12 @@ function ChatWindow() {
       markMessagesRead();
     }
   }, [id, sender_id]);
-
+  useEffect(() => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop =
+        chatBoxRef.current.scrollHeight;
+    }
+  }, [messages]);
   const getUser = async () => {
     try {
 
@@ -134,7 +139,7 @@ function ChatWindow() {
 
               </div>
 
-              <div id="chat-box">
+              <div id="chat-box" ref={chatBoxRef}>
 
                 {messages.map((msg) => (
 
