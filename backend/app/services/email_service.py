@@ -174,7 +174,7 @@ def send_doctor_approval_email(
                             font-weight: bold;
                         "
                     >
-                        Login to TCI Connect
+                       Click here to Login
                     </a>
 
                 </div>
