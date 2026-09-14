@@ -4,7 +4,7 @@ import Sidebar from "../Sidebar";
 import Header from "../Header";
 import { useParams } from "react-router-dom";
 import "../../styles/chatWindow.css";
-
+import ProfileAvatar from "../components/ProfileAvatar";
 function ChatWindow() {
   const { id } = useParams();
 
@@ -89,15 +89,7 @@ function ChatWindow() {
     }
   };
 
-  console.log("User:", user);
-  console.log("Profile Image:", user?.profile_image);
-  console.log("VITE_FILE_URL:", import.meta.env.VITE_FILE_URL);
-  console.log(
-    "Final URL:",
-    user?.profile_image
-      ? `${import.meta.env.VITE_FILE_URL}/${encodeURI(user.profile_image)}`
-      : "No image"
-  );
+
   return (
     <div className="dashboard-main">
 
@@ -125,19 +117,10 @@ function ChatWindow() {
               <div className="chat-title chat-header">
 
                 <div className="chat-user">
-
                   <div className="chat-avatar">
-                    <img
-                      src={
-                        user?.profile_image
-                          ? `${import.meta.env.VITE_FILE_URL}/${encodeURIComponent(user.profile_image)}`
-                          : "/default-profile.png"
-                      }
-                      alt="user"
-                      onLoad={() => console.log("Image Loaded")}
-                      onError={(e) => {
-                        console.log("Actual IMG src:", e.currentTarget.src);
-                      }}
+                    <ProfileAvatar
+                      profileImage={user?.profile_image}
+                      size={45}
                     />
                   </div>
 

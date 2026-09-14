@@ -4,6 +4,7 @@ import {
     FaDownload,
     FaTrash
 } from "react-icons/fa";
+import ProfileAvatar from "../components/ProfileAvatar";
 
 function RecentCasesRow({
     item,
@@ -37,14 +38,9 @@ function RecentCasesRow({
     return (
         <tr>
             <td className="text-center">
-                <img
-                    src={
-                        item.profile_image
-                            ? `${import.meta.env.VITE_FILE_URL}/profile/${encodeURI(item.profile_image)}`
-                            : "/images/default-profile.png"
-                    }
-                    alt="profile"
-                    width="40"
+                <ProfileAvatar
+                    profileImage={item.profile_image}
+                    size={40}
                 />
             </td>
             <td className="text-center">{item.id}</td>

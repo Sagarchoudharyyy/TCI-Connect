@@ -1,14 +1,22 @@
 export const getProfileImageUrl = (profileImage) => {
     if (!profileImage) {
-        return "/default-profile.png";
+        return null;
+    }
+
+    // Keep temporary/local preview URLs unchanged
+    if (
+        profileImage.startsWith("blob:") ||
+        profileImage.startsWith("data:") ||
+        profileImage.startsWith("http://") ||
+        profileImage.startsWith("https://")
+    ) {
+        return profileImage;
     }
 
     let profilePath = profileImage.replace(/\\/g, "/");
 
-    // Remove uploads/ if backend returns it
     profilePath = profilePath.replace(/^uploads\//, "");
 
-    // Make sure profile/ exists
     if (!profilePath.startsWith("profile/")) {
         profilePath = `profile/${profilePath}`;
     }

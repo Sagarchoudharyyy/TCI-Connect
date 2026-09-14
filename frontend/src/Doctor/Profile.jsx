@@ -7,7 +7,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "../DoctorStyle/Setting.css"
 import { FaEdit } from "react-icons/fa";
 import api from "../services/api";
-import { getProfileImageUrl } from "../services/fileservice";
+import ProfileAvatar from "../components/ProfileAvatar";
 function Profile() {
 
 
@@ -206,15 +206,10 @@ function Profile() {
 
                                                     <div className="col-sm-9">
                                                         <div className="position-relative" style={{ width: "150px", height: "150px" }}>
-                                                            <img
-                                                                src={getProfileImageUrl(user?.profile_image)}
-                                                                alt="Profile Image"
+                                                            <ProfileAvatar
+                                                                profileImage={profilePreview || user?.profile_image}
+                                                                size={150}
                                                                 className="rounded-circle border"
-                                                                style={{
-                                                                    width: "100%",
-                                                                    height: "100%",
-                                                                    objectFit: "cover"
-                                                                }}
                                                             />
                                                             <label
                                                                 htmlFor="profileFileInput"

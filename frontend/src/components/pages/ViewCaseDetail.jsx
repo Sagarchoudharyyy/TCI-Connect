@@ -4,7 +4,7 @@ import Header from "../Header";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../styles/ViewCaseDetail.css";
-
+import ProfileAvatar from "../components/ProfileAvatar";
 
 function ViewCaseDetail() {
 
@@ -118,13 +118,9 @@ function ViewCaseDetail() {
                                     <div className="card-body">
                                         <div className="row mb-3">
                                             <div className="col-md-3 text-center mb-3 mb-md-0">
-                                                <img
-                                                    src={
-                                                        doctordata.profile_image
-                                                            ? `${import.meta.env.VITE_FILE_URL}/${encodeURI(doctordata.profile_image)}`
-                                                            : "/images/default-profile.png"
-                                                    }
-                                                    alt={doctordata?.doctor_name || "Doctor"}
+                                                <ProfileAvatar
+                                                    profileImage={doctordata?.profile_image}
+                                                    size={80}
                                                     className="user-profile-img"
                                                 />
                                             </div>

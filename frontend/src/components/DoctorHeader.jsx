@@ -6,8 +6,10 @@ import {
 } from "react";
 import api from "../services/api";
 import "../DoctorStyle/DoctorHeader.css";
+
+
 import { FaBars } from "react-icons/fa";
-import { getProfileImageUrl } from "../services/fileservice";
+import ProfileAvatar from "../components/ProfileAvatar";
 
 function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
     const [notifications, setNotifications] = useState([]);
@@ -99,14 +101,6 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
         (item) => !item.is_read
     ).length;
 
-
-    console.log("Doctor Header:", user?.profile_image);
-
-    if (user?.profile_image) {
-        console.log(
-            `${import.meta.env.VITE_FILE_URL}/${encodeURI(user.profile_image)}`
-        );
-    }
 
     return (
         <div className="mc-ibxx">
@@ -232,12 +226,10 @@ function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
                             onClick={(e) => e.preventDefault()}
 
                         >
-                            <img
-                                src={getProfileImageUrl(user?.profile_image)}
-                                alt="Profile"
-                                className="rounded-circle me-2"
-                                width="40"
-                                height="40"
+                            <ProfileAvatar
+                                profileImage={user?.profile_image}
+                                size={40}
+                                className="me-2"
                             />
                             <span className="fw-bold text-primary">
                                 {user?.full_name}

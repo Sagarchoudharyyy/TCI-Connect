@@ -4,6 +4,7 @@ import {
     FaDownload,
     FaTrash
 } from "react-icons/fa";
+import ProfileAvatar from "../components/ProfileAvatar";
 
 function OrderTableRow({
     item,
@@ -31,14 +32,9 @@ function OrderTableRow({
     return (
         <tr>
             <td className="text-center">
-                <img
-                    src={
-                        item.profile_image
-                            ? `${import.meta.env.VITE_FILE_URL}/profile/${encodeURI(item.profile_image)}`
-                            : "/images/default-profile.png"
-                    }
-                    alt="profile"
-                    width="40"
+                <ProfileAvatar
+                    profileImage={item.profile_image}
+                    size={40}
                 />
             </td>
             <td>{item.id}</td>
