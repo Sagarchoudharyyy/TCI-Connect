@@ -122,6 +122,7 @@ def get_current_user(
     return user
 
 
+
 @router.post("/register")
 def register(
     user: UserRegister,
@@ -137,9 +138,7 @@ def register(
             "message": "Email already exists"
         }
 
-    hashed_password = hash_password(
-        user.password
-    )
+    hashed_password = hash_password(user.password)
 
     new_user = User(
         full_name=user.full_name,
@@ -160,6 +159,11 @@ def register(
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
+
+    # -----------------------------------------
+    # Create admin notification
+    # -----------------------------------------
+
     notification = Notification(
         message=f"New doctor registration request from {new_user.full_name}",
         is_read=False,
@@ -167,15 +171,67 @@ def register(
         sender_id=new_user.id,
         receiver_id=1
     )
- 
 
     db.add(notification)
     db.commit()
     db.refresh(notification)
 
+    # -----------------------------------------
+    # Email ADMIN
+    # -----------------------------------------
+
+    send_email(
+        to_email=os.getenv("ADMIN_EMAIL"),
+        subject="New Doctor Registration - TCI Connect",
+        body=f"""
+        Hello Admin,
+
+        A new doctor has registered on TCI Connect.
+
+        Doctor Name: {new_user.full_name}
+        Email: {new_user.email}
+        Phone: {new_user.phone}
+        Business Name: {new_user.business_name}
+        License Number: {new_user.license_number}
+
+        Account Status: Pending Approval
+
+        Please log in to the TCI Connect admin panel to review the registration.
+
+        Regards,
+        TCI Connect
+        """
+            )
+
+    # -----------------------------------------
+    # Email USER
+    # -----------------------------------------
+
+    send_email(
+        to_email=new_user.email,
+        subject="Registration Received - TCI Connect",
+        body=f"""
+        Hello {new_user.full_name},
+
+        Thank you for registering with TCI Connect.
+
+        Your registration has been successfully received.
+
+        Your account is currently:
+
+        PENDING ADMIN APPROVAL
+
+        Our administrator will review your registration. You will receive another email once your account has been approved.
+
+        Regards,
+        TCI Connect
+        """
+            )
+
     return {
-    "message": "Registration successful. Waiting for admin approval"
-}
+        "message": "Registration successful. Waiting for admin approval"
+    }
+
 
 @router.post("/admin-register")
 def admin_register(

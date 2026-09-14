@@ -1,4 +1,6 @@
 from fastapi import APIRouter, Depends
+import os
+from app.core.email import send_email
 from sqlalchemy.orm import Session
 
 from app.database.database import SessionLocal
@@ -136,6 +138,10 @@ def toggle_doctor_status(
             "message": "Doctor not found"
         }
 
+    # Store the previous status
+    old_status = doctor.status
+
+    # Change status
     if doctor.status == "approved":
         doctor.status = "pending"
     else:
@@ -144,10 +150,34 @@ def toggle_doctor_status(
     db.commit()
     db.refresh(doctor)
 
-    return {
-        "message": "Doctor status updated",
-        "doctor": doctor
-    }
+    # Send email only when doctor is approved
+    if old_status == "pending" and doctor.status == "approved":
+
+        send_email(
+            to_email=doctor.email,
+            subject="Account Approved - TCI Connect",
+            body=f"""
+        Hello {doctor.full_name},
+
+        Good news!
+
+        Your TCI Connect doctor account has been approved by the administrator.
+
+        You can now log in to TCI Connect and start using your account.
+
+        Account Status: Approved
+
+        Regards,
+        TCI Connect
+        """
+                )
+
+        return {
+                "message": "Doctor status updated",
+                "doctor": doctor
+            }
+
+
 
 @router.delete("/doctors/{doctor_id}")
 def delete_doctor(
