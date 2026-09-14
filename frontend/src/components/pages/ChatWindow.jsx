@@ -4,7 +4,7 @@ import Sidebar from "../Sidebar";
 import Header from "../Header";
 import { useParams } from "react-router-dom";
 import "../../styles/chatWindow.css";
-import ProfileAvatar from "../ProfileAvatar";
+import ProfileAvatar from "../../components/ProfileAvatar";
 function ChatWindow() {
   const { id } = useParams();
 

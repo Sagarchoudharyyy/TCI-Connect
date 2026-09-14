@@ -4,7 +4,7 @@ import {
     FaDownload,
     FaTrash
 } from "react-icons/fa";
-import ProfileAvatar from "../ProfileAvatar";
+import ProfileAvatar from "../../components/ProfileAvatar";
 
 function OrderTableRow({
     item,
