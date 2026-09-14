@@ -7,7 +7,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "../DoctorStyle/Setting.css"
 import { FaEdit } from "react-icons/fa";
 import api from "../services/api";
-import ProfileAvatar from "../ProfileAvatar";
+import ProfileAvatar from "../components/ProfileAvatar";
 function Profile() {
 
 

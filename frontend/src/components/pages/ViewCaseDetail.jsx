@@ -4,8 +4,7 @@ import Header from "../Header";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../styles/ViewCaseDetail.css";
-import ProfileAvatar from "../ProfileAvatar";
-
+import ProfileAvatar from "../../components/ProfileAvatar";
 function ViewCaseDetail() {
 
     const [doctordata, setdoctordata] = useState({});
