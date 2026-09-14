@@ -1,4 +1,9 @@
 from fastapi import FastAPI
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
 from app.database.database import engine,Base
 from app.models.user_model import User
 from app.api.doctor import router as doctor_router
@@ -23,9 +28,7 @@ from app.api.notification import router as notification_router
 from app.api.mobile_download import router as mobile_download_router
 from app.websocket.case import router as case_websocket_router
 from app.websocket.pricing import router as pricing_websocket_router
-from dotenv import load_dotenv
 
-load_dotenv()
 
 
 app = FastAPI(
