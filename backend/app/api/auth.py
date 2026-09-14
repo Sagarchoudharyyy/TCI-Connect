@@ -5,6 +5,7 @@ from fastapi.security import (
     OAuth2PasswordBearer,
     OAuth2PasswordRequestForm
 )
+from app.core.email import send_email
 from fastapi import UploadFile, File
 import os
 import shutil
@@ -677,4 +678,35 @@ def refresh_token(
     return {
         "access_token": new_access_token,
         "token_type": "bearer"
+    }
+
+
+
+@router.get("/test-email")
+def test_email():
+
+    result = send_email(
+        to_email="YOUR_EMAIL@gmail.com",
+        subject="TCI Connect Email Test",
+        body="""
+Hello,
+
+This is a test email from the TCI Connect FastAPI backend.
+
+If you received this email, the SMTP configuration is working correctly.
+
+Regards,
+TCI Connect
+"""
+    )
+
+    if result:
+        return {
+            "success": True,
+            "message": "Test email sent successfully"
+        }
+
+    return {
+        "success": False,
+        "message": "Failed to send test email"
     }
