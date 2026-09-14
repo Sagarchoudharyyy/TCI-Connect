@@ -17,6 +17,12 @@ from fastapi import (
     File,
 )
 
+import hashlib
+import secrets
+from datetime import datetime, timedelta
+from app.models.password_reset_model import PasswordResetToken
+from app.services.email_service import send_password_reset_email
+
 import os
 import shutil
 from pydantic import BaseModel
@@ -474,59 +480,132 @@ def token_login(
     }
 
 
-# =========================================================
-# FORGOT PASSWORD
-# =========================================================
 
 @router.post("/forgot-password")
 def forgot_password(
     request: ForgotPasswordRequest,
-    db: Session = Depends(get_db)
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
 ):
-
     user = (
         db.query(User)
         .filter(User.email == request.email)
         .first()
     )
 
+    # Always return the same response when the email
+    # does not exist to avoid exposing registered emails.
     if not user:
         return {
-            "success": False,
-            "message": "Email not found"
+            "success": True,
+            "message": "If an account exists with this email, a password reset link has been sent."
         }
+
+    # Invalidate previous unused reset tokens
+    db.query(PasswordResetToken).filter(
+        PasswordResetToken.user_id == user.id,
+        PasswordResetToken.used == False,
+    ).update(
+        {
+            PasswordResetToken.used: True
+        },
+        synchronize_session=False,
+    )
+
+    # Generate a secure random token
+    raw_token = secrets.token_urlsafe(32)
+
+    # Store only the hash in the database
+    token_hash = hashlib.sha256(
+        raw_token.encode("utf-8")
+    ).hexdigest()
+
+    expires_at = datetime.utcnow() + timedelta(minutes=30)
+
+    reset_token = PasswordResetToken(
+        user_id=user.id,
+        token_hash=token_hash,
+        expires_at=expires_at,
+        used=False,
+    )
+
+    db.add(reset_token)
+    db.commit()
+
+    frontend_url = os.getenv(
+        "FRONTEND_URL",
+        "https://tcidentallab.com"
+    ).rstrip("/")
+
+    reset_url = (
+        f"{frontend_url}/reset-password"
+        f"?token={raw_token}"
+    )
+
+    background_tasks.add_task(
+        send_password_reset_email,
+        user.full_name,
+        user.email,
+        reset_url,
+    )
 
     return {
         "success": True,
-        "message": "Email exists"
+        "message": "If an account exists with this email, a password reset link has been sent."
     }
 
 
-# =========================================================
-# RESET PASSWORD
-# =========================================================
 
 @router.post("/reset-password")
 def reset_password(
     request: ResetPasswordRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
+    token_hash = hashlib.sha256(
+        request.token.encode("utf-8")
+    ).hexdigest()
+
+    reset_token = (
+        db.query(PasswordResetToken)
+        .filter(
+            PasswordResetToken.token_hash == token_hash,
+            PasswordResetToken.used == False,
+        )
+        .first()
+    )
+
+    if not reset_token:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid or expired password reset link"
+        )
+
+    if reset_token.expires_at < datetime.utcnow():
+        reset_token.used = True
+        db.commit()
+
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid or expired password reset link"
+        )
 
     user = (
         db.query(User)
-        .filter(User.email == request.email)
+        .filter(User.id == reset_token.user_id)
         .first()
     )
 
     if not user:
-        return {
-            "success": False,
-            "message": "Email not found"
-        }
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid password reset link"
+        )
 
     user.password = hash_password(
         request.password
     )
+
+    reset_token.used = True
 
     db.commit()
 
@@ -534,6 +613,7 @@ def reset_password(
         "success": True,
         "message": "Password updated successfully"
     }
+
 
 
 # =========================================================

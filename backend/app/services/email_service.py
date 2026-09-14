@@ -213,3 +213,150 @@ def send_doctor_approval_email(
         body=body,
         html_body=html_body,
     )
+
+
+
+
+
+def send_password_reset_email(
+    doctor_name: str,
+    doctor_email: str,
+    reset_url: str,
+) -> bool:
+
+    safe_doctor_name = escape(doctor_name)
+
+    body = f"""
+        Hello {doctor_name},
+
+        We received a request to reset your TCI Connect password.
+
+        Click the link below to create a new password:
+
+        {reset_url}
+
+        This password reset link is temporary and can only be used once.
+
+        If you did not request a password reset, you can safely ignore this email.
+
+        Regards,
+        TCI Connect
+        """
+
+    html_body = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Reset Password - TCI Connect</title>
+        </head>
+
+        <body style="
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            font-family: Arial, Helvetica, sans-serif;
+        ">
+
+            <div style="
+                max-width: 600px;
+                margin: 40px auto;
+                background: #ffffff;
+                border-radius: 10px;
+                padding: 40px;
+                box-sizing: border-box;
+            ">
+
+                <h2 style="
+                    margin-top: 0;
+                    color: #222222;
+                ">
+                    Reset Your Password
+                </h2>
+
+                <p>
+                    Hello {safe_doctor_name},
+                </p>
+
+                <p>
+                    We received a request to reset your
+                    TCI Connect password.
+                </p>
+
+                <p>
+                    Click the button below to create a new password.
+                </p>
+
+                <div style="
+                    text-align: center;
+                    margin: 35px 0;
+                ">
+
+                    <a
+                        href="{reset_url}"
+                        style="
+                            display: inline-block;
+                            padding: 14px 28px;
+                            background-color: #0152a8;
+                            color: #ffffff;
+                            text-decoration: none;
+                            border-radius: 6px;
+                            font-size: 16px;
+                            font-weight: bold;
+                        "
+                    >
+                        Reset Password
+                    </a>
+
+                </div>
+
+                <p style="
+                    font-size: 13px;
+                    color: #666666;
+                ">
+                    This password reset link is temporary and
+                    can only be used once.
+                </p>
+
+                <p style="
+                    font-size: 13px;
+                    color: #666666;
+                ">
+                    If you did not request a password reset,
+                    you can safely ignore this email.
+                </p>
+
+                <p style="
+                    font-size: 13px;
+                    color: #666666;
+                ">
+                    If the button does not work, copy and paste
+                    the following link into your browser:
+                </p>
+
+                <p style="
+                    font-size: 13px;
+                    word-break: break-all;
+                ">
+                    <a href="{reset_url}">
+                        {reset_url}
+                    </a>
+                </p>
+
+                <p>
+                    Regards,<br>
+                    TCI Connect
+                </p>
+
+            </div>
+
+        </body>
+        </html>
+        """
+
+    return send_email(
+        to_email=doctor_email,
+        subject="Reset Your Password - TCI Connect",
+        body=body,
+        html_body=html_body,
+    )

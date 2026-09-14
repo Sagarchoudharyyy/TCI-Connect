@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
+from app.models.password_reset_model import PasswordResetToken
 from app.database.database import engine,Base
 from app.models.user_model import User
 from app.api.doctor import router as doctor_router
