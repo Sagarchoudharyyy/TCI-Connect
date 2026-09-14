@@ -9,7 +9,7 @@ import "../DoctorStyle/DoctorHeader.css";
 
 
 import { FaBars } from "react-icons/fa";
-import ProfileAvatar from "../components/ProfileAvatar";
+import ProfileAvatar from "../ProfileAvatar";
 
 function DoctorHeader({ title = "Dashboard", setShowSidebar }) {
     const [notifications, setNotifications] = useState([]);

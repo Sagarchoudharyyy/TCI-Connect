@@ -4,7 +4,7 @@ import {
     FaDownload,
     FaTrash
 } from "react-icons/fa";
-import ProfileAvatar from "../components/ProfileAvatar";
+import ProfileAvatar from "../ProfileAvatar";
 
 function RecentCasesRow({
     item,

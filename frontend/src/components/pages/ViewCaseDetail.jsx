@@ -4,7 +4,7 @@ import Header from "../Header";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../styles/ViewCaseDetail.css";
-import ProfileAvatar from "../components/ProfileAvatar";
+import ProfileAvatar from "../ProfileAvatar";
 
 function ViewCaseDetail() {
 
