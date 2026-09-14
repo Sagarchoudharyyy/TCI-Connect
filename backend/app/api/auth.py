@@ -1,23 +1,36 @@
-
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
+
 from fastapi.security import (
     OAuth2PasswordBearer,
     OAuth2PasswordRequestForm
 )
-from app.core.email import send_email
-from fastapi import UploadFile, File
+
+from fastapi import (
+    APIRouter,
+    Depends,
+    Header,
+    HTTPException,
+    status,
+    BackgroundTasks,
+    UploadFile,
+    File,
+)
+
 import os
 import shutil
+from pydantic import BaseModel
 
 from app.database.database import get_db
 from app.models.user_model import User
 from app.models.blacklist_model import Blacklist
 from app.models.notification_model import Notification
+
 from app.schemas.forgot_password_schema import (
     ForgotPasswordRequest,
     ResetPasswordRequest
 )
+
 from app.core.security import (
     hash_password,
     verify_password,
@@ -26,13 +39,6 @@ from app.core.security import (
     create_refresh_token,
     decode_refresh_token
 )
-from fastapi import (
-    APIRouter,
-    Depends,
-    Header,
-    HTTPException,
-    status,
-)
 
 from app.schemas.user_schema import (
     UserRegister,
@@ -40,16 +46,32 @@ from app.schemas.user_schema import (
     ChangePasswordRequest,
     UpdateProfileRequest
 )
-from pydantic import BaseModel
 
-class RefreshTokenRequest(BaseModel):
-    refresh_token: str
+from app.services.email_service import (
+    send_new_registration_email_to_admin,
+    send_registration_received_email,
+)
+
+
+# =========================================================
+# ROUTER
+# =========================================================
 
 router = APIRouter()
+
+
+# =========================================================
+# OAUTH2
+# =========================================================
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="/api/token"
 )
+
+
+# =========================================================
+# CURRENT USER
+# =========================================================
 
 def get_current_user(
     token: str = Depends(oauth2_scheme),
@@ -58,6 +80,7 @@ def get_current_user(
     # -----------------------------------------
     # 1. Decode JWT
     # -----------------------------------------
+
     payload = decode_access_token(token)
 
     if not payload:
@@ -72,6 +95,7 @@ def get_current_user(
     # -----------------------------------------
     # 2. Check whether token is blacklisted
     # -----------------------------------------
+
     blacklisted_token = (
         db.query(Blacklist)
         .filter(Blacklist.token == token)
@@ -90,6 +114,7 @@ def get_current_user(
     # -----------------------------------------
     # 3. Get user_id from JWT
     # -----------------------------------------
+
     user_id = payload.get("user_id")
 
     if not user_id:
@@ -104,6 +129,7 @@ def get_current_user(
     # -----------------------------------------
     # 4. Find user
     # -----------------------------------------
+
     user = (
         db.query(User)
         .filter(User.id == user_id)
@@ -122,23 +148,42 @@ def get_current_user(
     return user
 
 
+# =========================================================
+# DOCTOR REGISTRATION
+# =========================================================
 
 @router.post("/register")
 def register(
     user: UserRegister,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db)
 ):
 
-    existing_user = db.query(User).filter(
-        User.email == user.email
-    ).first()
+    # -----------------------------------------
+    # Check duplicate email
+    # -----------------------------------------
+
+    existing_user = (
+        db.query(User)
+        .filter(User.email == user.email)
+        .first()
+    )
 
     if existing_user:
-        return {
-            "message": "Email already exists"
-        }
+        raise HTTPException(
+            status_code=409,
+            detail="Email already exists"
+        )
+
+    # -----------------------------------------
+    # Hash password
+    # -----------------------------------------
 
     hashed_password = hash_password(user.password)
+
+    # -----------------------------------------
+    # Create doctor
+    # -----------------------------------------
 
     new_user = User(
         full_name=user.full_name,
@@ -153,6 +198,8 @@ def register(
         country=user.country,
         password=hashed_password,
         role="doctor",
+
+        # New doctors must wait for admin approval
         status="pending"
     )
 
@@ -177,61 +224,42 @@ def register(
     db.refresh(notification)
 
     # -----------------------------------------
-    # Email ADMIN
+    # Send ADMIN registration email
+    # in background
     # -----------------------------------------
 
-    send_email(
-        to_email=os.getenv("ADMIN_EMAIL"),
-        subject="New Doctor Registration - TCI Connect",
-        body=f"""
-        Hello Admin,
-
-        A new doctor has registered on TCI Connect.
-
-        Doctor Name: {new_user.full_name}
-        Email: {new_user.email}
-        Phone: {new_user.phone}
-        Business Name: {new_user.business_name}
-        License Number: {new_user.license_number}
-
-        Account Status: Pending Approval
-
-        Please log in to the TCI Connect admin panel to review the registration.
-
-        Regards,
-        TCI Connect
-        """
-            )
+    background_tasks.add_task(
+        send_new_registration_email_to_admin,
+        new_user.full_name,
+        new_user.email,
+        new_user.phone,
+        new_user.business_name,
+        new_user.license_number,
+    )
 
     # -----------------------------------------
-    # Email USER
+    # Send DOCTOR registration email
+    # in background
     # -----------------------------------------
 
-    send_email(
-        to_email=new_user.email,
-        subject="Registration Received - TCI Connect",
-        body=f"""
-        Hello {new_user.full_name},
+    background_tasks.add_task(
+        send_registration_received_email,
+        new_user.full_name,
+        new_user.email,
+    )
 
-        Thank you for registering with TCI Connect.
-
-        Your registration has been successfully received.
-
-        Your account is currently:
-
-        PENDING ADMIN APPROVAL
-
-        Our administrator will review your registration. You will receive another email once your account has been approved.
-
-        Regards,
-        TCI Connect
-        """
-            )
+    # -----------------------------------------
+    # Response
+    # -----------------------------------------
 
     return {
         "message": "Registration successful. Waiting for admin approval"
     }
 
+
+# =========================================================
+# ADMIN REGISTER
+# =========================================================
 
 @router.post("/admin-register")
 def admin_register(
@@ -239,15 +267,17 @@ def admin_register(
     db: Session = Depends(get_db)
 ):
 
-    existing_user = db.query(User).filter(
-        User.email == user.email
-    ).first()
-
+    existing_user = (
+        db.query(User)
+        .filter(User.email == user.email)
+        .first()
+    )
 
     if existing_user:
-        return {
-            "message": "Email already exists"
-        }
+        raise HTTPException(
+            status_code=409,
+            detail="Email already exists"
+        )
 
     hashed_password = hash_password(
         user.password
@@ -278,38 +308,35 @@ def admin_register(
     }
 
 
+# =========================================================
+# LOGIN
+# =========================================================
+
 @router.post("/login")
 def login(
     user: UserLogin,
     db: Session = Depends(get_db)
 ):
-  
-    print("Username from request:", user.username)
-    
-    db_user = db.query(User).filter(
-        or_(
-            User.email == user.username,
-            User.phone == user.username
+
+    db_user = (
+        db.query(User)
+        .filter(
+            or_(
+                User.email == user.username,
+                User.phone == user.username
+            )
         )
-    ).first()
-    print("DB User:", db_user)
-
-
+        .first()
+    )
 
     if not db_user:
-        print("User not found")
         return {
             "message": "Invalid username or password"
         }
-        
-    print("Stored Hash:", db_user.password)
-    
-    result = verify_password(
-    user.password,
-    db_user.password
-    )
 
-    print("Password Verified:", result)
+    # -----------------------------------------
+    # Verify password
+    # -----------------------------------------
 
     if not verify_password(
         user.password,
@@ -318,16 +345,23 @@ def login(
         return {
             "message": "Invalid username or password"
         }
-    
+
+    # -----------------------------------------
+    # Doctor approval check
+    # -----------------------------------------
 
     if (
-    db_user.role == "doctor"
-    and db_user.status != "approved"
+        db_user.role == "doctor"
+        and db_user.status != "approved"
     ):
-     return {
-        "message":
-        "Your account is under admin review. Please wait for approval."
-    }
+        return {
+            "message":
+            "Your account is under admin review. Please wait for approval."
+        }
+
+    # -----------------------------------------
+    # Create access token
+    # -----------------------------------------
 
     access_token = create_access_token(
         data={
@@ -337,59 +371,94 @@ def login(
         }
     )
 
+    # -----------------------------------------
+    # Create refresh token
+    # -----------------------------------------
+
     refresh_token = create_refresh_token(
-    data={
-        "user_id": db_user.id,
-        "email": db_user.email,
-        "role": db_user.role
-    }
-)
+        data={
+            "user_id": db_user.id,
+            "email": db_user.email,
+            "role": db_user.role
+        }
+    )
+
+    # -----------------------------------------
+    # Response
+    # -----------------------------------------
 
     return {
-    "access_token": access_token,
-    "refresh_token": refresh_token,
-    "token_type": "bearer",
-    "user": {
-        "id": db_user.id,
-        "full_name": db_user.full_name,
-        "email": db_user.email,
-        "phone": db_user.phone,
-        "business_name": db_user.business_name,
-        "business_type": db_user.business_type,
-        "license_number": db_user.license_number,   
-        "vat_id": db_user.vat_id,
-        "country": db_user.country,
-        "address": db_user.address,
-        "role": db_user.role,
-        "profile_image": db_user.profile_image,
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "token_type": "bearer",
+
+        "user": {
+            "id": db_user.id,
+            "full_name": db_user.full_name,
+            "email": db_user.email,
+            "phone": db_user.phone,
+            "business_name": db_user.business_name,
+            "business_type": db_user.business_type,
+            "license_number": db_user.license_number,
+            "vat_id": db_user.vat_id,
+            "country": db_user.country,
+            "address": db_user.address,
+            "role": db_user.role,
+            "profile_image": db_user.profile_image,
+        }
     }
-}
-    
+
+
+# =========================================================
+# TOKEN LOGIN
+# =========================================================
+
 @router.post("/token")
 def token_login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
-    db_user = db.query(User).filter(
-        or_(
-            User.email == form_data.username,
-            User.phone == form_data.username
+
+    db_user = (
+        db.query(User)
+        .filter(
+            or_(
+                User.email == form_data.username,
+                User.phone == form_data.username
+            )
         )
-    ).first()
+        .first()
+    )
 
     if not db_user:
-        return {"message": "Invalid username or password"}
+        return {
+            "message": "Invalid username or password"
+        }
 
-    if not verify_password(form_data.password, db_user.password):
-        return {"message": "Invalid username or password"}
+    if not verify_password(
+        form_data.password,
+        db_user.password
+    ):
+        return {
+            "message": "Invalid username or password"
+        }
+
+    # -----------------------------------------
+    # Doctor approval check
+    # -----------------------------------------
 
     if (
         db_user.role == "doctor"
         and db_user.status != "approved"
     ):
         return {
-            "message": "Your account is under admin review. Please wait for approval."
+            "message":
+            "Your account is under admin review. Please wait for approval."
         }
+
+    # -----------------------------------------
+    # Create token
+    # -----------------------------------------
 
     access_token = create_access_token(
         data={
@@ -402,17 +471,24 @@ def token_login(
     return {
         "access_token": access_token,
         "token_type": "bearer"
-    } 
-    
+    }
+
+
+# =========================================================
+# FORGOT PASSWORD
+# =========================================================
+
 @router.post("/forgot-password")
 def forgot_password(
     request: ForgotPasswordRequest,
     db: Session = Depends(get_db)
 ):
 
-    user = db.query(User).filter(
-        User.email == request.email
-    ).first()
+    user = (
+        db.query(User)
+        .filter(User.email == request.email)
+        .first()
+    )
 
     if not user:
         return {
@@ -426,6 +502,9 @@ def forgot_password(
     }
 
 
+# =========================================================
+# RESET PASSWORD
+# =========================================================
 
 @router.post("/reset-password")
 def reset_password(
@@ -433,9 +512,11 @@ def reset_password(
     db: Session = Depends(get_db)
 ):
 
-    user = db.query(User).filter(
-        User.email == request.email
-    ).first()
+    user = (
+        db.query(User)
+        .filter(User.email == request.email)
+        .first()
+    )
 
     if not user:
         return {
@@ -443,7 +524,9 @@ def reset_password(
             "message": "Email not found"
         }
 
-    user.password = hash_password(request.password)
+    user.password = hash_password(
+        request.password
+    )
 
     db.commit()
 
@@ -453,12 +536,17 @@ def reset_password(
     }
 
 
+# =========================================================
+# UPLOAD PROFILE IMAGE
+# =========================================================
+
 @router.post("/upload-profile-image")
 def upload_profile_image(
     file: UploadFile = File(...),
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
 ):
+
     payload = decode_access_token(token)
 
     if not payload:
@@ -469,9 +557,11 @@ def upload_profile_image(
 
     user_id = payload.get("user_id")
 
-    user = db.query(User).filter(
-        User.id == user_id
-    ).first()
+    user = (
+        db.query(User)
+        .filter(User.id == user_id)
+        .first()
+    )
 
     if not user:
         return {
@@ -479,20 +569,29 @@ def upload_profile_image(
             "message": "User not found"
         }
 
+    upload_dir = os.path.join(
+        "uploads",
+        "profile"
+    )
 
-    upload_dir = os.path.join("uploads", "profile")
-    os.makedirs(upload_dir, exist_ok=True)
-
+    os.makedirs(
+        upload_dir,
+        exist_ok=True
+    )
 
     filename = f"user_{user.id}_{file.filename}"
 
-
-    file_path = os.path.join(upload_dir, filename)
+    file_path = os.path.join(
+        upload_dir,
+        filename
+    )
 
     with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+        shutil.copyfileobj(
+            file.file,
+            buffer
+        )
 
-   
     user.profile_image = filename
 
     db.commit()
@@ -503,15 +602,19 @@ def upload_profile_image(
         "message": "Profile image uploaded successfully",
         "profile_image": user.profile_image
     }
-    
-    
-    
+
+
+# =========================================================
+# CHANGE PASSWORD
+# =========================================================
+
 @router.post("/change-password")
 def change_password(
     request: ChangePasswordRequest,
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
 ):
+
     payload = decode_access_token(token)
 
     if not payload:
@@ -522,9 +625,11 @@ def change_password(
 
     user_id = payload.get("user_id")
 
-    user = db.query(User).filter(
-        User.id == user_id
-    ).first()
+    user = (
+        db.query(User)
+        .filter(User.id == user_id)
+        .first()
+    )
 
     if not user:
         return {
@@ -551,13 +656,18 @@ def change_password(
         "success": True,
         "message": "Password updated successfully"
     }
-    
-    
+
+
+# =========================================================
+# GET PROFILE
+# =========================================================
+
 @router.get("/profile")
 def get_profile(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
 ):
+
     payload = decode_access_token(token)
 
     if not payload:
@@ -568,9 +678,11 @@ def get_profile(
 
     user_id = payload.get("user_id")
 
-    user = db.query(User).filter(
-        User.id == user_id
-    ).first()
+    user = (
+        db.query(User)
+        .filter(User.id == user_id)
+        .first()
+    )
 
     if not user:
         return {
@@ -580,6 +692,7 @@ def get_profile(
 
     return {
         "success": True,
+
         "user": {
             "id": user.id,
             "full_name": user.full_name,
@@ -595,14 +708,19 @@ def get_profile(
             "profile_image": user.profile_image,
         }
     }
-    
-    
+
+
+# =========================================================
+# UPDATE PROFILE
+# =========================================================
+
 @router.put("/update-profile")
 def update_profile(
     request: UpdateProfileRequest,
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
 ):
+
     payload = decode_access_token(token)
 
     if not payload:
@@ -613,9 +731,11 @@ def update_profile(
 
     user_id = payload.get("user_id")
 
-    user = db.query(User).filter(
-        User.id == user_id
-    ).first()
+    user = (
+        db.query(User)
+        .filter(User.id == user_id)
+        .first()
+    )
 
     if not user:
         return {
@@ -638,6 +758,7 @@ def update_profile(
     return {
         "success": True,
         "message": "Profile updated successfully",
+
         "user": {
             "id": user.id,
             "full_name": user.full_name,
@@ -651,19 +772,35 @@ def update_profile(
             "address": user.address,
             "role": user.role
         }
-    }   
-    
-    
+    }
+
+
+# =========================================================
+# LOGOUT
+# =========================================================
+
 @router.post("/logout")
 def logout(
     authorization: str = Header(None),
     db: Session = Depends(get_db)
 ):
 
+    if not authorization:
+        raise HTTPException(
+            status_code=401,
+            detail="Authorization header is required"
+        )
+
     token = authorization.replace(
         "Bearer ",
         ""
     )
+
+    if not token:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid authorization token"
+        )
 
     blacklist_token = Blacklist(
         token=token
@@ -676,6 +813,13 @@ def logout(
         "message": "Logged out successfully"
     }
 
+
+# =========================================================
+# REFRESH TOKEN
+# =========================================================
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
 
 
 @router.post("/refresh-token")
@@ -714,6 +858,10 @@ def refresh_token(
             detail="User not found"
         )
 
+    # -----------------------------------------
+    # Doctor approval check
+    # -----------------------------------------
+
     if (
         user.role == "doctor"
         and user.status != "approved"
@@ -722,6 +870,10 @@ def refresh_token(
             status_code=403,
             detail="Your account is not approved"
         )
+
+    # -----------------------------------------
+    # Create new access token
+    # -----------------------------------------
 
     new_access_token = create_access_token(
         data={
@@ -734,35 +886,4 @@ def refresh_token(
     return {
         "access_token": new_access_token,
         "token_type": "bearer"
-    }
-
-
-
-@router.get("/test-email")
-def test_email():
-
-    result = send_email(
-        to_email="sagarchoudhary7262@gmail.com",
-        subject="TCI Connect Email Test",
-        body="""
-Hello,
-
-This is a test email from the TCI Connect FastAPI backend.
-
-If you received this email, the SMTP configuration is working correctly.
-
-Regards,
-TCI Connect
-"""
-    )
-
-    if result:
-        return {
-            "success": True,
-            "message": "Test email sent successfully"
-        }
-
-    return {
-        "success": False,
-        "message": "Failed to send test email"
     }

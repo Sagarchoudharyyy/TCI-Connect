@@ -25,7 +25,6 @@ def send_email(to_email: str, subject: str, body: str):
         message.set_content(body)
 
         with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-
             server.starttls()
 
             server.login(
@@ -40,7 +39,5 @@ def send_email(to_email: str, subject: str, body: str):
         return True
 
     except Exception as e:
-
         print(f"Email sending failed: {e}")
-
         return False
