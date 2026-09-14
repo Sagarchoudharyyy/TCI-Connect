@@ -5,6 +5,7 @@ import Header from "../Header";
 import "../../styles/chat.css";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ProfileAvatar from "../../components/ProfileAvatar";
 
 const Chat = () => {
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ const Chat = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       getActiveUsers();
-    }, 2000);
+    }, 5000);
 
     return () => {
       clearInterval(interval);
@@ -139,15 +140,12 @@ const Chat = () => {
                     <div className="user-left">
 
                       <div className="user-image">
-                        <img
-                          src={
-                            user.profile_image
-                              ? `${import.meta.env.VITE_FILE_URL}/tci-uploads/profile/${encodeURIComponent(user.profile_image)}`
-                              : "/images/default-profile.png"
-                          }
-                          alt="profile"
-                          width="40"
-                        />
+                        <div className="user-image">
+                          <ProfileAvatar
+                            profileImage={user.profile_image}
+                            size={40}
+                          />
+                        </div>
                       </div>
 
                       <div className="user-details">
