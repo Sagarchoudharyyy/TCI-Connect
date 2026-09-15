@@ -205,9 +205,9 @@ function Login() {
 
                                             <div className="login-form-group text-end mb-3">
                                                 <p>
-                                                    <a href="/new-tciconnect/forgot-password" className="login-forgot">
+                                                    <Link to="/forgot-password" className="login-forgot">
                                                         Forgot Password?
-                                                    </a>
+                                                    </Link>
                                                 </p>
                                             </div>
 
