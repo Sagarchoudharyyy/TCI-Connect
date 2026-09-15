@@ -17,9 +17,13 @@ function PurchaseOrder({
     errors
 }) {
 
+
     const handlePdfChange = async (e) => {
         const file = e.target.files[0];
+
         if (!file) return;
+
+        // PDF validation
         if (
             file.type !== "application/pdf" &&
             !file.name.toLowerCase().endsWith(".pdf")
@@ -32,42 +36,270 @@ function PurchaseOrder({
         setIsPdfUploading(true);
         setPdfProgress(0);
 
-        try {
-            if (
-                uploadedPdf?.file_path &&
-                uploadedPdf.file_path.includes("temp")
-            ) {
-                await api.delete("/delete-temp-file", {
-                    data: {
-                        file_path: uploadedPdf.file_path,
-                    },
-                });
-            }
+        // 8 MB chunks
+        const CHUNK_SIZE = 8 * 1024 * 1024;
 
-            const uploadData = new FormData();
-            uploadData.append("file", file);
+        // Same parallel upload approach as digital files
+        const MAX_PARALLEL = 8;
 
-            const response = await api.post(
-                "/temp-upload",
-                uploadData,
-                {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                    onUploadProgress: (progressEvent) => {
-                        const percent = Math.round(
-                            (progressEvent.loaded * 100) / progressEvent.total
-                        );
-                        setPdfProgress(percent);
-                    },
-                }
+        const totalChunks = Math.ceil(
+            file.size / CHUNK_SIZE
+        );
+
+        // Track progress of every chunk
+        const chunkProgress = new Array(
+            totalChunks
+        ).fill(0);
+
+        const updateOverallProgress = () => {
+            const uploadedBytes =
+                chunkProgress.reduce(
+                    (total, value) =>
+                        total + value,
+                    0
+                );
+
+            const percent = Math.min(
+                100,
+                Math.round(
+                    (uploadedBytes / file.size) * 100
+                )
             );
 
+            setPdfProgress(percent);
+        };
+
+        try {
+            // ==========================================
+            // DELETE PREVIOUS PDF IF IT EXISTS
+            // ==========================================
+
+            if (uploadedPdf?.file_path) {
+                try {
+                    await api.delete(
+                        "/delete-temp-file",
+                        {
+                            data: {
+                                file_path:
+                                    uploadedPdf.file_path,
+                            },
+                        }
+                    );
+                } catch (deleteError) {
+                    console.log(
+                        "Previous PDF delete failed:",
+                        deleteError
+                    );
+                }
+            }
+
+            // ==========================================
+            // STEP 1: INITIALIZE UPLOAD
+            // ==========================================
+
+            console.log(
+                "Starting PDF upload:",
+                file.name
+            );
+
+            console.log(
+                "PDF size:",
+                file.size,
+                "bytes"
+            );
+
+            console.log(
+                "Total PDF chunks:",
+                totalChunks
+            );
+
+            const initData = new FormData();
+
+            initData.append(
+                "file_name",
+                file.name
+            );
+
+            initData.append(
+                "total_size",
+                file.size.toString()
+            );
+
+            const initResponse = await api.post(
+                "/upload/init",
+                initData
+            );
+
+            const uploadId =
+                initResponse.data.upload_id;
+
+            if (!uploadId) {
+                throw new Error(
+                    "Upload ID was not returned by server"
+                );
+            }
+
+            console.log(
+                "PDF upload initialized:",
+                uploadId
+            );
+
+            // ==========================================
+            // STEP 2: UPLOAD ONE CHUNK
+            // ==========================================
+
+            const uploadChunk = async (
+                chunkNumber
+            ) => {
+                const start =
+                    chunkNumber * CHUNK_SIZE;
+
+                const end = Math.min(
+                    start + CHUNK_SIZE,
+                    file.size
+                );
+
+                const chunk = file.slice(
+                    start,
+                    end
+                );
+
+                console.log(
+                    `Uploading PDF chunk ${chunkNumber + 1}/${totalChunks}`
+                );
+
+                const chunkData = new FormData();
+
+                chunkData.append(
+                    "upload_id",
+                    uploadId
+                );
+
+                chunkData.append(
+                    "chunk_number",
+                    chunkNumber.toString()
+                );
+
+                chunkData.append(
+                    "file",
+                    chunk,
+                    file.name
+                );
+
+                await api.post(
+                    "/upload/chunk",
+                    chunkData,
+                    {
+                        onUploadProgress: (
+                            event
+                        ) => {
+                            if (!event.total) {
+                                return;
+                            }
+
+                            chunkProgress[
+                                chunkNumber
+                            ] = event.loaded;
+
+                            updateOverallProgress();
+                        },
+                    }
+                );
+
+                // Make sure completed chunk
+                // is counted completely
+                chunkProgress[
+                    chunkNumber
+                ] = chunk.size;
+
+                updateOverallProgress();
+
+                console.log(
+                    `PDF chunk ${chunkNumber + 1}/${totalChunks} completed`
+                );
+            };
+
+            // ==========================================
+            // STEP 3: UPLOAD CHUNKS IN PARALLEL
+            // ==========================================
+
+            for (
+                let i = 0;
+                i < totalChunks;
+                i += MAX_PARALLEL
+            ) {
+                const batch = [];
+
+                for (
+                    let j = i;
+                    j <
+                    Math.min(
+                        i + MAX_PARALLEL,
+                        totalChunks
+                    );
+                    j++
+                ) {
+                    batch.push(
+                        uploadChunk(j)
+                    );
+                }
+
+                await Promise.all(batch);
+            }
+
+            // ==========================================
+            // STEP 4: COMPLETE UPLOAD
+            // ==========================================
+
+            console.log(
+                "All PDF chunks uploaded."
+            );
+
+            const completeData =
+                new FormData();
+
+            completeData.append(
+                "upload_id",
+                uploadId
+            );
+
+            completeData.append(
+                "file_name",
+                file.name
+            );
+
+            completeData.append(
+                "total_chunks",
+                totalChunks.toString()
+            );
+
+            const completeResponse =
+                await api.post(
+                    "/upload/complete",
+                    completeData
+                );
+
+            console.log(
+                "PDF upload completed:",
+                completeResponse.data
+            );
+
+            // ==========================================
+            // STEP 5: SAVE PDF INFORMATION
+            // ==========================================
+
             const newPdf = {
-                file_name: response.data.file_name,
-                file_path: response.data.file_path,
-                file_type: file.type,
-                file_category: "case_document",
+                file_name:
+                    completeResponse.data.file_name,
+
+                file_path:
+                    completeResponse.data.file_path,
+
+                file_type:
+                    "application/pdf",
+
+                file_category:
+                    "case_document",
             };
 
             setUploadedPdf(newPdf);
@@ -78,13 +310,32 @@ function PurchaseOrder({
             }));
 
             setPdfProgress(100);
+
         } catch (error) {
+            console.error(
+                "PDF chunk upload failed:",
+                error
+            );
+
+            if (error.response) {
+                console.error(
+                    "Status:",
+                    error.response.status
+                );
+
+                console.error(
+                    "Response:",
+                    error.response.data
+                );
+            }
+
             setPdfProgress(0);
-            console.log(error);
+
         } finally {
             setIsPdfUploading(false);
         }
     };
+
     const handleChange = (e) => {
         const { id, value } = e.target;
 
