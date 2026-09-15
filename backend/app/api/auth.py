@@ -560,7 +560,6 @@ def forgot_password(
         send_password_reset_email,
         user.full_name,
         user.email,
-        reset_url,
         web_reset_url,
         mobile_reset_url,
     )
