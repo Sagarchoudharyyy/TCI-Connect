@@ -534,7 +534,7 @@ def forgot_password(
 
     frontend_url = os.getenv(
         "FRONTEND_URL",
-        "https://tcidentallab.com"
+        "https://tcidentallab.com/new-tciconnect"
     ).rstrip("/")
 
     reset_url = (
