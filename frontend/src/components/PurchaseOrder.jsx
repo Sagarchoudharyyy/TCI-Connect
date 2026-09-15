@@ -10,6 +10,7 @@ function PurchaseOrder({
     uploadedPdf,
     setPdfProgress,
     setUploadedPdf,
+    isPdfUploading,
     setIsPdfUploading,
     handleCheckboxSelection,
     handleImplantChange,
@@ -19,6 +20,14 @@ function PurchaseOrder({
     const handlePdfChange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
+        if (
+            file.type !== "application/pdf" &&
+            !file.name.toLowerCase().endsWith(".pdf")
+        ) {
+            setPdfProgress(0);
+            e.target.value = "";
+            return;
+        }
 
         setIsPdfUploading(true);
         setPdfProgress(0);
@@ -1883,15 +1892,15 @@ function PurchaseOrder({
                 <label className="form-label">
                     Case Document
                 </label>
-
                 <input
                     type="file"
                     className="form-control"
                     id="pdfUpload"
+                    accept=".pdf,application/pdf"
                     onChange={handlePdfChange}
                 />
 
-                {(formData.pdfUpload || uploadedPdf) && (
+                {(formData.pdfUpload || uploadedPdf || isPdfUploading) && (
                     <div className="border rounded p-3 mt-3">
 
                         <div className="d-flex justify-content-between align-items-start">
@@ -1906,13 +1915,13 @@ function PurchaseOrder({
                                     }
                                 </div>
 
-                                {pdfProgress > 0 && pdfProgress < 100 && (
-                                    <div className="progress mt-2">
+                                {isPdfUploading && (
+                                    <div className="progress mt-2" style={{ height: "20px" }}>
                                         <div
                                             className="progress-bar progress-bar-striped progress-bar-animated"
                                             role="progressbar"
                                             style={{
-                                                width: `${pdfProgress}%`,
+                                                width: `${Math.max(pdfProgress, 5)}%`,
                                             }}
                                         >
                                             {pdfProgress}%
