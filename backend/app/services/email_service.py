@@ -216,12 +216,11 @@ def send_doctor_approval_email(
 
 
 
-
-
 def send_password_reset_email(
     doctor_name: str,
     doctor_email: str,
-    reset_url: str,
+    web_reset_url: str,
+    mobile_reset_url: str,
 ) -> bool:
 
     safe_doctor_name = escape(doctor_name)
@@ -231,9 +230,13 @@ def send_password_reset_email(
 
         We received a request to reset your TCI Connect password.
 
-        Click the link below to create a new password:
+        You can reset your password using one of the following options:
 
-        {reset_url}
+        Reset in TCI Connect Mobile App:
+        {mobile_reset_url}
+
+        Reset on Website:
+        {web_reset_url}
 
         This password reset link is temporary and can only be used once.
 
@@ -284,16 +287,18 @@ def send_password_reset_email(
                 </p>
 
                 <p>
-                    Click the button below to create a new password.
+                    Choose how you would like to reset your password:
                 </p>
+
+                <!-- Mobile App Button -->
 
                 <div style="
                     text-align: center;
-                    margin: 35px 0;
+                    margin: 30px 0 15px 0;
                 ">
 
                     <a
-                        href="{reset_url}"
+                        href="{mobile_reset_url}"
                         style="
                             display: inline-block;
                             padding: 14px 28px;
@@ -305,7 +310,33 @@ def send_password_reset_email(
                             font-weight: bold;
                         "
                     >
-                        Reset Password
+                        Reset Password in App
+                    </a>
+
+                </div>
+
+                <!-- Website Button -->
+
+                <div style="
+                    text-align: center;
+                    margin: 15px 0 30px 0;
+                ">
+
+                    <a
+                        href="{web_reset_url}"
+                        style="
+                            display: inline-block;
+                            padding: 12px 24px;
+                            background-color: #ffffff;
+                            color: #0152a8;
+                            text-decoration: none;
+                            border: 1px solid #0152a8;
+                            border-radius: 6px;
+                            font-size: 15px;
+                            font-weight: bold;
+                        "
+                    >
+                        Reset Password on Website
                     </a>
 
                 </div>
@@ -314,8 +345,7 @@ def send_password_reset_email(
                     font-size: 13px;
                     color: #666666;
                 ">
-                    This password reset link is temporary and
-                    can only be used once.
+                    The reset link is temporary and can only be used once.
                 </p>
 
                 <p style="
@@ -330,17 +360,8 @@ def send_password_reset_email(
                     font-size: 13px;
                     color: #666666;
                 ">
-                    If the button does not work, copy and paste
-                    the following link into your browser:
-                </p>
-
-                <p style="
-                    font-size: 13px;
-                    word-break: break-all;
-                ">
-                    <a href="{reset_url}">
-                        {reset_url}
-                    </a>
+                    If the mobile app button does not work,
+                    you can use the website option instead.
                 </p>
 
                 <p>
