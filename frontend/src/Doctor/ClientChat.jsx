@@ -18,6 +18,10 @@ function ClientChat() {
   const socketRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
   const shouldReconnectRef = useRef(true);
+  const loadingOlderRef = useRef(false);
+
+  const [messageOffset, setMessageOffset] = useState(0);
+  const [hasMoreMessages, setHasMoreMessages] = useState(true);
 
   const loggedUser = JSON.parse(
     localStorage.getItem("user")
@@ -43,7 +47,9 @@ function ClientChat() {
       shouldReconnectRef.current = false;
 
       if (reconnectTimeoutRef.current) {
-        clearTimeout(reconnectTimeoutRef.current);
+        clearTimeout(
+          reconnectTimeoutRef.current
+        );
       }
 
       if (socketRef.current) {
@@ -54,16 +60,20 @@ function ClientChat() {
   }, [id, sender_id]);
 
   useEffect(() => {
-    const chatBox = document.getElementById("chat-box");
+    const chatBox =
+      document.getElementById("chat-box");
 
-    if (chatBox) {
-      chatBox.scrollTop = chatBox.scrollHeight;
+    if (chatBox && messages.length > 0) {
+      chatBox.scrollTop =
+        chatBox.scrollHeight;
     }
   }, [messages]);
 
   const getUser = async () => {
     try {
-      const res = await api.get(`/user/${receiver_id}`);
+      const res = await api.get(
+        `/user/${receiver_id}`
+      );
 
       setUser(res.data);
     } catch (error) {
@@ -73,7 +83,9 @@ function ClientChat() {
 
   const markChatNotificationsRead = async () => {
     try {
-      await api.put(`/notifications/chat/read/${sender_id}`);
+      await api.put(
+        `/notifications/chat/read/${sender_id}`
+      );
     } catch (error) {
       console.log(error);
     }
@@ -86,8 +98,82 @@ function ClientChat() {
       );
 
       setMessages(res.data);
+      setMessageOffset(10);
+      setHasMoreMessages(
+        res.data.length === 10
+      );
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const loadOlderMessages = async () => {
+    if (
+      loadingOlderRef.current ||
+      !hasMoreMessages
+    ) {
+      return;
+    }
+
+    const chatBox =
+      document.getElementById("chat-box");
+
+    if (!chatBox) {
+      return;
+    }
+
+    loadingOlderRef.current = true;
+
+    const oldScrollHeight =
+      chatBox.scrollHeight;
+
+    const oldScrollTop =
+      chatBox.scrollTop;
+
+    try {
+      const res = await api.get(
+        `/messages/${sender_id}/${receiver_id}?limit=10&offset=${messageOffset}`
+      );
+
+      if (res.data.length === 0) {
+        setHasMoreMessages(false);
+        return;
+      }
+
+      setMessages((previousMessages) => [
+        ...res.data,
+        ...previousMessages
+      ]);
+
+      setMessageOffset(
+        (previousOffset) =>
+          previousOffset + res.data.length
+      );
+
+      if (res.data.length < 10) {
+        setHasMoreMessages(false);
+      }
+
+      requestAnimationFrame(() => {
+        const newScrollHeight =
+          chatBox.scrollHeight;
+
+        chatBox.scrollTop =
+          oldScrollTop +
+          (newScrollHeight - oldScrollHeight);
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      loadingOlderRef.current = false;
+    }
+  };
+
+  const handleChatScroll = (e) => {
+    const chatBox = e.currentTarget;
+
+    if (chatBox.scrollTop <= 50) {
+      loadOlderMessages();
     }
   };
 
@@ -116,7 +202,8 @@ function ClientChat() {
       return;
     }
 
-    const apiUrl = import.meta.env.VITE_API_URL;
+    const apiUrl =
+      import.meta.env.VITE_API_URL;
 
     const wsBaseUrl = apiUrl
       .replace(/^http:/, "ws:")
@@ -132,7 +219,8 @@ function ClientChat() {
       socketUrl
     );
 
-    const socket = new WebSocket(socketUrl);
+    const socket =
+      new WebSocket(socketUrl);
 
     socketRef.current = socket;
 
@@ -144,44 +232,53 @@ function ClientChat() {
 
     socket.onmessage = (event) => {
       try {
-        const data = JSON.parse(event.data);
+        const data =
+          JSON.parse(event.data);
 
         const isCurrentConversation =
           (
-            Number(data.sender_id) === Number(sender_id) &&
-            Number(data.receiver_id) === Number(receiver_id)
+            Number(data.sender_id) ===
+            Number(sender_id) &&
+            Number(data.receiver_id) ===
+            Number(receiver_id)
           ) ||
           (
-            Number(data.sender_id) === Number(receiver_id) &&
-            Number(data.receiver_id) === Number(sender_id)
+            Number(data.sender_id) ===
+            Number(receiver_id) &&
+            Number(data.receiver_id) ===
+            Number(sender_id)
           );
 
         if (!isCurrentConversation) {
           return;
         }
 
-        setMessages((previousMessages) => {
-          const alreadyExists = previousMessages.some(
-            (msg) =>
-              Number(msg.id) === Number(data.id)
-          );
+        setMessages(
+          (previousMessages) => {
+            const alreadyExists =
+              previousMessages.some(
+                (msg) =>
+                  Number(msg.id) ===
+                  Number(data.id)
+              );
 
-          if (alreadyExists) {
-            return previousMessages;
+            if (alreadyExists) {
+              return previousMessages;
+            }
+
+            return [
+              ...previousMessages,
+              data
+            ];
           }
-
-          return [
-            ...previousMessages,
-            data
-          ];
-        });
+        );
 
         if (
-          Number(data.sender_id) === Number(receiver_id)
+          Number(data.sender_id) ===
+          Number(receiver_id)
         ) {
           markMessagesRead();
         }
-
       } catch (error) {
         console.log(
           "WebSocket message error:",
@@ -201,9 +298,10 @@ function ClientChat() {
         return;
       }
 
-      reconnectTimeoutRef.current = setTimeout(() => {
-        connectWebSocket();
-      }, 3000);
+      reconnectTimeoutRef.current =
+        setTimeout(() => {
+          connectWebSocket();
+        }, 3000);
     };
 
     socket.onerror = (error) => {
@@ -221,7 +319,8 @@ function ClientChat() {
 
     if (
       !socketRef.current ||
-      socketRef.current.readyState !== WebSocket.OPEN
+      socketRef.current.readyState !==
+      WebSocket.OPEN
     ) {
       console.log(
         "WebSocket is not connected"
@@ -232,8 +331,10 @@ function ClientChat() {
 
     socketRef.current.send(
       JSON.stringify({
-        receiver_id: Number(receiver_id),
-        message: newMessage.trim()
+        receiver_id:
+          Number(receiver_id),
+        message:
+          newMessage.trim()
       })
     );
 
@@ -247,7 +348,9 @@ function ClientChat() {
         {showSidebar && (
           <div
             className="doctor-sidebar-overlay"
-            onClick={() => setShowSidebar(false)}
+            onClick={() =>
+              setShowSidebar(false)
+            }
           />
         )}
 
@@ -271,14 +374,17 @@ function ClientChat() {
 
                   <div className="chat-avatar">
                     <ProfileAvatar
-                      profileImage={user?.profile_image}
+                      profileImage={
+                        user?.profile_image
+                      }
                       size={45}
                     />
                   </div>
 
                   <div className="chat-user-info">
                     <div className="chat-name">
-                      {user?.full_name || "Loading..."}
+                      {user?.full_name ||
+                        "Loading..."}
                     </div>
                   </div>
 
@@ -286,14 +392,20 @@ function ClientChat() {
 
               </div>
 
-              <div id="chat-box">
+              <div
+                id="chat-box"
+                onScroll={
+                  handleChatScroll
+                }
+              >
 
                 {messages.map((msg) => (
 
                   <div
                     key={msg.id}
                     className={
-                      msg.sender_id === sender_id
+                      msg.sender_id ===
+                        sender_id
                         ? "msg me"
                         : "msg them"
                     }
@@ -307,15 +419,16 @@ function ClientChat() {
                         msg.timestamp
                       ).toLocaleString()}
 
-                      {msg.sender_id === sender_id && (
-                        <span className="status-tick">
+                      {msg.sender_id ===
+                        sender_id && (
+                          <span className="status-tick">
 
-                          {msg.is_read
-                            ? " • Seen"
-                            : " • Sent"}
+                            {msg.is_read
+                              ? " • Seen"
+                              : " • Sent"}
 
-                        </span>
-                      )}
+                          </span>
+                        )}
 
                     </span>
 
@@ -328,7 +441,9 @@ function ClientChat() {
               <div
                 id="typing-indicator"
                 aria-hidden="true"
-                style={{ display: "none" }}
+                style={{
+                  display: "none"
+                }}
               />
 
               <div className="input-row">
@@ -340,7 +455,9 @@ function ClientChat() {
                   autoComplete="off"
                   value={newMessage}
                   onChange={(e) =>
-                    setNewMessage(e.target.value)
+                    setNewMessage(
+                      e.target.value
+                    )
                   }
                   onKeyDown={(e) =>
                     e.key === "Enter" &&
@@ -368,9 +485,3 @@ function ClientChat() {
 }
 
 export default ClientChat;
-
-
-
-
-
-

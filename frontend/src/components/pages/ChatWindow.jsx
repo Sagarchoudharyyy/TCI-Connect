@@ -18,6 +18,10 @@ function ChatWindow() {
   const socketRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
   const shouldReconnectRef = useRef(true);
+  const loadingOlderRef = useRef(false);
+
+  const [messageOffset, setMessageOffset] = useState(0);
+  const [hasMoreMessages, setHasMoreMessages] = useState(true);
 
   const loggedUser =
     JSON.parse(localStorage.getItem("user"));
@@ -79,10 +83,82 @@ function ChatWindow() {
       );
 
       setMessages(res.data);
+      setMessageOffset(10);
+      setHasMoreMessages(res.data.length === 10);
     } catch (error) {
       console.log(error);
     }
   };
+
+  const loadOlderMessages = async () => {
+    if (
+      loadingOlderRef.current ||
+      !hasMoreMessages
+    ) {
+      return;
+    }
+
+    const chatBox = chatBoxRef.current;
+
+    if (!chatBox) {
+      return;
+    }
+
+    loadingOlderRef.current = true;
+
+    const oldScrollHeight =
+      chatBox.scrollHeight;
+
+    const oldScrollTop =
+      chatBox.scrollTop;
+
+    try {
+      const res = await api.get(
+        `/messages/${sender_id}/${receiver_id}?limit=10&offset=${messageOffset}`
+      );
+
+      if (res.data.length === 0) {
+        setHasMoreMessages(false);
+        return;
+      }
+
+      setMessages((previousMessages) => [
+        ...res.data,
+        ...previousMessages
+      ]);
+
+      setMessageOffset(
+        (previousOffset) =>
+          previousOffset + res.data.length
+      );
+
+      if (res.data.length < 10) {
+        setHasMoreMessages(false);
+      }
+
+      requestAnimationFrame(() => {
+        const newScrollHeight =
+          chatBox.scrollHeight;
+
+        chatBox.scrollTop =
+          oldScrollTop +
+          (newScrollHeight - oldScrollHeight);
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      loadingOlderRef.current = false;
+    }
+  };
+
+  const handleChatScroll = (e) => {
+    const chatBox = e.currentTarget;
+
+    if (chatBox.scrollTop <= 50) {
+      loadOlderMessages();
+    }
+  };
+
   const markMessagesRead = async () => {
     try {
       await api.put(
@@ -291,6 +367,7 @@ function ChatWindow() {
               <div
                 id="chat-box"
                 ref={chatBoxRef}
+                onScroll={handleChatScroll}
               >
 
                 {messages.map((msg) => (
@@ -382,7 +459,3 @@ function ChatWindow() {
 }
 
 export default ChatWindow;
-
-
-
-
