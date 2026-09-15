@@ -47,7 +47,7 @@ function RecentCasesFilter({
                 />
             </div>
 
-            <div className="col-md-3 mt-3">
+            <div className="col-md-3 d-flex align-items-end gap-2">
                 <button
                     type="submit"
                     className="btn btn-primary me-2 mt-3"
