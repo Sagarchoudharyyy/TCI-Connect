@@ -199,15 +199,7 @@ const Chat = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getActiveUsers();
-    }, 5000);
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
 
   const sendMessage = async () => {
     if (!message.trim() || !selectedUser) {
