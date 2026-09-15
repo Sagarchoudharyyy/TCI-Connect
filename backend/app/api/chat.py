@@ -122,28 +122,27 @@ def get_active_users(
         )
 
         unread_count = (
-        db.query(ChatMessage)
-        .filter(
-        ChatMessage.sender_id == user.id,
-        ChatMessage.receiver_id == 1,
-        ChatMessage.is_read == False
+            db.query(ChatMessage)
+            .filter(
+                ChatMessage.sender_id == user.id,
+                ChatMessage.receiver_id == 1,
+                ChatMessage.is_read == False
+            )
+            .count()
         )
-        .count()
-    )
 
         result.append({
             "id": user.id,
             "name": user.full_name,
+            "profile_image": user.profile_image,
             "timestamp":
                 last_message.timestamp
                 if last_message
                 else None,
-                "unread_count": unread_count
+            "unread_count": unread_count
         })
 
     return result
-
-    
 @router.get("/user/{user_id}")
 def get_user(
     user_id: int,
