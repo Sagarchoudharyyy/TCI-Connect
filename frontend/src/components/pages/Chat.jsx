@@ -199,8 +199,6 @@ const Chat = () => {
     };
   }, []);
 
-
-
   const sendMessage = async () => {
     if (!message.trim() || !selectedUser) {
       return;
