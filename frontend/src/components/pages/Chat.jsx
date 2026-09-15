@@ -140,12 +140,10 @@ const Chat = () => {
                     <div className="user-left">
 
                       <div className="user-image">
-                        <div className="user-image">
-                          <ProfileAvatar
-                            profileImage={user.profile_image}
-                            size={40}
-                          />
-                        </div>
+                        <ProfileAvatar
+                          profileImage={user.profile_image}
+                          size={40}
+                        />
                       </div>
 
                       <div className="user-details">
