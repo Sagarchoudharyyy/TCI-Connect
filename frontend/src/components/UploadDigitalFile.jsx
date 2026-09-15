@@ -526,14 +526,14 @@ function UploadDigitalFiles({
                     >
                         <div className="d-flex justify-content-between align-items-start">
 
-                            <div className="flex-grow-1 me-3">
+                            <div className="flex-grow-1 me-3 w-100">
 
                                 <div className="mb-2">
                                     {item.file?.name ?? item.file_name}
                                 </div>
 
                                 {item.status === "uploading" && (
-                                    <div className="progress">
+                                    <div className="progress w-100" style={{ height: "22px" }}>
                                         <div
                                             className="progress-bar progress-bar-striped progress-bar-animated"
                                             role="progressbar"
