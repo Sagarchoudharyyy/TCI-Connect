@@ -57,7 +57,7 @@ from app.services.email_service import (
     send_new_registration_email_to_admin,
     send_registration_received_email,
 )
-
+from app.websocket.manager import manager
 
 # =========================================================
 # ROUTER
@@ -159,7 +159,7 @@ def get_current_user(
 # =========================================================
 
 @router.post("/register")
-def register(
+async def register(
     user: UserRegister,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db)
@@ -242,6 +242,10 @@ def register(
         new_user.business_name,
         new_user.license_number,
     )
+    await manager.send_doctor_update({
+    "type": "doctor_created",
+    "doctor_id": new_user.id
+})
 
     # -----------------------------------------
     # Send DOCTOR registration email

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../../services/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -18,6 +18,10 @@ function AllDoctors() {
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
+  const websocketRef = useRef(null);
+  const reconnectTimeoutRef = useRef(null);
+  const shouldReconnectRef = useRef(true);
+
   useEffect(() => {
     fetchDoctors();
   }, []);
@@ -33,6 +37,143 @@ function AllDoctors() {
       console.log("Error fetching doctors", error);
     }
   };
+
+  useEffect(() => {
+
+    const connectWebSocket = () => {
+
+      if (!shouldReconnectRef.current) {
+        return;
+      }
+
+      if (
+        websocketRef.current &&
+        (
+          websocketRef.current.readyState === WebSocket.OPEN ||
+          websocketRef.current.readyState === WebSocket.CONNECTING
+        )
+      ) {
+        return;
+      }
+
+      const apiUrl = import.meta.env.VITE_API_URL;
+
+      const wsBaseUrl = apiUrl
+        .replace(/^http:/, "ws:")
+        .replace(/^https:/, "wss:")
+        .replace(/\/api\/?$/, "")
+        .replace(/\/$/, "");
+
+      const wsUrl =
+        `${wsBaseUrl}/ws/admin/doctors`;
+
+      console.log(
+        "Connecting All Doctors WebSocket:",
+        wsUrl
+      );
+
+      const ws = new WebSocket(wsUrl);
+
+      websocketRef.current = ws;
+
+      ws.onopen = () => {
+
+        console.log(
+          "All Doctors WebSocket connected"
+        );
+
+      };
+
+      ws.onmessage = async (event) => {
+
+        try {
+
+          const data =
+            JSON.parse(event.data);
+
+          console.log(
+            "All Doctors WebSocket message:",
+            data
+          );
+
+          if (
+            data.type === "doctor_created" ||
+            data.type === "doctor_updated" ||
+            data.type === "doctor_status_updated" ||
+            data.type === "doctor_deleted"
+          ) {
+
+            await fetchDoctors();
+
+          }
+
+        } catch (error) {
+
+          console.log(
+            "All Doctors WebSocket message error:",
+            error
+          );
+
+        }
+
+      };
+
+      ws.onclose = () => {
+
+        console.log(
+          "All Doctors WebSocket disconnected"
+        );
+
+        websocketRef.current = null;
+
+        if (!shouldReconnectRef.current) {
+          return;
+        }
+
+        reconnectTimeoutRef.current =
+          setTimeout(() => {
+            connectWebSocket();
+          }, 3000);
+
+      };
+
+      ws.onerror = (error) => {
+
+        console.log(
+          "All Doctors WebSocket error:",
+          error
+        );
+
+      };
+
+    };
+
+    connectWebSocket();
+
+    return () => {
+
+      shouldReconnectRef.current = false;
+
+      if (reconnectTimeoutRef.current) {
+
+        clearTimeout(
+          reconnectTimeoutRef.current
+        );
+
+      }
+
+      if (websocketRef.current) {
+
+        websocketRef.current.close();
+
+        websocketRef.current = null;
+
+      }
+
+    };
+
+  }, []);
+
   const toggleDoctorStatus =
     async (doctorId) => {
 
@@ -52,6 +193,7 @@ function AllDoctors() {
         );
       }
     };
+
   const deleteDoctor = async (doctorId) => {
 
     const confirmDelete = window.confirm(
@@ -65,13 +207,17 @@ function AllDoctors() {
       await api.delete(
         `/doctors/${doctorId}`
       );
+
       alert("Doctor deleted successfully");
 
       fetchDoctors();
 
     } catch (error) {
 
-      console.log("Delete Error", error);
+      console.log(
+        "Delete Error",
+        error
+      );
 
     }
   };
@@ -122,27 +268,46 @@ function AllDoctors() {
 
           <div className="main-c-inner">
             <div className="table-responsive">
+
               <div className="row mt-2 justify-content-between">
+
                 <div className="d-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">
+
                   <div className="d-flex align-items-center gap-2">
+
                     <select
                       value={entriesPerPage}
                       style={{ width: "90px" }}
                       onChange={(e) =>
-                        setEntriesPerPage(Number(e.target.value))
+                        setEntriesPerPage(
+                          Number(e.target.value)
+                        )
                       }
                       className="form-select form-select-sm"
                     >
+
                       <option value="5">5</option>
                       <option value="10">10</option>
                       <option value="20">20</option>
+
                     </select>
-                    <span>entries per page</span>
+
+                    <span>
+                      entries per page
+                    </span>
+
                   </div>
+
                 </div>
+
                 <div className="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto">
+
                   <div className="d-flex align-items-center gap-2">
-                    <label htmlFor="dt-search-0">Search:</label>
+
+                    <label htmlFor="dt-search-0">
+                      Search:
+                    </label>
+
                     <input
                       type="search"
                       className="form-control form-control-sm"
@@ -155,10 +320,12 @@ function AllDoctors() {
                         )
                       }
                     />
+
                   </div>
+
                 </div>
+
               </div>
-              {/* Table */}
 
               <table className="table table-striped custom-table">
 
@@ -217,43 +384,60 @@ function AllDoctors() {
                               cursor: "pointer",
                             }}
                           >
+
                             {doctor.status ===
                               "approved"
                               ? "Approved"
                               : "Pending"}
+
                           </span>
 
                         </td>
+
                         <td>
+
                           <div className="d-flex gap-3">
+
                             <button
                               type="button"
                               className="btn btn-link p-0"
                               onClick={() =>
-                                navigate(`/admin/user-details/${doctor.id}`)
+                                navigate(
+                                  `/admin/user-details/${doctor.id}`
+                                )
                               }
                             >
+
                               <FaEye
                                 style={{
                                   color: "#0152a8",
                                   cursor: "pointer",
                                 }}
                               />
+
                             </button>
 
                             <button
                               type="button"
                               className="btn btn-link p-0"
-                              onClick={() => deleteDoctor(doctor.id)}
+                              onClick={() =>
+                                deleteDoctor(
+                                  doctor.id
+                                )
+                              }
                             >
+
                               <FaTrash
                                 style={{
                                   color: "red",
                                   cursor: "pointer",
                                 }}
                               />
+
                             </button>
+
                           </div>
+
                         </td>
 
                       </tr>
@@ -278,8 +462,6 @@ function AllDoctors() {
                 </tbody>
 
               </table>
-
-              {/* Footer */}
 
               <div className="d-flex justify-content-between align-items-center flex-wrap mt-3">
 
@@ -333,7 +515,6 @@ function AllDoctors() {
               </div>
 
             </div>
-
           </div>
 
         </div>
@@ -341,8 +522,360 @@ function AllDoctors() {
       </div>
 
     </div>
-
   );
 }
 
 export default AllDoctors;
+
+
+
+
+
+// import { useEffect, useState } from "react";
+// import api from "../../services/api";
+// import "bootstrap/dist/css/bootstrap.min.css";
+
+// import Sidebar from "../Sidebar";
+// import Header from "../Header";
+// import "../../styles/tables.css";
+// import { useNavigate } from "react-router-dom";
+
+// import { FaEye, FaTrash } from "react-icons/fa";
+
+// function AllDoctors() {
+
+//   const [doctors, setDoctors] = useState([]);
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const [entriesPerPage, setEntriesPerPage] = useState(10);
+//   const [showSidebar, setShowSidebar] = useState(false);
+//   const [currentPage, setCurrentPage] = useState(1);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     fetchDoctors();
+//   }, []);
+
+//   const fetchDoctors = async () => {
+//     try {
+
+//       const response = await api.get("/doctors");
+
+//       setDoctors(response.data);
+
+//     } catch (error) {
+//       console.log("Error fetching doctors", error);
+//     }
+//   };
+//   const toggleDoctorStatus =
+//     async (doctorId) => {
+
+//       try {
+
+//         const response = await api.put(
+//           `/toggle-doctor-status/${doctorId}`
+//         );
+
+//         fetchDoctors();
+
+//       } catch (error) {
+
+//         console.log(
+//           "Status Update Error",
+//           error
+//         );
+//       }
+//     };
+//   const deleteDoctor = async (doctorId) => {
+
+//     const confirmDelete = window.confirm(
+//       "Are you sure you want to delete this doctor?"
+//     );
+
+//     if (!confirmDelete) return;
+
+//     try {
+
+//       await api.delete(
+//         `/doctors/${doctorId}`
+//       );
+//       alert("Doctor deleted successfully");
+
+//       fetchDoctors();
+
+//     } catch (error) {
+
+//       console.log("Delete Error", error);
+
+//     }
+//   };
+
+//   const filteredDoctors = doctors.filter((doctor) => {
+
+//     return (
+//       doctor.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//       doctor.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//       doctor.phone?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//       doctor.business_name?.toLowerCase().includes(searchTerm.toLowerCase())
+//     );
+//   });
+
+//   const visibleDoctors = filteredDoctors.slice(0, entriesPerPage);
+//   const totalEntries = filteredDoctors.length;
+
+//   const startEntry =
+//     totalEntries === 0
+//       ? 0
+//       : (currentPage - 1) * entriesPerPage + 1;
+
+//   const endEntry = Math.min(
+//     currentPage * entriesPerPage,
+//     totalEntries
+//   );
+
+//   return (
+//     <div className="dashboard-main">
+
+//       {showSidebar && (
+//         <div
+//           className="sidebar-overlay"
+//           onClick={() => setShowSidebar(false)}
+//         />
+//       )}
+
+//       <Sidebar showSidebar={showSidebar} />
+
+//       <div className="main-wrapper">
+
+//         <Header
+//           title="Dashboard"
+//           setShowSidebar={setShowSidebar}
+//         />
+
+//         <div className="main-content">
+
+//           <div className="main-c-inner">
+//             <div className="table-responsive">
+//               <div className="row mt-2 justify-content-between">
+//                 <div className="d-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto">
+//                   <div className="d-flex align-items-center gap-2">
+//                     <select
+//                       value={entriesPerPage}
+//                       style={{ width: "90px" }}
+//                       onChange={(e) =>
+//                         setEntriesPerPage(Number(e.target.value))
+//                       }
+//                       className="form-select form-select-sm"
+//                     >
+//                       <option value="5">5</option>
+//                       <option value="10">10</option>
+//                       <option value="20">20</option>
+//                     </select>
+//                     <span>entries per page</span>
+//                   </div>
+//                 </div>
+//                 <div className="d-md-flex justify-content-between align-items-center dt-layout-end col-md-auto ms-auto">
+//                   <div className="d-flex align-items-center gap-2">
+//                     <label htmlFor="dt-search-0">Search:</label>
+//                     <input
+//                       type="search"
+//                       className="form-control form-control-sm"
+//                       id="dt-search-0"
+//                       placeholder=""
+//                       value={searchTerm}
+//                       onChange={(e) =>
+//                         setSearchTerm(
+//                           e.target.value
+//                         )
+//                       }
+//                     />
+//                   </div>
+//                 </div>
+//               </div>
+//               {/* Table */}
+
+//               <table className="table table-striped custom-table">
+
+//                 <thead>
+
+//                   <tr>
+//                     <th>Full Name</th>
+//                     <th>Email</th>
+//                     <th>Phone</th>
+//                     <th>Business Name</th>
+//                     <th>Status</th>
+//                     <th>Action</th>
+//                   </tr>
+
+//                 </thead>
+
+//                 <tbody>
+
+//                   {visibleDoctors.length > 0 ? (
+
+//                     visibleDoctors.map((doctor) => (
+
+//                       <tr key={doctor.id}>
+
+//                         <td>
+//                           {doctor.full_name}
+//                         </td>
+
+//                         <td>
+//                           {doctor.email}
+//                         </td>
+
+//                         <td>
+//                           {doctor.phone}
+//                         </td>
+
+//                         <td>
+//                           {doctor.business_name}
+//                         </td>
+
+//                         <td>
+
+//                           <span
+//                             onClick={() =>
+//                               toggleDoctorStatus(
+//                                 doctor.id
+//                               )
+//                             }
+//                             style={{
+//                               color:
+//                                 doctor.status ===
+//                                   "approved"
+//                                   ? "green"
+//                                   : "orange",
+//                               fontWeight: "bold",
+//                               cursor: "pointer",
+//                             }}
+//                           >
+//                             {doctor.status ===
+//                               "approved"
+//                               ? "Approved"
+//                               : "Pending"}
+//                           </span>
+
+//                         </td>
+//                         <td>
+//                           <div className="d-flex gap-3">
+//                             <button
+//                               type="button"
+//                               className="btn btn-link p-0"
+//                               onClick={() =>
+//                                 navigate(`/admin/user-details/${doctor.id}`)
+//                               }
+//                             >
+//                               <FaEye
+//                                 style={{
+//                                   color: "#0152a8",
+//                                   cursor: "pointer",
+//                                 }}
+//                               />
+//                             </button>
+
+//                             <button
+//                               type="button"
+//                               className="btn btn-link p-0"
+//                               onClick={() => deleteDoctor(doctor.id)}
+//                             >
+//                               <FaTrash
+//                                 style={{
+//                                   color: "red",
+//                                   cursor: "pointer",
+//                                 }}
+//                               />
+//                             </button>
+//                           </div>
+//                         </td>
+
+//                       </tr>
+
+//                     ))
+
+//                   ) : (
+
+//                     <tr>
+
+//                       <td
+//                         colSpan="6"
+//                         className="text-center"
+//                       >
+//                         No Doctors Found
+//                       </td>
+
+//                     </tr>
+
+//                   )}
+
+//                 </tbody>
+
+//               </table>
+
+//               {/* Footer */}
+
+//               <div className="d-flex justify-content-between align-items-center flex-wrap mt-3">
+
+//                 <div
+//                   className="dt-info"
+//                   aria-live="polite"
+//                   id="data-table_info"
+//                   role="status"
+//                 >
+//                   Showing {startEntry} to {endEntry} of {totalEntries} entries
+//                 </div>
+
+//                 <nav>
+
+//                   <ul className="pagination mb-0">
+
+//                     <li className="page-item disabled">
+//                       <button className="page-link">
+//                         «
+//                       </button>
+//                     </li>
+
+//                     <li className="page-item disabled">
+//                       <button className="page-link">
+//                         ‹
+//                       </button>
+//                     </li>
+
+//                     <li className="page-item active">
+//                       <button className="page-link">
+//                         1
+//                       </button>
+//                     </li>
+
+//                     <li className="page-item disabled">
+//                       <button className="page-link">
+//                         ›
+//                       </button>
+//                     </li>
+
+//                     <li className="page-item disabled">
+//                       <button className="page-link">
+//                         »
+//                       </button>
+//                     </li>
+
+//                   </ul>
+
+//                 </nav>
+
+//               </div>
+
+//             </div>
+
+//           </div>
+
+//         </div>
+
+//       </div>
+
+//     </div>
+
+//   );
+// }
+
+// export default AllDoctors;
