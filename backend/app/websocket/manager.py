@@ -17,6 +17,8 @@ class ConnectionManager:
             WebSocket
         ] = {}
 
+        self.doctor_connections: list[WebSocket] = []
+
     async def connect(
         self,
         user_id: int,
@@ -244,6 +246,95 @@ class ConnectionManager:
 
             self.disconnect_pricing(
                 user_id
+            )
+
+    async def connect_doctor(
+        self,
+        websocket: WebSocket
+    ):
+
+        await websocket.accept()
+
+        self.doctor_connections.append(
+            websocket
+        )
+
+        print(
+            "Doctor WebSocket connected"
+        )
+
+        print(
+            "DOCTOR CONNECTION COUNT:",
+            len(self.doctor_connections)
+        )
+
+    def disconnect_doctor(
+        self,
+        websocket: WebSocket
+    ):
+
+        self.doctor_connections = [
+            connection
+            for connection in self.doctor_connections
+            if connection is not websocket
+        ]
+
+        print(
+            "Doctor WebSocket disconnected"
+        )
+
+        print(
+            "REMAINING DOCTOR CONNECTIONS:",
+            len(self.doctor_connections)
+        )
+
+    async def send_doctor_update(
+        self,
+        data: dict
+    ):
+
+        connections = list(
+            self.doctor_connections
+        )
+
+        if not connections:
+
+            print(
+                "NO DOCTOR WEBSOCKET CONNECTED"
+            )
+
+            return
+
+        disconnected_connections = []
+
+        for websocket in connections:
+
+            try:
+
+                await websocket.send_json(
+                    data
+                )
+
+                print(
+                    "DOCTOR UPDATE SENT:",
+                    data
+                )
+
+            except Exception as error:
+
+                print(
+                    "Doctor WebSocket send failed:",
+                    error
+                )
+
+                disconnected_connections.append(
+                    websocket
+                )
+
+        for websocket in disconnected_connections:
+
+            self.disconnect_doctor(
+                websocket
             )
 
 

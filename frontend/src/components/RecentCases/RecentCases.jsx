@@ -1,4 +1,3 @@
-
 import Header from "../Header";
 import Sidebar from "../Sidebar";
 
@@ -11,7 +10,7 @@ import {
     updateCaseStatus,
     deleteCase,
 } from "./recentCasesApi";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "../../styles/header.css";
@@ -36,6 +35,11 @@ function RecentCases() {
         useState({});
     const [previewFilesMap, setPreviewFilesMap] =
         useState({});
+
+    const websocketRef = useRef(null);
+    const reconnectTimeoutRef = useRef(null);
+    const shouldReconnectRef = useRef(true);
+
     useEffect(() => {
         loadCases();
     }, [
@@ -45,6 +49,7 @@ function RecentCases() {
         statusFilter,
         deadlineFilter,
     ]);
+
     useEffect(() => {
         cases.forEach((item) => {
             if (!previewFilesMap[item.id]) {
@@ -52,6 +57,7 @@ function RecentCases() {
             }
         });
     }, [cases]);
+
     const loadPreviewFiles = async (caseId) => {
         try {
             const files = await getPreviewFiles(caseId);
@@ -64,6 +70,7 @@ function RecentCases() {
             console.log(error);
         }
     };
+
     const handleDownloadCaseDocument = async (caseId) => {
         try {
             await downloadCaseDocument(caseId);
@@ -89,6 +96,7 @@ function RecentCases() {
             console.log(error);
         }
     };
+
     const handleViewCaseDocument = async (caseId) => {
         try {
             await viewCaseDocument(caseId);
@@ -109,10 +117,11 @@ function RecentCases() {
             console.log(error);
         }
     };
+
     const handleSubmit = (e) => {
         e.preventDefault();
-
     };
+
     const handleReset = () => {
         setStatusFilter("");
         setDeadlineFilter("");
@@ -156,6 +165,144 @@ function RecentCases() {
             alert("Delete failed");
         }
     };
+
+    useEffect(() => {
+
+        const connectWebSocket = () => {
+
+            if (!shouldReconnectRef.current) {
+                return;
+            }
+
+            if (
+                websocketRef.current &&
+                (
+                    websocketRef.current.readyState === WebSocket.OPEN ||
+                    websocketRef.current.readyState === WebSocket.CONNECTING
+                )
+            ) {
+                return;
+            }
+
+            const apiUrl = import.meta.env.VITE_API_URL;
+
+            const wsBaseUrl = apiUrl
+                .replace(/^http:/, "ws:")
+                .replace(/^https:/, "wss:")
+                .replace(/\/api\/?$/, "")
+                .replace(/\/$/, "");
+
+            const wsUrl =
+                `${wsBaseUrl}/ws/admin/cases`;
+
+            console.log(
+                "Connecting Recent Cases WebSocket:",
+                wsUrl
+            );
+
+            const ws = new WebSocket(wsUrl);
+
+            websocketRef.current = ws;
+
+            ws.onopen = () => {
+
+                console.log(
+                    "Recent Cases WebSocket connected"
+                );
+
+            };
+
+            ws.onmessage = async (event) => {
+
+                try {
+
+                    const data =
+                        JSON.parse(event.data);
+
+                    console.log(
+                        "Recent Cases WebSocket message:",
+                        data
+                    );
+
+                    if (
+                        data.type === "new_case" ||
+                        data.type === "case_updated" ||
+                        data.type === "case_status_updated" ||
+                        data.type === "preview_status_updated" ||
+                        data.type === "case_deleted"
+                    ) {
+
+                        await loadCases();
+
+                    }
+
+                } catch (error) {
+
+                    console.log(
+                        "Recent Cases WebSocket message error:",
+                        error
+                    );
+
+                }
+
+            };
+
+            ws.onclose = () => {
+
+                console.log(
+                    "Recent Cases WebSocket disconnected"
+                );
+
+                websocketRef.current = null;
+
+                if (!shouldReconnectRef.current) {
+                    return;
+                }
+
+                reconnectTimeoutRef.current =
+                    setTimeout(() => {
+                        connectWebSocket();
+                    }, 3000);
+
+            };
+
+            ws.onerror = (error) => {
+
+                console.log(
+                    "Recent Cases WebSocket error:",
+                    error
+                );
+
+            };
+
+        };
+
+        connectWebSocket();
+
+        return () => {
+
+            shouldReconnectRef.current = false;
+
+            if (reconnectTimeoutRef.current) {
+
+                clearTimeout(
+                    reconnectTimeoutRef.current
+                );
+
+            }
+
+            if (websocketRef.current) {
+
+                websocketRef.current.close();
+
+                websocketRef.current = null;
+
+            }
+
+        };
+
+    }, []);
+
     return (
         <>
 
@@ -188,6 +335,7 @@ function RecentCases() {
                                             All Cases
                                         </h4>
                                     </div>
+
                                     <RecentCasesFilter
                                         statusFilter={statusFilter}
                                         setStatusFilter={setStatusFilter}
@@ -196,7 +344,9 @@ function RecentCases() {
                                         handleSubmit={handleSubmit}
                                         handleReset={handleReset}
                                     />
+
                                     <div id="data-table_wrapper" className="dt-container dt-bootstrap5 dt-empty-footer">
+
                                         <RecentCasesTopBar
                                             entriesPerPage={entriesPerPage}
                                             setEntriesPerPage={setEntriesPerPage}
@@ -215,6 +365,7 @@ function RecentCases() {
                                             handleDelete={handleDelete}
                                             navigate={navigate}
                                         />
+
                                         <RecentCasesPagination
                                             currentPage={currentPage}
                                             setCurrentPage={setCurrentPage}
@@ -222,14 +373,22 @@ function RecentCases() {
                                             totalCases={totalCases}
                                             entriesPerPage={entriesPerPage}
                                         />
+
                                     </div>
+
                                 </div>
+
                             </div>
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
+
         </>
     );
 };
+
 export default RecentCases;
