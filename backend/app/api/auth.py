@@ -537,20 +537,6 @@ def forgot_password(
         "https://tcidentallab.com/new-tciconnect"
     ).rstrip("/")
 
-
-    # Website reset link
-    web_reset_url = (
-    f"{frontend_url}/reset-password"
-    f"?token={raw_token}"
-    )
-
-
-    # Mobile app reset deep link
-    mobile_reset_url = (
-        f"tciconnectmobile://resetpassword"
-        f"?token={raw_token}"
-    )
-
     reset_url = (
         f"{frontend_url}/reset-password"
         f"?token={raw_token}"
@@ -560,8 +546,7 @@ def forgot_password(
         send_password_reset_email,
         user.full_name,
         user.email,
-        web_reset_url,
-        mobile_reset_url,
+        reset_url,
     )
 
     return {
