@@ -3,13 +3,12 @@ import api from "../services/api";
 import DoctorHeader from "../components/DoctorHeader";
 import DoctorSideBar from "../components/DoctorSideBar";
 import "../DoctorStyle/doctorpricingtable.css";
-import {
-    BsInfoCircle, BsPercent,
-    BsCashCoin,
-    BsFileEarmarkText
 
-} from "react-icons/bs";
 import {
+    BsInfoCircle,
+    BsPercent,
+    BsCashCoin,
+    BsFileEarmarkText,
     BsClockHistory,
     BsBoxSeam,
     BsGear,
@@ -18,183 +17,350 @@ import {
     BsTools
 } from "react-icons/bs";
 
-
-
 function DoctorPricing() {
     const [pricing, setPricing] = useState([]);
-    const [showSidebar, setShowSidebar] = useState(false);
-
-    useEffect(() => {
-        getPricing();
-    }, []);
+    const [showSidebar, setShowSidebar] =
+        useState(false);
 
     const getPricing = async () => {
         try {
-
-            const res = await api.get("/pricing/my-pricing");
+            const res =
+                await api.get(
+                    "/pricing/my-pricing"
+                );
 
             setPricing(res.data);
-
         } catch (error) {
             console.log(error);
         }
     };
 
+    useEffect(() => {
+        getPricing();
+    }, []);
+
+    useEffect(() => {
+        const storedUser =
+            localStorage.getItem("user");
+
+        if (!storedUser) {
+            return;
+        }
+
+        let user;
+
+        try {
+            user = JSON.parse(
+                storedUser
+            );
+        } catch (error) {
+            console.log(
+                "Invalid user data:",
+                error
+            );
+            return;
+        }
+
+        const userId = user?.id;
+
+        if (!userId) {
+            console.log(
+                "Doctor user ID not found"
+            );
+            return;
+        }
+
+        const apiUrl =
+            import.meta.env.VITE_API_URL;
+
+        if (!apiUrl) {
+            console.log(
+                "VITE_API_URL is not configured"
+            );
+            return;
+        }
+
+        let wsUrl;
+
+        try {
+            const parsedUrl =
+                new URL(apiUrl);
+
+            const wsProtocol =
+                parsedUrl.protocol === "https:"
+                    ? "wss:"
+                    : "ws:";
+
+            const basePath =
+                parsedUrl.pathname.replace(
+                    /\/api\/?$/,
+                    ""
+                );
+
+            wsUrl =
+                `${wsProtocol}//${parsedUrl.host}` +
+                `${basePath}/ws/pricing/${userId}`;
+        } catch (error) {
+            console.log(
+                "Pricing WebSocket URL error:",
+                error
+            );
+            return;
+        }
+
+        let websocket;
+        let reconnectTimer;
+        let isUnmounted = false;
+
+        const connectWebSocket = () => {
+            if (isUnmounted) {
+                return;
+            }
+
+            console.log(
+                "DOCTOR PRICING WEBSOCKET CONNECTING..."
+            );
+
+            console.log(
+                "PRICING WEBSOCKET URL:",
+                wsUrl
+            );
+
+            websocket =
+                new WebSocket(wsUrl);
+
+            websocket.onopen = () => {
+                console.log(
+                    "DOCTOR PRICING WEBSOCKET CONNECTED"
+                );
+            };
+
+            websocket.onmessage =
+                async (event) => {
+                    try {
+                        const data =
+                            JSON.parse(
+                                event.data
+                            );
+
+                        console.log(
+                            "DOCTOR PRICING WEBSOCKET MESSAGE:",
+                            data
+                        );
+
+                        if (
+                            data.type ===
+                            "pricing_updated"
+                        ) {
+                            await getPricing();
+                        }
+                    } catch (error) {
+                        console.log(
+                            "DOCTOR PRICING WEBSOCKET MESSAGE ERROR:",
+                            error
+                        );
+                    }
+                };
+
+            websocket.onerror = (
+                error
+            ) => {
+                console.log(
+                    "DOCTOR PRICING WEBSOCKET ERROR:",
+                    error
+                );
+            };
+
+            websocket.onclose = () => {
+                console.log(
+                    "DOCTOR PRICING WEBSOCKET DISCONNECTED"
+                );
+
+                if (!isUnmounted) {
+                    reconnectTimer =
+                        setTimeout(() => {
+                            connectWebSocket();
+                        }, 3000);
+                }
+            };
+        };
+
+        connectWebSocket();
+
+        return () => {
+            isUnmounted = true;
+
+            if (reconnectTimer) {
+                clearTimeout(
+                    reconnectTimer
+                );
+            }
+
+            if (
+                websocket &&
+                websocket.readyState ===
+                WebSocket.OPEN
+            ) {
+                websocket.close();
+            }
+        };
+    }, []);
 
     return (
-        <>
-            <div className="container-fluid p-0">
-                <div className="row g-0 doctor-dashboard-main">
-                    {showSidebar && (
-                        <div
-                            className="doctor-sidebar-overlay"
-                            onClick={() => setShowSidebar(false)}
-                        />
-                    )}
-                    <DoctorSideBar showSidebar={showSidebar} />
-                    <div className="col-md-9 doctor-main-content">
-                        <DoctorHeader
-                            title="Dashboard"
-                            setShowSidebar={setShowSidebar}
-                        />
-                        <div className="mc-btm-bxx">
-                            <h2>Your Pricing</h2>
-                            <table className="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Category</th>
-                                        <th>Material</th>
-                                        <th>Price</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {pricing.length > 0 ? (
-                                        pricing.map((item) => (
-                                            <tr key={item.id}>
-                                                <td>{item.product}</td>
-                                                <td>{item.category}</td>
-                                                <td>{item.material}</td>
-                                                <td>
-                                                    {Number(item.price).toFixed(2)} {item.currency}
-                                                </td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td
-                                                colSpan="4"
-                                                className="text-center"
-                                            >
-                                                No Pricing Found
-                                            </td>
-                                        </tr>
-                                    )}
+        <div className="doctor-dashboard-main">
 
+            {showSidebar && (
+                <div
+                    className="doctor-sidebar-overlay"
+                    onClick={() =>
+                        setShowSidebar(false)
+                    }
+                />
+            )}
 
-                                </tbody>
+            <DoctorSideBar
+                showSidebar={showSidebar}
+            />
 
-                            </table>
+            <div className="doctor-main-content">
 
-                            <div className="card mt-4 m-0">
-                                <div className="card-body small">
+                <DoctorHeader
+                    title="Pricing"
+                    setShowSidebar={
+                        setShowSidebar
+                    }
+                />
 
+                <div className="container-fluid">
 
-                                    <div className="d-flex align-items-center mb-2">
-                                        <BsInfoCircle className="me-2" />
+                    <div className="row">
 
-                                        <p className="mb-0 fw-semibold">
-                                            Prices & Order Information
+                        <div className="col-12">
+
+                            <div className="pricing-table-card">
+
+                                <div className="pricing-table-header">
+
+                                    <div>
+                                        <h4>
+                                            Pricing
+                                        </h4>
+
+                                        <p>
+                                            Current pricing available for your account
                                         </p>
                                     </div>
 
-                                    <ul
-                                        className="mb-3"
-                                        style={{
-                                            listStyleType: "disc",
-                                            paddingLeft: "20px"
-                                        }}
-                                    >
-                                        <li className="mb-2">
-                                            <BsPercent className="me-2" />
-                                            Prices are exclusive of VAT.
-                                        </li>
+                                </div>
 
-                                        <li className="mb-2">
-                                            <BsBoxSeam className="me-2" />
-                                            Shipping is free for orders of{" "}
-                                            <strong>€150 or more</strong>.
-                                        </li>
+                                <div className="table-responsive">
 
-                                        <li className="mb-2">
-                                            <BsCashCoin className="me-2" />
-                                            Orders below €150 are subject
-                                            to a fixed shipping fee of{" "}
-                                            <strong>€9</strong>.
-                                        </li>
+                                    <table className="table pricing-table">
 
-                                        <li className="mb-2">
-                                            <BsFileEarmarkText className="me-2" />
-                                            Prices are for reference only.
-                                            Orders must be submitted via the{" "}
-                                            <strong>RX form</strong>.
-                                        </li>
-                                    </ul>
+                                        <thead>
 
+                                            <tr>
 
+                                                <th>
+                                                    Product
+                                                </th>
 
-                                    <hr />
+                                                <th>
+                                                    Category
+                                                </th>
 
-                                    <ul className="list-unstyled">
+                                                <th>
+                                                    Material
+                                                </th>
 
-                                        <li className="mb-2">
-                                            <BsClockHistory className="me-2" />
-                                            <strong>Temporaries (PMMA)</strong>
-                                        </li>
+                                                <th>
+                                                    Price
+                                                </th>
 
-                                        <li className="mb-2">
-                                            <BsBoxSeam className="me-2" />
-                                            <strong>3D Printing & Models</strong>
-                                        </li>
+                                            </tr>
 
-                                        <li className="mb-2">
-                                            <BsGear className="me-2" />
-                                            <strong>Mill Only</strong> (No CAD design included)
-                                        </li>
+                                        </thead>
 
-                                        <li className="mb-2">
-                                            <BsLaptop className="me-2" />
-                                            <strong>CAD Services</strong>
-                                        </li>
+                                        <tbody>
 
-                                        <li className="mb-2">
-                                            <BsShieldCheck className="me-2" />
-                                            <strong>Abutments & Attachments</strong>
-                                        </li>
+                                            {pricing.length === 0 ? (
 
-                                        <li className="mb-2">
-                                            <BsTools className="me-2" />
-                                            <strong>Implant Restorations</strong>
-                                        </li>
+                                                <tr>
 
-                                    </ul>
+                                                    <td
+                                                        colSpan="4"
+                                                        className="text-center"
+                                                    >
+                                                        No pricing available
+                                                    </td>
 
-                                    <hr />
+                                                </tr>
 
-                                    <p className="mb-0">
-                                        <strong>
-                                            Fixed Prosthetics – Crowns /
-                                            Veneers / Inlay-Onlay
-                                        </strong>
-                                    </p>
+                                            ) : (
+
+                                                pricing.map(
+                                                    item => (
+                                                        <tr
+                                                            key={
+                                                                item.id
+                                                            }
+                                                        >
+
+                                                            <td>
+                                                                {
+                                                                    item.product
+                                                                }
+                                                            </td>
+
+                                                            <td>
+                                                                {
+                                                                    item.category
+                                                                }
+                                                            </td>
+
+                                                            <td>
+                                                                {
+                                                                    item.material
+                                                                }
+                                                            </td>
+
+                                                            <td>
+                                                                {
+                                                                    Number(
+                                                                        item.price
+                                                                    ).toFixed(
+                                                                        2
+                                                                    )
+                                                                }{" "}
+                                                                {
+                                                                    item.currency
+                                                                }
+                                                            </td>
+
+                                                        </tr>
+                                                    )
+                                                )
+
+                                            )}
+
+                                        </tbody>
+
+                                    </table>
 
                                 </div>
+
                             </div>
+
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
-        </>
-    )
+
+        </div>
+    );
 }
+
 export default DoctorPricing;
