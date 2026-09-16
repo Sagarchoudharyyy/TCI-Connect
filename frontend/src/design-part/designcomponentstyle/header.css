@@ -24,8 +24,6 @@
   box-sizing: border-box;
 }
 
-
-
 h1,
 h2,
 h3,
@@ -74,6 +72,8 @@ li {
 
 .tci-main-menus .tci-nav-item {
   margin: 8px;
+  white-space: nowrap;
+
 }
 
 .tci-main-menus .tci-nav-link {
@@ -82,6 +82,7 @@ li {
   font-size: 14px;
   line-height: 100%;
   letter-spacing: 0.5px;
+  white-space: nowrap;
   transition: all 0.3s ease;
 }
 
