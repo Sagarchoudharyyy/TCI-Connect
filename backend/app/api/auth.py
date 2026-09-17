@@ -83,77 +83,62 @@ def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
 ):
-    # -----------------------------------------
-    # 1. Decode JWT
-    # -----------------------------------------
+    print("========== AUTH DEBUG ==========")
+    print("TOKEN RECEIVED:", bool(token))
+    print("TOKEN LENGTH:", len(token) if token else 0)
 
     payload = decode_access_token(token)
 
+    print("DECODED PAYLOAD:", payload)
+
     if not payload:
+        print("AUTH ERROR: Invalid or expired token")
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=401,
             detail="Invalid or expired token",
-            headers={
-                "WWW-Authenticate": "Bearer"
-            },
+            headers={"WWW-Authenticate": "Bearer"},
         )
 
-    # -----------------------------------------
-    # 2. Check whether token is blacklisted
-    # -----------------------------------------
-
-    blacklisted_token = (
-        db.query(Blacklist)
-        .filter(Blacklist.token == token)
-        .first()
-    )
+    blacklisted_token = db.query(Blacklist).filter(
+        Blacklist.token == token
+    ).first()
 
     if blacklisted_token:
+        print("AUTH ERROR: Token is blacklisted")
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=401,
             detail="Token has been logged out",
-            headers={
-                "WWW-Authenticate": "Bearer"
-            },
+            headers={"WWW-Authenticate": "Bearer"},
         )
-
-    # -----------------------------------------
-    # 3. Get user_id from JWT
-    # -----------------------------------------
 
     user_id = payload.get("user_id")
 
+    print("USER ID FROM TOKEN:", user_id)
+
     if not user_id:
+        print("AUTH ERROR: user_id missing from token")
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=401,
             detail="Invalid token payload",
-            headers={
-                "WWW-Authenticate": "Bearer"
-            },
+            headers={"WWW-Authenticate": "Bearer"},
         )
 
-    # -----------------------------------------
-    # 4. Find user
-    # -----------------------------------------
+    user = db.query(User).filter(User.id == user_id).first()
 
-    user = (
-        db.query(User)
-        .filter(User.id == user_id)
-        .first()
-    )
+    print("USER FOUND:", bool(user))
 
     if not user:
+        print("AUTH ERROR: User not found")
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=401,
             detail="User not found",
-            headers={
-                "WWW-Authenticate": "Bearer"
-            },
+            headers={"WWW-Authenticate": "Bearer"},
         )
 
+    print("AUTH SUCCESS:", user.id)
+    print("================================")
+
     return user
-
-
 # =========================================================
 # DOCTOR REGISTRATION
 # =========================================================
