@@ -42,7 +42,8 @@ def create_access_token(data: dict):
     to_encode = data.copy()
 
     to_encode.update({
-        "type": "access"
+        "type": "access",
+        "jti": str(uuid.uuid4())
     })
 
     encoded_jwt = jwt.encode(
