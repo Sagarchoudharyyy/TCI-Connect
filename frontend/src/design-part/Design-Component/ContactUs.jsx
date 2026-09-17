@@ -22,11 +22,11 @@ function ContactUs() {
 
                 <div className="contact-location">
                   <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2412753.3185890547!2d-112.62320969845668!3d39.32101839513503!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x874d95f4a4a7a3c9%3A0xc8b7e9e7b8e3e9f6!2sUtah!5e0!3m2!1sen!2sin!4v1695225500000"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2518.809023167994!2d4.3960969765810685!3d50.853220671671835!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c3c3508d482839%3A0xa95851e5597c3bca!2sRue%20du%20Saphir%2031%2C%201030%20Schaerbeek%2C%20Belgium!5e0!3m2!1sen!2sin!4v1789632320671!5m2!1sen!2sin"
                     style={{ border: 0 }}
                     allowFullScreen
                     loading="lazy"
-                    title="Google Map"
+                    title="31 Rue du Saphir, 1030 Schaerbeek, Belgium"
                   ></iframe>
                 </div>
 
