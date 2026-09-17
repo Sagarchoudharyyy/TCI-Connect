@@ -1,6 +1,9 @@
 import DoctorHeader from "../components/DoctorHeader";
 import DoctorSideBar from "../components/DoctorSideBar";
 import "../DoctorStyle/QuestionAnswer.css";
+import faqIcon from "../assets/faq.png";
+import qaIcon from "../assets/qa.png";
+
 import { useState } from "react";
 function QuestionAnswer() {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -39,7 +42,7 @@ function QuestionAnswer() {
                       aria-expanded="true"
                     >
                       <img
-                        src="https://mediumseagreen-herring-541085.hostingersite.com/assets/images/question-icon.png"
+                        src={qaIcon}
                         alt="Question"
                         className="qa-icon"
                       />
@@ -137,7 +140,7 @@ function QuestionAnswer() {
                       aria-expanded="true"
                     >
                       <img
-                        src="https://mediumseagreen-herring-541085.hostingersite.com/assets/images/question-icon.png"
+                        src={faqIcon}
                         alt="Question"
                         className="qa-icon"
                       />

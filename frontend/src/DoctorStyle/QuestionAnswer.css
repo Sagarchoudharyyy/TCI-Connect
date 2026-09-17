@@ -61,11 +61,12 @@ body {
 }
 
 .qa-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  margin-right: 12px;
+  flex-shrink: 0;
 }
-
 
 .step-box {
   display: flex;
