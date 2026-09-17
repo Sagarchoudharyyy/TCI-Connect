@@ -127,7 +127,7 @@ function Login() {
                     <div className="form-headerbxx">
                         <nav className="navbar navbar-expand-lg ">
                             <a className="navbar-brand" href="">
-                                <h1>TCI Connet</h1>
+                                <h1>TCI Dental Lab</h1>
                             </a>
                             <div className="formheader-right">
                                 <ul>
@@ -158,7 +158,7 @@ function Login() {
                                 <div className="login-formbxx-warrper">
                                     <div className="login-section-heading">
                                         <h1 className="login-main-heading">
-                                            TCI Connect Login
+                                            TCI Dental Lab Login
                                         </h1>
                                         <br />
                                     </div>
@@ -238,7 +238,7 @@ function Login() {
                             <div className="form-fcard">
                                 <div className="form-footer-logo">
                                     <Link className="navbar-brand" to="/">
-                                        <h1>TCI Connect</h1>
+                                        <h1>TCI Dental Lab</h1>
                                     </Link>
                                 </div>
 

@@ -128,7 +128,7 @@ function Register() {
           <div className="form-headerbxx">
             <nav className="navbar navbar-expand-lg ">
               <a className="navbar-brand" href="">
-                <h1>TCI Connect</h1>
+                <h1>TCI Denatl Lab</h1>
               </a>
               <div className="formheader-right">
                 <ul>
@@ -161,7 +161,7 @@ function Register() {
                 <div className="register-warrper">
                   <div className="section-heading">
                     <h1 className="register-heading">
-                      TCI Connect Sign Up
+                      TCI Dental Lab Sign Up
                     </h1>
                     <br />
                   </div>
@@ -428,19 +428,19 @@ function Register() {
           </div>
         </div>
       </section>
-      <footer className="register-footer">
+      <footer className="form-footer">
         <div className="container">
           <div className="row justify-content-between">
 
             <div className="col-lg-4">
               <div className="form-fcard">
-                <div className="register-footer-logo">
+                <div className="form-footer-logo">
                   <Link className="navbar-brand" to="/">
-                    <h1>TCI Connect</h1>
+                    <h1>TCI Dental Lab</h1>
                   </Link>
                 </div>
 
-                <div className="register-content">
+                <div className="form-content">
                   <p>
                     TCI Dental Lab is a full-service dental laboratory
                     providing advanced dental products and restorations.
@@ -452,7 +452,7 @@ function Register() {
             </div>
 
             <div className="col-lg-3">
-              <div className="register-social-icons">
+              <div className="form-sicons">
                 <ul className="list-unstyled d-flex gap-3">
 
                   <li>
@@ -498,7 +498,7 @@ function Register() {
             </div>
 
             <div className="col-12">
-              <div className="registerfooter-bottom d-flex justify-content-between flex-wrap">
+              <div className="formf-last d-flex justify-content-between flex-wrap">
                 <p>
                   Copyright © 2026 TCI Dental Labs.
                   All Rights Reserved.
