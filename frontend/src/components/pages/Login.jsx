@@ -302,7 +302,7 @@ function Login() {
                         <div className="col-12">
                             <div className="formf-last d-flex justify-content-between flex-wrap">
                                 <p>
-                                    Copyright © 2022 TCI Dental Labs.
+                                    Copyright © 2026 TCI Dental Labs.
                                     All Rights Reserved.
                                 </p>
 

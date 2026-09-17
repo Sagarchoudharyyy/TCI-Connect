@@ -319,7 +319,7 @@ function ResetPassword() {
                     className="navbar-brand"
                     to="/"
                   >
-                    <h1>TCI Connect</h1>
+                    <h1>TCI Dental Lab</h1>
                   </Link>
 
                 </div>
@@ -434,7 +434,7 @@ function ResetPassword() {
               <div className="formf-last d-flex justify-content-between flex-wrap">
 
                 <p>
-                  Copyright © 2022 TCI Dental Labs.
+                  Copyright © 2026 TCI Dental Labs.
                   All Rights Reserved.
                 </p>
 
