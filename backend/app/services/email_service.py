@@ -19,11 +19,11 @@ def send_new_registration_email_to_admin(
 
     return send_email(
         to_email=admin_email,
-        subject="New Doctor Registration - TCI Connect",
+        subject="New Doctor Registration - TCI Dental Lab",
         body=f"""
 Hello Admin,
 
-A new doctor has registered on TCI Connect.
+A new doctor has registered on TCI Dental Lab.
 
 Doctor Name: {doctor_name}
 Email: {doctor_email}
@@ -33,10 +33,10 @@ License Number: {license_number or "Not provided"}
 
 Account Status: Pending Approval
 
-Please log in to the TCI Connect admin panel to review the registration.
+Please log in to the TCI Dental Lab admin panel to review the registration.
 
 Regards,
-TCI Connect
+TCI Dental Lab
 """
     )
 
@@ -48,11 +48,11 @@ def send_registration_received_email(
 
     return send_email(
         to_email=doctor_email,
-        subject="Registration Received - TCI Connect",
+        subject="Registration Received - TCI Dental Lab",
         body=f"""
 Hello {doctor_name},
 
-Thank you for registering with TCI Connect.
+Thank you for registering with TCI Dental Lab.
 
 Your registration has been successfully received.
 
@@ -65,7 +65,7 @@ Our administrator will review your registration.
 You will receive another email once your account has been approved.
 
 Regards,
-TCI Connect
+TCI Dental Lab
 """
     )
 
@@ -89,9 +89,9 @@ def send_doctor_approval_email(
 
         Good news!
 
-        Your TCI Connect doctor account has been approved by the administrator.
+        Your TCI Dental Lab doctor account has been approved by the administrator.
 
-        You can now log in to TCI Connect and start using your account.
+        You can now log in to TCI Dental Lab and start using your account.
 
         Account Status: Approved
 
@@ -99,7 +99,7 @@ def send_doctor_approval_email(
         {login_url}
 
         Regards,
-        TCI Connect
+        TCI Dental Lab
         """
 
     html_body = f"""
@@ -107,7 +107,7 @@ def send_doctor_approval_email(
         <html>
         <head>
             <meta charset="UTF-8">
-            <title>Account Approved - TCI Connect</title>
+            <title>Account Approved - TCI Dental Lab</title>
         </head>
 
         <body style="
@@ -142,12 +142,12 @@ def send_doctor_approval_email(
                 </p>
 
                 <p>
-                    Your TCI Connect doctor account has been
+                    Your TCI Dental Lab doctor account has been
                     approved by the administrator.
                 </p>
 
                 <p>
-                    You can now log in to TCI Connect and
+                    You can now log in to TCI Dental Lab and
                     start using your account.
                 </p>
 
@@ -198,7 +198,7 @@ def send_doctor_approval_email(
 
                 <p>
                     Regards,<br>
-                    TCI Connect
+                    TCI Dental Lab
                 </p>
 
             </div>
@@ -209,7 +209,7 @@ def send_doctor_approval_email(
 
     return send_email(
         to_email=doctor_email,
-        subject="Account Approved - TCI Connect",
+        subject="Account Approved - TCI Dental Lab",
         body=body,
         html_body=html_body,
     )
@@ -229,7 +229,7 @@ def send_password_reset_email(
     body = f"""
         Hello {doctor_name},
 
-        We received a request to reset your TCI Connect password.
+        We received a request to reset your TCI Dental Lab password.
 
         Click the link below to create a new password:
 
@@ -240,7 +240,7 @@ def send_password_reset_email(
         If you did not request a password reset, you can safely ignore this email.
 
         Regards,
-        TCI Connect
+        TCI Dental Lab
         """
 
     html_body = f"""
@@ -248,7 +248,7 @@ def send_password_reset_email(
         <html>
         <head>
             <meta charset="UTF-8">
-            <title>Reset Password - TCI Connect</title>
+            <title>Reset Password - TCI Dental Lab</title>
         </head>
 
         <body style="
@@ -280,7 +280,7 @@ def send_password_reset_email(
 
                 <p>
                     We received a request to reset your
-                    TCI Connect password.
+                    TCI Dental Lab password.
                 </p>
 
                 <p>
@@ -345,7 +345,7 @@ def send_password_reset_email(
 
                 <p>
                     Regards,<br>
-                    TCI Connect
+                    TCI dental Lab 
                 </p>
 
             </div>
@@ -356,7 +356,7 @@ def send_password_reset_email(
 
     return send_email(
         to_email=doctor_email,
-        subject="Reset Your Password - TCI Connect",
+        subject="Reset Your Password - TCI Dental Lab",
         body=body,
         html_body=html_body,
     )
