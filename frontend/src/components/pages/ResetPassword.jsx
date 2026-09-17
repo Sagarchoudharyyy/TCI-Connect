@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 import api from "../../services/api";
 import "../../styles/resetpassword.css";
+import loginBg from "../../assets/login-bgimg.png";
 
 
 function ResetPassword() {
@@ -179,16 +180,12 @@ function ResetPassword() {
       </header>
 
 
-      <section
-        className="reset-form-section"
-        style={{
-          backgroundImage:
-            "url('https://mediumseagreen-herring-541085.hostingersite.com/assets/images/login-bgimg.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
+      <section className="reset-form-section" style={{
+        backgroundImage: `url(${loginBg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat"
+      }}>
 
         <div className="container">
 
