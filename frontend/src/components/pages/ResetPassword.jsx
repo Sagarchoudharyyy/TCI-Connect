@@ -125,7 +125,7 @@ function ResetPassword() {
                 className="navbar-brand"
                 href=""
               >
-                <h1>TCI Connet</h1>
+                <h1>TCI Dental Lab</h1>
               </a>
 
 
