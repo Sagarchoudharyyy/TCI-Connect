@@ -862,12 +862,21 @@ def update_profile(
 # =========================================================
 # LOGOUT
 # =========================================================
+class LogoutRequest(BaseModel):
+    refresh_token: str | None = None
+
+
 
 @router.post("/logout")
 def logout(
+    request: LogoutRequest,
     authorization: str = Header(None),
     db: Session = Depends(get_db)
 ):
+
+    # -----------------------------------------
+    # 1. Get access token
+    # -----------------------------------------
 
     if not authorization:
         raise HTTPException(
@@ -875,32 +884,66 @@ def logout(
             detail="Authorization header is required"
         )
 
-    token = authorization.replace(
+    access_token = authorization.replace(
         "Bearer ",
         ""
     )
 
-    if not token:
+    if not access_token:
         raise HTTPException(
             status_code=401,
             detail="Invalid authorization token"
         )
 
-    blacklist_token = Blacklist(
-        token=token
+    # -----------------------------------------
+    # 2. Blacklist access token
+    # -----------------------------------------
+
+    existing_access = (
+        db.query(Blacklist)
+        .filter(Blacklist.token == access_token)
+        .first()
     )
 
-    db.add(blacklist_token)
+    if not existing_access:
+        db.add(
+            Blacklist(
+                token=access_token
+            )
+        )
+
+    # -----------------------------------------
+    # 3. Blacklist refresh token
+    # -----------------------------------------
+
+    if request.refresh_token:
+
+        existing_refresh = (
+            db.query(Blacklist)
+            .filter(
+                Blacklist.token == request.refresh_token
+            )
+            .first()
+        )
+
+        if not existing_refresh:
+            db.add(
+                Blacklist(
+                    token=request.refresh_token
+                )
+            )
+
+    # -----------------------------------------
+    # 4. Save
+    # -----------------------------------------
+
     db.commit()
 
     return {
         "message": "Logged out successfully"
     }
 
-
-# =========================================================
-# REFRESH TOKEN
-# =========================================================
+  
 
 class RefreshTokenRequest(BaseModel):
     refresh_token: str
@@ -915,7 +958,23 @@ def refresh_token(
     payload = decode_refresh_token(
         request.refresh_token
     )
+    # -----------------------------------------
+    # Check whether refresh token is blacklisted
+    # -----------------------------------------
 
+    blacklisted_token = (
+        db.query(Blacklist)
+        .filter(
+            Blacklist.token == request.refresh_token
+        )
+        .first()
+    )
+
+    if blacklisted_token:
+        raise HTTPException(
+            status_code=401,
+            detail="Refresh token has been logged out"
+        )
     if not payload:
         raise HTTPException(
             status_code=401,

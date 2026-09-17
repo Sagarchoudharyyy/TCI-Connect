@@ -3,16 +3,30 @@ import {
     useLocation,
     useNavigate
 } from "react-router-dom";
+
+import api from "../services/api";
 import "../DoctorStyle/DoctorSideBar.css";
 
 function DoctorSideBar({ showSidebar }) {
 
     const location = useLocation();
     const navigate = useNavigate();
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        navigate("/login");
+    const handleLogout = async () => {
+        const refreshToken = localStorage.getItem("refresh_token");
+
+        try {
+            await api.post("/logout", {
+                refresh_token: refreshToken,
+            });
+        } catch (error) {
+            console.log("Logout API error:", error);
+        } finally {
+            localStorage.removeItem("token");
+            localStorage.removeItem("refresh_token");
+            localStorage.removeItem("user");
+
+            navigate("/login");
+        }
     };
     return (
         <div className={`col-md-3 doctor-sidebar ${showSidebar ? "show-bar" : ""}`}>

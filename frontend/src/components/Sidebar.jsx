@@ -1,4 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import api from "../services/api";
 import { useEffect } from "react";
 import {
     LayoutDashboard,
@@ -21,12 +22,22 @@ function Sidebar({ showSidebar }) {
 
     const role = user?.role;
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
+    const handleLogout = async () => {
+        const refreshToken = localStorage.getItem("refresh_token");
 
-        localStorage.removeItem("user");
+        try {
+            await api.post("/logout", {
+                refresh_token: refreshToken,
+            });
+        } catch (error) {
+            console.log("Logout API error:", error);
+        } finally {
+            localStorage.removeItem("token");
+            localStorage.removeItem("refresh_token");
+            localStorage.removeItem("user");
 
-        navigate("/login");
+            navigate("/login");
+        }
     };
     return (
         <div className={`sidebar ${showSidebar ? "show-bar" : ""}`}>

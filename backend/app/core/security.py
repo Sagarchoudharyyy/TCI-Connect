@@ -1,5 +1,4 @@
 from passlib.context import CryptContext
-from datetime import datetime, timedelta, timezone
 from jose import jwt, JWTError
 from dotenv import load_dotenv
 import os
@@ -17,9 +16,6 @@ ALGORITHM = os.getenv(
     "HS256"
 )
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 15
-
-REFRESH_TOKEN_EXPIRE_DAYS = 30
 
 pwd_context = CryptContext(
     schemes=["bcrypt"],
@@ -45,12 +41,7 @@ def create_access_token(data: dict):
 
     to_encode = data.copy()
 
-    expire = datetime.now(timezone.utc) + timedelta(
-        minutes=ACCESS_TOKEN_EXPIRE_MINUTES
-    )
-
     to_encode.update({
-        "exp": expire,
         "type": "access"
     })
 
@@ -62,17 +53,11 @@ def create_access_token(data: dict):
 
     return encoded_jwt
 
-
 def create_refresh_token(data: dict):
 
     to_encode = data.copy()
 
-    expire = datetime.now(timezone.utc) + timedelta(
-        days=REFRESH_TOKEN_EXPIRE_DAYS
-    )
-
     to_encode.update({
-        "exp": expire,
         "type": "refresh",
         "jti": str(uuid.uuid4())
     })
@@ -84,7 +69,6 @@ def create_refresh_token(data: dict):
     )
 
     return encoded_jwt
-
 
 def decode_access_token(token: str):
 
