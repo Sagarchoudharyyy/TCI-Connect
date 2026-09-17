@@ -38,6 +38,30 @@ app = FastAPI(
 )
 
 
+from fastapi import Request
+
+
+@app.middleware("http")
+async def debug_mobile_download_auth(request: Request, call_next):
+    if request.url.path.startswith("/api/mobile-download/"):
+        auth_header = request.headers.get("authorization")
+
+        print("========== DOWNLOAD AUTH DEBUG ==========")
+        print("PATH:", request.url.path)
+        print("AUTH HEADER EXISTS:", bool(auth_header))
+        print("AUTH HEADER LENGTH:", len(auth_header) if auth_header else 0)
+
+        if auth_header:
+            print(
+                "AUTH PREFIX:",
+                auth_header[:20]
+            )
+
+        print("=========================================")
+
+    response = await call_next(request)
+    return response
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
